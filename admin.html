@@ -2,25 +2,283 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Admin · HEDTRO JEANS</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
   <style>
-    /* ===== SAMA DENGAN SEBELUMNYA, TAMBAHKAN BADGE STATUS ===== */
     * { margin:0; padding:0; box-sizing:border-box; }
-    :root { /* ... sama ... */ }
-    body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--denim-dark); padding-top:70px; }
-    /* ... (style navbar, sidebar, content, tabel) sama seperti sebelumnya ... */
-    .badge-status { padding:2px 12px; border-radius:40px; font-size:0.7rem; font-weight:600; }
+    :root {
+      --denim-dark: #0b1a2b;
+      --denim-navy: #1a2e44;
+      --denim-blue: #2a4b6e;
+      --denim-light: #e8edf2;
+      --gold-accent: #c9a84c;
+      --gold-light: #e8d5a3;
+      --cream: #f7f4ef;
+      --white: #ffffff;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+      --radius: 28px;
+      --radius-sm: 14px;
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+      --sidebar-width: 280px;
+    }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--cream);
+      color: var(--denim-dark);
+      padding-top: 70px;
+      overflow-x: hidden;
+    }
+    a { text-decoration:none; color:inherit; }
+    button { cursor:pointer; font-family:inherit; border:none; background:none; }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:var(--cream); }
+    ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top:0; left:0; right:0; z-index:1100;
+      background: var(--denim-dark);
+      padding: 12px 20px;
+      display: flex; align-items:center; justify-content:space-between;
+      border-bottom:3px solid var(--gold-accent);
+      height:70px;
+    }
+    .navbar .logo {
+      display:flex; align-items:center; gap:8px;
+      color:var(--white); font-weight:800; font-size:1.4rem;
+    }
+    .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
+    .navbar .logo span { font-weight:300; color:var(--gold-light); font-size:0.75rem; margin-left:2px; }
+    .nav-right {
+      display:flex; align-items:center; gap:12px;
+    }
+    .nav-right .user-badge {
+      display:flex; align-items:center; gap:6px;
+      color:var(--cream); font-size:0.8rem;
+      background:rgba(255,255,255,0.08);
+      padding:6px 14px; border-radius:60px;
+      border:1px solid rgba(255,255,255,0.06);
+      cursor:pointer;
+    }
+    .nav-right .user-badge i { color:var(--gold-accent); }
+
+    /* ===== BURGER ===== */
+    .burger-btn {
+      display:none;
+      flex-direction:column; gap:5px;
+      padding:6px; background:transparent; border:none; cursor:pointer;
+      z-index:1101;
+    }
+    .burger-btn span {
+      display:block; width:28px; height:3px;
+      background:var(--cream); border-radius:4px;
+      transition:var(--transition); transform-origin:center;
+    }
+    .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
+    .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
+    .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-overlay {
+      display:none;
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.5); z-index:1050;
+      opacity:0; pointer-events:none;
+      transition:var(--transition);
+    }
+    .sidebar-overlay.active { opacity:1; pointer-events:all; }
+    .sidebar {
+      position:fixed; top:0; left:0; bottom:0;
+      width:var(--sidebar-width);
+      background:var(--denim-dark);
+      z-index:1060;
+      padding:24px 20px;
+      overflow-y:auto;
+      border-right:3px solid var(--gold-accent);
+      display:flex; flex-direction:column; gap:4px;
+      transition:left 0.3s ease;
+      left:0;
+    }
+    @media (max-width: 768px) {
+      .sidebar { left:-320px; }
+      .sidebar.open { left:0; }
+      .burger-btn { display:flex; }
+      .sidebar-overlay { display:block; }
+    }
+    .sidebar .sidebar-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);
+      margin-bottom:12px;
+    }
+    .sidebar .sidebar-header .logo-side {
+      color:var(--white); font-weight:800; font-size:1.3rem;
+    }
+    .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
+    .sidebar .sidebar-header .close-side {
+      display:none;
+      color:var(--cream); font-size:1.6rem; cursor:pointer;
+    }
+    @media (max-width: 768px) {
+      .sidebar .sidebar-header .close-side { display:block; }
+    }
+    .sidebar .menu-item {
+      display:flex; align-items:center; gap:14px;
+      padding:12px 16px; border-radius:12px;
+      color:var(--cream); font-weight:500; font-size:0.95rem;
+      transition:var(--transition); cursor:pointer;
+    }
+    .sidebar .menu-item:hover { background:rgba(255,255,255,0.08); }
+    .sidebar .menu-item i { width:24px; color:var(--gold-accent); }
+    .sidebar .menu-item.active { background:rgba(201,168,76,0.15); color:var(--gold-accent); }
+    .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:6px 0; }
+    .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
+    .sidebar .menu-item.logout i { color:#e74c3c; }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      padding: 20px 24px 40px;
+      transition: margin-left 0.3s ease;
+      max-width: calc(100% - var(--sidebar-width));
+    }
+    @media (max-width: 768px) {
+      .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 16px 16px 30px;
+      }
+    }
+    .page-title {
+      font-size:1.6rem; font-weight:700; color:var(--denim-dark);
+      margin-bottom:20px; display:flex; align-items:center; gap:12px;
+    }
+    .page-title i { color:var(--gold-accent); }
+
+    /* ===== TABS ===== */
+    .admin-tabs {
+      display:flex; gap:8px; flex-wrap:wrap;
+      margin-bottom:20px; border-bottom:2px solid var(--denim-light);
+      padding-bottom:12px;
+    }
+    .admin-tabs .tab-btn {
+      padding:10px 22px; border-radius:60px;
+      font-weight:600; font-size:0.85rem;
+      color:var(--denim-navy); transition:var(--transition);
+      cursor:pointer; background:transparent;
+    }
+    .admin-tabs .tab-btn.active {
+      background:var(--denim-blue); color:#fff;
+      box-shadow:0 4px 14px rgba(42,75,110,0.25);
+    }
+    .admin-tabs .tab-btn:hover:not(.active) { background:var(--denim-light); }
+    .tab-content { display:none; }
+    .tab-content.active { display:block; }
+
+    /* ===== BUTTONS ===== */
+    .btn-sm {
+      padding:8px 18px; border-radius:60px;
+      font-weight:600; font-size:0.8rem;
+      transition:var(--transition); font-family:inherit;
+    }
+    .btn-sm-primary { background:var(--denim-blue); color:#fff; }
+    .btn-sm-primary:hover { background:var(--denim-dark); }
+    .btn-sm-success { background:#1f7a4b; color:#fff; }
+    .btn-sm-success:hover { background:#155d38; }
+    .btn-sm-danger { background:#b13e3e; color:#fff; }
+    .btn-sm-danger:hover { background:#8f2f2f; }
+    .btn-sm-warning { background:#d4a02b; color:#fff; }
+    .btn-sm-warning:hover { background:#b8891f; }
+    .btn-sm-gold { background:var(--gold-accent); color:var(--denim-dark); }
+    .btn-sm-gold:hover { background:#b8963a; }
+
+    .flex-row {
+      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+      margin-bottom:12px;
+    }
+
+    /* ===== TABLE ===== */
+    .table-wrap {
+      overflow-x:auto; border-radius:var(--radius-sm);
+      border:1px solid #e2e8f0; background:var(--white);
+    }
+    table {
+      width:100%; border-collapse:collapse; font-size:0.82rem;
+      min-width:700px;
+    }
+    thead { background:var(--denim-dark); color:var(--cream); }
+    th { padding:12px 14px; text-align:left; font-weight:600; }
+    td { padding:10px 14px; border-bottom:1px solid #eef2f7; }
+
+    /* ===== BADGES ===== */
+    .badge-admin {
+      background:var(--gold-accent); color:var(--denim-dark);
+      padding:1px 10px; border-radius:40px;
+      font-size:0.6rem; font-weight:700; margin-left:4px;
+    }
+    .badge-status {
+      padding:2px 12px; border-radius:40px; font-size:0.7rem; font-weight:600;
+    }
     .badge-pending { background:#fff3cd; color:#856404; }
     .badge-success { background:#d4edda; color:#155724; }
     .badge-failed { background:#f8d7da; color:#721c24; }
     .badge-free { background:#f8d7da; color:#721c24; }
     .badge-verified { background:#d4edda; color:#155724; }
+
+    .text-muted { color:#6a7e9a; font-size:0.8rem; }
+    .mt-16 { margin-top:16px; }
+
+    /* ===== SETTINGS ===== */
+    .settings-grid {
+      display:grid; grid-template-columns:1fr 1fr; gap:20px;
+    }
+    @media (max-width:700px) { .settings-grid { grid-template-columns:1fr; } }
+    .settings-card {
+      background:var(--white); border-radius:var(--radius-sm);
+      padding:18px 20px; box-shadow:var(--shadow);
+      border:1px solid #e2e8f0;
+    }
+    .settings-card h4 {
+      font-size:0.9rem; font-weight:600; margin-bottom:14px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .settings-card h4 i { color:var(--gold-accent); }
+    .form-group { margin-bottom:12px; }
+    .form-group label {
+      display:block; font-weight:500; color:var(--denim-navy);
+      font-size:0.8rem; margin-bottom:4px;
+    }
+    .form-group input {
+      width:100%; padding:10px 14px;
+      border:1.5px solid #dde3ea; border-radius:60px;
+      font-size:0.9rem; background:#fafcff;
+      font-family:inherit; transition:var(--transition);
+    }
+    .form-group input:focus {
+      border-color:var(--denim-blue); outline:none;
+      box-shadow:0 0 0 4px rgba(42,75,110,0.1);
+    }
+
+    .footer {
+      background:var(--denim-dark); color:var(--cream);
+      padding:20px 24px; text-align:center;
+      border-top:3px solid var(--gold-accent);
+      margin-top:30px; font-size:0.8rem;
+    }
+
+    @media (max-width:768px) {
+      .admin-tabs .tab-btn { padding:8px 16px; font-size:0.75rem; }
+    }
+    @media (max-width:480px) {
+      .admin-tabs { gap:4px; }
+      .admin-tabs .tab-btn { padding:6px 12px; font-size:0.7rem; }
+    }
   </style>
 </head>
 <body>
+
   <!-- ===== NAVBAR ===== -->
   <header class="navbar">
     <div class="logo"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></div>
@@ -46,9 +304,10 @@
     <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
   </nav>
 
-  <!-- ===== CONTENT ===== -->
+  <!-- ===== MAIN CONTENT ===== -->
   <div class="main-content">
     <h1 class="page-title"><i class="fas fa-users-cog"></i> Admin Panel</h1>
+
     <div class="admin-tabs" id="adminTabs">
       <button class="tab-btn active" data-tab="members">Member</button>
       <button class="tab-btn" data-tab="products">Produk</button>
@@ -57,29 +316,87 @@
       <button class="tab-btn" data-tab="settings">Pengaturan</button>
     </div>
 
-    <!-- TAB MEMBER -->
-    <div class="tab-content active" id="tabMembers">...</div>
-    <!-- TAB PRODUK -->
-    <div class="tab-content" id="tabProducts">...</div>
-    <!-- TAB VERIFIKASI -->
-    <div class="tab-content" id="tabVerification">...</div>
+    <!-- TAB MEMBERS -->
+    <div class="tab-content active" id="tabMembers">
+      <div class="flex-row">
+        <button class="btn-sm btn-sm-primary" id="refreshBtn"><i class="fas fa-sync"></i> Refresh</button>
+        <button class="btn-sm btn-sm-success" id="seedDemoBtn"><i class="fas fa-database"></i> Seed Demo</button>
+        <button class="btn-sm btn-sm-danger" id="resetAllBtn"><i class="fas fa-trash"></i> Reset Semua</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Sponsor</th><th>Posisi</th><th>Status</th><th>Wallet</th><th>Aksi</th></tr></thead>
+          <tbody id="adminTableBody"></tbody>
+        </table>
+      </div>
+      <div class="text-muted mt-16">Total member: <span id="totalMembers">0</span></div>
+    </div>
+
+    <!-- TAB PRODUCTS -->
+    <div class="tab-content" id="tabProducts">
+      <div class="flex-row">
+        <button class="btn-sm btn-sm-success" id="addProductBtn"><i class="fas fa-plus"></i> Tambah Produk</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>#</th><th>Nama</th><th>Harga Member</th><th>Harga Normal</th><th>Tag</th><th>Stok</th><th>Aksi</th></tr></thead>
+          <tbody id="adminProductTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB VERIFICATION -->
+    <div class="tab-content" id="tabVerification">
+      <div class="flex-row">
+        <button class="btn-sm btn-sm-primary" id="refreshVerifBtn"><i class="fas fa-sync"></i> Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Status</th><th>Bukti Transfer</th><th>Aksi</th></tr></thead>
+          <tbody id="verifTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
     <!-- TAB RO ORDERS -->
     <div class="tab-content" id="tabRoOrders">
       <div class="table-wrap">
         <table>
-          <thead><tr><th>ID</th><th>Member</th><th>Produk</th><th>Nominal</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+          <thead><tr><th>#</th><th>Member</th><th>Produk</th><th>Nominal</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
           <tbody id="roOrdersTable"></tbody>
         </table>
       </div>
     </div>
+
     <!-- TAB SETTINGS -->
-    <div class="tab-content" id="tabSettings">...</div>
+    <div class="tab-content" id="tabSettings">
+      <div class="settings-grid">
+        <div class="settings-card">
+          <h4><i class="fas fa-percent"></i> Komisi Bonus</h4>
+          <div class="form-group"><label>Bonus Sponsor (%)</label><input type="number" id="setSponsorBonus" /></div>
+          <div class="form-group"><label>Bonus Binary (%)</label><input type="number" id="setBinaryBonus" /></div>
+          <div class="form-group"><label>Bonus Reward (%)</label><input type="number" id="setRewardBonus" /></div>
+          <div class="form-group"><label>Bonus RO (%)</label><input type="number" id="setRoBonus" /></div>
+          <button class="btn-sm btn-sm-primary" id="saveBonusSettings">Simpan</button>
+        </div>
+        <div class="settings-card">
+          <h4><i class="fas fa-box"></i> Toko & Member</h4>
+          <div class="form-group"><label>Diskon Member (%)</label><input type="number" id="setMemberDiscount" /></div>
+          <div class="form-group"><label>Ongkir (Rp)</label><input type="number" id="setShippingCost" /></div>
+          <div class="form-group"><label>Harga Paket Member (Rp)</label><input type="number" id="setMemberPrice" /></div>
+          <button class="btn-sm btn-sm-primary" id="saveShopSettings">Simpan</button>
+        </div>
+      </div>
+    </div>
   </div>
 
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Admin Panel</p>
+    <p style="opacity:0.6; margin-top:4px;">Sistem MLM terintegrasi</p>
+  </footer>
+
   <script>
-    // ============================================================
-    // JAVASCRIPT admin.html (dengan RO Orders)
-    // ============================================================
     (function() {
       'use strict';
 
@@ -115,12 +432,236 @@
         return;
       }
 
+      // ===== DOM REFS =====
+      const burgerBtn = document.getElementById('burgerBtn');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const closeSidebar = document.getElementById('closeSidebar');
+
+      // ===== SIDEBAR TOGGLE =====
+      function toggleSidebar(open) {
+        const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
+        if (window.innerWidth <= 768) {
+          sidebar.classList.toggle('open', isOpen);
+          sidebarOverlay.classList.toggle('active', isOpen);
+          burgerBtn.classList.toggle('active', isOpen);
+          document.body.style.overflow = isOpen ? 'hidden' : '';
+        }
+      }
+      burgerBtn.addEventListener('click', () => toggleSidebar());
+      closeSidebar.addEventListener('click', () => toggleSidebar(false));
+      sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
+
+      // ===== SIDEBAR NAV =====
+      document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(item => {
+        item.addEventListener('click', function() {
+          const tab = this.dataset.tab;
+          toggleSidebar(false);
+          switchTab(tab);
+        });
+      });
+
+      document.getElementById('sideLogoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('mlm_session');
+        window.location.href = 'index.html';
+      });
+
+      // ===== TABS =====
+      function switchTab(tabId) {
+        document.querySelectorAll('.admin-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+        const tabBtn = document.querySelector(`.admin-tabs .tab-btn[data-tab="${tabId}"]`);
+        if (tabBtn) tabBtn.classList.add('active');
+        const tabContent = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+        if (tabContent) tabContent.classList.add('active');
+        if (tabId === 'members') renderAdminMembers();
+        if (tabId === 'products') renderAdminProducts();
+        if (tabId === 'verification') renderVerification();
+        if (tabId === 'ro-orders') renderRoOrders();
+        if (tabId === 'settings') loadSettingsToForm();
+      }
+
+      document.querySelectorAll('.admin-tabs .tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          switchTab(this.dataset.tab);
+        });
+      });
+
+      // ===== RENDER MEMBERS =====
+      function renderAdminMembers() {
+        const tbody = document.getElementById('adminTableBody');
+        let html = '';
+        users.forEach(u => {
+          const isAdmin = u.email === 'admin@mlm.com';
+          const statusClass = 'badge-' + (u.status || 'free');
+          const statusLabel = u.status || 'free';
+          html += `<tr>
+            <td>${u.id}</td>
+            <td>${u.name} ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}</td>
+            <td>${u.email}</td>
+            <td>${u.sponsor_id || '-'}</td>
+            <td>${u.position || '-'}</td>
+            <td><span class="badge-status ${statusClass}">${statusLabel.toUpperCase()}</span></td>
+            <td>Rp ${(u.wallet || 0).toLocaleString()}</td>
+            <td>
+              ${!isAdmin ? `<button class="btn-sm btn-sm-warning toggle-status" data-id="${u.id}">Ubah Status</button>` : ''}
+            </td>
+          </tr>`;
+        });
+        tbody.innerHTML = html;
+        document.getElementById('totalMembers').textContent = users.length;
+
+        document.querySelectorAll('.toggle-status').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            const user = users.find(u => u.id === id);
+            if (!user) return;
+            const statuses = ['free', 'pending', 'verified'];
+            const currentIdx = statuses.indexOf(user.status);
+            const nextIdx = (currentIdx + 1) % statuses.length;
+            user.status = statuses[nextIdx];
+            saveUsers(users);
+            renderAdminMembers();
+            renderVerification();
+            alert(`Status ${user.name} diubah menjadi ${user.status.toUpperCase()}`);
+          });
+        });
+      }
+
+      // ===== RENDER VERIFICATION =====
+      function renderVerification() {
+        const tbody = document.getElementById('verifTableBody');
+        const pendingUsers = users.filter(u => u.status === 'pending' || u.status === 'free');
+        if (pendingUsers.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;">✅ Semua member sudah terverifikasi.</td></tr>`;
+          return;
+        }
+        let html = '';
+        pendingUsers.forEach(u => {
+          html += `<tr>
+            <td>${u.id}</td>
+            <td>${u.name}</td>
+            <td>${u.email}</td>
+            <td><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td>
+            <td>${u.proof_image ? '📷 Telah diupload' : '❌ Belum upload'}</td>
+            <td>
+              ${u.status === 'pending' ? `<button class="btn-sm btn-sm-success verify-btn" data-id="${u.id}">✅ Verifikasi</button>` : ''}
+              ${u.status === 'free' ? `<button class="btn-sm btn-sm-warning pending-btn" data-id="${u.id}">⏳ Jadikan Pending</button>` : ''}
+            </td>
+          </tr>`;
+        });
+        tbody.innerHTML = html;
+
+        document.querySelectorAll('.verify-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            const user = users.find(u => u.id === id);
+            if (user) {
+              user.status = 'verified';
+              saveUsers(users);
+              renderVerification();
+              renderAdminMembers();
+              alert(`✅ ${user.name} telah diverifikasi!`);
+            }
+          });
+        });
+
+        document.querySelectorAll('.pending-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            const user = users.find(u => u.id === id);
+            if (user) {
+              const proof = prompt('Masukkan link/deskripsi bukti transfer:');
+              if (proof !== null) {
+                user.status = 'pending';
+                user.proof_image = proof || 'Telah upload bukti';
+                saveUsers(users);
+                renderVerification();
+                renderAdminMembers();
+                alert(`⏳ ${user.name} sekarang pending verifikasi.`);
+              }
+            }
+          });
+        });
+      }
+
+      // ===== RENDER PRODUCTS =====
+      function renderAdminProducts() {
+        const tbody = document.getElementById('adminProductTableBody');
+        let html = '';
+        products.forEach((p, idx) => {
+          html += `<tr>
+            <td>${idx+1}</td>
+            <td>${p.name}</td>
+            <td>Rp ${p.price.toLocaleString()}</td>
+            <td>Rp ${p.original?.toLocaleString() || '-'}</td>
+            <td>${p.tag || '-'}</td>
+            <td>${p.stock}</td>
+            <td>
+              <button class="btn-sm btn-sm-warning edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button>
+              <button class="btn-sm btn-sm-danger delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+            </td>
+          </tr>`;
+        });
+        tbody.innerHTML = html;
+
+        document.querySelectorAll('.edit-product').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            const p = products.find(x => x.id === id);
+            if (!p) return;
+            const name = prompt('Nama produk:', p.name);
+            if (name === null) return;
+            const price = parseInt(prompt('Harga Member (Rp):', p.price));
+            if (isNaN(price)) return;
+            const original = parseInt(prompt('Harga Normal (Rp):', p.original));
+            if (isNaN(original)) return;
+            const tag = prompt('Tag:', p.tag);
+            if (tag === null) return;
+            const stock = parseInt(prompt('Stok:', p.stock));
+            if (isNaN(stock)) return;
+            p.name = name; p.price = price; p.original = original; p.tag = tag; p.stock = stock;
+            saveProducts(products);
+            renderAdminProducts();
+            alert('✅ Produk diupdate.');
+          });
+        });
+
+        document.querySelectorAll('.delete-product').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            if (!confirm('Hapus produk ini?')) return;
+            products = products.filter(x => x.id !== id);
+            saveProducts(products);
+            renderAdminProducts();
+          });
+        });
+      }
+
+      document.getElementById('addProductBtn').addEventListener('click', function() {
+        const name = prompt('Nama produk:');
+        if (!name) return;
+        const price = parseInt(prompt('Harga Member (Rp):'));
+        if (isNaN(price)) return;
+        const original = parseInt(prompt('Harga Normal (Rp):'));
+        if (isNaN(original)) return;
+        const tag = prompt('Tag (contoh: BEST SELLER):') || 'PRODUK';
+        const stock = parseInt(prompt('Stok:')) || 0;
+        const newProd = {
+          id: products.length ? Math.max(...products.map(p=>p.id)) + 1 : 1,
+          name, price, original, tag, icon: 'fa-tshirt', stock
+        };
+        products.push(newProd);
+        saveProducts(products);
+        renderAdminProducts();
+        alert('✅ Produk ditambahkan!');
+      });
+
       // ===== RENDER RO ORDERS =====
       function renderRoOrders() {
         const tbody = document.getElementById('roOrdersTable');
         if (!tbody) return;
         let html = '';
-        // Cari semua transaksi ro_purchase dari semua user
         let allRO = [];
         users.forEach(u => {
           if (u.transactions) {
@@ -135,7 +676,6 @@
             });
           }
         });
-        // Urutkan dari yang terbaru
         allRO.sort((a,b) => new Date(b.date) - new Date(a.date));
 
         if (allRO.length === 0) {
@@ -173,14 +713,11 @@
         if (!confirm('Approve pesanan RO ini? Bonus akan didistribusikan ke upline.')) return;
         const user = users.find(u => u.id === userId);
         if (!user) return;
-        // Cari transaksi yang sesuai
         const txIndex = user.transactions.findIndex(t => t.type === 'ro_purchase' && t.date === txDate && t.status === 'pending');
         if (txIndex === -1) { alert('Transaksi tidak ditemukan'); return; }
-        // Ubah status menjadi success
         user.transactions[txIndex].status = 'success';
         const amount = user.transactions[txIndex].amount;
 
-        // Update purchase_history juga
         if (user.purchase_history) {
           const phIndex = user.purchase_history.findIndex(p => p.date === txDate);
           if (phIndex !== -1) user.purchase_history[phIndex].status = 'success';
@@ -190,17 +727,13 @@
         const roBonusPercent = settings.roBonus || 3;
         const bonusRO = (amount * roBonusPercent) / 100;
 
-        // Cari sponsor
         let sponsorId = user.sponsor_id;
         let level = 1;
         while (sponsorId && level <= 10) {
           const sponsor = users.find(u => u.id === sponsorId);
           if (!sponsor) break;
-          // Tambahkan bonus RO ke sponsor
           sponsor.bonus_ro = (sponsor.bonus_ro || 0) + bonusRO;
-          // Tambahkan ke wallet sponsor?
           sponsor.wallet = (sponsor.wallet || 0) + bonusRO;
-          // Catat transaksi bonus di sponsor
           if (!sponsor.transactions) sponsor.transactions = [];
           sponsor.transactions.push({
             type: 'bonus_ro',
@@ -209,64 +742,103 @@
             status: 'success',
             note: `Bonus RO dari ${user.name} (level ${level})`
           });
-          // Lanjut ke sponsor berikutnya
           sponsorId = sponsor.sponsor_id;
           level++;
         }
 
         saveUsers(users);
         renderRoOrders();
-        // Refresh tampilan lain
         renderAdminMembers();
         alert('✅ RO approved, bonus telah didistribusikan ke upline.');
       }
 
-      // ===== RENDER ADMIN MEMBERS (sama seperti sebelumnya) =====
-      function renderAdminMembers() {
-        // ... (sama)
-      }
-
-      // ===== RENDER ADMIN PRODUCTS =====
-      function renderAdminProducts() {
-        // ... (sama)
-      }
-
-      // ===== RENDER VERIFICATION =====
-      function renderVerification() {
-        // ... (sama)
-      }
-
       // ===== SETTINGS =====
       function loadSettingsToForm() {
-        // ... (sama)
+        document.getElementById('setSponsorBonus').value = settings.sponsorBonus || 10;
+        document.getElementById('setBinaryBonus').value = settings.binaryBonus || 8;
+        document.getElementById('setRewardBonus').value = settings.rewardBonus || 5;
+        document.getElementById('setRoBonus').value = settings.roBonus || 3;
+        document.getElementById('setMemberDiscount').value = settings.memberDiscount || 20;
+        document.getElementById('setShippingCost').value = settings.shippingCost || 0;
+        document.getElementById('setMemberPrice').value = settings.memberPrice || 550000;
       }
 
-      // ===== TABS =====
-      document.querySelectorAll('.admin-tabs .tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          document.querySelectorAll('.admin-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-          const tab = this.dataset.tab;
-          document.getElementById('tab' + tab.charAt(0).toUpperCase() + tab.slice(1)).classList.add('active');
-          if (tab === 'members') renderAdminMembers();
-          if (tab === 'products') renderAdminProducts();
-          if (tab === 'verification') renderVerification();
-          if (tab === 'ro-orders') renderRoOrders();
-          if (tab === 'settings') loadSettingsToForm();
-        });
+      document.getElementById('saveBonusSettings').addEventListener('click', function() {
+        settings.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value) || 0;
+        settings.binaryBonus = parseFloat(document.getElementById('setBinaryBonus').value) || 0;
+        settings.rewardBonus = parseFloat(document.getElementById('setRewardBonus').value) || 0;
+        settings.roBonus = parseFloat(document.getElementById('setRoBonus').value) || 0;
+        saveSettings(settings);
+        alert('✅ Pengaturan bonus disimpan!');
       });
 
-      // ===== SIDEBAR =====
-      // ... (sama)
+      document.getElementById('saveShopSettings').addEventListener('click', function() {
+        settings.memberDiscount = parseFloat(document.getElementById('setMemberDiscount').value) || 0;
+        settings.shippingCost = parseFloat(document.getElementById('setShippingCost').value) || 0;
+        settings.memberPrice = parseFloat(document.getElementById('setMemberPrice').value) || 550000;
+        saveSettings(settings);
+        alert('✅ Pengaturan toko disimpan!');
+      });
+
+      // ===== SEED & RESET =====
+      document.getElementById('seedDemoBtn').addEventListener('click', function() {
+        const demo = [
+          { name: 'Dewi Lestari', email: 'dewi@mail.com', password: 'dewi123', sponsor_id: 1, position: 'left', status: 'verified', wallet: 50000, bonus_sponsor:25, bonus_binary:60, bonus_reward:12, bonus_ro:5, purchase_history:[], transactions:[], proof_image:null, pending_package:false },
+          { name: 'Eko Prasetyo', email: 'eko@mail.com', password: 'eko123', sponsor_id: 2, position: 'right', status: 'pending', wallet: 30000, bonus_sponsor:15, bonus_binary:40, bonus_reward:8, bonus_ro:3, purchase_history:[], transactions:[], proof_image:'https://via.placeholder.com/150', pending_package:false }
+        ];
+        demo.forEach(d => {
+          d.id = users.length ? Math.max(...users.map(u=>u.id)) + 1 : 1;
+          users.push(d);
+        });
+        saveUsers(users);
+        renderAdminMembers();
+        renderVerification();
+        renderRoOrders();
+        alert('✅ 2 member demo ditambahkan.');
+      });
+
+      document.getElementById('resetAllBtn').addEventListener('click', function() {
+        if (!confirm('⚠️ Hapus SEMUA data (kecuali admin)?')) return;
+        users = users.filter(u => u.email === 'admin@mlm.com');
+        saveUsers(users);
+        renderAdminMembers();
+        renderVerification();
+        renderRoOrders();
+        alert('✅ Data non-admin dihapus.');
+      });
+
+      document.getElementById('refreshBtn').addEventListener('click', function() {
+        users = loadUsers();
+        products = loadProducts();
+        settings = loadSettings();
+        renderAdminMembers();
+        renderAdminProducts();
+        renderVerification();
+        renderRoOrders();
+        loadSettingsToForm();
+      });
+
+      document.getElementById('refreshVerifBtn').addEventListener('click', function() {
+        users = loadUsers();
+        renderVerification();
+      });
+
+      document.getElementById('navUserBadge').addEventListener('click', function() {
+        users = loadUsers();
+        renderAdminMembers();
+        renderVerification();
+        renderRoOrders();
+      });
 
       // ===== INIT =====
+      document.getElementById('navUserName').textContent = currentUser.name;
       renderAdminMembers();
       renderAdminProducts();
       renderVerification();
       renderRoOrders();
       loadSettingsToForm();
-      console.log('🟦 HEDTRO · Admin dengan RO Orders');
+
+      console.log('🟦 HEDTRO · Admin Panel dengan RO Orders');
     })();
   </script>
 </body>
