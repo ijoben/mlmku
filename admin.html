@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
   <style>
-    /* ===== RESET & ROOT ===== */
+    /* ===== SAMA DENGAN SEBELUMNYA ===== */
     * { margin:0; padding:0; box-sizing:border-box; }
     :root {
       --denim-dark: #0b1a2b;
@@ -22,7 +22,7 @@
       --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
       --radius: 28px;
       --radius-sm: 14px;
-      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
     }
     body {
       font-family: 'Inter', -apple-system, sans-serif;
@@ -166,6 +166,8 @@
     .btn-sm-danger:hover { background:#8f2f2f; }
     .btn-sm-warning { background:#d4a02b; color:#fff; }
     .btn-sm-warning:hover { background:#b8891f; }
+    .btn-sm-gold { background:var(--gold-accent); color:var(--denim-dark); }
+    .btn-sm-gold:hover { background:#b8963a; }
 
     .table-wrap {
       overflow-x:auto; border-radius:var(--radius-sm);
@@ -173,7 +175,7 @@
     }
     table {
       width:100%; border-collapse:collapse; font-size:0.82rem;
-      min-width:600px;
+      min-width:700px;
     }
     thead { background:var(--denim-dark); color:var(--cream); }
     th { padding:12px 14px; text-align:left; font-weight:600; }
@@ -183,10 +185,16 @@
       padding:1px 10px; border-radius:40px;
       font-size:0.6rem; font-weight:700; margin-left:4px;
     }
+    .badge-status {
+      padding:2px 12px; border-radius:40px; font-size:0.7rem; font-weight:600;
+    }
+    .badge-free { background:#f8d7da; color:#721c24; }
+    .badge-pending { background:#fff3cd; color:#856404; }
+    .badge-verified { background:#d4edda; color:#155724; }
+
     .text-muted { color:#6a7e9a; font-size:0.8rem; }
     .mt-16 { margin-top:16px; }
 
-    /* Settings */
     .settings-grid {
       display:grid; grid-template-columns:1fr 1fr; gap:20px;
     }
@@ -238,7 +246,6 @@
     @media (max-width:480px) {
       .admin-tabs { gap:4px; }
       .admin-tabs .tab-btn { padding:6px 12px; font-size:0.7rem; }
-      .settings-card { padding:14px 14px; }
     }
   </style>
 </head>
@@ -269,6 +276,7 @@
     <div class="menu-item active" data-page="admin-dashboard"><i class="fas fa-users-cog"></i> Dashboard</div>
     <div class="menu-item" data-page="admin-members"><i class="fas fa-users"></i> Daftar Member</div>
     <div class="menu-item" data-page="admin-products"><i class="fas fa-boxes"></i> Kelola Produk</div>
+    <div class="menu-item" data-page="admin-verification"><i class="fas fa-check-double"></i> Verifikasi</div>
     <div class="menu-item" data-page="admin-settings"><i class="fas fa-sliders-h"></i> Pengaturan</div>
     <div class="menu-divider"></div>
     <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
@@ -281,6 +289,7 @@
     <div class="admin-tabs" id="adminTabs">
       <button class="tab-btn active" data-tab="members">Daftar Member</button>
       <button class="tab-btn" data-tab="products">Kelola Produk</button>
+      <button class="tab-btn" data-tab="verification">Verifikasi</button>
       <button class="tab-btn" data-tab="settings">Pengaturan</button>
     </div>
 
@@ -293,7 +302,7 @@
       </div>
       <div class="table-wrap">
         <table>
-          <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Sponsor</th><th>Aktif</th><th>Sponsor</th><th>Binary</th><th>Reward</th><th>RO</th><th>Aksi</th></tr></thead>
+          <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Sponsor</th><th>Posisi</th><th>Status</th><th>Wallet</th><th>Aksi</th></tr></thead>
           <tbody id="adminTableBody"></tbody>
         </table>
       </div>
@@ -309,6 +318,19 @@
         <table>
           <thead><tr><th>#</th><th>Nama</th><th>Harga Member</th><th>Harga Normal</th><th>Tag</th><th>Stok</th><th>Aksi</th></tr></thead>
           <tbody id="adminProductTableBody"></tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- TAB VERIFICATION -->
+    <div class="tab-content" id="tabVerification">
+      <div class="flex-row">
+        <button class="btn-sm btn-sm-primary" id="refreshVerifBtn"><i class="fas fa-sync"></i> Refresh</button>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Status</th><th>Bukti Transfer</th><th>Aksi</th></tr></thead>
+          <tbody id="verifTableBody"></tbody>
         </table>
       </div>
     </div>
@@ -343,7 +365,7 @@
 
   <script>
     // ============================================================
-    // JAVASCRIPT LENGKAP admin.html
+    // JAVASCRIPT LENGKAP admin.html (dengan Verifikasi)
     // ============================================================
     (function() {
       'use strict';
@@ -363,7 +385,6 @@
       let products = loadProducts();
       let settings = loadSettings();
 
-      // Cek session admin
       const session = localStorage.getItem('mlm_session');
       let currentUser = null;
       if (session) {
@@ -414,6 +435,10 @@
             document.querySelector('.admin-tabs .tab-btn[data-tab="products"]')?.classList.add('active');
             document.getElementById('tabProducts')?.classList.add('active');
             renderAdminProducts();
+          } else if (page === 'admin-verification') {
+            document.querySelector('.admin-tabs .tab-btn[data-tab="verification"]')?.classList.add('active');
+            document.getElementById('tabVerification')?.classList.add('active');
+            renderVerification();
           } else if (page === 'admin-settings') {
             document.querySelector('.admin-tabs .tab-btn[data-tab="settings"]')?.classList.add('active');
             document.getElementById('tabSettings')?.classList.add('active');
@@ -436,6 +461,7 @@
           const tab = this.dataset.tab;
           if (tab === 'members') { document.getElementById('tabMembers').classList.add('active'); renderAdminMembers(); }
           if (tab === 'products') { document.getElementById('tabProducts').classList.add('active'); renderAdminProducts(); }
+          if (tab === 'verification') { document.getElementById('tabVerification').classList.add('active'); renderVerification(); }
           if (tab === 'settings') { document.getElementById('tabSettings').classList.add('active'); loadSettingsToForm(); }
         });
       });
@@ -446,33 +472,96 @@
         let html = '';
         users.forEach(u => {
           const isAdmin = u.email === 'admin@mlm.com';
+          const statusClass = 'badge-' + (u.status || 'free');
+          const statusLabel = u.status || 'free';
           html += `<tr>
             <td>${u.id}</td>
             <td>${u.name} ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}</td>
             <td>${u.email}</td>
             <td>${u.sponsor_id || '-'}</td>
-            <td>${u.isActive ? '✅' : '❌'}</td>
-            <td>${u.bonus_sponsor || 0}</td>
-            <td>${u.bonus_binary || 0}</td>
-            <td>${u.bonus_reward || 0}</td>
-            <td>${u.bonus_ro || 0}</td>
+            <td>${u.position || '-'}</td>
+            <td><span class="badge-status ${statusClass}">${statusLabel.toUpperCase()}</span></td>
+            <td>Rp ${(u.wallet || 0).toLocaleString()}</td>
             <td>
-              ${!isAdmin ? `<button class="btn-sm btn-sm-success toggle-active" data-id="${u.id}">${u.isActive ? 'Nonaktif' : 'Aktifkan'}</button>` : ''}
+              ${!isAdmin ? `<button class="btn-sm btn-sm-warning toggle-status" data-id="${u.id}">Ubah Status</button>` : ''}
             </td>
           </tr>`;
         });
         tbody.innerHTML = html;
         document.getElementById('totalMembers').textContent = users.length;
 
-        document.querySelectorAll('.toggle-active').forEach(btn => {
+        document.querySelectorAll('.toggle-status').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            const user = users.find(u => u.id === id);
+            if (!user) return;
+            const statuses = ['free', 'pending', 'verified'];
+            const currentIdx = statuses.indexOf(user.status);
+            const nextIdx = (currentIdx + 1) % statuses.length;
+            user.status = statuses[nextIdx];
+            saveUsers(users);
+            renderAdminMembers();
+            renderVerification();
+            alert(`Status ${user.name} diubah menjadi ${user.status.toUpperCase()}`);
+          });
+        });
+      }
+
+      // ===== RENDER VERIFICATION =====
+      function renderVerification() {
+        const tbody = document.getElementById('verifTableBody');
+        const pendingUsers = users.filter(u => u.status === 'pending' || u.status === 'free');
+        if (pendingUsers.length === 0) {
+          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;">✅ Semua member sudah terverifikasi.</td></tr>`;
+          return;
+        }
+        let html = '';
+        pendingUsers.forEach(u => {
+          html += `<tr>
+            <td>${u.id}</td>
+            <td>${u.name}</td>
+            <td>${u.email}</td>
+            <td><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td>
+            <td>${u.proof_image ? '📷 Telah diupload' : '❌ Belum upload'}</td>
+            <td>
+              ${u.status === 'pending' ? `<button class="btn-sm btn-sm-success verify-btn" data-id="${u.id}">✅ Verifikasi</button>` : ''}
+              ${u.status === 'free' ? `<button class="btn-sm btn-sm-warning pending-btn" data-id="${u.id}">⏳ Jadikan Pending</button>` : ''}
+            </td>
+          </tr>`;
+        });
+        tbody.innerHTML = html;
+
+        // Verifikasi
+        document.querySelectorAll('.verify-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const id = parseInt(this.dataset.id);
             const user = users.find(u => u.id === id);
             if (user) {
-              user.isActive = !user.isActive;
+              user.status = 'verified';
+              // Tambahkan bonus jika perlu (misal: bonus sponsor)
               saveUsers(users);
+              renderVerification();
               renderAdminMembers();
-              alert(`User ${user.name} sekarang ${user.isActive ? 'aktif' : 'nonaktif'}.`);
+              alert(`✅ ${user.name} telah diverifikasi!`);
+            }
+          });
+        });
+
+        // Jadikan pending (untuk user free yang sudah upload bukti)
+        document.querySelectorAll('.pending-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const id = parseInt(this.dataset.id);
+            const user = users.find(u => u.id === id);
+            if (user) {
+              const proof = prompt('Masukkan link/deskripsi bukti transfer:');
+              if (proof !== null) {
+                user.status = 'pending';
+                user.proof_image = proof || 'Telah upload bukti';
+                saveUsers(users);
+                renderVerification();
+                renderAdminMembers();
+                alert(`⏳ ${user.name} sekarang pending verifikasi.`);
+              }
             }
           });
         });
@@ -581,9 +670,8 @@
       // ===== SEED & RESET =====
       document.getElementById('seedDemoBtn').addEventListener('click', function() {
         const demo = [
-          { name: 'Dewi Lestari', email: 'dewi@mail.com', password: 'dewi123', sponsor_id: 1, isActive: true, bonus_sponsor:25, bonus_binary:60, bonus_reward:12, bonus_ro:5, binary_tree:[1,0,0,0,0,0,0,0,0,0], reward_levels:[2,1,0,0,0], purchase_history:[] },
-          { name: 'Eko Prasetyo', email: 'eko@mail.com', password: 'eko123', sponsor_id: 2, isActive: true, bonus_sponsor:15, bonus_binary:40, bonus_reward:8, bonus_ro:3, binary_tree:[0,1,0,0,0,0,0,0,0,0], reward_levels:[1,0,0,0,0], purchase_history:[] },
-          { name: 'Fina Anggraeni', email: 'fina@mail.com', password: 'fina123', sponsor_id: 2, isActive: true, bonus_sponsor:20, bonus_binary:55, bonus_reward:10, bonus_ro:4, binary_tree:[1,1,0,0,0,0,0,0,0,0], reward_levels:[2,1,0,0,0], purchase_history:[] }
+          { name: 'Dewi Lestari', email: 'dewi@mail.com', password: 'dewi123', sponsor_id: 1, position: 'left', status: 'verified', wallet: 50000, bonus_sponsor:25, bonus_binary:60, bonus_reward:12, bonus_ro:5, binary_tree:[1,0,0,0,0,0,0,0,0,0], reward_levels:[2,1,0,0,0], purchase_history:[], proof_image:null, pending_package:false },
+          { name: 'Eko Prasetyo', email: 'eko@mail.com', password: 'eko123', sponsor_id: 2, position: 'right', status: 'pending', wallet: 30000, bonus_sponsor:15, bonus_binary:40, bonus_reward:8, bonus_ro:3, binary_tree:[0,1,0,0,0,0,0,0,0,0], reward_levels:[1,0,0,0,0], purchase_history:[], proof_image:'https://via.placeholder.com/150', pending_package:false }
         ];
         demo.forEach(d => {
           d.id = users.length ? Math.max(...users.map(u=>u.id)) + 1 : 1;
@@ -591,7 +679,8 @@
         });
         saveUsers(users);
         renderAdminMembers();
-        alert('✅ 3 member demo ditambahkan.');
+        renderVerification();
+        alert('✅ 2 member demo ditambahkan (1 verified, 1 pending).');
       });
 
       document.getElementById('resetAllBtn').addEventListener('click', function() {
@@ -599,6 +688,7 @@
         users = users.filter(u => u.email === 'admin@mlm.com');
         saveUsers(users);
         renderAdminMembers();
+        renderVerification();
         alert('✅ Data non-admin dihapus.');
       });
 
@@ -608,22 +698,30 @@
         settings = loadSettings();
         renderAdminMembers();
         renderAdminProducts();
+        renderVerification();
         loadSettingsToForm();
+      });
+
+      document.getElementById('refreshVerifBtn').addEventListener('click', function() {
+        users = loadUsers();
+        renderVerification();
       });
 
       // ===== NAV BADGE =====
       document.getElementById('navUserBadge').addEventListener('click', function() {
         users = loadUsers();
         renderAdminMembers();
+        renderVerification();
       });
 
       // ===== INIT =====
       navUserName.textContent = currentUser.name;
       renderAdminMembers();
       renderAdminProducts();
+      renderVerification();
       loadSettingsToForm();
 
-      console.log('🟦 HEDTRO · Admin Panel siap');
+      console.log('🟦 HEDTRO · Admin Panel dengan Verifikasi');
     })();
   </script>
 </body>
