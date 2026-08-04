@@ -37,7 +37,6 @@
     ::-webkit-scrollbar-track { background:var(--cream); }
     ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
-    /* ===== NAVBAR ===== */
     .navbar {
       position: fixed; top:0; left:0; right:0; z-index:1000;
       background: var(--denim-dark);
@@ -80,7 +79,6 @@
     }
     .btn-nav-gold:hover { background:#b8963a; transform:scale(0.97); }
 
-    /* ===== BURGER ===== */
     .burger-btn {
       display:flex; flex-direction:column; gap:5px;
       padding:6px; background:transparent; border:none; cursor:pointer;
@@ -95,7 +93,6 @@
     .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
     .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
 
-    /* ===== SIDEBAR ===== */
     .sidebar-overlay {
       position:fixed; top:0; left:0; width:100%; height:100%;
       background:rgba(0,0,0,0.5); z-index:999;
@@ -134,7 +131,6 @@
     .sidebar .menu-item.active { background:rgba(201,168,76,0.15); color:var(--gold-accent); }
     .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:6px 0; }
 
-    /* ===== CAROUSEL ===== */
     .carousel-section {
       position:relative; width:100%; height:420px;
       overflow:hidden; background:var(--denim-dark);
@@ -191,7 +187,6 @@
     }
     .carousel-dots .dot.active { background:var(--gold-accent); transform:scale(1.2); }
 
-    /* ===== SECTION TITLE ===== */
     .section-title {
       font-size:1.6rem; font-weight:700; color:var(--denim-dark);
       padding:32px 24px 16px;
@@ -199,7 +194,6 @@
     }
     .section-title i { color:var(--gold-accent); }
 
-    /* ===== PRODUCT GRID ===== */
     .product-grid {
       display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
       gap:20px; padding:0 24px 40px;
@@ -238,7 +232,6 @@
     }
     .product-card .body .btn-detail:hover { background:var(--denim-blue); }
 
-    /* ===== FEATURES ===== */
     .features {
       display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
       gap:16px; padding:20px 24px 40px;
@@ -252,7 +245,6 @@
     .feature-item h4 { font-weight:600; font-size:0.95rem; }
     .feature-item p { font-size:0.8rem; color:#5a7a8a; }
 
-    /* ===== FOOTER ===== */
     .footer {
       background:var(--denim-dark); color:var(--cream);
       padding:30px 24px 20px; text-align:center;
@@ -260,7 +252,6 @@
     }
     .footer a { color:var(--gold-light); }
 
-    /* ===== OVERLAY LOGIN/REGISTER ===== */
     .overlay {
       display:none; position:fixed; inset:0;
       background:rgba(0,0,0,0.5); backdrop-filter:blur(4px);
@@ -326,7 +317,6 @@
       color:var(--denim-navy);
     }
 
-    /* ===== RESPONSIVE ===== */
     @media (max-width:768px) {
       body { padding-top:60px; }
       .navbar { padding:10px 16px; height:60px; }
@@ -500,15 +490,14 @@
       function loadSettings() { const raw = localStorage.getItem(SETTINGS_KEY); return raw ? JSON.parse(raw) : { sponsorBonus:10, binaryBonus:8, rewardBonus:5, roBonus:3, memberPrice:550000 }; }
       function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
       function loadBankInfo() { const raw = localStorage.getItem(BANK_KEY); return raw ? JSON.parse(raw) : { bank:'BCA', account:'1234567890', name:'HEDTRO JEANS' }; }
-      function saveBankInfo(b) { localStorage.setItem(BANK_KEY, JSON.stringify(b)); }
 
       function initData() {
         let users = loadUsers();
         if (users.length === 0) {
           users = [
-            { id:1, name:'Admin Utama', email:'admin@mlm.com', password:'admin123', sponsor_id:null, position:null, left:null, right:null, status:'verified', wallet:0, bonus_sponsor:0, bonus_binary:0, bonus_reward:0, bonus_ro:0, purchase_history:[], transactions:[], proof_image:null, pending_package:false },
-            { id:2, name:'Budi Santoso', email:'budi@mail.com', password:'budi123', sponsor_id:1, position:'left', left:null, right:null, status:'verified', wallet:120000, bonus_sponsor:50, bonus_binary:120, bonus_reward:30, bonus_ro:12, purchase_history:[], transactions:[], proof_image:null, pending_package:false },
-            { id:3, name:'Citra Dewi', email:'citra@mail.com', password:'citra123', sponsor_id:1, position:'right', left:null, right:null, status:'verified', wallet:80000, bonus_sponsor:30, bonus_binary:70, bonus_reward:15, bonus_ro:8, purchase_history:[], transactions:[], proof_image:null, pending_package:false }
+            { id:1, name:'Admin Utama', email:'admin@mlm.com', password:'admin123', sponsor_id:null, position:null, left:null, right:null, status:'verified', wallet:0, bonus_sponsor:0, bonus_binary:0, bonus_reward:0, bonus_ro:0, purchase_history:[], transactions:[], proof_image:null },
+            { id:2, name:'Budi Santoso', email:'budi@mail.com', password:'budi123', sponsor_id:1, position:'left', left:null, right:null, status:'verified', wallet:120000, bonus_sponsor:50, bonus_binary:120, bonus_reward:30, bonus_ro:12, purchase_history:[], transactions:[], proof_image:null },
+            { id:3, name:'Citra Dewi', email:'citra@mail.com', password:'citra123', sponsor_id:1, position:'right', left:null, right:null, status:'verified', wallet:80000, bonus_sponsor:30, bonus_binary:70, bonus_reward:15, bonus_ro:8, purchase_history:[], transactions:[], proof_image:null }
           ];
           saveUsers(users);
         }
@@ -656,8 +645,7 @@
           bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0,
           purchase_history: [],
           transactions: [],
-          proof_image: null,
-          pending_package: false
+          proof_image: null
         };
         users.push(newUser);
         saveUsers(users);
@@ -849,7 +837,7 @@
       }
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Toko online dengan binary tree left/right');
+      console.log('🟦 HEDTRO JEANS · Toko online siap');
     })();
   </script>
 </body>
