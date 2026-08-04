@@ -393,16 +393,14 @@
       function loadSettings() { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"sponsorBonus":10,"binaryBonus":8,"rewardBonus":5,"roBonus":3,"memberPrice":550000}'); }
       function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
 
-      let users = loadUsers();
-      let products = loadProducts();
       let settings = loadSettings();
 
       const session = localStorage.getItem('mlm_session');
-      let currentUser = null;
       if (session) {
         try {
           const { id } = JSON.parse(session);
-          currentUser = users.find(u => u.id === id);
+          let users = loadUsers();
+          const currentUser = users.find(u => u.id === id);
           if (!currentUser || currentUser.email !== 'admin@mlm.com') {
             window.location.href = 'index.html';
             return;
@@ -413,6 +411,7 @@
         return;
       }
 
+      // ===== BURGER TOGGLE =====
       const burgerBtn = document.getElementById('burgerBtn');
       const sidebar = document.getElementById('sidebar');
       const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -431,6 +430,7 @@
       closeSidebar.addEventListener('click', () => toggleSidebar(false));
       sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
+      // ===== SIDEBAR NAV =====
       document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(item => {
         item.addEventListener('click', function() {
           const tab = this.dataset.tab;
@@ -444,6 +444,7 @@
         window.location.href = 'index.html';
       });
 
+      // ===== TABS =====
       function switchTab(tabId) {
         document.querySelectorAll('.admin-tabs .tab-btn').forEach(b => b.classList.remove('active'));
         document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -464,24 +465,23 @@
         });
       });
 
+      // ===== RENDER MEMBERS =====
       function renderAdminMembers() {
         const tbody = document.getElementById('adminTableBody');
+        const users = loadUsers();
         let html = '';
         users.forEach(u => {
           const isAdmin = u.email === 'admin@mlm.com';
           const statusClass = 'badge-' + (u.status || 'free');
-          const statusLabel = u.status || 'free';
           html += `<tr>
             <td>${u.id}</td>
             <td>${u.name} ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}</td>
             <td>${u.email}</td>
             <td>${u.sponsor_id || '-'}</td>
             <td>${u.position || '-'}</td>
-            <td><span class="badge-status ${statusClass}">${statusLabel.toUpperCase()}</span></td>
+            <td><span class="badge-status ${statusClass}">${(u.status || 'free').toUpperCase()}</span></td>
             <td>Rp ${(u.wallet || 0).toLocaleString()}</td>
-            <td>
-              ${!isAdmin ? `<button class="btn-sm btn-sm-warning toggle-status" data-id="${u.id}">Ubah Status</button>` : ''}
-            </td>
+            <td>${!isAdmin ? `<button class="btn-sm btn-sm-warning toggle-status" data-id="${u.id}">Ubah Status</button>` : ''}</td>
           </tr>`;
         });
         tbody.innerHTML = html;
@@ -490,6 +490,7 @@
         document.querySelectorAll('.toggle-status').forEach(btn => {
           btn.addEventListener('click', function() {
             const id = parseInt(this.dataset.id);
+            let users = loadUsers();
             const user = users.find(u => u.id === id);
             if (!user) return;
             const statuses = ['free', 'pending', 'verified'];
@@ -504,8 +505,10 @@
         });
       }
 
+      // ===== RENDER VERIFICATION =====
       function renderVerification() {
         const tbody = document.getElementById('verifTableBody');
+        const users = loadUsers();
         const pendingUsers = users.filter(u => u.status === 'pending' || u.status === 'free');
         if (pendingUsers.length === 0) {
           tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;">✅ Semua member sudah terverifikasi.</td></tr>`;
@@ -530,6 +533,7 @@
         document.querySelectorAll('.verify-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const id = parseInt(this.dataset.id);
+            let users = loadUsers();
             const user = users.find(u => u.id === id);
             if (user) {
               user.status = 'verified';
@@ -544,6 +548,7 @@
         document.querySelectorAll('.pending-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const id = parseInt(this.dataset.id);
+            let users = loadUsers();
             const user = users.find(u => u.id === id);
             if (user) {
               const proof = prompt('Masukkan link/deskripsi bukti transfer:');
@@ -560,8 +565,10 @@
         });
       }
 
+      // ===== RENDER PRODUCTS =====
       function renderAdminProducts() {
         const tbody = document.getElementById('adminProductTableBody');
+        const products = loadProducts();
         let html = '';
         products.forEach((p, idx) => {
           html += `<tr>
@@ -582,6 +589,7 @@
         document.querySelectorAll('.edit-product').forEach(btn => {
           btn.addEventListener('click', function() {
             const id = parseInt(this.dataset.id);
+            let products = loadProducts();
             const p = products.find(x => x.id === id);
             if (!p) return;
             const name = prompt('Nama produk:', p.name);
@@ -605,6 +613,7 @@
           btn.addEventListener('click', function() {
             const id = parseInt(this.dataset.id);
             if (!confirm('Hapus produk ini?')) return;
+            let products = loadProducts();
             products = products.filter(x => x.id !== id);
             saveProducts(products);
             renderAdminProducts();
@@ -621,6 +630,7 @@
         if (isNaN(original)) return;
         const tag = prompt('Tag (contoh: BEST SELLER):') || 'PRODUK';
         const stock = parseInt(prompt('Stok:')) || 0;
+        let products = loadProducts();
         const newProd = {
           id: products.length ? Math.max(...products.map(p=>p.id)) + 1 : 1,
           name, price, original, tag, icon: 'fa-tshirt', stock
@@ -631,12 +641,58 @@
         alert('✅ Produk ditambahkan!');
       });
 
+      // ===== APPROVE RO =====
+      function approveRO(userId, txDate) {
+        if (!confirm('Approve pesanan RO ini? Bonus akan didistribusikan ke upline.')) return;
+
+        let freshUsers = loadUsers();
+        const user = freshUsers.find(u => u.id === userId);
+        if (!user) { alert('User tidak ditemukan'); return; }
+
+        const txIndex = user.transactions.findIndex(t => t.type === 'ro_purchase' && t.date === txDate && t.status === 'pending');
+        if (txIndex === -1) { alert('Transaksi tidak ditemukan'); return; }
+
+        user.transactions[txIndex].status = 'success';
+        const amount = user.transactions[txIndex].amount;
+
+        if (user.purchase_history) {
+          const phIndex = user.purchase_history.findIndex(p => p.date === txDate);
+          if (phIndex !== -1) user.purchase_history[phIndex].status = 'success';
+        }
+
+        const roBonusPercent = settings.roBonus || 3;
+        const bonusRO = (amount * roBonusPercent) / 100;
+
+        let sponsorId = user.sponsor_id;
+        let level = 1;
+        while (sponsorId && level <= 10) {
+          const sponsor = freshUsers.find(u => u.id === sponsorId);
+          if (!sponsor) break;
+          sponsor.bonus_ro = (sponsor.bonus_ro || 0) + bonusRO;
+          sponsor.wallet = (sponsor.wallet || 0) + bonusRO;
+          if (!sponsor.transactions) sponsor.transactions = [];
+          sponsor.transactions.push({
+            type: 'bonus_ro',
+            amount: bonusRO,
+            date: new Date().toISOString(),
+            status: 'success',
+            note: `Bonus RO dari ${user.name} (level ${level})`
+          });
+          sponsorId = sponsor.sponsor_id;
+          level++;
+        }
+
+        saveUsers(freshUsers);
+        renderRoOrders();
+        renderAdminMembers();
+        alert('✅ RO approved, bonus telah didistribusikan ke upline.');
+      }
+
       // ===== RENDER RO ORDERS =====
       function renderRoOrders() {
         const tbody = document.getElementById('roOrdersTable');
         if (!tbody) return;
 
-        // === PENTING: Ambil data terbaru dari localStorage ===
         const freshUsers = loadUsers();
 
         let html = '';
@@ -676,7 +732,6 @@
         }
         tbody.innerHTML = html;
 
-        // Event approve RO
         document.querySelectorAll('.approve-ro').forEach(btn => {
           btn.addEventListener('click', function() {
             const userId = parseInt(this.dataset.userid);
@@ -686,61 +741,9 @@
         });
       }
 
-      // ===== APPROVE RO =====
-      function approveRO(userId, txDate) {
-        if (!confirm('Approve pesanan RO ini? Bonus akan didistribusikan ke upline.')) return;
-
-        // Ambil data terbaru
-        let freshUsers = loadUsers();
-        const user = freshUsers.find(u => u.id === userId);
-        if (!user) { alert('User tidak ditemukan'); return; }
-
-        const txIndex = user.transactions.findIndex(t => t.type === 'ro_purchase' && t.date === txDate && t.status === 'pending');
-        if (txIndex === -1) { alert('Transaksi tidak ditemukan'); return; }
-
-        user.transactions[txIndex].status = 'success';
-        const amount = user.transactions[txIndex].amount;
-
-        if (user.purchase_history) {
-          const phIndex = user.purchase_history.findIndex(p => p.date === txDate);
-          if (phIndex !== -1) user.purchase_history[phIndex].status = 'success';
-        }
-
-        // Distribusi bonus RO ke upline (sponsor)
-        const roBonusPercent = settings.roBonus || 3;
-        const bonusRO = (amount * roBonusPercent) / 100;
-
-        let sponsorId = user.sponsor_id;
-        let level = 1;
-        while (sponsorId && level <= 10) {
-          const sponsor = freshUsers.find(u => u.id === sponsorId);
-          if (!sponsor) break;
-          sponsor.bonus_ro = (sponsor.bonus_ro || 0) + bonusRO;
-          sponsor.wallet = (sponsor.wallet || 0) + bonusRO;
-          if (!sponsor.transactions) sponsor.transactions = [];
-          sponsor.transactions.push({
-            type: 'bonus_ro',
-            amount: bonusRO,
-            date: new Date().toISOString(),
-            status: 'success',
-            note: `Bonus RO dari ${user.name} (level ${level})`
-          });
-          sponsorId = sponsor.sponsor_id;
-          level++;
-        }
-
-        // Simpan ke localStorage
-        saveUsers(freshUsers);
-        // Update variabel users di admin
-        users = freshUsers;
-
-        renderRoOrders();
-        renderAdminMembers();
-        alert('✅ RO approved, bonus telah didistribusikan ke upline.');
-      }
-
       // ===== SETTINGS =====
       function loadSettingsToForm() {
+        const settings = loadSettings();
         document.getElementById('setSponsorBonus').value = settings.sponsorBonus || 10;
         document.getElementById('setBinaryBonus').value = settings.binaryBonus || 8;
         document.getElementById('setRewardBonus').value = settings.rewardBonus || 5;
@@ -751,6 +754,7 @@
       }
 
       document.getElementById('saveBonusSettings').addEventListener('click', function() {
+        let settings = loadSettings();
         settings.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value) || 0;
         settings.binaryBonus = parseFloat(document.getElementById('setBinaryBonus').value) || 0;
         settings.rewardBonus = parseFloat(document.getElementById('setRewardBonus').value) || 0;
@@ -760,6 +764,7 @@
       });
 
       document.getElementById('saveShopSettings').addEventListener('click', function() {
+        let settings = loadSettings();
         settings.memberDiscount = parseFloat(document.getElementById('setMemberDiscount').value) || 0;
         settings.shippingCost = parseFloat(document.getElementById('setShippingCost').value) || 0;
         settings.memberPrice = parseFloat(document.getElementById('setMemberPrice').value) || 550000;
@@ -767,7 +772,9 @@
         alert('✅ Pengaturan toko disimpan!');
       });
 
+      // ===== SEED & RESET =====
       document.getElementById('seedDemoBtn').addEventListener('click', function() {
+        let users = loadUsers();
         const demo = [
           { name: 'Dewi Lestari', email: 'dewi@mail.com', password: 'dewi123', sponsor_id: 1, position: 'left', status: 'verified', wallet: 50000, bonus_sponsor:25, bonus_binary:60, bonus_reward:12, bonus_ro:5, purchase_history:[], transactions:[], proof_image:null },
           { name: 'Eko Prasetyo', email: 'eko@mail.com', password: 'eko123', sponsor_id: 2, position: 'right', status: 'pending', wallet: 30000, bonus_sponsor:15, bonus_binary:40, bonus_reward:8, bonus_ro:3, purchase_history:[], transactions:[], proof_image:'https://via.placeholder.com/150' }
@@ -785,6 +792,7 @@
 
       document.getElementById('resetAllBtn').addEventListener('click', function() {
         if (!confirm('⚠️ Hapus SEMUA data (kecuali admin)?')) return;
+        let users = loadUsers();
         users = users.filter(u => u.email === 'admin@mlm.com');
         saveUsers(users);
         renderAdminMembers();
@@ -794,9 +802,6 @@
       });
 
       document.getElementById('refreshBtn').addEventListener('click', function() {
-        users = loadUsers();
-        products = loadProducts();
-        settings = loadSettings();
         renderAdminMembers();
         renderAdminProducts();
         renderVerification();
@@ -805,25 +810,33 @@
       });
 
       document.getElementById('refreshVerifBtn').addEventListener('click', function() {
-        users = loadUsers();
         renderVerification();
       });
 
       document.getElementById('navUserBadge').addEventListener('click', function() {
-        users = loadUsers();
         renderAdminMembers();
         renderVerification();
         renderRoOrders();
       });
 
-      document.getElementById('navUserName').textContent = currentUser.name;
+      // ===== INIT =====
+      document.getElementById('navUserName').textContent = 'Admin';
       renderAdminMembers();
       renderAdminProducts();
       renderVerification();
       renderRoOrders();
       loadSettingsToForm();
 
-      console.log('🟦 HEDTRO · Admin Panel dengan RO Orders (auto-refresh data)');
+      // Auto-refresh setiap 10 detik
+      setInterval(() => {
+        const activeTab = document.querySelector('.admin-tabs .tab-btn.active')?.dataset.tab;
+        if (activeTab === 'ro-orders') renderRoOrders();
+        if (activeTab === 'members') renderAdminMembers();
+        if (activeTab === 'verification') renderVerification();
+        if (activeTab === 'products') renderAdminProducts();
+      }, 10000);
+
+      console.log('🟦 HEDTRO · Admin Panel dengan RO auto-refresh');
     })();
   </script>
 </body>
