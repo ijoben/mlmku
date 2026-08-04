@@ -23,13 +23,14 @@
       --radius: 28px;
       --radius-sm: 14px;
       --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+      --sidebar-width: 280px;
     }
     body {
       font-family: 'Inter', -apple-system, sans-serif;
       background: var(--cream);
       color: var(--denim-dark);
-      padding-top: 70px;
       overflow-x: hidden;
+      padding-top: 70px;
     }
     a { text-decoration:none; color:inherit; }
     button { cursor:pointer; font-family:inherit; border:none; background:none; }
@@ -39,7 +40,7 @@
 
     /* ===== NAVBAR ===== */
     .navbar {
-      position: fixed; top:0; left:0; right:0; z-index:1000;
+      position: fixed; top:0; left:0; right:0; z-index:1100;
       background: var(--denim-dark);
       padding: 12px 20px;
       display: flex; align-items:center; justify-content:space-between;
@@ -65,11 +66,12 @@
     }
     .nav-right .user-badge i { color:var(--gold-accent); }
 
-    /* ===== BURGER ===== */
+    /* ===== BURGER (hanya tampil di HP) ===== */
     .burger-btn {
-      display:flex; flex-direction:column; gap:5px;
+      display:none; /* default hidden, muncul di mobile */
+      flex-direction:column; gap:5px;
       padding:6px; background:transparent; border:none; cursor:pointer;
-      z-index:1001;
+      z-index:1101;
     }
     .burger-btn span {
       display:block; width:28px; height:3px;
@@ -82,20 +84,35 @@
 
     /* ===== SIDEBAR ===== */
     .sidebar-overlay {
+      display:none; /* hanya untuk mobile overlay */
       position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.5); z-index:999;
+      background:rgba(0,0,0,0.5); z-index:1050;
       opacity:0; pointer-events:none;
       transition:var(--transition);
     }
     .sidebar-overlay.active { opacity:1; pointer-events:all; }
+
     .sidebar {
-      position:fixed; top:0; left:-320px; width:300px; height:100%;
-      background:var(--denim-dark); z-index:1000;
-      padding:24px 20px; transition:var(--transition);
-      overflow-y:auto; border-right:3px solid var(--gold-accent);
+      position:fixed; top:0; left:0; bottom:0;
+      width:var(--sidebar-width);
+      background:var(--denim-dark);
+      z-index:1060;
+      padding:24px 20px;
+      overflow-y:auto;
+      border-right:3px solid var(--gold-accent);
       display:flex; flex-direction:column; gap:4px;
+      transition:left 0.3s ease;
+      /* Default: terbuka di desktop */
+      left:0;
     }
-    .sidebar.open { left:0; }
+    /* Di HP, sidebar disembunyikan di kiri */
+    @media (max-width: 768px) {
+      .sidebar { left:-320px; }
+      .sidebar.open { left:0; }
+      .burger-btn { display:flex; }
+      .sidebar-overlay { display:block; }
+    }
+
     .sidebar .sidebar-header {
       display:flex; align-items:center; justify-content:space-between;
       padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);
@@ -106,8 +123,13 @@
     }
     .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
     .sidebar .sidebar-header .close-side {
+      display:none; /* sembunyikan di desktop, tampil di mobile via media */
       color:var(--cream); font-size:1.6rem; cursor:pointer;
     }
+    @media (max-width: 768px) {
+      .sidebar .sidebar-header .close-side { display:block; }
+    }
+
     .sidebar .menu-item {
       display:flex; align-items:center; gap:14px;
       padding:12px 16px; border-radius:12px;
@@ -121,15 +143,28 @@
     .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
     .sidebar .menu-item.logout i { color:#e74c3c; }
 
-    /* ===== CONTENT ===== */
-    .container { max-width:1100px; margin:0 auto; padding:20px 24px 40px; }
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      padding: 20px 24px 40px;
+      transition: margin-left 0.3s ease;
+      max-width: calc(100% - var(--sidebar-width));
+    }
+    @media (max-width: 768px) {
+      .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 16px 16px 30px;
+      }
+    }
+
     .page-title {
       font-size:1.6rem; font-weight:700; color:var(--denim-dark);
       margin-bottom:20px; display:flex; align-items:center; gap:12px;
     }
     .page-title i { color:var(--gold-accent); }
 
-    /* ===== STATUS ===== */
+    /* ===== STATUS BANNER ===== */
     #statusBanner {
       padding:14px 20px; border-radius:var(--radius-sm);
       margin-bottom:20px;
@@ -139,6 +174,7 @@
     .status-free { background:#f8d7da; color:#721c24; }
     .status-pending { background:#fff3cd; color:#856404; }
     .status-verified { background:#d4edda; color:#155724; }
+
     .btn-sm {
       padding:8px 18px; border-radius:60px; font-weight:600; font-size:0.8rem;
       transition:var(--transition); font-family:inherit;
@@ -149,6 +185,19 @@
     .btn-sm-primary:hover { background:var(--denim-dark); }
     .btn-sm-gold { background:var(--gold-accent); color:var(--denim-dark); }
     .btn-sm-gold:hover { background:#b8963a; }
+    .btn-sm-danger { background:#b13e3e; color:#fff; }
+    .btn-sm-danger:hover { background:#8f2f2f; }
+
+    /* ===== WALLET ===== */
+    .wallet-card {
+      background:var(--denim-dark); color:var(--cream);
+      border-radius:var(--radius-sm); padding:20px 24px;
+      margin-bottom:20px;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:12px;
+    }
+    .wallet-card .wallet-label { font-size:0.85rem; opacity:0.7; }
+    .wallet-card .wallet-amount { font-size:2rem; font-weight:700; color:var(--gold-accent); }
 
     /* ===== STATS ===== */
     .stats-grid {
@@ -169,7 +218,7 @@
       margin-top:4px;
     }
 
-    /* ===== HISTORY ===== */
+    /* ===== HISTORY / TRANSACTION ===== */
     .history-card {
       background:var(--white); border-radius:var(--radius-sm);
       padding:18px 20px; box-shadow:var(--shadow);
@@ -190,31 +239,73 @@
     .history-item .amount.plus { color:#1f7a4b; }
     .history-item .amount.minus { color:#b13e3e; }
 
-    /* ===== WALLET ===== */
-    .wallet-card {
-      background:var(--denim-dark); color:var(--cream);
-      border-radius:var(--radius-sm); padding:20px 24px;
-      margin-bottom:20px;
-      display:flex; justify-content:space-between; align-items:center;
-      flex-wrap:wrap; gap:12px;
+    /* ===== TREE VISUAL ===== */
+    .tree-container {
+      background:var(--white); border-radius:var(--radius-sm);
+      padding:20px; box-shadow:var(--shadow);
+      overflow-x:auto;
     }
-    .wallet-card .wallet-label { font-size:0.85rem; opacity:0.7; }
-    .wallet-card .wallet-amount { font-size:2rem; font-weight:700; color:var(--gold-accent); }
+    .tree-container ul {
+      list-style:none; padding-left:20px;
+    }
+    .tree-container ul li {
+      padding:6px 0;
+      position:relative;
+      border-left:2px solid var(--denim-blue);
+      padding-left:20px;
+      margin-left:10px;
+    }
+    .tree-container ul li:last-child { border-left:none; }
+    .tree-container ul li::before {
+      content: "├─";
+      color: var(--gold-accent);
+      margin-right:8px;
+    }
+    .tree-container .node {
+      display:inline-block;
+      background:var(--denim-light);
+      padding:4px 12px;
+      border-radius:20px;
+      font-weight:600;
+      font-size:0.9rem;
+    }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width:768px) {
-      body { padding-top:60px; }
-      .navbar { padding:10px 16px; height:60px; }
-      .navbar .logo { font-size:1.2rem; }
-      .navbar .logo i { font-size:1.3rem; }
-      .nav-right .user-badge span { display:none; }
-      .sidebar { width:280px; left:-300px; }
-      .container { padding:16px 16px 30px; }
-      .page-title { font-size:1.3rem; }
+    /* ===== FORM DEPOSIT/WITHDRAW ===== */
+    .form-card {
+      background:var(--white); border-radius:var(--radius-sm);
+      padding:20px; box-shadow:var(--shadow);
+      max-width:500px;
+    }
+    .form-group { margin-bottom:16px; }
+    .form-group label {
+      display:block; font-weight:500; color:var(--denim-navy);
+      font-size:0.85rem; margin-bottom:4px;
+    }
+    .form-group input {
+      width:100%; padding:12px 16px;
+      border:1.5px solid #dde3ea; border-radius:60px;
+      font-size:0.95rem; background:#fafcff;
+      font-family:inherit; transition:var(--transition);
+    }
+    .form-group input:focus {
+      border-color:var(--denim-blue); outline:none;
+      box-shadow:0 0 0 4px rgba(42,75,110,0.1);
+    }
+
+    .text-muted { color:#6a7e9a; font-size:0.85rem; }
+    .mt-16 { margin-top:16px; }
+    .mb-8 { margin-bottom:8px; }
+
+    .section-content { display:none; }
+    .section-content.active { display:block; }
+
+    @media (max-width: 768px) {
       .stats-grid { grid-template-columns:1fr 1fr; gap:12px; }
       .stat-card .value { font-size:1.4rem; }
+      .wallet-card { flex-direction:column; align-items:stretch; }
+      .wallet-card .wallet-amount { font-size:1.6rem; }
     }
-    @media (max-width:480px) {
+    @media (max-width: 480px) {
       .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
       .stat-card { padding:12px 14px; }
       .stat-card .value { font-size:1.2rem; }
@@ -245,56 +336,125 @@
       <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
       <span class="close-side" id="closeSidebar">&times;</span>
     </div>
-    <div class="menu-item active" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
-    <div class="menu-item" data-page="network"><i class="fas fa-sitemap"></i> Jaringan</div>
-    <div class="menu-item" data-page="deposit"><i class="fas fa-plus-circle"></i> Deposit</div>
-    <div class="menu-item" data-page="withdraw"><i class="fas fa-minus-circle"></i> Withdraw</div>
+    <div class="menu-item active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
+    <div class="menu-item" data-section="network"><i class="fas fa-sitemap"></i> Jaringan</div>
+    <div class="menu-item" data-section="deposit"><i class="fas fa-plus-circle"></i> Deposit</div>
+    <div class="menu-item" data-section="withdraw"><i class="fas fa-minus-circle"></i> Withdraw</div>
     <div class="menu-divider"></div>
-    <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
-    <div class="menu-item" data-page="history"><i class="fas fa-history"></i> Riwayat</div>
+    <div class="menu-item" data-section="history"><i class="fas fa-history"></i> Riwayat</div>
+    <div class="menu-item" data-section="products"><i class="fas fa-tshirt"></i> Koleksi</div>
     <div class="menu-divider"></div>
     <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
   </nav>
 
-  <!-- ===== CONTENT ===== -->
-  <div class="container">
-    <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
+  <!-- ===== MAIN CONTENT ===== -->
+  <div class="main-content" id="mainContent">
 
-    <!-- Status Banner -->
-    <div id="statusBanner">Memuat status...</div>
+    <!-- SECTION: DASHBOARD -->
+    <div class="section-content active" id="sec-dashboard">
+      <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
 
-    <!-- Wallet -->
-    <div class="wallet-card">
-      <div>
-        <div class="wallet-label"><i class="fas fa-wallet"></i> Saldo Dompet</div>
-        <div class="wallet-amount" id="walletAmount">Rp 0</div>
+      <!-- Status Banner -->
+      <div id="statusBanner">Memuat status...</div>
+
+      <!-- Wallet -->
+      <div class="wallet-card">
+        <div>
+          <div class="wallet-label"><i class="fas fa-wallet"></i> Saldo Dompet</div>
+          <div class="wallet-amount" id="walletAmount">Rp 0</div>
+        </div>
+        <div style="display:flex; gap:8px; flex-wrap:wrap;">
+          <button class="btn-sm btn-sm-gold" id="depositBtn"><i class="fas fa-plus-circle"></i> Deposit</button>
+          <button class="btn-sm btn-sm-primary" id="withdrawBtn"><i class="fas fa-minus-circle"></i> Withdraw</button>
+        </div>
       </div>
-      <div style="display:flex; gap:8px; flex-wrap:wrap;">
-        <button class="btn-sm btn-sm-gold" id="depositBtn"><i class="fas fa-plus-circle"></i> Deposit</button>
-        <button class="btn-sm btn-sm-primary" id="withdrawBtn"><i class="fas fa-minus-circle"></i> Withdraw</button>
+
+      <!-- Statistik Bonus -->
+      <div class="stats-grid">
+        <div class="stat-card"><div class="label">Sponsor Bonus</div><div class="value" id="sponsorBonus">0</div></div>
+        <div class="stat-card"><div class="label">Binary Bonus</div><div class="value" id="binaryBonus">0</div></div>
+        <div class="stat-card"><div class="label">Reward 5L</div><div class="value" id="rewardBonus">0</div></div>
+        <div class="stat-card"><div class="label">RO Produk</div><div class="value" id="roBonus">0</div></div>
+      </div>
+
+      <!-- Riwayat Transaksi (ringkasan) -->
+      <div class="history-card">
+        <h3><i class="fas fa-history"></i> Riwayat Transaksi Terbaru</h3>
+        <div id="transactionHistory">
+          <p class="text-muted">Belum ada transaksi.</p>
+        </div>
       </div>
     </div>
 
-    <!-- Statistik Bonus -->
-    <div class="stats-grid">
-      <div class="stat-card"><div class="label">Sponsor Bonus</div><div class="value" id="sponsorBonus">0</div></div>
-      <div class="stat-card"><div class="label">Binary Bonus</div><div class="value" id="binaryBonus">0</div></div>
-      <div class="stat-card"><div class="label">Reward 5L</div><div class="value" id="rewardBonus">0</div></div>
-      <div class="stat-card"><div class="label">RO Produk</div><div class="value" id="roBonus">0</div></div>
-    </div>
-
-    <!-- Riwayat Transaksi -->
-    <div class="history-card">
-      <h3><i class="fas fa-history"></i> Riwayat Transaksi</h3>
-      <div id="transactionHistory">
-        <p class="text-muted">Belum ada transaksi.</p>
+    <!-- SECTION: JARINGAN -->
+    <div class="section-content" id="sec-network">
+      <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary</h1>
+      <div class="tree-container" id="treeContainer">
+        <p class="text-muted">Memuat jaringan...</p>
       </div>
     </div>
+
+    <!-- SECTION: DEPOSIT -->
+    <div class="section-content" id="sec-deposit">
+      <h1 class="page-title"><i class="fas fa-plus-circle"></i> Deposit</h1>
+      <div class="form-card">
+        <div class="form-group">
+          <label>Nominal Deposit (Rp)</label>
+          <input type="number" id="depositAmount" placeholder="Masukkan nominal" min="10000" />
+        </div>
+        <div class="form-group">
+          <label>Metode Pembayaran</label>
+          <select id="depositMethod" style="width:100%; padding:12px 16px; border-radius:60px; border:1.5px solid #dde3ea; background:#fafcff; font-family:inherit;">
+            <option value="bank">Transfer Bank</option>
+            <option value="ewallet">E-Wallet</option>
+            <option value="qris">QRIS</option>
+          </select>
+        </div>
+        <button class="btn-sm btn-sm-success" id="submitDeposit" style="width:100%; padding:12px;">Kirim Deposit</button>
+        <p class="text-muted mt-16">Minimal deposit Rp 10.000</p>
+      </div>
+    </div>
+
+    <!-- SECTION: WITHDRAW -->
+    <div class="section-content" id="sec-withdraw">
+      <h1 class="page-title"><i class="fas fa-minus-circle"></i> Withdraw</h1>
+      <div class="form-card">
+        <div class="form-group">
+          <label>Nominal Withdraw (Rp)</label>
+          <input type="number" id="withdrawAmount" placeholder="Masukkan nominal" min="50000" />
+        </div>
+        <div class="form-group">
+          <label>Rekening Tujuan</label>
+          <input type="text" id="withdrawAccount" placeholder="Nomor rekening / e-wallet" />
+        </div>
+        <button class="btn-sm btn-sm-primary" id="submitWithdraw" style="width:100%; padding:12px;">Ajukan Withdraw</button>
+        <p class="text-muted mt-16">Minimal withdraw Rp 50.000 · Proses 1x24 jam</p>
+      </div>
+    </div>
+
+    <!-- SECTION: RIWAYAT -->
+    <div class="section-content" id="sec-history">
+      <h1 class="page-title"><i class="fas fa-history"></i> Riwayat Transaksi</h1>
+      <div class="history-card">
+        <div id="fullHistory"></div>
+      </div>
+    </div>
+
+    <!-- SECTION: PRODUK (redirect ke index) -->
+    <div class="section-content" id="sec-products">
+      <h1 class="page-title"><i class="fas fa-tshirt"></i> Koleksi Produk</h1>
+      <p class="text-muted">Mengalihkan ke halaman toko...</p>
+      <script>
+        // Redirect otomatis ke index.html
+        setTimeout(() => { window.location.href = 'index.html'; }, 1000);
+      </script>
+    </div>
+
   </div>
 
   <script>
     // ============================================================
-    // JAVASCRIPT LENGKAP dashboard.html
+    // JAVASCRIPT LENGKAP dashboard.html (dengan navigasi konten)
     // ============================================================
     (function() {
       'use strict';
@@ -337,45 +497,61 @@
       const statusBanner = document.getElementById('statusBanner');
       const walletAmount = document.getElementById('walletAmount');
 
-      // ===== SIDEBAR =====
+      // ===== SIDEBAR TOGGLE (hanya untuk HP) =====
       function toggleSidebar(open) {
         const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
-        sidebar.classList.toggle('open', isOpen);
-        sidebarOverlay.classList.toggle('active', isOpen);
-        burgerBtn.classList.toggle('active', isOpen);
-        document.body.style.overflow = isOpen ? 'hidden' : '';
+        // Hanya berlaku jika lebar layar <= 768px (mobile)
+        if (window.innerWidth <= 768) {
+          sidebar.classList.toggle('open', isOpen);
+          sidebarOverlay.classList.toggle('active', isOpen);
+          burgerBtn.classList.toggle('active', isOpen);
+          document.body.style.overflow = isOpen ? 'hidden' : '';
+        }
       }
       burgerBtn.addEventListener('click', () => toggleSidebar());
       closeSidebar.addEventListener('click', () => toggleSidebar(false));
       sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
       // ===== NAVIGASI SIDEBAR =====
-      document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
+      const menuItems = document.querySelectorAll('.sidebar .menu-item[data-section]');
+      const sections = {
+        dashboard: document.getElementById('sec-dashboard'),
+        network: document.getElementById('sec-network'),
+        deposit: document.getElementById('sec-deposit'),
+        withdraw: document.getElementById('sec-withdraw'),
+        history: document.getElementById('sec-history'),
+        products: document.getElementById('sec-products')
+      };
+
+      function showSection(sectionId) {
+        // Sembunyikan semua
+        Object.values(sections).forEach(el => el.classList.remove('active'));
+        // Tampilkan yang dipilih
+        if (sections[sectionId]) sections[sectionId].classList.add('active');
+        // Update active class di menu
+        document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(el => el.classList.remove('active'));
+        const activeMenuItem = document.querySelector(`.sidebar .menu-item[data-section="${sectionId}"]`);
+        if (activeMenuItem) activeMenuItem.classList.add('active');
+        // Tutup sidebar di mobile
+        if (window.innerWidth <= 768) toggleSidebar(false);
+        // Jika section adalah produk, redirect
+        if (sectionId === 'products') {
+          window.location.href = 'index.html';
+        }
+        // Render ulang konten jika perlu
+        if (sectionId === 'network') renderNetwork();
+        if (sectionId === 'history') renderFullHistory();
+        if (sectionId === 'dashboard') renderDashboard();
+      }
+
+      menuItems.forEach(item => {
         item.addEventListener('click', function() {
-          const page = this.dataset.page;
-          toggleSidebar(false);
-          if (page === 'dashboard') {
-            // sudah di halaman
-          } else if (page === 'network') {
-            alert('📊 Halaman Jaringan (Binary Tree) akan menampilkan struktur cabang member Anda.');
-          } else if (page === 'deposit') {
-            const nominal = prompt('Masukkan nominal deposit (Rp):');
-            if (nominal && !isNaN(nominal) && parseInt(nominal) > 0) {
-              deposit(parseInt(nominal));
-            }
-          } else if (page === 'withdraw') {
-            const nominal = prompt('Masukkan nominal withdraw (Rp):');
-            if (nominal && !isNaN(nominal) && parseInt(nominal) > 0) {
-              withdraw(parseInt(nominal));
-            }
-          } else if (page === 'products') {
-            window.location.href = 'index.html';
-          } else if (page === 'history') {
-            renderHistory();
-          }
+          const section = this.dataset.section;
+          showSection(section);
         });
       });
 
+      // ===== LOGOUT =====
       document.getElementById('sideLogoutBtn').addEventListener('click', function() {
         localStorage.removeItem('mlm_session');
         window.location.href = 'index.html';
@@ -383,24 +559,32 @@
 
       // ===== DEPOSIT & WITHDRAW =====
       function deposit(amount) {
-        if (amount <= 0) { alert('Nominal harus lebih dari 0'); return; }
+        if (amount <= 0 || isNaN(amount)) { alert('Masukkan nominal yang valid.'); return; }
+        if (amount < 10000) { alert('Minimal deposit Rp 10.000'); return; }
         currentUser.wallet = (currentUser.wallet || 0) + amount;
         if (!currentUser.transactions) currentUser.transactions = [];
         currentUser.transactions.push({
           type: 'deposit',
           amount: amount,
           date: new Date().toISOString(),
-          status: 'success'
+          status: 'success',
+          method: document.getElementById('depositMethod')?.value || 'bank'
         });
         saveUsers(users);
         renderDashboard();
         alert('✅ Deposit Rp ' + amount.toLocaleString() + ' berhasil!');
+        showSection('dashboard');
       }
 
-      function withdraw(amount) {
-        if (amount <= 0) { alert('Nominal harus lebih dari 0'); return; }
+      function withdraw(amount, account) {
+        if (amount <= 0 || isNaN(amount)) { alert('Masukkan nominal yang valid.'); return; }
+        if (amount < 50000) { alert('Minimal withdraw Rp 50.000'); return; }
         if ((currentUser.wallet || 0) < amount) {
           alert('❌ Saldo tidak mencukupi!');
+          return;
+        }
+        if (!account || account.trim() === '') {
+          alert('Masukkan nomor rekening / e-wallet tujuan.');
           return;
         }
         currentUser.wallet = (currentUser.wallet || 0) - amount;
@@ -409,25 +593,30 @@
           type: 'withdraw',
           amount: amount,
           date: new Date().toISOString(),
-          status: 'pending'
+          status: 'pending',
+          account: account.trim()
         });
         saveUsers(users);
         renderDashboard();
         alert('✅ Permintaan withdraw Rp ' + amount.toLocaleString() + ' sedang diproses.');
+        showSection('dashboard');
       }
 
-      // Tombol aksi
-      document.getElementById('depositBtn').addEventListener('click', () => {
-        const nominal = prompt('Masukkan nominal deposit (Rp):');
-        if (nominal && !isNaN(nominal) && parseInt(nominal) > 0) {
-          deposit(parseInt(nominal));
-        }
+      // Tombol aksi di dashboard
+      document.getElementById('depositBtn').addEventListener('click', () => showSection('deposit'));
+      document.getElementById('withdrawBtn').addEventListener('click', () => showSection('withdraw'));
+
+      // Submit deposit
+      document.getElementById('submitDeposit').addEventListener('click', function() {
+        const amount = parseInt(document.getElementById('depositAmount').value);
+        deposit(amount);
       });
-      document.getElementById('withdrawBtn').addEventListener('click', () => {
-        const nominal = prompt('Masukkan nominal withdraw (Rp):');
-        if (nominal && !isNaN(nominal) && parseInt(nominal) > 0) {
-          withdraw(parseInt(nominal));
-        }
+
+      // Submit withdraw
+      document.getElementById('submitWithdraw').addEventListener('click', function() {
+        const amount = parseInt(document.getElementById('withdrawAmount').value);
+        const account = document.getElementById('withdrawAccount').value.trim();
+        withdraw(amount, account);
       });
 
       // ===== RENDER DASHBOARD =====
@@ -453,11 +642,11 @@
         document.getElementById('rewardBonus').textContent = currentUser.bonus_reward || 0;
         document.getElementById('roBonus').textContent = currentUser.bonus_ro || 0;
 
-        // History
-        renderHistory();
+        // History (ringkasan)
+        renderTransactionHistory();
       }
 
-      function renderHistory() {
+      function renderTransactionHistory() {
         const container = document.getElementById('transactionHistory');
         const transactions = currentUser.transactions || [];
 
@@ -467,8 +656,7 @@
         }
 
         let html = '';
-        // Tampilkan 10 terakhir (terbaru di atas)
-        const sorted = [...transactions].reverse().slice(0, 10);
+        const sorted = [...transactions].reverse().slice(0, 5);
         sorted.forEach(t => {
           const typeLabel = t.type === 'deposit' ? 'Deposit' : 'Withdraw';
           const amountClass = t.type === 'deposit' ? 'plus' : 'minus';
@@ -483,19 +671,87 @@
         container.innerHTML = html;
       }
 
-      // ===== NAV BADGE REFRESH =====
-      document.getElementById('navUserBadge').addEventListener('click', function() {
+      // ===== RENDER FULL HISTORY =====
+      function renderFullHistory() {
+        const container = document.getElementById('fullHistory');
+        const transactions = currentUser.transactions || [];
+        if (transactions.length === 0) {
+          container.innerHTML = '<p class="text-muted">Belum ada transaksi.</p>';
+          return;
+        }
+        let html = '';
+        const sorted = [...transactions].reverse();
+        sorted.forEach(t => {
+          const typeLabel = t.type === 'deposit' ? 'Deposit' : 'Withdraw';
+          const amountClass = t.type === 'deposit' ? 'plus' : 'minus';
+          const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' ? '✅ Selesai' : '❌ Gagal');
+          const date = new Date(t.date).toLocaleDateString() + ' ' + new Date(t.date).toLocaleTimeString();
+          html += `
+            <div class="history-item">
+              <span>${typeLabel} ${statusText} <span class="text-muted" style="font-size:0.7rem;">${date}</span></span>
+              <span class="amount ${amountClass}">${t.type === 'deposit' ? '+' : '-'} Rp ${t.amount.toLocaleString()}</span>
+            </div>
+          `;
+        });
+        container.innerHTML = html;
+      }
+
+      // ===== RENDER NETWORK (BINARY TREE) =====
+      function renderNetwork() {
+        const container = document.getElementById('treeContainer');
+        const tree = currentUser.binary_tree || [0,0,0,0,0,0,0,0,0,0];
+        // Cari total downline
+        const total = tree.reduce((a,b) => a+b, 0);
+        let html = `<p class="text-muted">Total downline: <strong>${total}</strong> orang</p>`;
+        html += `<ul>`;
+        for (let i = 0; i < 10; i++) {
+          if (tree[i] > 0) {
+            html += `<li><span class="node">Level ${i+1}: ${tree[i]} member</span>`;
+            // Tambahkan sub-tree jika ada (simulasi)
+            html += `</li>`;
+          } else {
+            html += `<li><span class="node" style="opacity:0.4;">Level ${i+1}: 0</span></li>`;
+          }
+        }
+        html += `</ul>`;
+        // Tambahkan visual cabang (sederhana) - kita bisa tampilkan binary tree secara visual
+        // Di sini kita hanya menampilkan list, tapi kita bisa tambahkan diagram sederhana
+        // Untuk lebih kompleks, bisa menggunakan canvas, tapi untuk demo ini cukup.
+        container.innerHTML = html;
+      }
+
+      // ===== REFRESH DATA =====
+      function refreshUserData() {
         users = loadUsers();
         const updated = users.find(u => u.id === currentUser.id);
         if (updated) {
           currentUser = updated;
-          renderDashboard();
+          // Simpan session agar tetap sync
+          localStorage.setItem('mlm_session', JSON.stringify({ id: currentUser.id }));
+          // Render ulang section yang aktif
+          const activeSection = document.querySelector('.sidebar .menu-item.active')?.dataset.section || 'dashboard';
+          if (activeSection === 'dashboard') renderDashboard();
+          else if (activeSection === 'network') renderNetwork();
+          else if (activeSection === 'history') renderFullHistory();
+          // Untuk deposit/withdraw tidak perlu render ulang
         }
+      }
+
+      // ===== NAV BADGE CLICK =====
+      document.getElementById('navUserBadge').addEventListener('click', function() {
+        refreshUserData();
+        // Tampilkan dashboard
+        showSection('dashboard');
       });
 
       // ===== INIT =====
-      renderDashboard();
-      console.log('🟦 HEDTRO · Dashboard Member (dengan Deposit/Withdraw)');
+      // Tampilkan dashboard saat pertama kali
+      showSection('dashboard');
+
+      // Auto-refresh setiap 30 detik
+      setInterval(refreshUserData, 30000);
+
+      console.log('🟦 HEDTRO · Dashboard dengan sidebar permanen di PC');
     })();
   </script>
 </body>
