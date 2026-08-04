@@ -86,10 +86,10 @@
     .btn-nav-gold:hover { background:#b8963a; transform:scale(0.97); }
 
     /* ============================================================
-       BURGER
+       BURGER - TAMPIL DI SEMUA UKURAN
        ============================================================ */
     .burger-btn {
-      display:none;
+      display:flex; /* <-- selalu tampil */
       flex-direction:column; gap:5px;
       padding:6px; background:transparent; border:none; cursor:pointer;
       z-index:1001;
@@ -349,7 +349,7 @@
     }
 
     /* ============================================================
-       RESPONSIVE
+       RESPONSIVE - DI HP, TOMBOL LOGIN/DAFTAR SEMBUNYI
        ============================================================ */
     @media (max-width:768px) {
       body { padding-top:60px; }
@@ -357,8 +357,8 @@
       .navbar .logo { font-size:1.2rem; }
       .navbar .logo i { font-size:1.3rem; }
       .nav-right .user-badge span { display:none; }
-      .nav-right .btn-nav { display:none; }
-      .burger-btn { display:flex; }
+      .nav-right .btn-nav { display:none; } /* Sembunyi di HP */
+      .burger-btn { display:flex; } /* Tetap tampil */
       .carousel-section { height:300px; }
       .carousel-slide { padding:20px 30px; }
       .carousel-slide .slide-content h2 { font-size:1.8rem; }
@@ -923,7 +923,7 @@
       }
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Toko online dengan login/register siap');
+      console.log('🟦 HEDTRO JEANS · Menu burger selalu tampil');
     })();
   </script>
 
