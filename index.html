@@ -7,7 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
   <style>
-    /* ===== RESET & ROOT ===== */
+    /* ===== SAMA SEPERTI SEBELUMNYA (gaya lengkap) ===== */
     * { margin:0; padding:0; box-sizing:border-box; }
     :root {
       --denim-dark: #0b1a2b;
@@ -22,7 +22,7 @@
       --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
       --radius: 28px;
       --radius-sm: 14px;
-      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
     }
     html { scroll-behavior:smooth; }
     body {
@@ -261,7 +261,7 @@
     }
     .footer a { color:var(--gold-light); }
 
-    /* ===== OVERLAY LOGIN ===== */
+    /* ===== OVERLAY LOGIN/REGISTER ===== */
     .overlay {
       display:none; position:fixed; inset:0;
       background:rgba(0,0,0,0.5); backdrop-filter:blur(4px);
@@ -270,7 +270,7 @@
     }
     .overlay.show { display:flex; }
     .overlay-card {
-      background:var(--white); max-width:480px; width:100%;
+      background:var(--white); max-width:520px; width:100%;
       max-height:90vh; overflow-y:auto;
       border-radius:var(--radius); padding:28px 30px 36px;
       box-shadow:var(--shadow-lg); position:relative;
@@ -297,13 +297,13 @@
       display:block; font-weight:500; color:var(--denim-navy);
       font-size:0.85rem; margin-bottom:4px;
     }
-    .form-group input {
+    .form-group input, .form-group select {
       width:100%; padding:12px 16px;
       border:1.5px solid #dde3ea; border-radius:60px;
       font-size:0.95rem; background:#fafcff;
       font-family:inherit; transition:var(--transition);
     }
-    .form-group input:focus {
+    .form-group input:focus, .form-group select:focus {
       border-color:var(--denim-blue); outline:none;
       box-shadow:0 0 0 4px rgba(42,75,110,0.1);
     }
@@ -468,6 +468,14 @@
           <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="email@domain.com" /></div>
           <div class="form-group"><label>Password (min 6)</label><input type="password" id="regPassword" placeholder="••••••••" /></div>
           <div class="form-group"><label>Kode Sponsor (opsional)</label><input type="text" id="regSponsor" placeholder="ID sponsor" /></div>
+          <!-- Pilihan Posisi -->
+          <div class="form-group">
+            <label>Posisi Jaringan</label>
+            <select id="regPosition">
+              <option value="left">Kiri</option>
+              <option value="right">Kanan</option>
+            </select>
+          </div>
           <button class="btn-primary btn-gold" id="registerBtn"><i class="fas fa-user-plus"></i> Daftar Member</button>
           <div class="msg" id="regMsg"></div>
         </div>
@@ -480,17 +488,15 @@
 
   <script>
     // ============================================================
-    // JAVASCRIPT LENGKAP index.html
+    // JAVASCRIPT LENGKAP index.html (dengan posisi kiri/kanan)
     // ============================================================
     (function() {
       'use strict';
 
-      // ---------- CONSTANTS ----------
       const DB_KEY = 'hedtro_mlm_users';
       const PRODUCT_KEY = 'hedtro_products';
       const SETTINGS_KEY = 'hedtro_settings';
 
-      // ---------- FUNGSI BANTU ----------
       function loadUsers() { const raw = localStorage.getItem(DB_KEY); return raw ? JSON.parse(raw) : []; }
       function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
       function loadProducts() { const raw = localStorage.getItem(PRODUCT_KEY); return raw ? JSON.parse(raw) : []; }
@@ -498,14 +504,13 @@
       function loadSettings() { const raw = localStorage.getItem(SETTINGS_KEY); return raw ? JSON.parse(raw) : { sponsorBonus:10, binaryBonus:8, rewardBonus:5, roBonus:3, memberDiscount:20, shippingCost:0, memberPrice:550000 }; }
       function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
 
-      // ---------- INISIALISASI DATA DEFAULT ----------
       function initData() {
         let users = loadUsers();
         if (users.length === 0) {
           users = [
-            { id:1, name:'Admin Utama', email:'admin@mlm.com', password:'admin123', sponsor_id:null, isActive:true, bonus_sponsor:0, bonus_binary:0, bonus_reward:0, bonus_ro:0, binary_tree:[0,0,0,0,0,0,0,0,0,0], reward_levels:[0,0,0,0,0], purchase_history:[] },
-            { id:2, name:'Budi Santoso', email:'budi@mail.com', password:'budi123', sponsor_id:1, isActive:true, bonus_sponsor:50, bonus_binary:120, bonus_reward:30, bonus_ro:12, binary_tree:[2,1,0,0,0,0,0,0,0,0], reward_levels:[4,2,1,0,0], purchase_history:[] },
-            { id:3, name:'Citra Dewi', email:'citra@mail.com', password:'citra123', sponsor_id:1, isActive:true, bonus_sponsor:30, bonus_binary:70, bonus_reward:15, bonus_ro:8, binary_tree:[1,1,0,0,0,0,0,0,0,0], reward_levels:[3,1,0,0,0], purchase_history:[] }
+            { id:1, name:'Admin Utama', email:'admin@mlm.com', password:'admin123', sponsor_id:null, position:null, status:'verified', wallet:0, bonus_sponsor:0, bonus_binary:0, bonus_reward:0, bonus_ro:0, binary_tree:[0,0,0,0,0,0,0,0,0,0], reward_levels:[0,0,0,0,0], purchase_history:[], proof_image:null, pending_package:false },
+            { id:2, name:'Budi Santoso', email:'budi@mail.com', password:'budi123', sponsor_id:1, position:'left', status:'verified', wallet:120000, bonus_sponsor:50, bonus_binary:120, bonus_reward:30, bonus_ro:12, binary_tree:[2,1,0,0,0,0,0,0,0,0], reward_levels:[4,2,1,0,0], purchase_history:[], proof_image:null, pending_package:false },
+            { id:3, name:'Citra Dewi', email:'citra@mail.com', password:'citra123', sponsor_id:1, position:'right', status:'verified', wallet:80000, bonus_sponsor:30, bonus_binary:70, bonus_reward:15, bonus_ro:8, binary_tree:[1,1,0,0,0,0,0,0,0,0], reward_levels:[3,1,0,0,0], purchase_history:[], proof_image:null, pending_package:false }
           ];
           saveUsers(users);
         }
@@ -528,13 +533,12 @@
       }
       initData();
 
-      // ---------- STATE ----------
       let currentUser = null;
       let users = loadUsers();
       let products = loadProducts();
       let settings = loadSettings();
 
-      // ---------- DOM REFS ----------
+      // DOM REFS
       const burgerBtn = document.getElementById('burgerBtn');
       const sidebar = document.getElementById('sidebar');
       const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -549,7 +553,7 @@
       const loginMsg = document.getElementById('loginMsg');
       const regMsg = document.getElementById('regMsg');
 
-      // ---------- SIDEBAR ----------
+      // SIDEBAR
       function toggleSidebar(open) {
         const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
         sidebar.classList.toggle('open', isOpen);
@@ -561,7 +565,7 @@
       closeSidebar.addEventListener('click', () => toggleSidebar(false));
       sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
-      // ---------- CAROUSEL ----------
+      // CAROUSEL
       const track = document.getElementById('carouselTrack');
       const dots = document.getElementById('carouselDots');
       const slides = track.querySelectorAll('.carousel-slide');
@@ -599,7 +603,7 @@
       }
       resetInterval();
 
-      // ---------- RENDER PRODUK ----------
+      // RENDER PRODUK
       function renderProducts() {
         const grid = document.getElementById('productGrid');
         grid.innerHTML = '';
@@ -619,27 +623,8 @@
         });
       }
 
-      // ---------- AUTH FUNCTIONS ----------
-      function login(email, password) {
-        const user = users.find(u => u.email === email && u.password === password);
-        if (!user) {
-          loginMsg.className = 'msg error';
-          loginMsg.innerText = '❌ Email atau password salah.';
-          return false;
-        }
-        currentUser = user;
-        localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
-        loginMsg.className = 'msg';
-        loginMsg.innerText = '';
-        if (user.email === 'admin@mlm.com') {
-          window.location.href = 'admin.html';
-        } else {
-          window.location.href = 'dashboard.html';
-        }
-        return true;
-      }
-
-      function register(name, email, password, sponsorCode) {
+      // ===== REGISTER DENGAN POSISI =====
+      function register(name, email, password, sponsorCode, position) {
         if (users.find(u => u.email === email)) {
           regMsg.className = 'msg error';
           regMsg.innerText = '❌ Email sudah terdaftar.';
@@ -659,29 +644,33 @@
           id: users.length ? Math.max(...users.map(u => u.id)) + 1 : 1,
           name, email, password,
           sponsor_id,
-          isActive: false,
+          position: position || 'left',
+          status: 'free', // free → pending → verified
+          wallet: 0,
           bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0,
           binary_tree: [0,0,0,0,0,0,0,0,0,0],
           reward_levels: [0,0,0,0,0],
-          purchase_history: []
+          purchase_history: [],
+          proof_image: null,
+          pending_package: false
         };
         users.push(newUser);
         saveUsers(users);
 
-        // Update binary tree untuk upline
+        // Update binary tree untuk upline (jika ada sponsor)
         if (sponsor_id) {
           updateBinaryTree(sponsor_id, 1);
         }
 
         regMsg.className = 'msg success';
-        regMsg.innerText = '✅ Pendaftaran berhasil! Silakan login dan bayar paket member.';
+        regMsg.innerText = '✅ Pendaftaran berhasil! Silakan login dan kirim bukti transfer untuk verifikasi.';
         document.getElementById('regName').value = '';
         document.getElementById('regEmail').value = '';
         document.getElementById('regPassword').value = '';
         document.getElementById('regSponsor').value = '';
         setTimeout(() => {
           document.querySelector('#authTabs .tab-btn[data-tab="login"]').click();
-        }, 1200);
+        }, 1500);
       }
 
       function updateBinaryTree(userId, level) {
@@ -698,7 +687,27 @@
         }
       }
 
-      // ---------- OVERLAY ----------
+      // ===== LOGIN =====
+      function login(email, password) {
+        const user = users.find(u => u.email === email && u.password === password);
+        if (!user) {
+          loginMsg.className = 'msg error';
+          loginMsg.innerText = '❌ Email atau password salah.';
+          return false;
+        }
+        currentUser = user;
+        localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
+        loginMsg.className = 'msg';
+        loginMsg.innerText = '';
+        if (user.email === 'admin@mlm.com') {
+          window.location.href = 'admin.html';
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+        return true;
+      }
+
+      // OVERLAY
       function openOverlay() {
         overlay.classList.add('show');
         document.body.style.overflow = 'hidden';
@@ -714,7 +723,7 @@
       closeOverlay.addEventListener('click', closeOverlayFn);
       overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlayFn(); });
 
-      // ---------- UI UPDATE ----------
+      // UI UPDATE
       function updateUI() {
         if (currentUser) {
           navUserName.innerText = currentUser.name;
@@ -727,8 +736,7 @@
         }
       }
 
-      // ---------- EVENT BINDINGS ----------
-      // Nav
+      // EVENT BINDINGS
       navLoginBtn.addEventListener('click', openOverlay);
       navRegisterBtn.addEventListener('click', () => {
         openOverlay();
@@ -743,7 +751,6 @@
         }
       });
 
-      // Sidebar login/register
       document.getElementById('sideLoginBtn').addEventListener('click', () => { toggleSidebar(false); openOverlay(); });
       document.getElementById('sideRegisterBtn').addEventListener('click', () => {
         toggleSidebar(false);
@@ -760,7 +767,6 @@
         });
       });
 
-      // Auth tabs
       document.querySelectorAll('#authTabs .tab-btn').forEach(btn => {
         btn.addEventListener('click', function() {
           document.querySelectorAll('#authTabs .tab-btn').forEach(b => b.classList.remove('active'));
@@ -794,6 +800,7 @@
         const email = document.getElementById('regEmail').value.trim();
         const password = document.getElementById('regPassword').value.trim();
         const sponsor = document.getElementById('regSponsor').value.trim();
+        const position = document.getElementById('regPosition').value;
         if (!name || !email || !password) {
           regMsg.className = 'msg error';
           regMsg.innerText = '⚠️ Semua field wajib diisi.';
@@ -804,16 +811,15 @@
           regMsg.innerText = '⚠️ Password min 6 karakter.';
           return;
         }
-        register(name, email, password, sponsor);
+        register(name, email, password, sponsor, position);
       });
 
       document.getElementById('loginPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
       document.getElementById('regPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('registerBtn').click(); });
 
-      // ---------- INIT ----------
+      // INIT
       renderProducts();
 
-      // Cek session
       const session = localStorage.getItem('mlm_session');
       if (session) {
         try {
@@ -834,7 +840,7 @@
       }
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Toko online siap');
+      console.log('🟦 HEDTRO JEANS · Toko online dengan posisi kiri/kanan');
     })();
   </script>
 </body>
