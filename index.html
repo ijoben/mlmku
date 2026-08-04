@@ -7,9 +7,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* ============================================================
-       SOFT RED · GRAY · WHITE THEME
-       ============================================================ */
+    /* ===== RESET & ROOT ===== */
     * {
       margin: 0;
       padding: 0;
@@ -171,14 +169,16 @@
       transform: scale(0.97);
     }
 
-    /* ===== BURGER ===== */
+    /* ===== BURGER BUTTON ===== */
     .burger-btn {
-      display: none;
+      display: none; /* default hidden, muncul di mobile */
       flex-direction: column;
       gap: 5px;
       padding: 6px;
       cursor: pointer;
       z-index: 1001;
+      background: transparent;
+      border: none;
     }
 
     .burger-btn span {
@@ -792,12 +792,17 @@
       }
 
       .burger-btn {
-        display: flex;
+        display: flex; /* muncul di mobile */
       }
 
       .sidebar {
         width: 280px;
         left: -300px;
+      }
+
+      /* overlay muncul di mobile */
+      .sidebar-overlay {
+        display: block;
       }
 
       .carousel-section {
@@ -923,7 +928,7 @@
       </div>
       <button class="btn-nav btn-nav-outline" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
       <button class="btn-nav btn-nav-red" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
-      <button class="burger-btn" id="burgerBtn">
+      <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
     </div>
@@ -1119,7 +1124,7 @@
       const loginMsg = document.getElementById('loginMsg');
       const regMsg = document.getElementById('regMsg');
 
-      // ===== SIDEBAR =====
+      // ===== SIDEBAR TOGGLE =====
       function toggleSidebar(open) {
         const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
         sidebar.classList.toggle('open', isOpen);
@@ -1127,9 +1132,22 @@
         burgerBtn.classList.toggle('active', isOpen);
         document.body.style.overflow = isOpen ? 'hidden' : '';
       }
-      burgerBtn.addEventListener('click', () => toggleSidebar());
-      closeSidebar.addEventListener('click', () => toggleSidebar(false));
-      sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
+
+      // Event burger
+      burgerBtn.addEventListener('click', function(e) {
+        e.stopPropagation();
+        toggleSidebar();
+      });
+
+      // Event close sidebar
+      closeSidebar.addEventListener('click', function() {
+        toggleSidebar(false);
+      });
+
+      // Event overlay click (tutup sidebar)
+      sidebarOverlay.addEventListener('click', function() {
+        toggleSidebar(false);
+      });
 
       // ===== CAROUSEL =====
       const track = document.getElementById('carouselTrack');
@@ -1425,8 +1443,9 @@
       }
       updateUI();
 
-      console.log('🟥 HEDTRO JEANS · Soft Red, Gray & White Theme');
+      console.log('🟥 HEDTRO JEANS · Soft Red, Gray & White Theme — Burger menu siap');
     })();
   </script>
+
 </body>
 </html>
