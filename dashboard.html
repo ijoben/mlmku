@@ -22,7 +22,7 @@
       --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
       --radius: 28px;
       --radius-sm: 14px;
-      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
     }
     body {
       font-family: 'Inter', -apple-system, sans-serif;
@@ -130,18 +130,25 @@
     .page-title i { color:var(--gold-accent); }
 
     /* ===== STATUS ===== */
-    #membershipStatus {
-      background:var(--gold-light); padding:12px 20px;
-      border-radius:var(--radius-sm); margin-bottom:20px;
+    #statusBanner {
+      padding:14px 20px; border-radius:var(--radius-sm);
+      margin-bottom:20px;
       display:flex; align-items:center; flex-wrap:wrap; gap:10px;
+      font-weight:500;
     }
-    #membershipStatus #statusText { font-weight:500; }
+    .status-free { background:#f8d7da; color:#721c24; }
+    .status-pending { background:#fff3cd; color:#856404; }
+    .status-verified { background:#d4edda; color:#155724; }
     .btn-sm {
       padding:8px 18px; border-radius:60px; font-weight:600; font-size:0.8rem;
       transition:var(--transition); font-family:inherit;
     }
     .btn-sm-success { background:#1f7a4b; color:#fff; }
     .btn-sm-success:hover { background:#155d38; }
+    .btn-sm-primary { background:var(--denim-blue); color:#fff; }
+    .btn-sm-primary:hover { background:var(--denim-dark); }
+    .btn-sm-gold { background:var(--gold-accent); color:var(--denim-dark); }
+    .btn-sm-gold:hover { background:#b8963a; }
 
     /* ===== STATS ===== */
     .stats-grid {
@@ -162,103 +169,37 @@
       margin-top:4px;
     }
 
-    /* ===== PANEL ===== */
-    .dual-panel {
-      display:grid; grid-template-columns:2fr 1fr; gap:20px;
-      margin-top:8px;
-    }
-    @media (max-width:640px) { .dual-panel { grid-template-columns:1fr; } }
-    .panel-box {
+    /* ===== HISTORY ===== */
+    .history-card {
       background:var(--white); border-radius:var(--radius-sm);
       padding:18px 20px; box-shadow:var(--shadow);
+      margin-top:12px;
     }
-    .panel-box h3 {
-      font-size:0.95rem; font-weight:600; color:var(--denim-navy);
-      margin-bottom:14px; display:flex; align-items:center; gap:8px;
+    .history-card h3 {
+      font-size:1rem; font-weight:600; margin-bottom:12px;
+      display:flex; align-items:center; gap:8px;
     }
-    .panel-box h3 i { color:var(--gold-accent); }
-    .tree-chips {
-      display:grid; grid-template-columns:repeat(auto-fill, minmax(55px,1fr));
-      gap:8px;
-    }
-    .chip {
-      background:var(--cream); border-radius:40px;
-      padding:6px 8px; text-align:center;
-      font-weight:600; font-size:0.75rem;
-      border:1px solid #dce3ec;
-    }
-    .chip span { display:block; font-size:0.55rem; color:var(--denim-blue); font-weight:400; }
-    .reward-item {
+    .history-card h3 i { color:var(--gold-accent); }
+    .history-item {
       display:flex; justify-content:space-between;
-      padding:8px 14px; background:var(--cream);
-      border-radius:10px; border-left:3px solid var(--gold-accent);
-      font-size:0.85rem; margin-bottom:6px;
+      padding:10px 0; border-bottom:1px solid #eee;
+      font-size:0.9rem;
     }
-    .ro-detail {
-      background:var(--cream); border-radius:12px;
-      padding:12px 16px; margin-top:10px;
-      display:flex; justify-content:space-between;
-      border:1px solid #e2e8f0;
-    }
-    .ro-detail .ro-label { font-weight:500; }
-    .ro-detail .ro-value { font-weight:700; color:var(--denim-blue); }
-    .text-muted { color:#6a7e9a; font-size:0.8rem; margin-top:8px; }
+    .history-item:last-child { border-bottom:none; }
+    .history-item .amount { font-weight:700; }
+    .history-item .amount.plus { color:#1f7a4b; }
+    .history-item .amount.minus { color:#b13e3e; }
 
-    /* ===== PRODUCT GRID (RO) ===== */
-    .product-grid {
-      display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
-      gap:20px; margin:12px 0 24px;
-    }
-    .product-card {
-      background:var(--white); border-radius:var(--radius-sm);
-      overflow:hidden; box-shadow:var(--shadow);
-      transition:var(--transition); border:1px solid #e8edf2;
-    }
-    .product-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
-    .product-card .img-placeholder {
-      height:150px; background:var(--denim-light);
-      display:flex; align-items:center; justify-content:center;
-      color:var(--denim-blue); font-size:2.5rem;
-    }
-    .product-card .body { padding:14px; }
-    .product-card .body .tag {
-      display:inline-block; background:var(--gold-accent);
-      color:var(--denim-dark); font-size:0.55rem; font-weight:700;
-      padding:2px 12px; border-radius:40px;
-      text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;
-    }
-    .product-card .body h4 { font-size:0.9rem; font-weight:600; margin-bottom:4px; }
-    .product-card .body .price {
-      font-weight:700; color:var(--denim-blue); font-size:1rem;
-    }
-    .product-card .body .btn-detail {
-      margin-top:8px; display:inline-block;
-      background:var(--denim-dark); color:#fff;
-      padding:4px 16px; border-radius:60px;
-      font-size:0.7rem; font-weight:600;
-      transition:var(--transition);
-      cursor:pointer;
-    }
-    .product-card .body .btn-detail:hover { background:var(--denim-blue); }
-    .product-card .body .btn-detail:disabled { opacity:0.5; cursor:not-allowed; }
-
-    /* ===== HISTORY ===== */
-    #purchaseHistory {
-      background:var(--white); border-radius:var(--radius-sm);
-      padding:16px; box-shadow:var(--shadow);
-    }
-    #purchaseHistory ul { list-style:none; }
-    #purchaseHistory li {
-      padding:8px 0; border-bottom:1px solid #eee;
-    }
-
-    /* ===== FOOTER ===== */
-    .footer {
+    /* ===== WALLET ===== */
+    .wallet-card {
       background:var(--denim-dark); color:var(--cream);
-      padding:20px 24px; text-align:center;
-      border-top:3px solid var(--gold-accent);
-      margin-top:20px; font-size:0.8rem;
+      border-radius:var(--radius-sm); padding:20px 24px;
+      margin-bottom:20px;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:12px;
     }
+    .wallet-card .wallet-label { font-size:0.85rem; opacity:0.7; }
+    .wallet-card .wallet-amount { font-size:2rem; font-weight:700; color:var(--gold-accent); }
 
     /* ===== RESPONSIVE ===== */
     @media (max-width:768px) {
@@ -277,9 +218,6 @@
       .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
       .stat-card { padding:12px 14px; }
       .stat-card .value { font-size:1.2rem; }
-      .tree-chips { grid-template-columns:repeat(auto-fill, minmax(45px,1fr)); gap:4px; }
-      .chip { font-size:0.65rem; padding:4px 4px; }
-      .panel-box { padding:14px 14px; }
     }
   </style>
 </head>
@@ -308,21 +246,33 @@
       <span class="close-side" id="closeSidebar">&times;</span>
     </div>
     <div class="menu-item active" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
-    <div class="menu-item" data-page="bonus"><i class="fas fa-coins"></i> Bonus Saya</div>
     <div class="menu-item" data-page="network"><i class="fas fa-sitemap"></i> Jaringan</div>
+    <div class="menu-item" data-page="deposit"><i class="fas fa-plus-circle"></i> Deposit</div>
+    <div class="menu-item" data-page="withdraw"><i class="fas fa-minus-circle"></i> Withdraw</div>
+    <div class="menu-divider"></div>
     <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
+    <div class="menu-item" data-page="history"><i class="fas fa-history"></i> Riwayat</div>
     <div class="menu-divider"></div>
     <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
   </nav>
 
   <!-- ===== CONTENT ===== -->
   <div class="container">
-    <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard Member</h1>
+    <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
 
-    <!-- Status Keanggotaan -->
-    <div id="membershipStatus">
-      <span id="statusText">Belum Aktif</span>
-      <button class="btn-sm btn-sm-success" id="activateBtn">Bayar Paket Member (Rp 550.000)</button>
+    <!-- Status Banner -->
+    <div id="statusBanner">Memuat status...</div>
+
+    <!-- Wallet -->
+    <div class="wallet-card">
+      <div>
+        <div class="wallet-label"><i class="fas fa-wallet"></i> Saldo Dompet</div>
+        <div class="wallet-amount" id="walletAmount">Rp 0</div>
+      </div>
+      <div style="display:flex; gap:8px; flex-wrap:wrap;">
+        <button class="btn-sm btn-sm-gold" id="depositBtn"><i class="fas fa-plus-circle"></i> Deposit</button>
+        <button class="btn-sm btn-sm-primary" id="withdrawBtn"><i class="fas fa-minus-circle"></i> Withdraw</button>
+      </div>
     </div>
 
     <!-- Statistik Bonus -->
@@ -333,35 +283,14 @@
       <div class="stat-card"><div class="label">RO Produk</div><div class="value" id="roBonus">0</div></div>
     </div>
 
-    <!-- Binary Tree & Reward -->
-    <div class="dual-panel">
-      <div class="panel-box">
-        <h3><i class="fas fa-sitemap"></i> Jaringan Binary (10 Level)</h3>
-        <div class="tree-chips" id="binaryTreeContainer"></div>
-        <div class="text-muted">Total downline: <span id="totalDownline">0</span></div>
-      </div>
-      <div class="panel-box">
-        <h3><i class="fas fa-gift"></i> Reward 5 Level</h3>
-        <div id="rewardList"></div>
-        <div class="ro-detail"><span class="ro-label">Produk terjual (RO)</span><span class="ro-value" id="roProductCount">0</span></div>
-        <div class="ro-detail" style="background:#f0f4fa;"><span class="ro-label">Komisi RO</span><span class="ro-value" id="roProductBonus">0</span></div>
+    <!-- Riwayat Transaksi -->
+    <div class="history-card">
+      <h3><i class="fas fa-history"></i> Riwayat Transaksi</h3>
+      <div id="transactionHistory">
+        <p class="text-muted">Belum ada transaksi.</p>
       </div>
     </div>
-
-    <!-- Daftar Produk untuk Repeat Order -->
-    <h2 class="page-title" style="font-size:1.3rem; padding:24px 0 12px;"><i class="fas fa-shopping-cart"></i> Repeat Order (Beli Produk)</h2>
-    <div class="product-grid" id="productGridRO"></div>
-
-    <!-- Riwayat Pembelian -->
-    <h2 class="page-title" style="font-size:1.2rem; padding:24px 0 12px;"><i class="fas fa-history"></i> Riwayat Pembelian</h2>
-    <div id="purchaseHistory"></div>
   </div>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Afiliasi & Reseller</p>
-    <p style="opacity:0.6; margin-top:4px;">Bonus Sponsor · Binary 10L · Reward 5L · RO Produk</p>
-  </footer>
 
   <script>
     // ============================================================
@@ -377,15 +306,12 @@
       function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
       function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
       function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
-      function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
       function loadSettings() { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"memberPrice":550000}'); }
-      function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
 
       let users = loadUsers();
       let products = loadProducts();
       let settings = loadSettings();
 
-      // Cek session
       const session = localStorage.getItem('mlm_session');
       let currentUser = null;
       if (session) {
@@ -408,8 +334,8 @@
       const sidebar = document.getElementById('sidebar');
       const sidebarOverlay = document.getElementById('sidebarOverlay');
       const closeSidebar = document.getElementById('closeSidebar');
-      const statusText = document.getElementById('statusText');
-      const activateBtn = document.getElementById('activateBtn');
+      const statusBanner = document.getElementById('statusBanner');
+      const walletAmount = document.getElementById('walletAmount');
 
       // ===== SIDEBAR =====
       function toggleSidebar(open) {
@@ -423,15 +349,29 @@
       closeSidebar.addEventListener('click', () => toggleSidebar(false));
       sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
+      // ===== NAVIGASI SIDEBAR =====
       document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
         item.addEventListener('click', function() {
           const page = this.dataset.page;
           toggleSidebar(false);
-          if (page === 'dashboard') { /* sudah di halaman */ }
-          else if (page === 'bonus' || page === 'network') {
-            alert('Halaman ' + page + ' sedang dalam pengembangan');
+          if (page === 'dashboard') {
+            // sudah di halaman
+          } else if (page === 'network') {
+            alert('📊 Halaman Jaringan (Binary Tree) akan menampilkan struktur cabang member Anda.');
+          } else if (page === 'deposit') {
+            const nominal = prompt('Masukkan nominal deposit (Rp):');
+            if (nominal && !isNaN(nominal) && parseInt(nominal) > 0) {
+              deposit(parseInt(nominal));
+            }
+          } else if (page === 'withdraw') {
+            const nominal = prompt('Masukkan nominal withdraw (Rp):');
+            if (nominal && !isNaN(nominal) && parseInt(nominal) > 0) {
+              withdraw(parseInt(nominal));
+            }
           } else if (page === 'products') {
             window.location.href = 'index.html';
+          } else if (page === 'history') {
+            renderHistory();
           }
         });
       });
@@ -441,18 +381,71 @@
         window.location.href = 'index.html';
       });
 
+      // ===== DEPOSIT & WITHDRAW =====
+      function deposit(amount) {
+        if (amount <= 0) { alert('Nominal harus lebih dari 0'); return; }
+        currentUser.wallet = (currentUser.wallet || 0) + amount;
+        if (!currentUser.transactions) currentUser.transactions = [];
+        currentUser.transactions.push({
+          type: 'deposit',
+          amount: amount,
+          date: new Date().toISOString(),
+          status: 'success'
+        });
+        saveUsers(users);
+        renderDashboard();
+        alert('✅ Deposit Rp ' + amount.toLocaleString() + ' berhasil!');
+      }
+
+      function withdraw(amount) {
+        if (amount <= 0) { alert('Nominal harus lebih dari 0'); return; }
+        if ((currentUser.wallet || 0) < amount) {
+          alert('❌ Saldo tidak mencukupi!');
+          return;
+        }
+        currentUser.wallet = (currentUser.wallet || 0) - amount;
+        if (!currentUser.transactions) currentUser.transactions = [];
+        currentUser.transactions.push({
+          type: 'withdraw',
+          amount: amount,
+          date: new Date().toISOString(),
+          status: 'pending'
+        });
+        saveUsers(users);
+        renderDashboard();
+        alert('✅ Permintaan withdraw Rp ' + amount.toLocaleString() + ' sedang diproses.');
+      }
+
+      // Tombol aksi
+      document.getElementById('depositBtn').addEventListener('click', () => {
+        const nominal = prompt('Masukkan nominal deposit (Rp):');
+        if (nominal && !isNaN(nominal) && parseInt(nominal) > 0) {
+          deposit(parseInt(nominal));
+        }
+      });
+      document.getElementById('withdrawBtn').addEventListener('click', () => {
+        const nominal = prompt('Masukkan nominal withdraw (Rp):');
+        if (nominal && !isNaN(nominal) && parseInt(nominal) > 0) {
+          withdraw(parseInt(nominal));
+        }
+      });
+
       // ===== RENDER DASHBOARD =====
       function renderDashboard() {
         navUserName.textContent = currentUser.name;
 
         // Status
-        if (currentUser.isActive) {
-          statusText.innerHTML = '✅ Aktif <span style="font-weight:normal;color:green;">(Paket Member sudah dibayar)</span>';
-          activateBtn.style.display = 'none';
-        } else {
-          statusText.innerHTML = '❌ Belum Aktif — Anda harus membayar paket member untuk bisa melakukan repeat order.';
-          activateBtn.style.display = 'inline-block';
-        }
+        const statusMap = {
+          'free': { class: 'status-free', text: '❌ Free Member — Kirim bukti transfer untuk verifikasi' },
+          'pending': { class: 'status-pending', text: '⏳ Menunggu Verifikasi — Admin akan memproses bukti transfer Anda' },
+          'verified': { class: 'status-verified', text: '✅ Verified Member — Selamat bergabung! Anda bisa melakukan repeat order.' }
+        };
+        const status = statusMap[currentUser.status] || statusMap['free'];
+        statusBanner.className = status.class;
+        statusBanner.innerHTML = status.text;
+
+        // Wallet
+        walletAmount.textContent = 'Rp ' + (currentUser.wallet || 0).toLocaleString();
 
         // Bonus
         document.getElementById('sponsorBonus').textContent = currentUser.bonus_sponsor || 0;
@@ -460,139 +453,35 @@
         document.getElementById('rewardBonus').textContent = currentUser.bonus_reward || 0;
         document.getElementById('roBonus').textContent = currentUser.bonus_ro || 0;
 
-        // Binary Tree
-        const tree = currentUser.binary_tree || [0,0,0,0,0,0,0,0,0,0];
-        const container = document.getElementById('binaryTreeContainer');
-        container.innerHTML = '';
-        for (let i=0; i<10; i++) {
-          const div = document.createElement('div');
-          div.className = 'chip';
-          div.innerHTML = `<span>L${i+1}</span> ${tree[i] || 0}`;
-          container.appendChild(div);
-        }
-        document.getElementById('totalDownline').textContent = tree.reduce((a,b)=>a+b, 0);
-
-        // Reward
-        const rewards = currentUser.reward_levels || [0,0,0,0,0];
-        const rewardList = document.getElementById('rewardList');
-        rewardList.innerHTML = '';
-        const labels = ['Level 1','Level 2','Level 3','Level 4','Level 5'];
-        for (let i=0; i<5; i++) {
-          const div = document.createElement('div');
-          div.className = 'reward-item';
-          div.innerHTML = `<span>${labels[i]}</span><span>${rewards[i] || 0}</span>`;
-          rewardList.appendChild(div);
-        }
-
-        // RO
-        const totalRO = currentUser.purchase_history ? currentUser.purchase_history.filter(h => !h.isPackage).length : 0;
-        document.getElementById('roProductCount').textContent = totalRO;
-        document.getElementById('roProductBonus').textContent = currentUser.bonus_ro || 0;
-
-        // Render produk RO
-        renderProductsRO();
-
-        // Riwayat
-        renderPurchaseHistory();
+        // History
+        renderHistory();
       }
 
-      function renderProductsRO() {
-        const grid = document.getElementById('productGridRO');
-        grid.innerHTML = '';
-        products.forEach(p => {
-          const card = document.createElement('div');
-          card.className = 'product-card';
-          card.innerHTML = `
-            <div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>
-            <div class="body">
-              <span class="tag">${p.tag || 'PRODUK'}</span>
-              <h4>${p.name}</h4>
-              <div class="price">Rp ${p.price.toLocaleString()}</div>
-              <div style="font-size:0.75rem;color:#6a7e9a;">Stok: ${p.stock}</div>
-              <button class="btn-detail buy-btn" data-id="${p.id}" ${currentUser.isActive ? '' : 'disabled'}>Beli</button>
-            </div>
-          `;
-          grid.appendChild(card);
-        });
+      function renderHistory() {
+        const container = document.getElementById('transactionHistory');
+        const transactions = currentUser.transactions || [];
 
-        document.querySelectorAll('.buy-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const productId = parseInt(this.dataset.id);
-            buyProduct(productId);
-          });
-        });
-      }
-
-      function renderPurchaseHistory() {
-        const container = document.getElementById('purchaseHistory');
-        if (!currentUser.purchase_history || currentUser.purchase_history.length === 0) {
-          container.innerHTML = '<p class="text-muted">Belum ada pembelian.</p>';
+        if (transactions.length === 0) {
+          container.innerHTML = '<p class="text-muted">Belum ada transaksi.</p>';
           return;
         }
-        let html = '<ul>';
-        currentUser.purchase_history.forEach(h => {
-          const product = products.find(p => p.id === h.productId);
-          const name = h.isPackage ? 'Paket Member' : (product ? product.name : 'Produk dihapus');
-          html += `<li>${name} - Rp ${h.price.toLocaleString()} - ${new Date(h.date).toLocaleDateString()}</li>`;
+
+        let html = '';
+        // Tampilkan 10 terakhir (terbaru di atas)
+        const sorted = [...transactions].reverse().slice(0, 10);
+        sorted.forEach(t => {
+          const typeLabel = t.type === 'deposit' ? 'Deposit' : 'Withdraw';
+          const amountClass = t.type === 'deposit' ? 'plus' : 'minus';
+          const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' ? '✅ Selesai' : '❌ Gagal');
+          html += `
+            <div class="history-item">
+              <span>${typeLabel} ${statusText}</span>
+              <span class="amount ${amountClass}">${t.type === 'deposit' ? '+' : '-'} Rp ${t.amount.toLocaleString()}</span>
+            </div>
+          `;
         });
-        html += '</ul>';
         container.innerHTML = html;
       }
-
-      // ===== FUNGSI BELI PRODUK (RO) =====
-      function buyProduct(productId) {
-        if (!currentUser.isActive) { alert('Anda harus aktif terlebih dahulu.'); return; }
-        const product = products.find(p => p.id === productId);
-        if (!product) { alert('Produk tidak ditemukan'); return; }
-        if (product.stock <= 0) { alert('Stok habis'); return; }
-
-        if (!confirm(`Beli ${product.name} seharga Rp ${product.price.toLocaleString()}?`)) return;
-
-        // Kurangi stok
-        product.stock--;
-        saveProducts(products);
-
-        // Catat pembelian
-        currentUser.purchase_history.push({ productId, date: new Date().toISOString(), price: product.price });
-
-        // Hitung bonus
-        const sBonus = (product.price * settings.sponsorBonus) / 100;
-        const bBonus = (product.price * settings.binaryBonus) / 100;
-        const rBonus = (product.price * settings.rewardBonus) / 100;
-        const roBonus = (product.price * settings.roBonus) / 100;
-
-        // Distribusi bonus ke upline
-        distributeBonus(currentUser.sponsor_id, sBonus, bBonus, rBonus, roBonus, 1);
-
-        saveUsers(users);
-        renderDashboard();
-        alert('✅ Pembelian berhasil! Bonus telah didistribusikan.');
-      }
-
-      function distributeBonus(sponsorId, sBonus, bBonus, rBonus, roBonus, level) {
-        if (!sponsorId || level > 10) return;
-        const sponsor = users.find(u => u.id === sponsorId);
-        if (!sponsor) return;
-        if (level === 1) sponsor.bonus_sponsor += sBonus;
-        sponsor.bonus_binary += bBonus;
-        if (level <= 5) sponsor.bonus_reward += rBonus;
-        sponsor.bonus_ro += roBonus;
-        saveUsers(users);
-        if (sponsor.sponsor_id) {
-          distributeBonus(sponsor.sponsor_id, sBonus, bBonus, rBonus, roBonus, level + 1);
-        }
-      }
-
-      // ===== AKTIVASI PAKET MEMBER =====
-      activateBtn.addEventListener('click', function() {
-        if (currentUser.isActive) { alert('Sudah aktif.'); return; }
-        if (!confirm(`Bayar paket member Rp ${settings.memberPrice.toLocaleString()}?`)) return;
-        currentUser.isActive = true;
-        currentUser.purchase_history.push({ productId: 0, date: new Date().toISOString(), price: settings.memberPrice, isPackage: true });
-        saveUsers(users);
-        renderDashboard();
-        alert('✅ Paket member aktif! Selamat bergabung.');
-      });
 
       // ===== NAV BADGE REFRESH =====
       document.getElementById('navUserBadge').addEventListener('click', function() {
@@ -606,7 +495,7 @@
 
       // ===== INIT =====
       renderDashboard();
-      console.log('🟦 HEDTRO · Dashboard Member');
+      console.log('🟦 HEDTRO · Dashboard Member (dengan Deposit/Withdraw)');
     })();
   </script>
 </body>
