@@ -536,13 +536,59 @@
         return;
       }
 
-      // ===== FUNGSI BUY RO =====
+      // ===== BURGER TOGGLE =====
+      const burgerBtn = document.getElementById('burgerBtn');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const closeSidebar = document.getElementById('closeSidebar');
+
+      function toggleSidebar(open) {
+        const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
+        if (window.innerWidth <= 768) {
+          sidebar.classList.toggle('open', isOpen);
+          sidebarOverlay.classList.toggle('active', isOpen);
+          burgerBtn.classList.toggle('active', isOpen);
+          document.body.style.overflow = isOpen ? 'hidden' : '';
+        }
+      }
+      burgerBtn.addEventListener('click', () => toggleSidebar());
+      closeSidebar.addEventListener('click', () => toggleSidebar(false));
+      sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
+
+      // ===== NAVIGASI =====
+      function showSection(sectionId) {
+        document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
+        const el = document.getElementById('sec-' + sectionId);
+        if (el) el.classList.add('active');
+        document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(m => m.classList.remove('active'));
+        const menu = document.querySelector(`.sidebar .menu-item[data-section="${sectionId}"]`);
+        if (menu) menu.classList.add('active');
+
+        if (sectionId === 'products') renderProductsDashboard();
+        if (sectionId === 'dashboard') renderDashboard();
+        if (sectionId === 'network') renderNetwork();
+        if (sectionId === 'history') renderFullHistory();
+      }
+
+      document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(item => {
+        item.addEventListener('click', function() {
+          showSection(this.dataset.section);
+        });
+      });
+
+      document.getElementById('sideLogoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('mlm_session');
+        window.location.href = 'index.html';
+      });
+
+      // ===== FUNGSI BUY RO (DIPERBAIKI) =====
       function buyRO(productId, price) {
         if (currentUser.status !== 'verified') {
           alert('❌ Anda harus terverifikasi (verified) untuk melakukan repeat order.');
           return;
         }
 
+        // 1. Ambil data produk terbaru dari localStorage
         let freshProducts = loadProducts();
         const product = freshProducts.find(p => p.id === productId);
         if (!product) { alert('Produk tidak ditemukan'); return; }
@@ -550,13 +596,16 @@
 
         if (!confirm(`Beli ${product.name} seharga Rp ${price.toLocaleString()}? Anda akan transfer ke rekening admin.`)) return;
 
+        // 2. Kurangi stok
         product.stock--;
         saveProducts(freshProducts);
 
+        // 3. Ambil data user terbaru dari localStorage
         let freshUsers = loadUsers();
         const user = freshUsers.find(u => u.id === currentUser.id);
         if (!user) { alert('User tidak ditemukan'); return; }
 
+        // 4. Tambahkan transaksi ke user
         if (!user.transactions) user.transactions = [];
         user.transactions.push({
           type: 'ro_purchase',
@@ -577,11 +626,14 @@
           status: 'pending'
         });
 
+        // 5. SIMPAN KE LOCALSTORAGE
         saveUsers(freshUsers);
 
+        // 6. Update currentUser
         currentUser = user;
         localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
 
+        // 7. Notifikasi dan refresh UI
         alert('✅ Pesanan RO berhasil! Silakan transfer ke rekening admin dan tunggu konfirmasi. Cek menu Riwayat.');
         renderDashboard();
         renderProductsDashboard();
@@ -733,16 +785,21 @@
       function deposit(amount) {
         if (amount <= 0 || isNaN(amount)) { alert('Masukkan nominal yang valid.'); return; }
         if (amount < 10000) { alert('Minimal deposit Rp 10.000'); return; }
-        currentUser.wallet = (currentUser.wallet || 0) + amount;
-        if (!currentUser.transactions) currentUser.transactions = [];
-        currentUser.transactions.push({
+        let freshUsers = loadUsers();
+        const user = freshUsers.find(u => u.id === currentUser.id);
+        if (!user) return;
+        user.wallet = (user.wallet || 0) + amount;
+        if (!user.transactions) user.transactions = [];
+        user.transactions.push({
           type: 'deposit',
           amount: amount,
           date: new Date().toISOString(),
           status: 'success',
           method: document.getElementById('depositMethod')?.value || 'bank'
         });
-        saveUsers(loadUsers());
+        saveUsers(freshUsers);
+        currentUser = user;
+        localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
         renderDashboard();
         alert('✅ Deposit Rp ' + amount.toLocaleString() + ' berhasil!');
         showSection('dashboard');
@@ -751,7 +808,10 @@
       function withdraw(amount, account) {
         if (amount <= 0 || isNaN(amount)) { alert('Masukkan nominal yang valid.'); return; }
         if (amount < 50000) { alert('Minimal withdraw Rp 50.000'); return; }
-        if ((currentUser.wallet || 0) < amount) {
+        let freshUsers = loadUsers();
+        const user = freshUsers.find(u => u.id === currentUser.id);
+        if (!user) return;
+        if ((user.wallet || 0) < amount) {
           alert('❌ Saldo tidak mencukupi!');
           return;
         }
@@ -759,16 +819,18 @@
           alert('Masukkan nomor rekening / e-wallet tujuan.');
           return;
         }
-        currentUser.wallet = (currentUser.wallet || 0) - amount;
-        if (!currentUser.transactions) currentUser.transactions = [];
-        currentUser.transactions.push({
+        user.wallet = (user.wallet || 0) - amount;
+        if (!user.transactions) user.transactions = [];
+        user.transactions.push({
           type: 'withdraw',
           amount: amount,
           date: new Date().toISOString(),
           status: 'pending',
           account: account.trim()
         });
-        saveUsers(loadUsers());
+        saveUsers(freshUsers);
+        currentUser = user;
+        localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
         renderDashboard();
         alert('✅ Permintaan withdraw Rp ' + amount.toLocaleString() + ' sedang diproses.');
         showSection('dashboard');
@@ -788,65 +850,26 @@
         withdraw(amount, account);
       });
 
-      // ===== NAVIGASI =====
-      function showSection(sectionId) {
-        document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
-        const el = document.getElementById('sec-' + sectionId);
-        if (el) el.classList.add('active');
-        document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(m => m.classList.remove('active'));
-        const menu = document.querySelector(`.sidebar .menu-item[data-section="${sectionId}"]`);
-        if (menu) menu.classList.add('active');
-
-        if (sectionId === 'products') renderProductsDashboard();
-        if (sectionId === 'dashboard') renderDashboard();
-        if (sectionId === 'network') renderNetwork();
-        if (sectionId === 'history') renderFullHistory();
-      }
-
-      document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(item => {
-        item.addEventListener('click', function() {
-          showSection(this.dataset.section);
-        });
+      // ===== REFRESH =====
+      document.getElementById('navUserBadge').addEventListener('click', function() {
+        renderDashboard();
+        renderProductsDashboard();
       });
-
-      document.getElementById('sideLogoutBtn').addEventListener('click', function() {
-        localStorage.removeItem('mlm_session');
-        window.location.href = 'index.html';
-      });
-
-      // ===== BURGER TOGGLE =====
-      const burgerBtn = document.getElementById('burgerBtn');
-      const sidebar = document.getElementById('sidebar');
-      const sidebarOverlay = document.getElementById('sidebarOverlay');
-      const closeSidebar = document.getElementById('closeSidebar');
-
-      function toggleSidebar(open) {
-        const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
-        if (window.innerWidth <= 768) {
-          sidebar.classList.toggle('open', isOpen);
-          sidebarOverlay.classList.toggle('active', isOpen);
-          burgerBtn.classList.toggle('active', isOpen);
-          document.body.style.overflow = isOpen ? 'hidden' : '';
-        }
-      }
-      burgerBtn.addEventListener('click', () => toggleSidebar());
-      closeSidebar.addEventListener('click', () => toggleSidebar(false));
-      sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
       // ===== INIT =====
       renderDashboard();
       renderProductsDashboard();
 
-      // Auto-refresh setiap 15 detik
+      // Auto-refresh setiap 10 detik
       setInterval(() => {
         const activeSection = document.querySelector('.sidebar .menu-item.active')?.dataset.section || 'dashboard';
         if (activeSection === 'dashboard') renderDashboard();
         if (activeSection === 'products') renderProductsDashboard();
         if (activeSection === 'network') renderNetwork();
         if (activeSection === 'history') renderFullHistory();
-      }, 15000);
+      }, 10000);
 
-      console.log('🟦 HEDTRO · Dashboard dengan RO fix');
+      console.log('🟦 HEDTRO · Dashboard dengan RO fix (auto-save ke localStorage)');
     })();
   </script>
 </body>
