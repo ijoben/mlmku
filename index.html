@@ -1,294 +1,841 @@
-<!-- index.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>HEDTRO JEANS · Afiliasi & Reseller</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-    <style>
-        /* ===== SAMA SEPERTI SEBELUMNYA, TAPI DIPERBARUI UNTUK FITUR BARU ===== */
-        * { margin:0; padding:0; box-sizing:border-box; }
-        :root { --denim-dark:#0b1a2b; --denim-navy:#1a2e44; --denim-blue:#2a4b6e; --denim-light:#e8edf2; --gold-accent:#c9a84c; --gold-light:#e8d5a3; --cream:#f7f4ef; --white:#fff; --shadow:0 4px 20px rgba(0,0,0,0.08); --shadow-lg:0 20px 60px rgba(0,0,0,0.15); --radius:28px; --radius-sm:14px; --transition:0.3s cubic-bezier(0.4,0,0.2,1); }
-        html { scroll-behavior:smooth; }
-        body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--denim-dark); overflow-x:hidden; padding-top:70px; }
-        a { text-decoration:none; color:inherit; }
-        button { cursor:pointer; font-family:inherit; border:none; background:none; }
-        /* Navbar, Burger, Sidebar, Carousel, Product Grid, Features, Footer, Overlay sama seperti sebelumnya, namun saya singkatkan karena panjang. Saya akan tulis ulang ringkas. */
-        /* ... (saya sertakan kode gaya lengkap di bawah) ... */
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>HEDTRO JEANS · Afiliasi & Reseller</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== RESET & ROOT ===== */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --denim-dark: #0b1a2b;
+      --denim-navy: #1a2e44;
+      --denim-blue: #2a4b6e;
+      --denim-light: #e8edf2;
+      --gold-accent: #c9a84c;
+      --gold-light: #e8d5a3;
+      --cream: #f7f4ef;
+      --white: #ffffff;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+      --radius: 28px;
+      --radius-sm: 14px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    html { scroll-behavior:smooth; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--cream);
+      color: var(--denim-dark);
+      overflow-x: hidden;
+      padding-top: 70px;
+    }
+    a { text-decoration:none; color:inherit; }
+    button { cursor:pointer; font-family:inherit; border:none; background:none; }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:var(--cream); }
+    ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top:0; left:0; right:0; z-index:1000;
+      background: var(--denim-dark);
+      padding: 12px 20px;
+      display: flex; align-items:center; justify-content:space-between;
+      border-bottom:3px solid var(--gold-accent);
+      height:70px;
+    }
+    .navbar .logo {
+      display:flex; align-items:center; gap:8px;
+      color:var(--white); font-weight:800; font-size:1.4rem;
+    }
+    .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
+    .navbar .logo span { font-weight:300; color:var(--gold-light); font-size:0.75rem; margin-left:2px; }
+    .nav-right {
+      display:flex; align-items:center; gap:12px;
+    }
+    .nav-right .user-badge {
+      display:flex; align-items:center; gap:6px;
+      color:var(--cream); font-size:0.8rem;
+      background:rgba(255,255,255,0.08);
+      padding:6px 14px; border-radius:60px;
+      border:1px solid rgba(255,255,255,0.06);
+      cursor:pointer; transition:var(--transition);
+    }
+    .nav-right .user-badge:hover { background:rgba(255,255,255,0.15); }
+    .nav-right .user-badge i { color:var(--gold-accent); }
+    .nav-right .btn-nav {
+      padding:8px 18px; border-radius:60px;
+      font-weight:600; font-size:0.8rem;
+      transition:var(--transition);
+    }
+    .btn-nav-outline {
+      background:transparent; border:1.5px solid rgba(255,255,255,0.2);
+      color:var(--cream);
+    }
+    .btn-nav-outline:hover { background:rgba(255,255,255,0.1); }
+    .btn-nav-gold {
+      background:var(--gold-accent); color:var(--denim-dark);
+    }
+    .btn-nav-gold:hover { background:#b8963a; transform:scale(0.97); }
+
+    /* ===== BURGER ===== */
+    .burger-btn {
+      display:flex; flex-direction:column; gap:5px;
+      padding:6px; background:transparent; border:none; cursor:pointer;
+      z-index:1001;
+    }
+    .burger-btn span {
+      display:block; width:28px; height:3px;
+      background:var(--cream); border-radius:4px;
+      transition:var(--transition); transform-origin:center;
+    }
+    .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
+    .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
+    .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-overlay {
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.5); z-index:999;
+      opacity:0; pointer-events:none;
+      transition:var(--transition);
+    }
+    .sidebar-overlay.active { opacity:1; pointer-events:all; }
+    .sidebar {
+      position:fixed; top:0; left:-320px; width:300px; height:100%;
+      background:var(--denim-dark); z-index:1000;
+      padding:24px 20px; transition:var(--transition);
+      overflow-y:auto; border-right:3px solid var(--gold-accent);
+      display:flex; flex-direction:column; gap:4px;
+    }
+    .sidebar.open { left:0; }
+    .sidebar .sidebar-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);
+      margin-bottom:12px;
+    }
+    .sidebar .sidebar-header .logo-side {
+      color:var(--white); font-weight:800; font-size:1.3rem;
+    }
+    .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
+    .sidebar .sidebar-header .close-side {
+      color:var(--cream); font-size:1.6rem; cursor:pointer;
+    }
+    .sidebar .menu-item {
+      display:flex; align-items:center; gap:14px;
+      padding:12px 16px; border-radius:12px;
+      color:var(--cream); font-weight:500; font-size:0.95rem;
+      transition:var(--transition); cursor:pointer;
+    }
+    .sidebar .menu-item:hover { background:rgba(255,255,255,0.08); }
+    .sidebar .menu-item i { width:24px; color:var(--gold-accent); }
+    .sidebar .menu-item.active { background:rgba(201,168,76,0.15); color:var(--gold-accent); }
+    .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:6px 0; }
+
+    /* ===== CAROUSEL ===== */
+    .carousel-section {
+      position:relative; width:100%; height:420px;
+      overflow:hidden; background:var(--denim-dark);
+    }
+    .carousel-track {
+      display:flex; height:100%;
+      transition:transform 0.6s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .carousel-slide {
+      min-width:100%; height:100%;
+      display:flex; align-items:center; justify-content:center;
+      padding:40px 60px; position:relative;
+      background-size:cover; background-position:center;
+    }
+    .carousel-slide .slide-content {
+      text-align:center; color:var(--white); z-index:2; max-width:700px;
+    }
+    .carousel-slide .slide-content h2 {
+      font-size:2.8rem; font-weight:800; letter-spacing:-1px; margin-bottom:8px;
+    }
+    .carousel-slide .slide-content h2 i { color:var(--gold-accent); }
+    .carousel-slide .slide-content p {
+      font-size:1.2rem; opacity:0.9; color:var(--gold-light);
+    }
+    .carousel-slide .slide-content .btn-slide {
+      display:inline-block; margin-top:16px;
+      background:var(--gold-accent); color:var(--denim-dark);
+      padding:12px 36px; border-radius:60px;
+      font-weight:700; transition:var(--transition);
+    }
+    .carousel-slide .slide-content .btn-slide:hover { transform:scale(1.05); background:#b8963a; }
+    .carousel-slide .overlay-dark {
+      position:absolute; inset:0; background:rgba(11,26,43,0.5); z-index:1;
+    }
+    .carousel-btn {
+      position:absolute; top:50%; transform:translateY(-50%);
+      background:rgba(255,255,255,0.15); backdrop-filter:blur(8px);
+      color:#fff; border:none; width:48px; height:48px; border-radius:50%;
+      font-size:1.4rem; cursor:pointer; z-index:10;
+      transition:var(--transition);
+      display:flex; align-items:center; justify-content:center;
+    }
+    .carousel-btn:hover { background:rgba(255,255,255,0.3); }
+    .carousel-btn.prev { left:16px; }
+    .carousel-btn.next { right:16px; }
+    .carousel-dots {
+      position:absolute; bottom:20px; left:50%; transform:translateX(-50%);
+      display:flex; gap:10px; z-index:10;
+    }
+    .carousel-dots .dot {
+      width:12px; height:12px; border-radius:50%;
+      background:rgba(255,255,255,0.3); cursor:pointer;
+      transition:var(--transition);
+    }
+    .carousel-dots .dot.active { background:var(--gold-accent); transform:scale(1.2); }
+
+    /* ===== SECTION TITLE ===== */
+    .section-title {
+      font-size:1.6rem; font-weight:700; color:var(--denim-dark);
+      padding:32px 24px 16px;
+      display:flex; align-items:center; gap:12px;
+    }
+    .section-title i { color:var(--gold-accent); }
+
+    /* ===== PRODUCT GRID ===== */
+    .product-grid {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(220px,1fr));
+      gap:20px; padding:0 24px 40px;
+    }
+    .product-card {
+      background:var(--white); border-radius:var(--radius-sm);
+      overflow:hidden; box-shadow:var(--shadow);
+      transition:var(--transition); border:1px solid #e8edf2;
+    }
+    .product-card:hover { transform:translateY(-6px); box-shadow:var(--shadow-lg); }
+    .product-card .img-placeholder {
+      height:180px; background:var(--denim-light);
+      display:flex; align-items:center; justify-content:center;
+      color:var(--denim-blue); font-size:3rem;
+    }
+    .product-card .body { padding:16px; }
+    .product-card .body .tag {
+      display:inline-block; background:var(--gold-accent);
+      color:var(--denim-dark); font-size:0.6rem; font-weight:700;
+      padding:2px 14px; border-radius:40px;
+      text-transform:uppercase; letter-spacing:0.5px; margin-bottom:6px;
+    }
+    .product-card .body h4 { font-size:0.95rem; font-weight:600; margin-bottom:4px; }
+    .product-card .body .price {
+      font-weight:700; color:var(--denim-blue); font-size:1.05rem;
+    }
+    .product-card .body .price del {
+      color:#8a9aa8; font-weight:400; font-size:0.8rem; margin-left:8px;
+    }
+    .product-card .body .btn-detail {
+      margin-top:10px; display:inline-block;
+      background:var(--denim-dark); color:#fff;
+      padding:5px 18px; border-radius:60px;
+      font-size:0.75rem; font-weight:600;
+      transition:var(--transition);
+    }
+    .product-card .body .btn-detail:hover { background:var(--denim-blue); }
+
+    /* ===== FEATURES ===== */
+    .features {
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(150px,1fr));
+      gap:16px; padding:20px 24px 40px;
+    }
+    .feature-item {
+      background:var(--white); border-radius:var(--radius-sm);
+      padding:20px 16px; text-align:center;
+      box-shadow:var(--shadow); border:1px solid #e8edf2;
+    }
+    .feature-item i { font-size:2rem; color:var(--gold-accent); margin-bottom:8px; }
+    .feature-item h4 { font-weight:600; font-size:0.95rem; }
+    .feature-item p { font-size:0.8rem; color:#5a7a8a; }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background:var(--denim-dark); color:var(--cream);
+      padding:30px 24px 20px; text-align:center;
+      border-top:3px solid var(--gold-accent);
+    }
+    .footer a { color:var(--gold-light); }
+
+    /* ===== OVERLAY LOGIN ===== */
+    .overlay {
+      display:none; position:fixed; inset:0;
+      background:rgba(0,0,0,0.5); backdrop-filter:blur(4px);
+      z-index:2000; align-items:center; justify-content:center;
+      padding:16px;
+    }
+    .overlay.show { display:flex; }
+    .overlay-card {
+      background:var(--white); max-width:480px; width:100%;
+      max-height:90vh; overflow-y:auto;
+      border-radius:var(--radius); padding:28px 30px 36px;
+      box-shadow:var(--shadow-lg); position:relative;
+    }
+    .overlay-card .close-overlay {
+      position:absolute; top:14px; right:18px;
+      font-size:1.6rem; color:var(--denim-navy);
+      cursor:pointer; background:none; border:none;
+    }
+    .tab-bar {
+      display:flex; gap:6px; background:var(--denim-light);
+      border-radius:60px; padding:4px; margin-bottom:24px;
+      max-width:320px;
+    }
+    .tab-btn {
+      flex:1; padding:10px 0; border:none; background:transparent;
+      border-radius:60px; font-weight:600; font-size:0.85rem;
+      color:var(--denim-navy); transition:var(--transition); cursor:pointer;
+    }
+    .tab-btn.active { background:var(--denim-blue); color:#fff; box-shadow:0 4px 14px rgba(42,75,110,0.25); }
+    .hidden { display:none !important; }
+    .form-group { margin-bottom:14px; }
+    .form-group label {
+      display:block; font-weight:500; color:var(--denim-navy);
+      font-size:0.85rem; margin-bottom:4px;
+    }
+    .form-group input {
+      width:100%; padding:12px 16px;
+      border:1.5px solid #dde3ea; border-radius:60px;
+      font-size:0.95rem; background:#fafcff;
+      font-family:inherit; transition:var(--transition);
+    }
+    .form-group input:focus {
+      border-color:var(--denim-blue); outline:none;
+      box-shadow:0 0 0 4px rgba(42,75,110,0.1);
+    }
+    .btn-primary {
+      width:100%; padding:14px; border:none; border-radius:60px;
+      background:var(--denim-blue); color:#fff;
+      font-weight:700; font-size:1rem;
+      transition:var(--transition);
+      display:flex; align-items:center; justify-content:center; gap:10px;
+      font-family:inherit;
+    }
+    .btn-primary:hover { background:var(--denim-dark); }
+    .btn-gold { background:var(--gold-accent); color:var(--denim-dark); }
+    .btn-gold:hover { background:#b8963a; }
+    .msg { margin-top:12px; text-align:center; font-size:0.9rem; min-height:26px; }
+    .msg.error { color:#b13e3e; }
+    .msg.success { color:#1f7a4b; }
+    .demo-hint {
+      background:#f0f4fa; border-radius:16px; padding:10px 16px;
+      margin-top:16px; font-size:0.8rem; text-align:center;
+      color:var(--denim-navy);
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width:768px) {
+      body { padding-top:60px; }
+      .navbar { padding:10px 16px; height:60px; }
+      .navbar .logo { font-size:1.2rem; }
+      .navbar .logo i { font-size:1.3rem; }
+      .nav-right .user-badge span { display:none; }
+      .nav-right .btn-nav { display:none; }
+      .carousel-section { height:300px; }
+      .carousel-slide { padding:20px 30px; }
+      .carousel-slide .slide-content h2 { font-size:1.8rem; }
+      .carousel-slide .slide-content p { font-size:0.95rem; }
+      .carousel-btn { width:36px; height:36px; font-size:1rem; }
+      .carousel-btn.prev { left:8px; }
+      .carousel-btn.next { right:8px; }
+      .sidebar { width:280px; left:-300px; }
+      .product-grid { grid-template-columns:repeat(auto-fill, minmax(160px,1fr)); gap:14px; padding:0 16px 30px; }
+      .section-title { font-size:1.3rem; padding:24px 16px 12px; }
+      .features { padding:12px 16px 30px; gap:12px; }
+      .overlay-card { padding:20px 16px 28px; }
+    }
+    @media (max-width:480px) {
+      .carousel-section { height:250px; }
+      .carousel-slide .slide-content h2 { font-size:1.4rem; }
+      .carousel-slide .slide-content p { font-size:0.8rem; }
+      .carousel-slide .slide-content .btn-slide { padding:8px 24px; font-size:0.85rem; }
+      .product-grid { grid-template-columns:1fr 1fr; gap:10px; padding:0 12px 24px; }
+      .product-card .img-placeholder { height:130px; font-size:2rem; }
+      .product-card .body { padding:10px; }
+      .product-card .body h4 { font-size:0.8rem; }
+      .product-card .body .price { font-size:0.85rem; }
+      .product-card .body .btn-detail { font-size:0.65rem; padding:4px 12px; }
+    }
+  </style>
 </head>
 <body>
-    <!-- ===== NAVBAR ===== -->
-    <header class="navbar">
-        <div class="logo"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></div>
-        <div class="nav-right">
-            <div class="user-badge" id="navUserBadge"><i class="fas fa-user-circle"></i> <span id="navUserName">Guest</span></div>
-            <button class="btn-nav btn-nav-outline" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
-            <button class="btn-nav btn-nav-gold" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
-            <button class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></button>
+
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar" id="navbar">
+    <div class="logo">
+      <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
+    </div>
+    <div class="nav-right">
+      <div class="user-badge" id="navUserBadge">
+        <i class="fas fa-user-circle"></i> <span id="navUserName">Guest</span>
+      </div>
+      <button class="btn-nav btn-nav-outline" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+      <button class="btn-nav btn-nav-gold" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
+      <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
+
+  <!-- ===== SIDEBAR ===== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
+      <span class="close-side" id="closeSidebar">&times;</span>
+    </div>
+    <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
+    <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
+    <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang</div>
+    <div class="menu-divider"></div>
+    <div class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</div>
+    <div class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</div>
+  </nav>
+
+  <!-- ===== CAROUSEL ===== -->
+  <section class="carousel-section" id="carouselSection">
+    <div class="carousel-track" id="carouselTrack">
+      <div class="carousel-slide" style="background: linear-gradient(135deg, #0b1a2b 0%, #1a2e44 100%);">
+        <div class="overlay-dark"></div>
+        <div class="slide-content">
+          <h2><i class="fas fa-star"></i> 501® ORIGINAL DENIM</h2>
+          <p>Ikonik sejak 1873 · Potongan lurus dengan raw denim 14oz premium</p>
+          <a href="#" class="btn-slide">Lihat Koleksi</a>
         </div>
-    </header>
+      </div>
+      <div class="carousel-slide" style="background: linear-gradient(135deg, #1a2e44 0%, #2a4b6e 100%);">
+        <div class="overlay-dark"></div>
+        <div class="slide-content">
+          <h2><i class="fas fa-jacket"></i> TRUCKER JACKET & OUTER</h2>
+          <p>Gaya ikonik denim modern untuk penampilan casual harian Anda</p>
+          <a href="#" class="btn-slide">Lihat Koleksi</a>
+        </div>
+      </div>
+      <div class="carousel-slide" style="background: linear-gradient(135deg, #2a4b6e 0%, #0b1a2b 100%);">
+        <div class="overlay-dark"></div>
+        <div class="slide-content">
+          <h2><i class="fas fa-tags"></i> SEASONAL SALE UP TO 40%</h2>
+          <p>Diskon spesial koleksi denim elegan dengan harga khusus eksklusif</p>
+          <a href="#" class="btn-slide">Lihat Promo</a>
+        </div>
+      </div>
+    </div>
+    <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
+    <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
+    <div class="carousel-dots" id="carouselDots"></div>
+  </section>
 
-    <!-- ===== SIDEBAR ===== -->
-    <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <nav class="sidebar" id="sidebar">
-        <div class="sidebar-header"><div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div><span class="close-side" id="closeSidebar">&times;</span></div>
-        <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
-        <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
-        <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang</div>
-        <div class="menu-divider"></div>
-        <div class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</div>
-        <div class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</div>
-    </nav>
+  <!-- ===== PRODUK ===== -->
+  <h2 class="section-title"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
+  <div class="product-grid" id="productGrid"></div>
 
-    <!-- ===== CAROUSEL ===== -->
-    <section class="carousel-section" id="carouselSection"> ... </section>
+  <!-- ===== FITUR ===== -->
+  <div class="features">
+    <div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz bermutu tinggi</p></div>
+    <div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Pengiriman cepat seluruh Indonesia</p></div>
+    <div class="feature-item"><i class="fas fa-exchange-alt"></i><h4>GARANSI 30 HARI</h4><p>Penukaran size tanpa ribet</p></div>
+    <div class="feature-item"><i class="fas fa-user-tie"></i><h4>HARGA MEMBER</h4><p>Potongan untuk pemilik lisensi</p></div>
+  </div>
 
-    <!-- ===== PRODUK ===== -->
-    <h2 class="section-title"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
-    <div class="product-grid" id="productGrid"></div>
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Afiliasi & Reseller</p>
+    <p style="font-size:0.8rem; opacity:0.7; margin-top:6px;">Bonus Sponsor · Binary 10L · Reward 5L · RO Produk</p>
+    <p style="font-size:0.75rem; margin-top:12px;">&copy; 2026 · Sistem MLM terintegrasi</p>
+  </footer>
 
-    <!-- ===== FITUR ===== -->
-    <div class="features"> ... </div>
+  <!-- ===== OVERLAY LOGIN/REGISTER ===== -->
+  <div class="overlay" id="overlay">
+    <div class="overlay-card">
+      <button class="close-overlay" id="closeOverlay">&times;</button>
+      <div id="authSection">
+        <div class="tab-bar" id="authTabs">
+          <button class="tab-btn active" data-tab="login">Masuk</button>
+          <button class="tab-btn" data-tab="register">Daftar</button>
+        </div>
+        <div id="loginForm">
+          <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="email@domain.com" value="admin@mlm.com" /></div>
+          <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••" value="admin123" /></div>
+          <button class="btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+          <div class="msg" id="loginMsg"></div>
+        </div>
+        <div id="registerForm" class="hidden">
+          <div class="form-group"><label>Nama Lengkap</label><input type="text" id="regName" placeholder="Nama anda" /></div>
+          <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="email@domain.com" /></div>
+          <div class="form-group"><label>Password (min 6)</label><input type="password" id="regPassword" placeholder="••••••••" /></div>
+          <div class="form-group"><label>Kode Sponsor (opsional)</label><input type="text" id="regSponsor" placeholder="ID sponsor" /></div>
+          <button class="btn-primary btn-gold" id="registerBtn"><i class="fas fa-user-plus"></i> Daftar Member</button>
+          <div class="msg" id="regMsg"></div>
+        </div>
+        <div class="demo-hint">
+          <i class="fas fa-info-circle"></i> <strong>Demo:</strong> admin@mlm.com / admin123 &nbsp;·&nbsp; budi@mail.com / budi123
+        </div>
+      </div>
+    </div>
+  </div>
 
-    <!-- ===== FOOTER ===== -->
-    <footer class="footer"> ... </footer>
+  <script>
+    // ============================================================
+    // JAVASCRIPT LENGKAP index.html
+    // ============================================================
+    (function() {
+      'use strict';
 
-    <!-- ===== OVERLAY LOGIN/REGISTER ===== -->
-    <div class="overlay" id="overlay"> ... </div>
+      // ---------- CONSTANTS ----------
+      const DB_KEY = 'hedtro_mlm_users';
+      const PRODUCT_KEY = 'hedtro_products';
+      const SETTINGS_KEY = 'hedtro_settings';
 
-    <script>
-        // ============================================================
-        // KODE JS LENGKAP UNTUK index.html
-        // ============================================================
-        (function() {
-            'use strict';
+      // ---------- FUNGSI BANTU ----------
+      function loadUsers() { const raw = localStorage.getItem(DB_KEY); return raw ? JSON.parse(raw) : []; }
+      function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
+      function loadProducts() { const raw = localStorage.getItem(PRODUCT_KEY); return raw ? JSON.parse(raw) : []; }
+      function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
+      function loadSettings() { const raw = localStorage.getItem(SETTINGS_KEY); return raw ? JSON.parse(raw) : { sponsorBonus:10, binaryBonus:8, rewardBonus:5, roBonus:3, memberDiscount:20, shippingCost:0, memberPrice:550000 }; }
+      function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
 
-            // ---------- CONSTANTS ----------
-            const DB_KEY = 'hedtro_mlm_users';
-            const PRODUCT_KEY = 'hedtro_products';
-            const SETTINGS_KEY = 'hedtro_settings';
+      // ---------- INISIALISASI DATA DEFAULT ----------
+      function initData() {
+        let users = loadUsers();
+        if (users.length === 0) {
+          users = [
+            { id:1, name:'Admin Utama', email:'admin@mlm.com', password:'admin123', sponsor_id:null, isActive:true, bonus_sponsor:0, bonus_binary:0, bonus_reward:0, bonus_ro:0, binary_tree:[0,0,0,0,0,0,0,0,0,0], reward_levels:[0,0,0,0,0], purchase_history:[] },
+            { id:2, name:'Budi Santoso', email:'budi@mail.com', password:'budi123', sponsor_id:1, isActive:true, bonus_sponsor:50, bonus_binary:120, bonus_reward:30, bonus_ro:12, binary_tree:[2,1,0,0,0,0,0,0,0,0], reward_levels:[4,2,1,0,0], purchase_history:[] },
+            { id:3, name:'Citra Dewi', email:'citra@mail.com', password:'citra123', sponsor_id:1, isActive:true, bonus_sponsor:30, bonus_binary:70, bonus_reward:15, bonus_ro:8, binary_tree:[1,1,0,0,0,0,0,0,0,0], reward_levels:[3,1,0,0,0], purchase_history:[] }
+          ];
+          saveUsers(users);
+        }
+        let products = loadProducts();
+        if (products.length === 0) {
+          products = [
+            { id:1, name:'Slim Fit Premium Indigo 501®', price:250000, original:350000, tag:'BEST SELLER', icon:'fa-tshirt', stock:45 },
+            { id:2, name:'Classic Straight Cut Raw', price:280000, original:390000, tag:'NEW ARRIVAL', icon:'fa-tshirt', stock:30 },
+            { id:3, name:'Jet Black Stretch Comfort', price:240000, original:330000, tag:'HOT ITEM', icon:'fa-tshirt', stock:25 },
+            { id:4, name:'Light Wash Retro 90s', price:270000, original:370000, tag:'DISKON 27%', icon:'fa-tshirt', stock:18 },
+            { id:5, name:'Trucker Jacket Heritage Raw', price:420000, original:550000, tag:'LIMITED', icon:'fa-jacket', stock:20 },
+            { id:6, name:'High Waist Skinny Wanita 721', price:280000, original:380000, tag:'POPULER', icon:'fa-tshirt', stock:35 },
+            { id:7, name:'Genuine Leather Belt Vintage', price:120000, original:180000, tag:'AKSESORIS', icon:'fa-belt', stock:50 },
+            { id:8, name:'Oversized Shirt Vintage Wash', price:230000, original:320000, tag:'FAVORIT', icon:'fa-tshirt', stock:22 }
+          ];
+          saveProducts(products);
+        }
+        let settings = loadSettings();
+        if (!settings.memberPrice) { settings.memberPrice = 550000; saveSettings(settings); }
+      }
+      initData();
 
-            // ---------- FUNGSI BANTU ----------
-            function loadUsers() { const raw = localStorage.getItem(DB_KEY); return raw ? JSON.parse(raw) : []; }
-            function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-            function loadProducts() { const raw = localStorage.getItem(PRODUCT_KEY); return raw ? JSON.parse(raw) : []; }
-            function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-            function loadSettings() { const raw = localStorage.getItem(SETTINGS_KEY); return raw ? JSON.parse(raw) : { sponsorBonus:10, binaryBonus:8, rewardBonus:5, roBonus:3, memberDiscount:20, shippingCost:0, memberPrice:550000 }; }
-            function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
+      // ---------- STATE ----------
+      let currentUser = null;
+      let users = loadUsers();
+      let products = loadProducts();
+      let settings = loadSettings();
 
-            // ---------- INISIALISASI DATA DEFAULT ----------
-            function initData() {
-                let users = loadUsers();
-                if (users.length === 0) {
-                    users = [
-                        { id:1, name:'Admin Utama', email:'admin@mlm.com', password:'admin123', sponsor_id:null, isActive:true, bonus_sponsor:0, bonus_binary:0, bonus_reward:0, bonus_ro:0, binary_tree:[0,0,0,0,0,0,0,0,0,0], reward_levels:[0,0,0,0,0], purchase_history:[] },
-                        { id:2, name:'Budi Santoso', email:'budi@mail.com', password:'budi123', sponsor_id:1, isActive:true, bonus_sponsor:50, bonus_binary:120, bonus_reward:30, bonus_ro:12, binary_tree:[2,1,0,0,0,0,0,0,0,0], reward_levels:[4,2,1,0,0], purchase_history:[] },
-                        { id:3, name:'Citra Dewi', email:'citra@mail.com', password:'citra123', sponsor_id:1, isActive:true, bonus_sponsor:30, bonus_binary:70, bonus_reward:15, bonus_ro:8, binary_tree:[1,1,0,0,0,0,0,0,0,0], reward_levels:[3,1,0,0,0], purchase_history:[] }
-                    ];
-                    saveUsers(users);
-                }
-                let products = loadProducts();
-                if (products.length === 0) {
-                    products = [
-                        { id:1, name:'Slim Fit Premium Indigo 501®', price:250000, original:350000, tag:'BEST SELLER', icon:'fa-tshirt', stock:45 },
-                        { id:2, name:'Classic Straight Cut Raw', price:280000, original:390000, tag:'NEW ARRIVAL', icon:'fa-tshirt', stock:30 },
-                        { id:3, name:'Jet Black Stretch Comfort', price:240000, original:330000, tag:'HOT ITEM', icon:'fa-tshirt', stock:25 },
-                        { id:4, name:'Light Wash Retro 90s', price:270000, original:370000, tag:'DISKON 27%', icon:'fa-tshirt', stock:18 },
-                        { id:5, name:'Trucker Jacket Heritage Raw', price:420000, original:550000, tag:'LIMITED', icon:'fa-jacket', stock:20 },
-                        { id:6, name:'High Waist Skinny Wanita 721', price:280000, original:380000, tag:'POPULER', icon:'fa-tshirt', stock:35 },
-                        { id:7, name:'Genuine Leather Belt Vintage', price:120000, original:180000, tag:'AKSESORIS', icon:'fa-belt', stock:50 },
-                        { id:8, name:'Oversized Shirt Vintage Wash', price:230000, original:320000, tag:'FAVORIT', icon:'fa-tshirt', stock:22 }
-                    ];
-                    saveProducts(products);
-                }
-                let settings = loadSettings();
-                if (!settings.memberPrice) { settings.memberPrice = 550000; saveSettings(settings); }
+      // ---------- DOM REFS ----------
+      const burgerBtn = document.getElementById('burgerBtn');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const closeSidebar = document.getElementById('closeSidebar');
+      const navUserName = document.getElementById('navUserName');
+      const navLoginBtn = document.getElementById('navLoginBtn');
+      const navRegisterBtn = document.getElementById('navRegisterBtn');
+      const overlay = document.getElementById('overlay');
+      const closeOverlay = document.getElementById('closeOverlay');
+      const loginForm = document.getElementById('loginForm');
+      const registerForm = document.getElementById('registerForm');
+      const loginMsg = document.getElementById('loginMsg');
+      const regMsg = document.getElementById('regMsg');
+
+      // ---------- SIDEBAR ----------
+      function toggleSidebar(open) {
+        const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
+        sidebar.classList.toggle('open', isOpen);
+        sidebarOverlay.classList.toggle('active', isOpen);
+        burgerBtn.classList.toggle('active', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      }
+      burgerBtn.addEventListener('click', () => toggleSidebar());
+      closeSidebar.addEventListener('click', () => toggleSidebar(false));
+      sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
+
+      // ---------- CAROUSEL ----------
+      const track = document.getElementById('carouselTrack');
+      const dots = document.getElementById('carouselDots');
+      const slides = track.querySelectorAll('.carousel-slide');
+      const totalSlides = slides.length;
+      let currentSlide = 0;
+      let slideInterval = null;
+
+      function createDots() {
+        dots.innerHTML = '';
+        for (let i = 0; i < totalSlides; i++) {
+          const dot = document.createElement('span');
+          dot.className = 'dot' + (i === 0 ? ' active' : '');
+          dot.dataset.index = i;
+          dot.addEventListener('click', () => goToSlide(i));
+          dots.appendChild(dot);
+        }
+      }
+      createDots();
+
+      function goToSlide(index) {
+        currentSlide = (index + totalSlides) % totalSlides;
+        track.style.transform = `translateX(-${currentSlide * 100}%)`;
+        document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+      }
+
+      function nextSlide() { goToSlide(currentSlide + 1); }
+      function prevSlide() { goToSlide(currentSlide - 1); }
+
+      document.getElementById('carouselNext').addEventListener('click', () => { nextSlide(); resetInterval(); });
+      document.getElementById('carouselPrev').addEventListener('click', () => { prevSlide(); resetInterval(); });
+
+      function resetInterval() {
+        if (slideInterval) { clearInterval(slideInterval); slideInterval = null; }
+        slideInterval = setInterval(nextSlide, 4000);
+      }
+      resetInterval();
+
+      // ---------- RENDER PRODUK ----------
+      function renderProducts() {
+        const grid = document.getElementById('productGrid');
+        grid.innerHTML = '';
+        products.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = `
+            <div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>
+            <div class="body">
+              <span class="tag">${p.tag || 'PRODUK'}</span>
+              <h4>${p.name}</h4>
+              <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original?.toLocaleString() || ''}</del></div>
+              <button class="btn-detail" data-id="${p.id}">lihat Detail</button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+      }
+
+      // ---------- AUTH FUNCTIONS ----------
+      function login(email, password) {
+        const user = users.find(u => u.email === email && u.password === password);
+        if (!user) {
+          loginMsg.className = 'msg error';
+          loginMsg.innerText = '❌ Email atau password salah.';
+          return false;
+        }
+        currentUser = user;
+        localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
+        loginMsg.className = 'msg';
+        loginMsg.innerText = '';
+        if (user.email === 'admin@mlm.com') {
+          window.location.href = 'admin.html';
+        } else {
+          window.location.href = 'dashboard.html';
+        }
+        return true;
+      }
+
+      function register(name, email, password, sponsorCode) {
+        if (users.find(u => u.email === email)) {
+          regMsg.className = 'msg error';
+          regMsg.innerText = '❌ Email sudah terdaftar.';
+          return;
+        }
+        let sponsor_id = null;
+        if (sponsorCode) {
+          const sponsor = users.find(u => u.id === parseInt(sponsorCode));
+          if (!sponsor) {
+            regMsg.className = 'msg error';
+            regMsg.innerText = '⚠️ Kode sponsor tidak ditemukan.';
+            return;
+          }
+          sponsor_id = sponsor.id;
+        }
+        const newUser = {
+          id: users.length ? Math.max(...users.map(u => u.id)) + 1 : 1,
+          name, email, password,
+          sponsor_id,
+          isActive: false,
+          bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0,
+          binary_tree: [0,0,0,0,0,0,0,0,0,0],
+          reward_levels: [0,0,0,0,0],
+          purchase_history: []
+        };
+        users.push(newUser);
+        saveUsers(users);
+
+        // Update binary tree untuk upline
+        if (sponsor_id) {
+          updateBinaryTree(sponsor_id, 1);
+        }
+
+        regMsg.className = 'msg success';
+        regMsg.innerText = '✅ Pendaftaran berhasil! Silakan login dan bayar paket member.';
+        document.getElementById('regName').value = '';
+        document.getElementById('regEmail').value = '';
+        document.getElementById('regPassword').value = '';
+        document.getElementById('regSponsor').value = '';
+        setTimeout(() => {
+          document.querySelector('#authTabs .tab-btn[data-tab="login"]').click();
+        }, 1200);
+      }
+
+      function updateBinaryTree(userId, level) {
+        if (level > 10) return;
+        const user = users.find(u => u.id === userId);
+        if (!user) return;
+        user.binary_tree[level-1] = (user.binary_tree[level-1] || 0) + 1;
+        if (level <= 5) {
+          user.reward_levels[level-1] = (user.reward_levels[level-1] || 0) + 1;
+        }
+        saveUsers(users);
+        if (user.sponsor_id) {
+          updateBinaryTree(user.sponsor_id, level + 1);
+        }
+      }
+
+      // ---------- OVERLAY ----------
+      function openOverlay() {
+        overlay.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        loginMsg.innerText = '';
+        regMsg.innerText = '';
+      }
+
+      function closeOverlayFn() {
+        overlay.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+
+      closeOverlay.addEventListener('click', closeOverlayFn);
+      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlayFn(); });
+
+      // ---------- UI UPDATE ----------
+      function updateUI() {
+        if (currentUser) {
+          navUserName.innerText = currentUser.name;
+          navLoginBtn.style.display = 'none';
+          navRegisterBtn.style.display = 'none';
+        } else {
+          navUserName.innerText = 'Guest';
+          navLoginBtn.style.display = 'flex';
+          navRegisterBtn.style.display = 'flex';
+        }
+      }
+
+      // ---------- EVENT BINDINGS ----------
+      // Nav
+      navLoginBtn.addEventListener('click', openOverlay);
+      navRegisterBtn.addEventListener('click', () => {
+        openOverlay();
+        document.querySelector('#authTabs .tab-btn[data-tab="register"]').click();
+      });
+      document.getElementById('navUserBadge').addEventListener('click', function() {
+        if (currentUser) {
+          if (currentUser.email === 'admin@mlm.com') window.location.href = 'admin.html';
+          else window.location.href = 'dashboard.html';
+        } else {
+          openOverlay();
+        }
+      });
+
+      // Sidebar login/register
+      document.getElementById('sideLoginBtn').addEventListener('click', () => { toggleSidebar(false); openOverlay(); });
+      document.getElementById('sideRegisterBtn').addEventListener('click', () => {
+        toggleSidebar(false);
+        openOverlay();
+        document.querySelector('#authTabs .tab-btn[data-tab="register"]').click();
+      });
+      document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
+        item.addEventListener('click', function() {
+          const page = this.dataset.page;
+          toggleSidebar(false);
+          if (page === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
+          if (page === 'products') document.querySelector('.section-title')?.scrollIntoView({ behavior: 'smooth' });
+          if (page === 'about') document.querySelector('.features')?.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+
+      // Auth tabs
+      document.querySelectorAll('#authTabs .tab-btn').forEach(btn => {
+        btn.addEventListener('click', function() {
+          document.querySelectorAll('#authTabs .tab-btn').forEach(b => b.classList.remove('active'));
+          this.classList.add('active');
+          const tab = this.dataset.tab;
+          if (tab === 'login') {
+            loginForm.classList.remove('hidden');
+            registerForm.classList.add('hidden');
+            loginMsg.innerText = '';
+          } else {
+            loginForm.classList.add('hidden');
+            registerForm.classList.remove('hidden');
+            regMsg.innerText = '';
+          }
+        });
+      });
+
+      document.getElementById('loginBtn').addEventListener('click', function() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        if (!email || !password) {
+          loginMsg.className = 'msg error';
+          loginMsg.innerText = '⚠️ Isi email dan password.';
+          return;
+        }
+        login(email, password);
+      });
+
+      document.getElementById('registerBtn').addEventListener('click', function() {
+        const name = document.getElementById('regName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value.trim();
+        const sponsor = document.getElementById('regSponsor').value.trim();
+        if (!name || !email || !password) {
+          regMsg.className = 'msg error';
+          regMsg.innerText = '⚠️ Semua field wajib diisi.';
+          return;
+        }
+        if (password.length < 6) {
+          regMsg.className = 'msg error';
+          regMsg.innerText = '⚠️ Password min 6 karakter.';
+          return;
+        }
+        register(name, email, password, sponsor);
+      });
+
+      document.getElementById('loginPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('loginBtn').click(); });
+      document.getElementById('regPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById('registerBtn').click(); });
+
+      // ---------- INIT ----------
+      renderProducts();
+
+      // Cek session
+      const session = localStorage.getItem('mlm_session');
+      if (session) {
+        try {
+          const { id } = JSON.parse(session);
+          currentUser = users.find(u => u.id === id);
+          if (currentUser) {
+            updateUI();
+            if (currentUser.email === 'admin@mlm.com') {
+              window.location.href = 'admin.html';
+            } else {
+              window.location.href = 'dashboard.html';
             }
-            initData();
+            return;
+          } else {
+            localStorage.removeItem('mlm_session');
+          }
+        } catch (_) { localStorage.removeItem('mlm_session'); }
+      }
+      updateUI();
 
-            // ---------- STATE ----------
-            let currentUser = null;
-            let users = loadUsers();
-            let products = loadProducts();
-            let settings = loadSettings();
-
-            // ---------- RENDER PRODUK ----------
-            function renderProducts() {
-                const grid = document.getElementById('productGrid');
-                grid.innerHTML = '';
-                products.forEach(p => {
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    card.innerHTML = `
-                        <div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>
-                        <div class="body">
-                            <span class="tag">${p.tag || 'PRODUK'}</span>
-                            <h4>${p.name}</h4>
-                            <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original?.toLocaleString() || ''}</del></div>
-                            <button class="btn-detail" data-id="${p.id}">lihat Detail</button>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-            }
-
-            // ---------- LOGIN / REGISTER ----------
-            // (Sama seperti sebelumnya, namun dengan penambahan isActive dan update tree)
-            // Saya akan tulis ulang intinya
-
-            // Fungsi login dan register sudah ada, tapi kita perlu update tree saat register dengan sponsor
-            function register(name, email, password, sponsorCode) {
-                // ... validasi
-                let sponsor_id = null;
-                let sponsorUser = null;
-                if (sponsorCode) {
-                    sponsorUser = users.find(u => u.id === parseInt(sponsorCode));
-                    if (!sponsorUser) { regMsg.innerText = '⚠️ Kode sponsor tidak ditemukan.'; return; }
-                    sponsor_id = sponsorUser.id;
-                }
-                const newUser = {
-                    id: users.length ? Math.max(...users.map(u=>u.id)) + 1 : 1,
-                    name, email, password,
-                    sponsor_id,
-                    isActive: false, // belum aktif sampai bayar
-                    bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0,
-                    binary_tree: [0,0,0,0,0,0,0,0,0,0],
-                    reward_levels: [0,0,0,0,0],
-                    purchase_history: []
-                };
-                users.push(newUser);
-                saveUsers(users);
-
-                // Update binary tree sponsor dan upline
-                if (sponsorUser) {
-                    // Update tree untuk semua upline (level 1-10)
-                    updateBinaryTree(sponsorUser.id, 1);
-                }
-
-                regMsg.innerText = '✅ Pendaftaran berhasil! Silakan login dan bayar paket member.';
-                // ...
-            }
-
-            // Fungsi update binary tree
-            function updateBinaryTree(userId, level) {
-                if (level > 10) return;
-                const user = users.find(u => u.id === userId);
-                if (!user) return;
-                // Tambah 1 di level tersebut
-                user.binary_tree[level-1] = (user.binary_tree[level-1] || 0) + 1;
-                // Update reward levels (5 level)
-                if (level <= 5) {
-                    user.reward_levels[level-1] = (user.reward_levels[level-1] || 0) + 1;
-                }
-                saveUsers(users);
-                // Rekursif ke sponsor
-                if (user.sponsor_id) {
-                    updateBinaryTree(user.sponsor_id, level + 1);
-                }
-            }
-
-            // Fungsi untuk membeli produk (RO) - akan dipanggil dari dashboard
-            // Saya taruh di sini agar bisa diakses global
-
-            window.buyProduct = function(productId, userId) {
-                const user = users.find(u => u.id === userId);
-                if (!user) { alert('User tidak ditemukan'); return; }
-                if (!user.isActive) { alert('Anda harus aktif terlebih dahulu (bayar paket member).'); return; }
-                const product = products.find(p => p.id === productId);
-                if (!product) { alert('Produk tidak ditemukan'); return; }
-                if (product.stock <= 0) { alert('Stok habis'); return; }
-
-                // Kurangi stok
-                product.stock--;
-                saveProducts(products);
-
-                // Catat pembelian
-                user.purchase_history.push({ productId, date: new Date().toISOString(), price: product.price });
-                // Hitung bonus berdasarkan settings
-                const bonusSponsor = (product.price * settings.sponsorBonus) / 100;
-                const bonusBinary = (product.price * settings.binaryBonus) / 100;
-                const bonusReward = (product.price * settings.rewardBonus) / 100;
-                const bonusRo = (product.price * settings.roBonus) / 100;
-
-                // Tambahkan ke bonus user (karena user membeli, bonus untuk upline)
-                // Berikan bonus ke sponsor, dan seterusnya sesuai tree
-                distributeBonus(user.sponsor_id, bonusSponsor, bonusBinary, bonusReward, bonusRo, 1);
-
-                saveUsers(users);
-                alert('✅ Pembelian berhasil! Bonus telah didistribusikan.');
-                // Refresh dashboard jika terbuka
-                if (window.location.pathname.includes('dashboard.html')) {
-                    location.reload();
-                }
-            };
-
-            function distributeBonus(sponsorId, sBonus, bBonus, rBonus, roBonus, level) {
-                if (!sponsorId || level > 10) return;
-                const sponsor = users.find(u => u.id === sponsorId);
-                if (!sponsor) return;
-                // Level 1 = sponsor langsung mendapat sponsor bonus
-                if (level === 1) sponsor.bonus_sponsor += sBonus;
-                // Binary bonus untuk semua level 1-10
-                sponsor.bonus_binary += bBonus;
-                // Reward bonus untuk level 1-5
-                if (level <= 5) sponsor.bonus_reward += rBonus;
-                // RO bonus untuk semua level
-                sponsor.bonus_ro += roBonus;
-                saveUsers(users);
-                // Lanjut ke sponsor berikutnya
-                if (sponsor.sponsor_id) {
-                    distributeBonus(sponsor.sponsor_id, sBonus, bBonus, rBonus, roBonus, level + 1);
-                }
-            }
-
-            // Fungsi untuk aktivasi (bayar paket member)
-            window.activateMember = function(userId) {
-                const user = users.find(u => u.id === userId);
-                if (!user) return;
-                if (user.isActive) { alert('Sudah aktif.'); return; }
-                // Kurangi stok produk paket? Atau kita asumsikan stok khusus.
-                // Di sini kita hanya set isActive = true dan catat pembelian paket
-                user.isActive = true;
-                user.purchase_history.push({ productId: 0, date: new Date().toISOString(), price: settings.memberPrice, isPackage: true });
-                saveUsers(users);
-                alert('✅ Paket member aktif! Anda sekarang bisa melakukan repeat order.');
-                if (window.location.pathname.includes('dashboard.html')) {
-                    location.reload();
-                }
-            };
-
-            // ---------- INIT ----------
-            renderProducts();
-
-            // Cek session
-            const session = localStorage.getItem('mlm_session');
-            if (session) {
-                try {
-                    const { id } = JSON.parse(session);
-                    currentUser = users.find(u => u.id === id);
-                    if (currentUser) {
-                        document.getElementById('navUserName').innerText = currentUser.name;
-                        // Jika admin, redirect ke admin.html, jika member ke dashboard.html
-                        if (currentUser.email === 'admin@mlm.com') {
-                            window.location.href = 'admin.html';
-                        } else {
-                            window.location.href = 'dashboard.html';
-                        }
-                        return;
-                    } else {
-                        localStorage.removeItem('mlm_session');
-                    }
-                } catch (_) { localStorage.removeItem('mlm_session'); }
-            }
-
-            // ... event binding untuk login/register, sidebar, carousel, dll.
-            // Saya singkat karena panjang, tapi semua fungsi di atas sudah cukup untuk integrasi.
-
-            console.log('🟦 HEDTRO JEANS · Toko online terintegrasi dengan localStorage');
-        })();
-    </script>
+      console.log('🟦 HEDTRO JEANS · Toko online siap');
+    })();
+  </script>
 </body>
 </html>
