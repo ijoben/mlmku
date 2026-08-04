@@ -37,7 +37,6 @@
     ::-webkit-scrollbar-track { background:var(--cream); }
     ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
-    /* ===== NAVBAR ===== */
     .navbar {
       position: fixed; top:0; left:0; right:0; z-index:1100;
       background: var(--denim-dark);
@@ -65,7 +64,6 @@
     }
     .nav-right .user-badge i { color:var(--gold-accent); }
 
-    /* ===== BURGER (hanya mobile) ===== */
     .burger-btn {
       display:none;
       flex-direction:column; gap:5px;
@@ -81,7 +79,6 @@
     .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
     .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
 
-    /* ===== SIDEBAR ===== */
     .sidebar-overlay {
       display:none;
       position:fixed; top:0; left:0; width:100%; height:100%;
@@ -137,7 +134,6 @@
     .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
     .sidebar .menu-item.logout i { color:#e74c3c; }
 
-    /* ===== MAIN CONTENT ===== */
     .main-content {
       margin-left: var(--sidebar-width);
       padding: 20px 24px 40px;
@@ -157,7 +153,6 @@
     }
     .page-title i { color:var(--gold-accent); }
 
-    /* ===== STATUS BANNER ===== */
     #statusBanner {
       padding:14px 20px; border-radius:var(--radius-sm);
       margin-bottom:20px;
@@ -181,7 +176,6 @@
     .btn-sm-danger { background:#b13e3e; color:#fff; }
     .btn-sm-danger:hover { background:#8f2f2f; }
 
-    /* ===== WALLET ===== */
     .wallet-card {
       background:var(--denim-dark); color:var(--cream);
       border-radius:var(--radius-sm); padding:20px 24px;
@@ -192,7 +186,6 @@
     .wallet-card .wallet-label { font-size:0.85rem; opacity:0.7; }
     .wallet-card .wallet-amount { font-size:2rem; font-weight:700; color:var(--gold-accent); }
 
-    /* ===== STATS ===== */
     .stats-grid {
       display:grid; grid-template-columns:repeat(auto-fit, minmax(170px,1fr));
       gap:16px; margin-bottom:28px;
@@ -211,7 +204,6 @@
       margin-top:4px;
     }
 
-    /* ===== HISTORY ===== */
     .history-card {
       background:var(--white); border-radius:var(--radius-sm);
       padding:18px 20px; box-shadow:var(--shadow);
@@ -232,7 +224,6 @@
     .history-item .amount.plus { color:#1f7a4b; }
     .history-item .amount.minus { color:#b13e3e; }
 
-    /* ===== TREE ===== */
     .tree-wrapper {
       overflow-x:auto;
       padding:20px 0;
@@ -298,7 +289,6 @@
     .tree-connector .branch.left { left:0; border-right:2px solid var(--denim-blue); }
     .tree-connector .branch.right { right:0; border-left:2px solid var(--denim-blue); }
 
-    /* ===== FORM ===== */
     .form-card {
       background:var(--white); border-radius:var(--radius-sm);
       padding:20px; box-shadow:var(--shadow);
@@ -320,7 +310,6 @@
       box-shadow:0 0 0 4px rgba(42,75,110,0.1);
     }
 
-    /* ===== PRODUCT GRID (di dashboard) ===== */
     .product-grid {
       display:grid;
       grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
@@ -377,7 +366,6 @@
     .product-card .body .btn-sm:hover { background:var(--denim-dark); }
     .product-card .body .btn-sm:disabled { opacity:0.5; cursor:not-allowed; }
 
-    /* ===== BADGE STATUS ===== */
     .badge-status {
       padding:2px 12px;
       border-radius:40px;
@@ -445,7 +433,6 @@
   <!-- ===== MAIN CONTENT ===== -->
   <div class="main-content" id="mainContent">
 
-    <!-- DASHBOARD -->
     <div class="section-content active" id="sec-dashboard">
       <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
       <div id="statusBanner">Memuat status...</div>
@@ -468,13 +455,11 @@
       </div>
     </div>
 
-    <!-- JARINGAN -->
     <div class="section-content" id="sec-network">
       <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary</h1>
       <div class="tree-wrapper" id="treeContainer"></div>
     </div>
 
-    <!-- DEPOSIT -->
     <div class="section-content" id="sec-deposit">
       <h1 class="page-title"><i class="fas fa-plus-circle"></i> Deposit</h1>
       <div class="form-card">
@@ -491,7 +476,6 @@
       </div>
     </div>
 
-    <!-- WITHDRAW -->
     <div class="section-content" id="sec-withdraw">
       <h1 class="page-title"><i class="fas fa-minus-circle"></i> Withdraw</h1>
       <div class="form-card">
@@ -502,13 +486,11 @@
       </div>
     </div>
 
-    <!-- RIWAYAT -->
     <div class="section-content" id="sec-history">
       <h1 class="page-title"><i class="fas fa-history"></i> Riwayat Transaksi</h1>
       <div class="history-card"><div id="fullHistory"></div></div>
     </div>
 
-    <!-- KOLEKSI + RO -->
     <div class="section-content" id="sec-products">
       <h1 class="page-title"><i class="fas fa-tshirt"></i> Koleksi Produk</h1>
       <div id="bankInfo" style="background:var(--denim-light); padding:12px 18px; border-radius:var(--radius-sm); margin-bottom:16px;">
@@ -559,7 +541,6 @@
         return;
       }
 
-      // ===== DOM REFS =====
       const navUserName = document.getElementById('navUserName');
       const burgerBtn = document.getElementById('burgerBtn');
       const sidebar = document.getElementById('sidebar');
@@ -568,7 +549,6 @@
       const statusBanner = document.getElementById('statusBanner');
       const walletAmount = document.getElementById('walletAmount');
 
-      // ===== SIDEBAR TOGGLE (HP) =====
       function toggleSidebar(open) {
         const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
         if (window.innerWidth <= 768) {
@@ -582,7 +562,6 @@
       closeSidebar.addEventListener('click', () => toggleSidebar(false));
       sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
-      // ===== NAVIGASI =====
       const sections = {
         dashboard: document.getElementById('sec-dashboard'),
         network: document.getElementById('sec-network'),
@@ -617,7 +596,6 @@
         window.location.href = 'index.html';
       });
 
-      // ===== BANK INFO =====
       function renderBankInfo() {
         const el = document.getElementById('bankDetail');
         if (el) {
@@ -625,7 +603,6 @@
         }
       }
 
-      // ===== DEPOSIT & WITHDRAW =====
       function deposit(amount) {
         if (amount <= 0 || isNaN(amount)) { alert('Masukkan nominal yang valid.'); return; }
         if (amount < 10000) { alert('Minimal deposit Rp 10.000'); return; }
@@ -684,7 +661,6 @@
         withdraw(amount, account);
       });
 
-      // ===== RENDER DASHBOARD =====
       function renderDashboard() {
         navUserName.textContent = currentUser.name;
         const statusMap = {
@@ -740,10 +716,8 @@
         container.innerHTML = html;
       }
 
-      // ===== RENDER NETWORK (BINARY TREE VISUAL) =====
       function renderNetwork() {
         const container = document.getElementById('treeContainer');
-        // Build tree dari currentUser dengan depth 4
         const treeData = buildTree(currentUser.id, 0, 4);
         container.innerHTML = renderTreeHTML(treeData);
       }
@@ -780,7 +754,6 @@
         return html;
       }
 
-      // ===== RENDER PRODUK + RO =====
       function renderProductsDashboard() {
         const grid = document.getElementById('productGridDashboard');
         if (!grid) return;
@@ -806,7 +779,6 @@
           grid.appendChild(card);
         });
 
-        // Event listener untuk tombol beli RO
         document.querySelectorAll('.buy-ro-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const productId = parseInt(this.dataset.id);
@@ -816,13 +788,13 @@
         });
       }
 
-      // ===== FUNGSI BELI RO =====
+      // ===== FUNGSI BUY RO =====
       function buyRO(productId, price) {
         if (currentUser.status !== 'verified') {
           alert('❌ Anda harus terverifikasi (verified) untuk melakukan repeat order.');
           return;
         }
-        const product = products.find(p => p.id === productId);
+        const product = loadProducts().find(p => p.id === productId);
         if (!product) { alert('Produk tidak ditemukan'); return; }
         if (product.stock <= 0) { alert('Stok habis'); return; }
 
@@ -830,9 +802,9 @@
 
         // Kurangi stok
         product.stock--;
-        saveProducts(products);
+        saveProducts(loadProducts());
 
-        // Catat transaksi RO dengan status pending
+        // === PENTING: Simpan transaksi RO ke currentUser ===
         if (!currentUser.transactions) currentUser.transactions = [];
         currentUser.transactions.push({
           type: 'ro_purchase',
@@ -843,7 +815,7 @@
           status: 'pending',
           note: `Menunggu pembayaran transfer ke ${bankInfo.bank} - ${bankInfo.account}`
         });
-        // Tambahkan ke purchase_history
+
         if (!currentUser.purchase_history) currentUser.purchase_history = [];
         currentUser.purchase_history.push({
           productId: productId,
@@ -852,16 +824,16 @@
           date: new Date().toISOString(),
           status: 'pending'
         });
+
+        // === SIMPAN KE LOCALSTORAGE ===
         saveUsers(users);
 
-        alert('✅ Pesanan RO berhasil! Silakan transfer ke rekening admin dan tunggu konfirmasi.');
+        alert('✅ Pesanan RO berhasil! Silakan transfer ke rekening admin dan tunggu konfirmasi. Cek menu Riwayat.');
         renderDashboard();
         renderProductsDashboard();
-        // Buka riwayat agar user melihat status pending
         showSection('history');
       }
 
-      // ===== REFRESH DATA =====
       function refreshUserData() {
         users = loadUsers();
         const updated = users.find(u => u.id === currentUser.id);
@@ -881,12 +853,11 @@
         showSection('dashboard');
       });
 
-      // ===== INIT =====
       renderBankInfo();
       showSection('dashboard');
       setInterval(refreshUserData, 30000);
 
-      console.log('🟦 HEDTRO · Dashboard dengan tree binary & RO');
+      console.log('🟦 HEDTRO · Dashboard dengan RO');
     })();
   </script>
 </body>
