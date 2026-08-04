@@ -2,12 +2,11 @@
 <html lang="id">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Dashboard · HEDTRO JEANS</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
   <style>
-    /* ===== SEMUA STYLE SAMA, TAMBAHKAN UNTUK TREE ===== */
     * { margin:0; padding:0; box-sizing:border-box; }
     :root {
       --denim-dark: #0b1a2b;
@@ -25,13 +24,215 @@
       --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
       --sidebar-width: 280px;
     }
-    body { font-family:'Inter',sans-serif; background:var(--cream); color:var(--denim-dark); padding-top:70px; overflow-x:hidden; }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--cream);
+      color: var(--denim-dark);
+      padding-top: 70px;
+      overflow-x: hidden;
+    }
     a { text-decoration:none; color:inherit; }
     button { cursor:pointer; font-family:inherit; border:none; background:none; }
-    /* ===== NAVBAR, SIDEBAR, MAIN CONTENT SAMA ===== */
-    /* ... (saya sertakan lengkap di file final) ... */
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:var(--cream); }
+    ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
-    /* ===== TREE VISUAL ===== */
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top:0; left:0; right:0; z-index:1100;
+      background: var(--denim-dark);
+      padding: 12px 20px;
+      display: flex; align-items:center; justify-content:space-between;
+      border-bottom:3px solid var(--gold-accent);
+      height:70px;
+    }
+    .navbar .logo {
+      display:flex; align-items:center; gap:8px;
+      color:var(--white); font-weight:800; font-size:1.4rem;
+    }
+    .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
+    .navbar .logo span { font-weight:300; color:var(--gold-light); font-size:0.75rem; margin-left:2px; }
+    .nav-right {
+      display:flex; align-items:center; gap:12px;
+    }
+    .nav-right .user-badge {
+      display:flex; align-items:center; gap:6px;
+      color:var(--cream); font-size:0.8rem;
+      background:rgba(255,255,255,0.08);
+      padding:6px 14px; border-radius:60px;
+      border:1px solid rgba(255,255,255,0.06);
+      cursor:pointer;
+    }
+    .nav-right .user-badge i { color:var(--gold-accent); }
+
+    /* ===== BURGER (hanya mobile) ===== */
+    .burger-btn {
+      display:none;
+      flex-direction:column; gap:5px;
+      padding:6px; background:transparent; border:none; cursor:pointer;
+      z-index:1101;
+    }
+    .burger-btn span {
+      display:block; width:28px; height:3px;
+      background:var(--cream); border-radius:4px;
+      transition:var(--transition); transform-origin:center;
+    }
+    .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
+    .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
+    .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-overlay {
+      display:none;
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.5); z-index:1050;
+      opacity:0; pointer-events:none;
+      transition:var(--transition);
+    }
+    .sidebar-overlay.active { opacity:1; pointer-events:all; }
+    .sidebar {
+      position:fixed; top:0; left:0; bottom:0;
+      width:var(--sidebar-width);
+      background:var(--denim-dark);
+      z-index:1060;
+      padding:24px 20px;
+      overflow-y:auto;
+      border-right:3px solid var(--gold-accent);
+      display:flex; flex-direction:column; gap:4px;
+      transition:left 0.3s ease;
+      left:0;
+    }
+    @media (max-width: 768px) {
+      .sidebar { left:-320px; }
+      .sidebar.open { left:0; }
+      .burger-btn { display:flex; }
+      .sidebar-overlay { display:block; }
+    }
+    .sidebar .sidebar-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);
+      margin-bottom:12px;
+    }
+    .sidebar .sidebar-header .logo-side {
+      color:var(--white); font-weight:800; font-size:1.3rem;
+    }
+    .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
+    .sidebar .sidebar-header .close-side {
+      display:none;
+      color:var(--cream); font-size:1.6rem; cursor:pointer;
+    }
+    @media (max-width: 768px) {
+      .sidebar .sidebar-header .close-side { display:block; }
+    }
+    .sidebar .menu-item {
+      display:flex; align-items:center; gap:14px;
+      padding:12px 16px; border-radius:12px;
+      color:var(--cream); font-weight:500; font-size:0.95rem;
+      transition:var(--transition); cursor:pointer;
+    }
+    .sidebar .menu-item:hover { background:rgba(255,255,255,0.08); }
+    .sidebar .menu-item i { width:24px; color:var(--gold-accent); }
+    .sidebar .menu-item.active { background:rgba(201,168,76,0.15); color:var(--gold-accent); }
+    .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:6px 0; }
+    .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
+    .sidebar .menu-item.logout i { color:#e74c3c; }
+
+    /* ===== MAIN CONTENT ===== */
+    .main-content {
+      margin-left: var(--sidebar-width);
+      padding: 20px 24px 40px;
+      transition: margin-left 0.3s ease;
+      max-width: calc(100% - var(--sidebar-width));
+    }
+    @media (max-width: 768px) {
+      .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 16px 16px 30px;
+      }
+    }
+    .page-title {
+      font-size:1.6rem; font-weight:700; color:var(--denim-dark);
+      margin-bottom:20px; display:flex; align-items:center; gap:12px;
+    }
+    .page-title i { color:var(--gold-accent); }
+
+    /* ===== STATUS BANNER ===== */
+    #statusBanner {
+      padding:14px 20px; border-radius:var(--radius-sm);
+      margin-bottom:20px;
+      display:flex; align-items:center; flex-wrap:wrap; gap:10px;
+      font-weight:500;
+    }
+    .status-free { background:#f8d7da; color:#721c24; }
+    .status-pending { background:#fff3cd; color:#856404; }
+    .status-verified { background:#d4edda; color:#155724; }
+
+    .btn-sm {
+      padding:8px 18px; border-radius:60px; font-weight:600; font-size:0.8rem;
+      transition:var(--transition); font-family:inherit;
+    }
+    .btn-sm-success { background:#1f7a4b; color:#fff; }
+    .btn-sm-success:hover { background:#155d38; }
+    .btn-sm-primary { background:var(--denim-blue); color:#fff; }
+    .btn-sm-primary:hover { background:var(--denim-dark); }
+    .btn-sm-gold { background:var(--gold-accent); color:var(--denim-dark); }
+    .btn-sm-gold:hover { background:#b8963a; }
+    .btn-sm-danger { background:#b13e3e; color:#fff; }
+    .btn-sm-danger:hover { background:#8f2f2f; }
+
+    /* ===== WALLET ===== */
+    .wallet-card {
+      background:var(--denim-dark); color:var(--cream);
+      border-radius:var(--radius-sm); padding:20px 24px;
+      margin-bottom:20px;
+      display:flex; justify-content:space-between; align-items:center;
+      flex-wrap:wrap; gap:12px;
+    }
+    .wallet-card .wallet-label { font-size:0.85rem; opacity:0.7; }
+    .wallet-card .wallet-amount { font-size:2rem; font-weight:700; color:var(--gold-accent); }
+
+    /* ===== STATS ===== */
+    .stats-grid {
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(170px,1fr));
+      gap:16px; margin-bottom:28px;
+    }
+    .stat-card {
+      background:var(--white); border-radius:var(--radius-sm);
+      padding:18px 20px; border-left:4px solid var(--gold-accent);
+      box-shadow:var(--shadow);
+    }
+    .stat-card .label {
+      font-size:0.7rem; text-transform:uppercase;
+      color:var(--denim-blue); font-weight:600; letter-spacing:0.3px;
+    }
+    .stat-card .value {
+      font-size:1.8rem; font-weight:700; color:var(--denim-dark);
+      margin-top:4px;
+    }
+
+    /* ===== HISTORY ===== */
+    .history-card {
+      background:var(--white); border-radius:var(--radius-sm);
+      padding:18px 20px; box-shadow:var(--shadow);
+      margin-top:12px;
+    }
+    .history-card h3 {
+      font-size:1rem; font-weight:600; margin-bottom:12px;
+      display:flex; align-items:center; gap:8px;
+    }
+    .history-card h3 i { color:var(--gold-accent); }
+    .history-item {
+      display:flex; justify-content:space-between;
+      padding:10px 0; border-bottom:1px solid #eee;
+      font-size:0.9rem;
+    }
+    .history-item:last-child { border-bottom:none; }
+    .history-item .amount { font-weight:700; }
+    .history-item .amount.plus { color:#1f7a4b; }
+    .history-item .amount.minus { color:#b13e3e; }
+
+    /* ===== TREE ===== */
     .tree-wrapper {
       overflow-x:auto;
       padding:20px 0;
@@ -97,7 +298,29 @@
     .tree-connector .branch.left { left:0; border-right:2px solid var(--denim-blue); }
     .tree-connector .branch.right { right:0; border-left:2px solid var(--denim-blue); }
 
-    /* ===== PRODUCT GRID ===== */
+    /* ===== FORM ===== */
+    .form-card {
+      background:var(--white); border-radius:var(--radius-sm);
+      padding:20px; box-shadow:var(--shadow);
+      max-width:500px;
+    }
+    .form-group { margin-bottom:16px; }
+    .form-group label {
+      display:block; font-weight:500; color:var(--denim-navy);
+      font-size:0.85rem; margin-bottom:4px;
+    }
+    .form-group input, .form-group select {
+      width:100%; padding:12px 16px;
+      border:1.5px solid #dde3ea; border-radius:60px;
+      font-size:0.95rem; background:#fafcff;
+      font-family:inherit; transition:var(--transition);
+    }
+    .form-group input:focus, .form-group select:focus {
+      border-color:var(--denim-blue); outline:none;
+      box-shadow:0 0 0 4px rgba(42,75,110,0.1);
+    }
+
+    /* ===== PRODUCT GRID (di dashboard) ===== */
     .product-grid {
       display:grid;
       grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
@@ -154,7 +377,7 @@
     .product-card .body .btn-sm:hover { background:var(--denim-dark); }
     .product-card .body .btn-sm:disabled { opacity:0.5; cursor:not-allowed; }
 
-    /* ===== TRANSACTION STATUS ===== */
+    /* ===== BADGE STATUS ===== */
     .badge-status {
       padding:2px 12px;
       border-radius:40px;
@@ -165,11 +388,28 @@
     .badge-success { background:#d4edda; color:#155724; }
     .badge-failed { background:#f8d7da; color:#721c24; }
 
-    /* ===== RESPONSIVE ===== */
-    @media (max-width:768px) {
+    .text-muted { color:#6a7e9a; font-size:0.85rem; }
+    .mt-16 { margin-top:16px; }
+    .mb-8 { margin-bottom:8px; }
+
+    .section-content { display:none; }
+    .section-content.active { display:block; }
+
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns:1fr 1fr; gap:12px; }
+      .stat-card .value { font-size:1.4rem; }
+      .wallet-card { flex-direction:column; align-items:stretch; }
+      .wallet-card .wallet-amount { font-size:1.6rem; }
+      .product-grid { grid-template-columns:1fr 1fr; gap:12px; }
       .tree { min-width:400px; }
       .tree-level { gap:20px; }
       .tree-node { min-width:60px; font-size:0.7rem; padding:4px 10px; }
+    }
+    @media (max-width: 480px) {
+      .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
+      .stat-card { padding:12px 14px; }
+      .stat-card .value { font-size:1.2rem; }
+      .product-grid { grid-template-columns:1fr 1fr; gap:8px; }
     }
   </style>
 </head>
@@ -228,7 +468,7 @@
       </div>
     </div>
 
-    <!-- JARINGAN (Binary Tree) -->
+    <!-- JARINGAN -->
     <div class="section-content" id="sec-network">
       <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary</h1>
       <div class="tree-wrapper" id="treeContainer"></div>
@@ -268,10 +508,9 @@
       <div class="history-card"><div id="fullHistory"></div></div>
     </div>
 
-    <!-- KOLEKSI PRODUK + RO -->
+    <!-- KOLEKSI + RO -->
     <div class="section-content" id="sec-products">
       <h1 class="page-title"><i class="fas fa-tshirt"></i> Koleksi Produk</h1>
-      <!-- Informasi Rekening Admin untuk Transfer -->
       <div id="bankInfo" style="background:var(--denim-light); padding:12px 18px; border-radius:var(--radius-sm); margin-bottom:16px;">
         <p><strong>💳 Transfer ke Rekening Admin:</strong></p>
         <p id="bankDetail">Bank: BCA · No. Rek: 1234567890 · a.n. HEDTRO JEANS</p>
@@ -283,9 +522,6 @@
   </div>
 
   <script>
-    // ============================================================
-    // JAVASCRIPT LENGKAP dashboard.html
-    // ============================================================
     (function() {
       'use strict';
 
@@ -507,8 +743,8 @@
       // ===== RENDER NETWORK (BINARY TREE VISUAL) =====
       function renderNetwork() {
         const container = document.getElementById('treeContainer');
-        // Build tree dari currentUser
-        const treeData = buildTree(currentUser.id, 0, 4); // depth 4
+        // Build tree dari currentUser dengan depth 4
+        const treeData = buildTree(currentUser.id, 0, 4);
         container.innerHTML = renderTreeHTML(treeData);
       }
 
