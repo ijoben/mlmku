@@ -1,265 +1,613 @@
-<!-- dashboard.html -->
 <!DOCTYPE html>
 <html lang="id">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Dashboard · HEDTRO JEANS</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-    <style>
-        /* gaya sama seperti sebelumnya */
-    </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>Dashboard · HEDTRO JEANS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <style>
+    /* ===== RESET & ROOT ===== */
+    * { margin:0; padding:0; box-sizing:border-box; }
+    :root {
+      --denim-dark: #0b1a2b;
+      --denim-navy: #1a2e44;
+      --denim-blue: #2a4b6e;
+      --denim-light: #e8edf2;
+      --gold-accent: #c9a84c;
+      --gold-light: #e8d5a3;
+      --cream: #f7f4ef;
+      --white: #ffffff;
+      --shadow: 0 4px 20px rgba(0,0,0,0.08);
+      --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+      --radius: 28px;
+      --radius-sm: 14px;
+      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body {
+      font-family: 'Inter', -apple-system, sans-serif;
+      background: var(--cream);
+      color: var(--denim-dark);
+      padding-top: 70px;
+      overflow-x: hidden;
+    }
+    a { text-decoration:none; color:inherit; }
+    button { cursor:pointer; font-family:inherit; border:none; background:none; }
+    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar-track { background:var(--cream); }
+    ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
+
+    /* ===== NAVBAR ===== */
+    .navbar {
+      position: fixed; top:0; left:0; right:0; z-index:1000;
+      background: var(--denim-dark);
+      padding: 12px 20px;
+      display: flex; align-items:center; justify-content:space-between;
+      border-bottom:3px solid var(--gold-accent);
+      height:70px;
+    }
+    .navbar .logo {
+      display:flex; align-items:center; gap:8px;
+      color:var(--white); font-weight:800; font-size:1.4rem;
+    }
+    .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
+    .navbar .logo span { font-weight:300; color:var(--gold-light); font-size:0.75rem; margin-left:2px; }
+    .nav-right {
+      display:flex; align-items:center; gap:12px;
+    }
+    .nav-right .user-badge {
+      display:flex; align-items:center; gap:6px;
+      color:var(--cream); font-size:0.8rem;
+      background:rgba(255,255,255,0.08);
+      padding:6px 14px; border-radius:60px;
+      border:1px solid rgba(255,255,255,0.06);
+      cursor:pointer;
+    }
+    .nav-right .user-badge i { color:var(--gold-accent); }
+
+    /* ===== BURGER ===== */
+    .burger-btn {
+      display:flex; flex-direction:column; gap:5px;
+      padding:6px; background:transparent; border:none; cursor:pointer;
+      z-index:1001;
+    }
+    .burger-btn span {
+      display:block; width:28px; height:3px;
+      background:var(--cream); border-radius:4px;
+      transition:var(--transition); transform-origin:center;
+    }
+    .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
+    .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
+    .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
+
+    /* ===== SIDEBAR ===== */
+    .sidebar-overlay {
+      position:fixed; top:0; left:0; width:100%; height:100%;
+      background:rgba(0,0,0,0.5); z-index:999;
+      opacity:0; pointer-events:none;
+      transition:var(--transition);
+    }
+    .sidebar-overlay.active { opacity:1; pointer-events:all; }
+    .sidebar {
+      position:fixed; top:0; left:-320px; width:300px; height:100%;
+      background:var(--denim-dark); z-index:1000;
+      padding:24px 20px; transition:var(--transition);
+      overflow-y:auto; border-right:3px solid var(--gold-accent);
+      display:flex; flex-direction:column; gap:4px;
+    }
+    .sidebar.open { left:0; }
+    .sidebar .sidebar-header {
+      display:flex; align-items:center; justify-content:space-between;
+      padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);
+      margin-bottom:12px;
+    }
+    .sidebar .sidebar-header .logo-side {
+      color:var(--white); font-weight:800; font-size:1.3rem;
+    }
+    .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
+    .sidebar .sidebar-header .close-side {
+      color:var(--cream); font-size:1.6rem; cursor:pointer;
+    }
+    .sidebar .menu-item {
+      display:flex; align-items:center; gap:14px;
+      padding:12px 16px; border-radius:12px;
+      color:var(--cream); font-weight:500; font-size:0.95rem;
+      transition:var(--transition); cursor:pointer;
+    }
+    .sidebar .menu-item:hover { background:rgba(255,255,255,0.08); }
+    .sidebar .menu-item i { width:24px; color:var(--gold-accent); }
+    .sidebar .menu-item.active { background:rgba(201,168,76,0.15); color:var(--gold-accent); }
+    .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:6px 0; }
+    .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
+    .sidebar .menu-item.logout i { color:#e74c3c; }
+
+    /* ===== CONTENT ===== */
+    .container { max-width:1100px; margin:0 auto; padding:20px 24px 40px; }
+    .page-title {
+      font-size:1.6rem; font-weight:700; color:var(--denim-dark);
+      margin-bottom:20px; display:flex; align-items:center; gap:12px;
+    }
+    .page-title i { color:var(--gold-accent); }
+
+    /* ===== STATUS ===== */
+    #membershipStatus {
+      background:var(--gold-light); padding:12px 20px;
+      border-radius:var(--radius-sm); margin-bottom:20px;
+      display:flex; align-items:center; flex-wrap:wrap; gap:10px;
+    }
+    #membershipStatus #statusText { font-weight:500; }
+    .btn-sm {
+      padding:8px 18px; border-radius:60px; font-weight:600; font-size:0.8rem;
+      transition:var(--transition); font-family:inherit;
+    }
+    .btn-sm-success { background:#1f7a4b; color:#fff; }
+    .btn-sm-success:hover { background:#155d38; }
+
+    /* ===== STATS ===== */
+    .stats-grid {
+      display:grid; grid-template-columns:repeat(auto-fit, minmax(170px,1fr));
+      gap:16px; margin-bottom:28px;
+    }
+    .stat-card {
+      background:var(--white); border-radius:var(--radius-sm);
+      padding:18px 20px; border-left:4px solid var(--gold-accent);
+      box-shadow:var(--shadow);
+    }
+    .stat-card .label {
+      font-size:0.7rem; text-transform:uppercase;
+      color:var(--denim-blue); font-weight:600; letter-spacing:0.3px;
+    }
+    .stat-card .value {
+      font-size:1.8rem; font-weight:700; color:var(--denim-dark);
+      margin-top:4px;
+    }
+
+    /* ===== PANEL ===== */
+    .dual-panel {
+      display:grid; grid-template-columns:2fr 1fr; gap:20px;
+      margin-top:8px;
+    }
+    @media (max-width:640px) { .dual-panel { grid-template-columns:1fr; } }
+    .panel-box {
+      background:var(--white); border-radius:var(--radius-sm);
+      padding:18px 20px; box-shadow:var(--shadow);
+    }
+    .panel-box h3 {
+      font-size:0.95rem; font-weight:600; color:var(--denim-navy);
+      margin-bottom:14px; display:flex; align-items:center; gap:8px;
+    }
+    .panel-box h3 i { color:var(--gold-accent); }
+    .tree-chips {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(55px,1fr));
+      gap:8px;
+    }
+    .chip {
+      background:var(--cream); border-radius:40px;
+      padding:6px 8px; text-align:center;
+      font-weight:600; font-size:0.75rem;
+      border:1px solid #dce3ec;
+    }
+    .chip span { display:block; font-size:0.55rem; color:var(--denim-blue); font-weight:400; }
+    .reward-item {
+      display:flex; justify-content:space-between;
+      padding:8px 14px; background:var(--cream);
+      border-radius:10px; border-left:3px solid var(--gold-accent);
+      font-size:0.85rem; margin-bottom:6px;
+    }
+    .ro-detail {
+      background:var(--cream); border-radius:12px;
+      padding:12px 16px; margin-top:10px;
+      display:flex; justify-content:space-between;
+      border:1px solid #e2e8f0;
+    }
+    .ro-detail .ro-label { font-weight:500; }
+    .ro-detail .ro-value { font-weight:700; color:var(--denim-blue); }
+    .text-muted { color:#6a7e9a; font-size:0.8rem; margin-top:8px; }
+
+    /* ===== PRODUCT GRID (RO) ===== */
+    .product-grid {
+      display:grid; grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
+      gap:20px; margin:12px 0 24px;
+    }
+    .product-card {
+      background:var(--white); border-radius:var(--radius-sm);
+      overflow:hidden; box-shadow:var(--shadow);
+      transition:var(--transition); border:1px solid #e8edf2;
+    }
+    .product-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
+    .product-card .img-placeholder {
+      height:150px; background:var(--denim-light);
+      display:flex; align-items:center; justify-content:center;
+      color:var(--denim-blue); font-size:2.5rem;
+    }
+    .product-card .body { padding:14px; }
+    .product-card .body .tag {
+      display:inline-block; background:var(--gold-accent);
+      color:var(--denim-dark); font-size:0.55rem; font-weight:700;
+      padding:2px 12px; border-radius:40px;
+      text-transform:uppercase; letter-spacing:0.5px; margin-bottom:4px;
+    }
+    .product-card .body h4 { font-size:0.9rem; font-weight:600; margin-bottom:4px; }
+    .product-card .body .price {
+      font-weight:700; color:var(--denim-blue); font-size:1rem;
+    }
+    .product-card .body .btn-detail {
+      margin-top:8px; display:inline-block;
+      background:var(--denim-dark); color:#fff;
+      padding:4px 16px; border-radius:60px;
+      font-size:0.7rem; font-weight:600;
+      transition:var(--transition);
+      cursor:pointer;
+    }
+    .product-card .body .btn-detail:hover { background:var(--denim-blue); }
+    .product-card .body .btn-detail:disabled { opacity:0.5; cursor:not-allowed; }
+
+    /* ===== HISTORY ===== */
+    #purchaseHistory {
+      background:var(--white); border-radius:var(--radius-sm);
+      padding:16px; box-shadow:var(--shadow);
+    }
+    #purchaseHistory ul { list-style:none; }
+    #purchaseHistory li {
+      padding:8px 0; border-bottom:1px solid #eee;
+    }
+
+    /* ===== FOOTER ===== */
+    .footer {
+      background:var(--denim-dark); color:var(--cream);
+      padding:20px 24px; text-align:center;
+      border-top:3px solid var(--gold-accent);
+      margin-top:20px; font-size:0.8rem;
+    }
+
+    /* ===== RESPONSIVE ===== */
+    @media (max-width:768px) {
+      body { padding-top:60px; }
+      .navbar { padding:10px 16px; height:60px; }
+      .navbar .logo { font-size:1.2rem; }
+      .navbar .logo i { font-size:1.3rem; }
+      .nav-right .user-badge span { display:none; }
+      .sidebar { width:280px; left:-300px; }
+      .container { padding:16px 16px 30px; }
+      .page-title { font-size:1.3rem; }
+      .stats-grid { grid-template-columns:1fr 1fr; gap:12px; }
+      .stat-card .value { font-size:1.4rem; }
+    }
+    @media (max-width:480px) {
+      .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
+      .stat-card { padding:12px 14px; }
+      .stat-card .value { font-size:1.2rem; }
+      .tree-chips { grid-template-columns:repeat(auto-fill, minmax(45px,1fr)); gap:4px; }
+      .chip { font-size:0.65rem; padding:4px 4px; }
+      .panel-box { padding:14px 14px; }
+    }
+  </style>
 </head>
 <body>
-    <!-- Navbar, Sidebar sama -->
-    <header class="navbar"> ... </header>
-    <div class="sidebar-overlay"></div>
-    <nav class="sidebar"> ... </nav>
 
-    <div class="container">
-        <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard Member</h1>
+  <!-- ===== NAVBAR ===== -->
+  <header class="navbar">
+    <div class="logo">
+      <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
+    </div>
+    <div class="nav-right">
+      <div class="user-badge" id="navUserBadge">
+        <i class="fas fa-user-circle"></i> <span id="navUserName">Member</span>
+      </div>
+      <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
+        <span></span><span></span><span></span>
+      </button>
+    </div>
+  </header>
 
-        <!-- Status Keanggotaan -->
-        <div id="membershipStatus" style="background:var(--gold-light); padding:12px 20px; border-radius:var(--radius-sm); margin-bottom:20px;">
-            <span id="statusText">Belum Aktif</span>
-            <button id="activateBtn" class="btn-sm btn-sm-success" style="margin-left:12px;">Bayar Paket Member (Rp 550.000)</button>
-        </div>
+  <!-- ===== SIDEBAR ===== -->
+  <div class="sidebar-overlay" id="sidebarOverlay"></div>
+  <nav class="sidebar" id="sidebar">
+    <div class="sidebar-header">
+      <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
+      <span class="close-side" id="closeSidebar">&times;</span>
+    </div>
+    <div class="menu-item active" data-page="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
+    <div class="menu-item" data-page="bonus"><i class="fas fa-coins"></i> Bonus Saya</div>
+    <div class="menu-item" data-page="network"><i class="fas fa-sitemap"></i> Jaringan</div>
+    <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
+    <div class="menu-divider"></div>
+    <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
+  </nav>
 
-        <!-- Statistik Bonus -->
-        <div class="stats-grid">
-            <div class="stat-card"><div class="label">Sponsor Bonus</div><div class="value" id="sponsorBonus">0</div></div>
-            <div class="stat-card"><div class="label">Binary Bonus</div><div class="value" id="binaryBonus">0</div></div>
-            <div class="stat-card"><div class="label">Reward 5L</div><div class="value" id="rewardBonus">0</div></div>
-            <div class="stat-card"><div class="label">RO Produk</div><div class="value" id="roBonus">0</div></div>
-        </div>
+  <!-- ===== CONTENT ===== -->
+  <div class="container">
+    <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard Member</h1>
 
-        <!-- Binary Tree & Reward -->
-        <div class="dual-panel">
-            <div class="panel-box">
-                <h3><i class="fas fa-sitemap"></i> Jaringan Binary (10 Level)</h3>
-                <div class="tree-chips" id="binaryTreeContainer"></div>
-                <div class="text-muted">Total downline: <span id="totalDownline">0</span></div>
-            </div>
-            <div class="panel-box">
-                <h3><i class="fas fa-gift"></i> Reward 5 Level</h3>
-                <div id="rewardList"></div>
-                <div class="ro-detail"><span>Produk terjual (RO)</span><span id="roProductCount">0</span></div>
-                <div class="ro-detail" style="background:#f0f4fa;"><span>Komisi RO</span><span id="roProductBonus">0</span></div>
-            </div>
-        </div>
-
-        <!-- Daftar Produk untuk Repeat Order -->
-        <h2 class="section-title" style="font-size:1.3rem; padding:24px 0 12px;"><i class="fas fa-shopping-cart"></i> Repeat Order (Beli Produk)</h2>
-        <div class="product-grid" id="productGridRO"></div>
-
-        <!-- Riwayat Pembelian -->
-        <h2 class="section-title" style="font-size:1.2rem; padding:24px 0 12px;"><i class="fas fa-history"></i> Riwayat Pembelian</h2>
-        <div id="purchaseHistory" style="background:white; border-radius:var(--radius-sm); padding:16px; box-shadow:var(--shadow);"></div>
+    <!-- Status Keanggotaan -->
+    <div id="membershipStatus">
+      <span id="statusText">Belum Aktif</span>
+      <button class="btn-sm btn-sm-success" id="activateBtn">Bayar Paket Member (Rp 550.000)</button>
     </div>
 
-    <footer class="footer"> ... </footer>
+    <!-- Statistik Bonus -->
+    <div class="stats-grid">
+      <div class="stat-card"><div class="label">Sponsor Bonus</div><div class="value" id="sponsorBonus">0</div></div>
+      <div class="stat-card"><div class="label">Binary Bonus</div><div class="value" id="binaryBonus">0</div></div>
+      <div class="stat-card"><div class="label">Reward 5L</div><div class="value" id="rewardBonus">0</div></div>
+      <div class="stat-card"><div class="label">RO Produk</div><div class="value" id="roBonus">0</div></div>
+    </div>
 
-    <script>
-        // ============================================================
-        // JS DASHBOARD
-        // ============================================================
-        (function() {
-            'use strict';
+    <!-- Binary Tree & Reward -->
+    <div class="dual-panel">
+      <div class="panel-box">
+        <h3><i class="fas fa-sitemap"></i> Jaringan Binary (10 Level)</h3>
+        <div class="tree-chips" id="binaryTreeContainer"></div>
+        <div class="text-muted">Total downline: <span id="totalDownline">0</span></div>
+      </div>
+      <div class="panel-box">
+        <h3><i class="fas fa-gift"></i> Reward 5 Level</h3>
+        <div id="rewardList"></div>
+        <div class="ro-detail"><span class="ro-label">Produk terjual (RO)</span><span class="ro-value" id="roProductCount">0</span></div>
+        <div class="ro-detail" style="background:#f0f4fa;"><span class="ro-label">Komisi RO</span><span class="ro-value" id="roProductBonus">0</span></div>
+      </div>
+    </div>
 
-            const DB_KEY = 'hedtro_mlm_users';
-            const PRODUCT_KEY = 'hedtro_products';
-            const SETTINGS_KEY = 'hedtro_settings';
+    <!-- Daftar Produk untuk Repeat Order -->
+    <h2 class="page-title" style="font-size:1.3rem; padding:24px 0 12px;"><i class="fas fa-shopping-cart"></i> Repeat Order (Beli Produk)</h2>
+    <div class="product-grid" id="productGridRO"></div>
 
-            function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
-            function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-            function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
-            function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-            function loadSettings() { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"memberPrice":550000}'); }
+    <!-- Riwayat Pembelian -->
+    <h2 class="page-title" style="font-size:1.2rem; padding:24px 0 12px;"><i class="fas fa-history"></i> Riwayat Pembelian</h2>
+    <div id="purchaseHistory"></div>
+  </div>
 
-            let users = loadUsers();
-            let products = loadProducts();
-            let settings = loadSettings();
+  <!-- ===== FOOTER ===== -->
+  <footer class="footer">
+    <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Afiliasi & Reseller</p>
+    <p style="opacity:0.6; margin-top:4px;">Bonus Sponsor · Binary 10L · Reward 5L · RO Produk</p>
+  </footer>
 
-            // Cek session
-            const session = localStorage.getItem('mlm_session');
-            let currentUser = null;
-            if (session) {
-                try {
-                    const { id } = JSON.parse(session);
-                    currentUser = users.find(u => u.id === id);
-                    if (!currentUser || currentUser.email === 'admin@mlm.com') {
-                        window.location.href = 'index.html';
-                        return;
-                    }
-                } catch (_) { window.location.href = 'index.html'; return; }
-            } else {
-                window.location.href = 'index.html';
-                return;
-            }
+  <script>
+    // ============================================================
+    // JAVASCRIPT LENGKAP dashboard.html
+    // ============================================================
+    (function() {
+      'use strict';
 
-            // ===== RENDER DASHBOARD =====
-            function renderDashboard() {
-                // Status
-                const statusEl = document.getElementById('statusText');
-                const activateBtn = document.getElementById('activateBtn');
-                if (currentUser.isActive) {
-                    statusEl.innerHTML = '✅ Aktif <span style="font-weight:normal;color:green;">(Paket Member sudah dibayar)</span>';
-                    activateBtn.style.display = 'none';
-                } else {
-                    statusEl.innerHTML = '❌ Belum Aktif — Anda harus membayar paket member untuk bisa melakukan repeat order.';
-                    activateBtn.style.display = 'inline-block';
-                }
+      const DB_KEY = 'hedtro_mlm_users';
+      const PRODUCT_KEY = 'hedtro_products';
+      const SETTINGS_KEY = 'hedtro_settings';
 
-                // Bonus
-                document.getElementById('sponsorBonus').textContent = currentUser.bonus_sponsor || 0;
-                document.getElementById('binaryBonus').textContent = currentUser.bonus_binary || 0;
-                document.getElementById('rewardBonus').textContent = currentUser.bonus_reward || 0;
-                document.getElementById('roBonus').textContent = currentUser.bonus_ro || 0;
+      function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
+      function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
+      function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
+      function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
+      function loadSettings() { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"memberPrice":550000}'); }
+      function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
 
-                // Binary Tree
-                const tree = currentUser.binary_tree || [0,0,0,0,0,0,0,0,0,0];
-                const container = document.getElementById('binaryTreeContainer');
-                container.innerHTML = '';
-                for (let i=0; i<10; i++) {
-                    const div = document.createElement('div');
-                    div.className = 'chip';
-                    div.innerHTML = `<span>L${i+1}</span> ${tree[i] || 0}`;
-                    container.appendChild(div);
-                }
-                document.getElementById('totalDownline').textContent = tree.reduce((a,b)=>a+b, 0);
+      let users = loadUsers();
+      let products = loadProducts();
+      let settings = loadSettings();
 
-                // Reward
-                const rewards = currentUser.reward_levels || [0,0,0,0,0];
-                const rewardList = document.getElementById('rewardList');
-                rewardList.innerHTML = '';
-                const labels = ['Level 1','Level 2','Level 3','Level 4','Level 5'];
-                for (let i=0; i<5; i++) {
-                    const div = document.createElement('div');
-                    div.className = 'reward-item';
-                    div.innerHTML = `<span>${labels[i]}</span><span>${rewards[i] || 0}</span>`;
-                    rewardList.appendChild(div);
-                }
+      // Cek session
+      const session = localStorage.getItem('mlm_session');
+      let currentUser = null;
+      if (session) {
+        try {
+          const { id } = JSON.parse(session);
+          currentUser = users.find(u => u.id === id);
+          if (!currentUser || currentUser.email === 'admin@mlm.com') {
+            window.location.href = 'index.html';
+            return;
+          }
+        } catch (_) { window.location.href = 'index.html'; return; }
+      } else {
+        window.location.href = 'index.html';
+        return;
+      }
 
-                // RO Produk
-                const totalRO = currentUser.purchase_history ? currentUser.purchase_history.filter(h => !h.isPackage).length : 0;
-                document.getElementById('roProductCount').textContent = totalRO;
-                document.getElementById('roProductBonus').textContent = currentUser.bonus_ro || 0;
+      // ===== DOM REFS =====
+      const navUserName = document.getElementById('navUserName');
+      const burgerBtn = document.getElementById('burgerBtn');
+      const sidebar = document.getElementById('sidebar');
+      const sidebarOverlay = document.getElementById('sidebarOverlay');
+      const closeSidebar = document.getElementById('closeSidebar');
+      const statusText = document.getElementById('statusText');
+      const activateBtn = document.getElementById('activateBtn');
 
-                // Render produk untuk RO
-                renderProductsRO();
+      // ===== SIDEBAR =====
+      function toggleSidebar(open) {
+        const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
+        sidebar.classList.toggle('open', isOpen);
+        sidebarOverlay.classList.toggle('active', isOpen);
+        burgerBtn.classList.toggle('active', isOpen);
+        document.body.style.overflow = isOpen ? 'hidden' : '';
+      }
+      burgerBtn.addEventListener('click', () => toggleSidebar());
+      closeSidebar.addEventListener('click', () => toggleSidebar(false));
+      sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
-                // Riwayat pembelian
-                renderPurchaseHistory();
-            }
+      document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
+        item.addEventListener('click', function() {
+          const page = this.dataset.page;
+          toggleSidebar(false);
+          if (page === 'dashboard') { /* sudah di halaman */ }
+          else if (page === 'bonus' || page === 'network') {
+            alert('Halaman ' + page + ' sedang dalam pengembangan');
+          } else if (page === 'products') {
+            window.location.href = 'index.html';
+          }
+        });
+      });
 
-            function renderProductsRO() {
-                const grid = document.getElementById('productGridRO');
-                grid.innerHTML = '';
-                products.forEach(p => {
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    card.innerHTML = `
-                        <div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>
-                        <div class="body">
-                            <span class="tag">${p.tag || 'PRODUK'}</span>
-                            <h4>${p.name}</h4>
-                            <div class="price">Rp ${p.price.toLocaleString()}</div>
-                            <div style="font-size:0.75rem;color:#6a7e9a;">Stok: ${p.stock}</div>
-                            <button class="btn-detail buy-btn" data-id="${p.id}" ${currentUser.isActive ? '' : 'disabled'}>Beli</button>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
+      document.getElementById('sideLogoutBtn').addEventListener('click', function() {
+        localStorage.removeItem('mlm_session');
+        window.location.href = 'index.html';
+      });
 
-                // Event listener tombol beli
-                document.querySelectorAll('.buy-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const productId = parseInt(this.dataset.id);
-                        buyProduct(productId);
-                    });
-                });
-            }
+      // ===== RENDER DASHBOARD =====
+      function renderDashboard() {
+        navUserName.textContent = currentUser.name;
 
-            function renderPurchaseHistory() {
-                const container = document.getElementById('purchaseHistory');
-                if (!currentUser.purchase_history || currentUser.purchase_history.length === 0) {
-                    container.innerHTML = '<p class="text-muted">Belum ada pembelian.</p>';
-                    return;
-                }
-                let html = '<ul style="list-style:none;">';
-                currentUser.purchase_history.forEach(h => {
-                    const product = products.find(p => p.id === h.productId);
-                    const name = h.isPackage ? 'Paket Member' : (product ? product.name : 'Produk dihapus');
-                    html += `<li style="padding:8px 0; border-bottom:1px solid #eee;">${name} - Rp ${h.price.toLocaleString()} - ${new Date(h.date).toLocaleDateString()}</li>`;
-                });
-                html += '</ul>';
-                container.innerHTML = html;
-            }
+        // Status
+        if (currentUser.isActive) {
+          statusText.innerHTML = '✅ Aktif <span style="font-weight:normal;color:green;">(Paket Member sudah dibayar)</span>';
+          activateBtn.style.display = 'none';
+        } else {
+          statusText.innerHTML = '❌ Belum Aktif — Anda harus membayar paket member untuk bisa melakukan repeat order.';
+          activateBtn.style.display = 'inline-block';
+        }
 
-            // ===== FUNGSI BELI PRODUK =====
-            function buyProduct(productId) {
-                if (!currentUser.isActive) { alert('Anda harus aktif terlebih dahulu.'); return; }
-                const product = products.find(p => p.id === productId);
-                if (!product) { alert('Produk tidak ditemukan'); return; }
-                if (product.stock <= 0) { alert('Stok habis'); return; }
+        // Bonus
+        document.getElementById('sponsorBonus').textContent = currentUser.bonus_sponsor || 0;
+        document.getElementById('binaryBonus').textContent = currentUser.bonus_binary || 0;
+        document.getElementById('rewardBonus').textContent = currentUser.bonus_reward || 0;
+        document.getElementById('roBonus').textContent = currentUser.bonus_ro || 0;
 
-                // Proses pembelian
-                if (!confirm(`Beli ${product.name} seharga Rp ${product.price.toLocaleString()}?`)) return;
+        // Binary Tree
+        const tree = currentUser.binary_tree || [0,0,0,0,0,0,0,0,0,0];
+        const container = document.getElementById('binaryTreeContainer');
+        container.innerHTML = '';
+        for (let i=0; i<10; i++) {
+          const div = document.createElement('div');
+          div.className = 'chip';
+          div.innerHTML = `<span>L${i+1}</span> ${tree[i] || 0}`;
+          container.appendChild(div);
+        }
+        document.getElementById('totalDownline').textContent = tree.reduce((a,b)=>a+b, 0);
 
-                // Kurangi stok
-                product.stock--;
-                saveProducts(products);
+        // Reward
+        const rewards = currentUser.reward_levels || [0,0,0,0,0];
+        const rewardList = document.getElementById('rewardList');
+        rewardList.innerHTML = '';
+        const labels = ['Level 1','Level 2','Level 3','Level 4','Level 5'];
+        for (let i=0; i<5; i++) {
+          const div = document.createElement('div');
+          div.className = 'reward-item';
+          div.innerHTML = `<span>${labels[i]}</span><span>${rewards[i] || 0}</span>`;
+          rewardList.appendChild(div);
+        }
 
-                // Catat pembelian
-                currentUser.purchase_history.push({ productId, date: new Date().toISOString(), price: product.price });
-                // Hitung bonus
-                const sBonus = (product.price * settings.sponsorBonus) / 100;
-                const bBonus = (product.price * settings.binaryBonus) / 100;
-                const rBonus = (product.price * settings.rewardBonus) / 100;
-                const roBonus = (product.price * settings.roBonus) / 100;
+        // RO
+        const totalRO = currentUser.purchase_history ? currentUser.purchase_history.filter(h => !h.isPackage).length : 0;
+        document.getElementById('roProductCount').textContent = totalRO;
+        document.getElementById('roProductBonus').textContent = currentUser.bonus_ro || 0;
 
-                // Distribusi bonus ke upline
-                distributeBonus(currentUser.sponsor_id, sBonus, bBonus, rBonus, roBonus, 1);
+        // Render produk RO
+        renderProductsRO();
 
-                // Update user
-                saveUsers(users);
-                renderDashboard();
-                alert('✅ Pembelian berhasil! Bonus telah didistribusikan.');
-            }
+        // Riwayat
+        renderPurchaseHistory();
+      }
 
-            function distributeBonus(sponsorId, sBonus, bBonus, rBonus, roBonus, level) {
-                if (!sponsorId || level > 10) return;
-                const sponsor = users.find(u => u.id === sponsorId);
-                if (!sponsor) return;
-                if (level === 1) sponsor.bonus_sponsor += sBonus;
-                sponsor.bonus_binary += bBonus;
-                if (level <= 5) sponsor.bonus_reward += rBonus;
-                sponsor.bonus_ro += roBonus;
-                saveUsers(users);
-                if (sponsor.sponsor_id) {
-                    distributeBonus(sponsor.sponsor_id, sBonus, bBonus, rBonus, roBonus, level + 1);
-                }
-            }
+      function renderProductsRO() {
+        const grid = document.getElementById('productGridRO');
+        grid.innerHTML = '';
+        products.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = `
+            <div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>
+            <div class="body">
+              <span class="tag">${p.tag || 'PRODUK'}</span>
+              <h4>${p.name}</h4>
+              <div class="price">Rp ${p.price.toLocaleString()}</div>
+              <div style="font-size:0.75rem;color:#6a7e9a;">Stok: ${p.stock}</div>
+              <button class="btn-detail buy-btn" data-id="${p.id}" ${currentUser.isActive ? '' : 'disabled'}>Beli</button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
 
-            // ===== AKTIVASI PAKET MEMBER =====
-            document.getElementById('activateBtn').addEventListener('click', function() {
-                if (currentUser.isActive) { alert('Sudah aktif.'); return; }
-                if (!confirm(`Bayar paket member Rp ${settings.memberPrice.toLocaleString()}?`)) return;
-                currentUser.isActive = true;
-                currentUser.purchase_history.push({ productId: 0, date: new Date().toISOString(), price: settings.memberPrice, isPackage: true });
-                saveUsers(users);
-                renderDashboard();
-                alert('✅ Paket member aktif! Selamat bergabung.');
-            });
+        document.querySelectorAll('.buy-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const productId = parseInt(this.dataset.id);
+            buyProduct(productId);
+          });
+        });
+      }
 
-            // ===== SIDEBAR & NAV =====
-            // ... (sama seperti sebelumnya)
+      function renderPurchaseHistory() {
+        const container = document.getElementById('purchaseHistory');
+        if (!currentUser.purchase_history || currentUser.purchase_history.length === 0) {
+          container.innerHTML = '<p class="text-muted">Belum ada pembelian.</p>';
+          return;
+        }
+        let html = '<ul>';
+        currentUser.purchase_history.forEach(h => {
+          const product = products.find(p => p.id === h.productId);
+          const name = h.isPackage ? 'Paket Member' : (product ? product.name : 'Produk dihapus');
+          html += `<li>${name} - Rp ${h.price.toLocaleString()} - ${new Date(h.date).toLocaleDateString()}</li>`;
+        });
+        html += '</ul>';
+        container.innerHTML = html;
+      }
 
-            // ===== INIT =====
-            renderDashboard();
-            console.log('🟦 HEDTRO · Dashboard Member');
-        })();
-    </script>
+      // ===== FUNGSI BELI PRODUK (RO) =====
+      function buyProduct(productId) {
+        if (!currentUser.isActive) { alert('Anda harus aktif terlebih dahulu.'); return; }
+        const product = products.find(p => p.id === productId);
+        if (!product) { alert('Produk tidak ditemukan'); return; }
+        if (product.stock <= 0) { alert('Stok habis'); return; }
+
+        if (!confirm(`Beli ${product.name} seharga Rp ${product.price.toLocaleString()}?`)) return;
+
+        // Kurangi stok
+        product.stock--;
+        saveProducts(products);
+
+        // Catat pembelian
+        currentUser.purchase_history.push({ productId, date: new Date().toISOString(), price: product.price });
+
+        // Hitung bonus
+        const sBonus = (product.price * settings.sponsorBonus) / 100;
+        const bBonus = (product.price * settings.binaryBonus) / 100;
+        const rBonus = (product.price * settings.rewardBonus) / 100;
+        const roBonus = (product.price * settings.roBonus) / 100;
+
+        // Distribusi bonus ke upline
+        distributeBonus(currentUser.sponsor_id, sBonus, bBonus, rBonus, roBonus, 1);
+
+        saveUsers(users);
+        renderDashboard();
+        alert('✅ Pembelian berhasil! Bonus telah didistribusikan.');
+      }
+
+      function distributeBonus(sponsorId, sBonus, bBonus, rBonus, roBonus, level) {
+        if (!sponsorId || level > 10) return;
+        const sponsor = users.find(u => u.id === sponsorId);
+        if (!sponsor) return;
+        if (level === 1) sponsor.bonus_sponsor += sBonus;
+        sponsor.bonus_binary += bBonus;
+        if (level <= 5) sponsor.bonus_reward += rBonus;
+        sponsor.bonus_ro += roBonus;
+        saveUsers(users);
+        if (sponsor.sponsor_id) {
+          distributeBonus(sponsor.sponsor_id, sBonus, bBonus, rBonus, roBonus, level + 1);
+        }
+      }
+
+      // ===== AKTIVASI PAKET MEMBER =====
+      activateBtn.addEventListener('click', function() {
+        if (currentUser.isActive) { alert('Sudah aktif.'); return; }
+        if (!confirm(`Bayar paket member Rp ${settings.memberPrice.toLocaleString()}?`)) return;
+        currentUser.isActive = true;
+        currentUser.purchase_history.push({ productId: 0, date: new Date().toISOString(), price: settings.memberPrice, isPackage: true });
+        saveUsers(users);
+        renderDashboard();
+        alert('✅ Paket member aktif! Selamat bergabung.');
+      });
+
+      // ===== NAV BADGE REFRESH =====
+      document.getElementById('navUserBadge').addEventListener('click', function() {
+        users = loadUsers();
+        const updated = users.find(u => u.id === currentUser.id);
+        if (updated) {
+          currentUser = updated;
+          renderDashboard();
+        }
+      });
+
+      // ===== INIT =====
+      renderDashboard();
+      console.log('🟦 HEDTRO · Dashboard Member');
+    })();
+  </script>
 </body>
 </html>
