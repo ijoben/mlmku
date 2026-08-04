@@ -1,1451 +1,1010 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>HEDTRO JEANS · Premium Denim</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-  <style>
-    /* ===== RESET & ROOT ===== */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --red-soft: #d45c5c;
-      --red-light: #fce8e8;
-      --red-pale: #fff5f5;
-      --red-dark: #b34a4a;
-      --gray-dark: #2c2c2c;
-      --gray-mid: #6b6b6b;
-      --gray-light: #e8e8e8;
-      --gray-bg: #f5f5f5;
-      --white: #ffffff;
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
-      --shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.10);
-      --radius: 20px;
-      --radius-sm: 12px;
-      --transition: 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: var(--gray-bg);
-      color: var(--gray-dark);
-      min-height: 100vh;
-      overflow-x: hidden;
-      padding-top: 72px;
-    }
-
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--gray-bg);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--red-soft);
-      border-radius: 10px;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-    button {
-      cursor: pointer;
-      font-family: inherit;
-      border: none;
-      background: none;
-    }
-
-    /* ===== NAVBAR ===== */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: rgba(255, 255, 255, 0.92);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--gray-light);
-      padding: 14px 28px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      height: 72px;
-      transition: var(--transition);
-    }
-
-    .navbar .logo {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-family: 'Playfair Display', serif;
-      font-weight: 800;
-      font-size: 1.5rem;
-      color: var(--gray-dark);
-      letter-spacing: -0.5px;
-    }
-
-    .navbar .logo i {
-      color: var(--red-soft);
-      font-size: 1.6rem;
-    }
-
-    .navbar .logo span {
-      color: var(--red-soft);
-      font-weight: 300;
-      font-size: 0.7rem;
-      letter-spacing: 2px;
-      font-family: 'Inter', sans-serif;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .nav-right .user-badge {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--gray-mid);
-      font-size: 0.85rem;
-      padding: 8px 18px;
-      border-radius: 60px;
-      border: 1px solid var(--gray-light);
-      background: var(--white);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .nav-right .user-badge:hover {
-      border-color: var(--red-soft);
-      background: var(--red-pale);
-    }
-
-    .nav-right .user-badge i {
-      color: var(--red-soft);
-    }
-
-    .btn-nav {
-      padding: 8px 22px;
-      border-radius: 60px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      transition: var(--transition);
-      letter-spacing: 0.3px;
-    }
-
-    .btn-nav-outline {
-      border: 1.5px solid var(--gray-light);
-      color: var(--gray-mid);
-      background: var(--white);
-    }
-
-    .btn-nav-outline:hover {
-      border-color: var(--red-soft);
-      color: var(--red-soft);
-      background: var(--red-pale);
-    }
-
-    .btn-nav-red {
-      background: var(--red-soft);
-      color: var(--white);
-    }
-
-    .btn-nav-red:hover {
-      background: var(--red-dark);
-      transform: scale(0.97);
-    }
-
-    /* ===== BURGER BUTTON ===== */
-    .burger-btn {
-      display: none; /* default hidden, muncul di mobile */
-      flex-direction: column;
-      gap: 5px;
-      padding: 6px;
-      cursor: pointer;
-      z-index: 1001;
-      background: transparent;
-      border: none;
-    }
-
-    .burger-btn span {
-      display: block;
-      width: 26px;
-      height: 2.5px;
-      background: var(--gray-dark);
-      border-radius: 4px;
-      transition: var(--transition);
-      transform-origin: center;
-    }
-
-    .burger-btn.active span:nth-child(1) {
-      transform: translateY(7.5px) rotate(45deg);
-    }
-    .burger-btn.active span:nth-child(2) {
-      opacity: 0;
-      transform: scaleX(0);
-    }
-    .burger-btn.active span:nth-child(3) {
-      transform: translateY(-7.5px) rotate(-45deg);
-    }
-
-    /* ===== SIDEBAR ===== */
-    .sidebar-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.3);
-      backdrop-filter: blur(4px);
-      z-index: 999;
-      opacity: 0;
-      transition: var(--transition);
-      pointer-events: none;
-    }
-
-    .sidebar-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: -320px;
-      width: 300px;
-      height: 100%;
-      background: var(--white);
-      z-index: 1000;
-      padding: 28px 24px;
-      transition: var(--transition);
-      overflow-y: auto;
-      border-right: 1px solid var(--gray-light);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      box-shadow: var(--shadow);
-    }
-
-    .sidebar.open {
-      left: 0;
-    }
-
-    .sidebar .sidebar-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 20px;
-      border-bottom: 1px solid var(--gray-light);
-      margin-bottom: 16px;
-    }
-
-    .sidebar .sidebar-header .logo-side {
-      font-family: 'Playfair Display', serif;
-      font-weight: 800;
-      font-size: 1.3rem;
-      color: var(--gray-dark);
-    }
-
-    .sidebar .sidebar-header .logo-side i {
-      color: var(--red-soft);
-    }
-
-    .sidebar .sidebar-header .close-side {
-      color: var(--gray-mid);
-      font-size: 1.6rem;
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .sidebar .sidebar-header .close-side:hover {
-      color: var(--gray-dark);
-    }
-
-    .sidebar .menu-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 16px;
-      border-radius: var(--radius-sm);
-      color: var(--gray-mid);
-      font-weight: 500;
-      font-size: 0.9rem;
-      transition: var(--transition);
-      cursor: pointer;
-    }
-
-    .sidebar .menu-item:hover {
-      background: var(--red-pale);
-      color: var(--gray-dark);
-    }
-
-    .sidebar .menu-item i {
-      width: 22px;
-      color: var(--red-soft);
-    }
-
-    .sidebar .menu-item.active {
-      background: var(--red-pale);
-      color: var(--red-soft);
-    }
-
-    .sidebar .menu-divider {
-      height: 1px;
-      background: var(--gray-light);
-      margin: 6px 0;
-    }
-
-    /* ===== CAROUSEL ===== */
-    .carousel-section {
-      position: relative;
-      width: 100%;
-      height: 500px;
-      overflow: hidden;
-      background: var(--gray-bg);
-    }
-
-    .carousel-track {
-      display: flex;
-      height: 100%;
-      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    .carousel-slide {
-      min-width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 60px;
-      position: relative;
-      background-size: cover;
-      background-position: center;
-    }
-
-    .carousel-slide .slide-content {
-      text-align: center;
-      color: var(--white);
-      z-index: 2;
-      max-width: 700px;
-    }
-
-    .carousel-slide .slide-content h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 3.2rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      margin-bottom: 12px;
-    }
-
-    .carousel-slide .slide-content h2 i {
-      color: var(--red-soft);
-    }
-
-    .carousel-slide .slide-content p {
-      font-size: 1.1rem;
-      color: rgba(255, 255, 255, 0.85);
-      line-height: 1.6;
-    }
-
-    .carousel-slide .slide-content .btn-slide {
-      display: inline-block;
-      margin-top: 20px;
-      background: var(--red-soft);
-      color: var(--white);
-      padding: 14px 40px;
-      border-radius: 60px;
-      font-weight: 700;
-      transition: var(--transition);
-    }
-
-    .carousel-slide .slide-content .btn-slide:hover {
-      background: var(--red-dark);
-      transform: scale(1.05);
-    }
-
-    .carousel-slide .overlay-dark {
-      position: absolute;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.4);
-      z-index: 1;
-    }
-
-    .carousel-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.15);
-      backdrop-filter: blur(8px);
-      color: var(--white);
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      font-size: 1.2rem;
-      cursor: pointer;
-      z-index: 10;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .carousel-btn:hover {
-      background: var(--red-soft);
-      border-color: var(--red-soft);
-    }
-
-    .carousel-btn.prev {
-      left: 24px;
-    }
-    .carousel-btn.next {
-      right: 24px;
-    }
-
-    .carousel-dots {
-      position: absolute;
-      bottom: 28px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 12px;
-      z-index: 10;
-    }
-
-    .carousel-dots .dot {
-      width: 10px;
-      height: 10px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.3);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .carousel-dots .dot.active {
-      background: var(--red-soft);
-      box-shadow: 0 0 20px rgba(212, 92, 92, 0.4);
-    }
-
-    /* ===== SECTION TITLE ===== */
-    .section-title {
-      font-size: 1.8rem;
-      font-weight: 700;
-      color: var(--gray-dark);
-      padding: 40px 32px 20px;
-      display: flex;
-      align-items: center;
-      gap: 14px;
-    }
-
-    .section-title i {
-      color: var(--red-soft);
-    }
-
-    /* ===== PRODUCT GRID ===== */
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
-      gap: 24px;
-      padding: 0 32px 48px;
-    }
-
-    .product-card {
-      background: var(--white);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      border: 1px solid var(--gray-light);
-      transition: var(--transition);
-      box-shadow: var(--shadow);
-    }
-
-    .product-card:hover {
-      transform: translateY(-6px);
-      border-color: var(--red-soft);
-      box-shadow: var(--shadow-hover);
-    }
-
-    .product-card .img-placeholder {
-      height: 180px;
-      background: var(--gray-bg);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--gray-mid);
-      font-size: 3rem;
-    }
-
-    .product-card .body {
-      padding: 18px 20px 22px;
-    }
-
-    .product-card .body .tag {
-      display: inline-block;
-      background: var(--red-soft);
-      color: var(--white);
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 2px 14px;
-      border-radius: 40px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-
-    .product-card .body h4 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      color: var(--gray-dark);
-      margin-bottom: 4px;
-    }
-
-    .product-card .body .price {
-      font-weight: 700;
-      color: var(--red-soft);
-      font-size: 1.05rem;
-    }
-
-    .product-card .body .price del {
-      color: var(--gray-mid);
-      font-weight: 400;
-      font-size: 0.8rem;
-      margin-left: 8px;
-    }
-
-    .product-card .body .btn-detail {
-      margin-top: 12px;
-      display: inline-block;
-      background: var(--red-pale);
-      color: var(--red-soft);
-      padding: 6px 20px;
-      border-radius: 60px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      transition: var(--transition);
-      border: 1px solid var(--red-light);
-    }
-
-    .product-card .body .btn-detail:hover {
-      background: var(--red-soft);
-      color: var(--white);
-      border-color: var(--red-soft);
-    }
-
-    /* ===== FEATURES ===== */
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
-      gap: 20px;
-      padding: 20px 32px 48px;
-    }
-
-    .feature-item {
-      background: var(--white);
-      border-radius: var(--radius-sm);
-      padding: 24px 20px;
-      text-align: center;
-      border: 1px solid var(--gray-light);
-      transition: var(--transition);
-      box-shadow: var(--shadow);
-    }
-
-    .feature-item:hover {
-      border-color: var(--red-soft);
-      transform: translateY(-4px);
-      box-shadow: var(--shadow-hover);
-    }
-
-    .feature-item i {
-      font-size: 2.2rem;
-      color: var(--red-soft);
-      margin-bottom: 10px;
-    }
-
-    .feature-item h4 {
-      font-weight: 600;
-      color: var(--gray-dark);
-      font-size: 0.95rem;
-    }
-
-    .feature-item p {
-      font-size: 0.8rem;
-      color: var(--gray-mid);
-      margin-top: 2px;
-    }
-
-    /* ===== FOOTER ===== */
-    .footer {
-      background: var(--white);
-      color: var(--gray-mid);
-      padding: 32px 32px 24px;
-      text-align: center;
-      border-top: 1px solid var(--gray-light);
-    }
-
-    .footer .brand {
-      font-family: 'Playfair Display', serif;
-      font-weight: 700;
-      font-size: 1.2rem;
-      color: var(--gray-dark);
-    }
-
-    .footer .brand i {
-      color: var(--red-soft);
-    }
-
-    /* ===== OVERLAY ===== */
-    .overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.4);
-      backdrop-filter: blur(8px);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .overlay.show {
-      display: flex;
-    }
-
-    .overlay-card {
-      background: var(--white);
-      max-width: 480px;
-      width: 100%;
-      max-height: 90vh;
-      overflow-y: auto;
-      border-radius: var(--radius);
-      padding: 32px 34px 40px;
-      box-shadow: var(--shadow-hover);
-      position: relative;
-    }
-
-    .overlay-card .close-overlay {
-      position: absolute;
-      top: 16px;
-      right: 20px;
-      font-size: 1.6rem;
-      color: var(--gray-mid);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .overlay-card .close-overlay:hover {
-      color: var(--gray-dark);
-    }
-
-    /* ===== TABS ===== */
-    .tab-bar {
-      display: flex;
-      gap: 4px;
-      background: var(--gray-bg);
-      border-radius: 60px;
-      padding: 4px;
-      margin-bottom: 28px;
-      max-width: 300px;
-    }
-
-    .tab-btn {
-      flex: 1;
-      padding: 10px 0;
-      border: none;
-      background: transparent;
-      border-radius: 60px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      color: var(--gray-mid);
-      transition: var(--transition);
-      cursor: pointer;
-    }
-
-    .tab-btn.active {
-      background: var(--red-soft);
-      color: var(--white);
-    }
-
-    .hidden {
-      display: none !important;
-    }
-
-    /* ===== FORM ===== */
-    .form-group {
-      margin-bottom: 16px;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: 500;
-      color: var(--gray-mid);
-      font-size: 0.85rem;
-      margin-bottom: 4px;
-    }
-
-    .form-group input,
-    .form-group select {
-      width: 100%;
-      padding: 14px 18px;
-      border: 1.5px solid var(--gray-light);
-      border-radius: 60px;
-      font-size: 0.95rem;
-      background: var(--white);
-      color: var(--gray-dark);
-      font-family: inherit;
-      transition: var(--transition);
-    }
-
-    .form-group input:focus,
-    .form-group select:focus {
-      border-color: var(--red-soft);
-      outline: none;
-      box-shadow: 0 0 0 4px rgba(212, 92, 92, 0.08);
-    }
-
-    .form-group input::placeholder {
-      color: var(--gray-light);
-    }
-
-    .btn-primary {
-      width: 100%;
-      padding: 16px;
-      border: none;
-      border-radius: 60px;
-      background: var(--red-soft);
-      color: var(--white);
-      font-weight: 700;
-      font-size: 1rem;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-family: inherit;
-    }
-
-    .btn-primary:hover {
-      background: var(--red-dark);
-      transform: scale(0.98);
-    }
-
-    .msg {
-      margin-top: 14px;
-      text-align: center;
-      font-size: 0.9rem;
-      min-height: 26px;
-    }
-
-    .msg.error {
-      color: #e74c3c;
-    }
-    .msg.success {
-      color: #2ecc71;
-    }
-
-    .demo-hint {
-      background: var(--gray-bg);
-      border-radius: var(--radius-sm);
-      padding: 12px 16px;
-      margin-top: 16px;
-      font-size: 0.8rem;
-      text-align: center;
-      color: var(--gray-mid);
-      border: 1px solid var(--gray-light);
-    }
-
-    .demo-hint strong {
-      color: var(--red-soft);
-    }
-
-    /* ===== RESPONSIVE ===== */
-    @media (max-width: 768px) {
-      body {
-        padding-top: 64px;
-      }
-
-      .navbar {
-        padding: 10px 16px;
-        height: 64px;
-      }
-
-      .navbar .logo {
-        font-size: 1.2rem;
-      }
-
-      .nav-right .user-badge span {
-        display: none;
-      }
-
-      .btn-nav {
-        display: none;
-      }
-
-      .burger-btn {
-        display: flex; /* muncul di mobile */
-      }
-
-      .sidebar {
-        width: 280px;
-        left: -300px;
-      }
-
-      /* overlay muncul di mobile */
-      .sidebar-overlay {
-        display: block;
-      }
-
-      .carousel-section {
-        height: 340px;
-      }
-
-      .carousel-slide {
-        padding: 30px;
-      }
-
-      .carousel-slide .slide-content h2 {
-        font-size: 2rem;
-      }
-
-      .carousel-slide .slide-content p {
-        font-size: 0.95rem;
-      }
-
-      .carousel-btn {
-        width: 38px;
-        height: 38px;
-        font-size: 0.9rem;
-      }
-
-      .carousel-btn.prev {
-        left: 12px;
-      }
-      .carousel-btn.next {
-        right: 12px;
-      }
-
-      .product-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 14px;
-        padding: 0 16px 32px;
-      }
-
-      .section-title {
-        font-size: 1.3rem;
-        padding: 28px 16px 16px;
-      }
-
-      .features {
-        padding: 12px 16px 32px;
-        gap: 12px;
-      }
-
-      .overlay-card {
-        padding: 24px 18px 30px;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .carousel-section {
-        height: 280px;
-      }
-
-      .carousel-slide .slide-content h2 {
-        font-size: 1.5rem;
-      }
-
-      .carousel-slide .slide-content p {
-        font-size: 0.8rem;
-      }
-
-      .product-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-        padding: 0 12px 24px;
-      }
-
-      .product-card .img-placeholder {
-        height: 120px;
-        font-size: 2rem;
-      }
-
-      .product-card .body {
-        padding: 12px 14px 16px;
-      }
-
-      .product-card .body h4 {
-        font-size: 0.8rem;
-      }
-
-      .product-card .body .price {
-        font-size: 0.85rem;
-      }
-
-      .features {
-        grid-template-columns: 1fr 1fr;
-        gap: 8px;
-        padding: 8px 12px 24px;
-      }
-
-      .feature-item {
-        padding: 16px 12px;
-      }
-
-      .feature-item i {
-        font-size: 1.6rem;
-      }
-
-      .feature-item h4 {
-        font-size: 0.8rem;
-      }
-
-      .feature-item p {
-        font-size: 0.7rem;
-      }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>HEDTRO JEANS · Afiliasi & Reseller</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================================
+           RESET & ROOT
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --denim-dark: #0b1a2b;
+            --denim-navy: #1a2e44;
+            --denim-blue: #2a4b6e;
+            --denim-light: #e8edf2;
+            --gold-accent: #c9a84c;
+            --gold-light: #e8d5a3;
+            --cream: #f7f4ef;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --radius: 28px;
+            --radius-sm: 14px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--cream);
+            color: var(--denim-dark);
+            overflow-x: hidden;
+            padding-top: 70px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+            background: none;
+        }
+        img {
+            max-width: 100%;
+            display: block;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--cream);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--denim-blue);
+            border-radius: 10px;
+        }
+
+        /* ============================================================
+           NAVBAR
+           ============================================================ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--denim-dark);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--gold-accent);
+            height: 70px;
+            transition: var(--transition);
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--white);
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
+
+        .navbar .logo i {
+            color: var(--gold-accent);
+            font-size: 1.6rem;
+        }
+
+        .navbar .logo span {
+            font-weight: 300;
+            color: var(--gold-light);
+            font-size: 0.75rem;
+            margin-left: 2px;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-right .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--cream);
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 14px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-right .user-badge:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-right .user-badge i {
+            color: var(--gold-accent);
+        }
+
+        .nav-right .btn-nav {
+            padding: 8px 18px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+        }
+
+        .btn-nav-outline {
+            background: transparent;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            color: var(--cream);
+        }
+
+        .btn-nav-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-nav-gold {
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+        }
+
+        .btn-nav-gold:hover {
+            background: #b8963a;
+            transform: scale(0.97);
+        }
+
+        /* ============================================================
+           BURGER
+           ============================================================ */
+        .burger-btn {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            padding: 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .burger-btn span {
+            display: block;
+            width: 28px;
+            height: 3px;
+            background: var(--cream);
+            border-radius: 4px;
+            transition: var(--transition);
+            transform-origin: center;
+        }
+
+        .burger-btn.active span:nth-child(1) {
+            transform: translateY(8px) rotate(45deg);
+        }
+
+        .burger-btn.active span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+
+        .burger-btn.active span:nth-child(3) {
+            transform: translateY(-8px) rotate(-45deg);
+        }
+
+        /* ============================================================
+           SIDEBAR
+           ============================================================ */
+        .sidebar-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100%;
+            background: var(--denim-dark);
+            z-index: 1000;
+            padding: 24px 20px;
+            transition: var(--transition);
+            overflow-y: auto;
+            border-right: 3px solid var(--gold-accent);
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 12px;
+        }
+
+        .sidebar .sidebar-header .logo-side {
+            color: var(--white);
+            font-weight: 800;
+            font-size: 1.3rem;
+        }
+
+        .sidebar .sidebar-header .logo-side i {
+            color: var(--gold-accent);
+        }
+
+        .sidebar .sidebar-header .close-side {
+            color: var(--cream);
+            font-size: 1.6rem;
+            cursor: pointer;
+        }
+
+        .sidebar .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--cream);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .sidebar .menu-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar .menu-item i {
+            width: 24px;
+            color: var(--gold-accent);
+        }
+
+        .sidebar .menu-item.active {
+            background: rgba(201, 168, 76, 0.15);
+            color: var(--gold-accent);
+        }
+
+        .sidebar .menu-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 6px 0;
+        }
+
+        /* ============================================================
+           HERO / CAROUSEL
+           ============================================================ */
+        .carousel-section {
+            position: relative;
+            width: 100%;
+            height: 420px;
+            overflow: hidden;
+            background: var(--denim-dark);
+        }
+
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px 60px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+        }
+
+        .carousel-slide .slide-content {
+            text-align: center;
+            color: var(--white);
+            z-index: 2;
+            max-width: 700px;
+        }
+
+        .carousel-slide .slide-content h2 {
+            font-size: 2.8rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 8px;
+        }
+
+        .carousel-slide .slide-content h2 i {
+            color: var(--gold-accent);
+        }
+
+        .carousel-slide .slide-content p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            color: var(--gold-light);
+        }
+
+        .carousel-slide .slide-content .btn-slide {
+            display: inline-block;
+            margin-top: 16px;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            padding: 12px 36px;
+            border-radius: 60px;
+            font-weight: 700;
+            transition: var(--transition);
+        }
+
+        .carousel-slide .slide-content .btn-slide:hover {
+            transform: scale(1.05);
+            background: #b8963a;
+        }
+
+        .carousel-slide .overlay-dark {
+            position: absolute;
+            inset: 0;
+            background: rgba(11, 26, 43, 0.5);
+            z-index: 1;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(8px);
+            color: #fff;
+            border: none;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            font-size: 1.4rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .carousel-btn.prev {
+            left: 16px;
+        }
+
+        .carousel-btn.next {
+            right: 16px;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            z-index: 10;
+        }
+
+        .carousel-dots .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .carousel-dots .dot.active {
+            background: var(--gold-accent);
+            transform: scale(1.2);
+        }
+
+        /* ============================================================
+           SECTION TITLE
+           ============================================================ */
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--denim-dark);
+            padding: 32px 24px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: var(--gold-accent);
+        }
+
+        /* ============================================================
+           PRODUCT GRID
+           ============================================================ */
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+            padding: 0 24px 40px;
+        }
+
+        .product-card {
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid #e8edf2;
+        }
+
+        .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .product-card .img-placeholder {
+            height: 180px;
+            background: var(--denim-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--denim-blue);
+            font-size: 3rem;
+        }
+
+        .product-card .body {
+            padding: 16px;
+        }
+
+        .product-card .body .tag {
+            display: inline-block;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 14px;
+            border-radius: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .product-card .body h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .product-card .body .price {
+            font-weight: 700;
+            color: var(--denim-blue);
+            font-size: 1.05rem;
+        }
+
+        .product-card .body .price del {
+            color: #8a9aa8;
+            font-weight: 400;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        .product-card .body .btn-detail {
+            margin-top: 10px;
+            display: inline-block;
+            background: var(--denim-dark);
+            color: #fff;
+            padding: 5px 18px;
+            border-radius: 60px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            transition: var(--transition);
+        }
+
+        .product-card .body .btn-detail:hover {
+            background: var(--denim-blue);
+        }
+
+        /* ============================================================
+           FEATURES
+           ============================================================ */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            padding: 20px 24px 40px;
+        }
+
+        .feature-item {
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 20px 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid #e8edf2;
+        }
+
+        .feature-item i {
+            font-size: 2rem;
+            color: var(--gold-accent);
+            margin-bottom: 8px;
+        }
+
+        .feature-item h4 {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .feature-item p {
+            font-size: 0.8rem;
+            color: #5a7a8a;
+        }
+
+        /* ============================================================
+           FOOTER
+           ============================================================ */
+        .footer {
+            background: var(--denim-dark);
+            color: var(--cream);
+            padding: 30px 24px 20px;
+            text-align: center;
+            border-top: 3px solid var(--gold-accent);
+        }
+
+        .footer a {
+            color: var(--gold-light);
+        }
+
+        /* ============================================================
+           RESPONSIVE
+           ============================================================ */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+
+            .navbar {
+                padding: 10px 16px;
+                height: 60px;
+            }
+
+            .navbar .logo {
+                font-size: 1.2rem;
+            }
+
+            .navbar .logo i {
+                font-size: 1.3rem;
+            }
+
+            .nav-right .user-badge span {
+                display: none;
+            }
+
+            .nav-right .btn-nav {
+                display: none;
+            }
+
+            .burger-btn {
+                display: flex;
+            }
+
+            .carousel-section {
+                height: 300px;
+            }
+
+            .carousel-slide {
+                padding: 20px 30px;
+            }
+
+            .carousel-slide .slide-content h2 {
+                font-size: 1.8rem;
+            }
+
+            .carousel-slide .slide-content p {
+                font-size: 0.95rem;
+            }
+
+            .carousel-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 1rem;
+            }
+
+            .carousel-btn.prev {
+                left: 8px;
+            }
+
+            .carousel-btn.next {
+                right: 8px;
+            }
+
+            .sidebar {
+                width: 280px;
+                left: -300px;
+            }
+
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 14px;
+                padding: 0 16px 30px;
+            }
+
+            .section-title {
+                font-size: 1.3rem;
+                padding: 24px 16px 12px;
+            }
+
+            .features {
+                padding: 12px 16px 30px;
+                gap: 12px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .carousel-section {
+                height: 250px;
+            }
+
+            .carousel-slide .slide-content h2 {
+                font-size: 1.4rem;
+            }
+
+            .carousel-slide .slide-content p {
+                font-size: 0.8rem;
+            }
+
+            .carousel-slide .slide-content .btn-slide {
+                padding: 8px 24px;
+                font-size: 0.85rem;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+                padding: 0 12px 24px;
+            }
+
+            .product-card .img-placeholder {
+                height: 130px;
+                font-size: 2rem;
+            }
+
+            .product-card .body {
+                padding: 10px;
+            }
+
+            .product-card .body h4 {
+                font-size: 0.8rem;
+            }
+
+            .product-card .body .price {
+                font-size: 0.85rem;
+            }
+
+            .product-card .body .btn-detail {
+                font-size: 0.65rem;
+                padding: 4px 12px;
+            }
+        }
+    </style>
 </head>
+
 <body>
 
-  <!-- ===== NAVBAR ===== -->
-  <header class="navbar">
-    <div class="logo">
-      <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
-    </div>
-    <div class="nav-right">
-      <div class="user-badge" id="navUserBadge">
-        <i class="fas fa-user-circle"></i> <span id="navUserName">Guest</span>
-      </div>
-      <button class="btn-nav btn-nav-outline" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
-      <button class="btn-nav btn-nav-red" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
-      <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </header>
-
-  <!-- ===== SIDEBAR ===== -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
-      <span class="close-side" id="closeSidebar">&times;</span>
-    </div>
-    <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
-    <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
-    <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang</div>
-    <div class="menu-divider"></div>
-    <div class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</div>
-    <div class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</div>
-  </nav>
-
-  <!-- ===== CAROUSEL ===== -->
-  <section class="carousel-section" id="carouselSection">
-    <div class="carousel-track" id="carouselTrack">
-      <div class="carousel-slide" style="background: linear-gradient(135deg, #2c2c2c 0%, #4a4a4a 100%);">
-        <div class="overlay-dark"></div>
-        <div class="slide-content">
-          <h2><i class="fas fa-star"></i> 501® ORIGINAL DENIM</h2>
-          <p>Ikonik sejak 1873. Potongan lurus dengan raw denim 14oz premium.</p>
-          <a href="#" class="btn-slide">Lihat Koleksi</a>
+    <!-- ===== NAVBAR ===== -->
+    <header class="navbar" id="navbar">
+        <div class="logo">
+            <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
         </div>
-      </div>
-      <div class="carousel-slide" style="background: linear-gradient(135deg, #4a4a4a 0%, #6b6b6b 100%);">
-        <div class="overlay-dark"></div>
-        <div class="slide-content">
-          <h2><i class="fas fa-jacket"></i> TRUCKER JACKET & OUTER</h2>
-          <p>Gaya ikonik denim modern untuk penampilan casual harian Anda.</p>
-          <a href="#" class="btn-slide">Lihat Koleksi</a>
-        </div>
-      </div>
-      <div class="carousel-slide" style="background: linear-gradient(135deg, #6b6b6b 0%, #2c2c2c 100%);">
-        <div class="overlay-dark"></div>
-        <div class="slide-content">
-          <h2><i class="fas fa-tags"></i> SEASONAL SALE UP TO 40%</h2>
-          <p>Diskon spesial koleksi denim elegan dengan harga khusus eksklusif.</p>
-          <a href="#" class="btn-slide">Lihat Promo</a>
-        </div>
-      </div>
-    </div>
-    <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
-    <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
-    <div class="carousel-dots" id="carouselDots"></div>
-  </section>
-
-  <!-- ===== PRODUK ===== -->
-  <h2 class="section-title"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
-  <div class="product-grid" id="productGrid"></div>
-
-  <!-- ===== FITUR ===== -->
-  <div class="features">
-    <div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz bermutu tinggi</p></div>
-    <div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Pengiriman cepat seluruh Indonesia</p></div>
-    <div class="feature-item"><i class="fas fa-exchange-alt"></i><h4>GARANSI 30 HARI</h4><p>Penukaran size tanpa ribet</p></div>
-    <div class="feature-item"><i class="fas fa-user-tie"></i><h4>HARGA MEMBER</h4><p>Potongan untuk pemilik lisensi</p></div>
-  </div>
-
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <p class="brand"><i class="fas fa-tshirt"></i> HEDTRO JEANS</p>
-    <p style="font-size:0.8rem; opacity:0.6; margin-top:4px;">Bonus Sponsor · Binary 10L · Reward 5L · RO Produk</p>
-    <p style="font-size:0.7rem; opacity:0.4; margin-top:12px;">&copy; 2026 · Sistem MLM terintegrasi</p>
-  </footer>
-
-  <!-- ===== OVERLAY ===== -->
-  <div class="overlay" id="overlay">
-    <div class="overlay-card">
-      <button class="close-overlay" id="closeOverlay">&times;</button>
-      <div id="authSection">
-        <div class="tab-bar" id="authTabs">
-          <button class="tab-btn active" data-tab="login">Masuk</button>
-          <button class="tab-btn" data-tab="register">Daftar</button>
-        </div>
-        <div id="loginForm">
-          <div class="form-group"><label>Email</label><input type="email" id="loginEmail" placeholder="email@domain.com" value="admin@mlm.com" /></div>
-          <div class="form-group"><label>Password</label><input type="password" id="loginPassword" placeholder="••••••••" value="admin123" /></div>
-          <button class="btn-primary" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
-          <div class="msg" id="loginMsg"></div>
-        </div>
-        <div id="registerForm" class="hidden">
-          <div class="form-group"><label>Nama Lengkap</label><input type="text" id="regName" placeholder="Nama anda" /></div>
-          <div class="form-group"><label>Email</label><input type="email" id="regEmail" placeholder="email@domain.com" /></div>
-          <div class="form-group"><label>Password (min 6)</label><input type="password" id="regPassword" placeholder="••••••••" /></div>
-          <div class="form-group"><label>Kode Sponsor</label><input type="text" id="regSponsor" placeholder="ID sponsor (opsional)" /></div>
-          <div class="form-group">
-            <label>Posisi Jaringan</label>
-            <select id="regPosition">
-              <option value="left">Kiri</option>
-              <option value="right">Kanan</option>
-            </select>
-          </div>
-          <button class="btn-primary" id="registerBtn"><i class="fas fa-user-plus"></i> Daftar Member</button>
-          <div class="msg" id="regMsg"></div>
-        </div>
-        <div class="demo-hint">
-          <i class="fas fa-info-circle"></i> <strong>Demo:</strong> admin@mlm.com / admin123 &nbsp;·&nbsp; budi@mail.com / budi123
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <script>
-    // ============================================================
-    // JAVASCRIPT index.html (Soft Red · Gray · White)
-    // ============================================================
-    (function() {
-      'use strict';
-
-      // ===== CONSTANTS =====
-      const DB_KEY = 'hedtro_mlm_users';
-      const PRODUCT_KEY = 'hedtro_products';
-      const SETTINGS_KEY = 'hedtro_settings';
-      const BANK_KEY = 'hedtro_bank_info';
-
-      function loadUsers() { const raw = localStorage.getItem(DB_KEY); return raw ? JSON.parse(raw) : []; }
-      function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-      function loadProducts() { const raw = localStorage.getItem(PRODUCT_KEY); return raw ? JSON.parse(raw) : []; }
-      function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-      function loadSettings() { const raw = localStorage.getItem(SETTINGS_KEY); return raw ? JSON.parse(raw) : { sponsorBonus: 10, binaryBonus: 8, rewardBonus: 5, roBonus: 3, memberPrice: 550000 }; }
-      function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
-      function loadBankInfo() { const raw = localStorage.getItem(BANK_KEY); return raw ? JSON.parse(raw) : { bank: 'BCA', account: '1234567890', name: 'HEDTRO JEANS' }; }
-
-      function initData() {
-        let users = loadUsers();
-        if (users.length === 0) {
-          users = [
-            { id: 1, name: 'Admin Utama', email: 'admin@mlm.com', password: 'admin123', sponsor_id: null, position: null,
-              left: null, right: null, status: 'verified', wallet: 0, bonus_sponsor: 0, bonus_binary: 0,
-              bonus_reward: 0, bonus_ro: 0, purchase_history: [], transactions: [], proof_image: null },
-            { id: 2, name: 'Budi Santoso', email: 'budi@mail.com', password: 'budi123', sponsor_id: 1, position: 'left',
-              left: null, right: null, status: 'verified', wallet: 120000, bonus_sponsor: 50, bonus_binary: 120,
-              bonus_reward: 30, bonus_ro: 12, purchase_history: [], transactions: [], proof_image: null },
-            { id: 3, name: 'Citra Dewi', email: 'citra@mail.com', password: 'citra123', sponsor_id: 1, position: 'right',
-              left: null, right: null, status: 'verified', wallet: 80000, bonus_sponsor: 30, bonus_binary: 70,
-              bonus_reward: 15, bonus_ro: 8, purchase_history: [], transactions: [], proof_image: null }
-          ];
-          saveUsers(users);
-        }
-        let products = loadProducts();
-        if (products.length === 0) {
-          products = [
-            { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
-              icon: 'fa-tshirt', stock: 45 },
-            { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
-              icon: 'fa-tshirt', stock: 30 },
-            { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM',
-              icon: 'fa-tshirt', stock: 25 },
-            { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%', icon: 'fa-tshirt',
-              stock: 18 },
-            { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED',
-              icon: 'fa-jacket', stock: 20 },
-            { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER',
-              icon: 'fa-tshirt', stock: 35 },
-            { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS',
-              icon: 'fa-belt', stock: 50 },
-            { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT',
-              icon: 'fa-tshirt', stock: 22 }
-          ];
-          saveProducts(products);
-        }
-        let settings = loadSettings();
-        if (!settings.memberPrice) { settings.memberPrice = 550000;
-          saveSettings(settings); }
-        let bank = loadBankInfo();
-        if (!bank.bank) { saveBankInfo({ bank: 'BCA', account: '1234567890', name: 'HEDTRO JEANS' }); }
-      }
-      initData();
-
-      let users = loadUsers();
-      let products = loadProducts();
-      let currentUser = null;
-
-      // ===== DOM REFS =====
-      const burgerBtn = document.getElementById('burgerBtn');
-      const sidebar = document.getElementById('sidebar');
-      const sidebarOverlay = document.getElementById('sidebarOverlay');
-      const closeSidebar = document.getElementById('closeSidebar');
-      const navUserName = document.getElementById('navUserName');
-      const navLoginBtn = document.getElementById('navLoginBtn');
-      const navRegisterBtn = document.getElementById('navRegisterBtn');
-      const overlay = document.getElementById('overlay');
-      const closeOverlay = document.getElementById('closeOverlay');
-      const loginForm = document.getElementById('loginForm');
-      const registerForm = document.getElementById('registerForm');
-      const loginMsg = document.getElementById('loginMsg');
-      const regMsg = document.getElementById('regMsg');
-
-      // ===== SIDEBAR TOGGLE =====
-      function toggleSidebar(open) {
-        const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
-        sidebar.classList.toggle('open', isOpen);
-        sidebarOverlay.classList.toggle('active', isOpen);
-        burgerBtn.classList.toggle('active', isOpen);
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-      }
-
-      // Event burger
-      burgerBtn.addEventListener('click', function(e) {
-        e.stopPropagation();
-        toggleSidebar();
-      });
-
-      // Event close sidebar
-      closeSidebar.addEventListener('click', function() {
-        toggleSidebar(false);
-      });
-
-      // Event overlay click (tutup sidebar)
-      sidebarOverlay.addEventListener('click', function() {
-        toggleSidebar(false);
-      });
-
-      // ===== CAROUSEL =====
-      const track = document.getElementById('carouselTrack');
-      const dots = document.getElementById('carouselDots');
-      const slides = track.querySelectorAll('.carousel-slide');
-      const totalSlides = slides.length;
-      let currentSlide = 0;
-      let slideInterval = null;
-
-      function createDots() {
-        dots.innerHTML = '';
-        for (let i = 0; i < totalSlides; i++) {
-          const dot = document.createElement('span');
-          dot.className = 'dot' + (i === 0 ? ' active' : '');
-          dot.dataset.index = i;
-          dot.addEventListener('click', () => goToSlide(i));
-          dots.appendChild(dot);
-        }
-      }
-      createDots();
-
-      function goToSlide(index) {
-        currentSlide = (index + totalSlides) % totalSlides;
-        track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
-        document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
-      }
-
-      function nextSlide() { goToSlide(currentSlide + 1); }
-
-      function prevSlide() { goToSlide(currentSlide - 1); }
-
-      document.getElementById('carouselNext').addEventListener('click', () => { nextSlide();
-        resetInterval(); });
-      document.getElementById('carouselPrev').addEventListener('click', () => { prevSlide();
-        resetInterval(); });
-
-      function resetInterval() { if (slideInterval) clearInterval(slideInterval);
-        slideInterval = setInterval(nextSlide, 5000); }
-      resetInterval();
-
-      // ===== RENDER PRODUK =====
-      function renderProducts() {
-        const grid = document.getElementById('productGrid');
-        grid.innerHTML = '';
-        products.forEach(p => {
-          const card = document.createElement('div');
-          card.className = 'product-card';
-          card.innerHTML = `
-            <div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>
-            <div class="body">
-              <span class="tag">${p.tag || 'PRODUK'}</span>
-              <h4>${p.name}</h4>
-              <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original?.toLocaleString() || ''}</del></div>
-              <button class="btn-detail" data-id="${p.id}">lihat Detail</button>
+        <div class="nav-right">
+            <div class="user-badge" id="navUserBadge">
+                <i class="fas fa-user-circle"></i> <span id="navUserName">Guest</span>
             </div>
-          `;
-          grid.appendChild(card);
-        });
-      }
+            <button class="btn-nav btn-nav-outline" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
+            <button class="btn-nav btn-nav-gold" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
+            <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
 
-      // ===== REGISTER =====
-      function register(name, email, password, sponsorCode, position) {
-        if (users.find(u => u.email === email)) {
-          regMsg.className = 'msg error';
-          regMsg.innerText = '❌ Email sudah terdaftar.';
-          return;
-        }
-        let sponsor_id = null;
-        let sponsorUser = null;
-        if (sponsorCode) {
-          sponsorUser = users.find(u => u.id === parseInt(sponsorCode));
-          if (!sponsorUser) {
-            regMsg.className = 'msg error';
-            regMsg.innerText = '⚠️ Kode sponsor tidak ditemukan.';
-            return;
-          }
-          sponsor_id = sponsorUser.id;
-          if (position === 'left' && sponsorUser.left) {
-            regMsg.className = 'msg error';
-            regMsg.innerText = '⚠️ Posisi kiri sudah terisi oleh member lain.';
-            return;
-          }
-          if (position === 'right' && sponsorUser.right) {
-            regMsg.className = 'msg error';
-            regMsg.innerText = '⚠️ Posisi kanan sudah terisi oleh member lain.';
-            return;
-          }
-        }
-        const newUser = {
-          id: users.length ? Math.max(...users.map(u => u.id)) + 1 : 1,
-          name, email, password,
-          sponsor_id,
-          position: position || 'left',
-          left: null,
-          right: null,
-          status: 'free',
-          wallet: 0,
-          bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0,
-          purchase_history: [],
-          transactions: [],
-          proof_image: null
-        };
-        users.push(newUser);
-        saveUsers(users);
+    <!-- ===== SIDEBAR ===== -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
+            <span class="close-side" id="closeSidebar">&times;</span>
+        </div>
+        <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
+        <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
+        <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang</div>
+        <div class="menu-divider"></div>
+        <div class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</div>
+        <div class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</div>
+    </nav>
 
-        if (sponsorUser) {
-          if (position === 'left') sponsorUser.left = newUser.id;
-          else sponsorUser.right = newUser.id;
-          saveUsers(users);
-          updateBinaryTree(sponsor_id, 1);
-        }
+    <!-- ===== CAROUSEL ===== -->
+    <section class="carousel-section" id="carouselSection">
+        <div class="carousel-track" id="carouselTrack">
+            <div class="carousel-slide" style="background: linear-gradient(135deg, #0b1a2b 0%, #1a2e44 100%);">
+                <div class="overlay-dark"></div>
+                <div class="slide-content">
+                    <h2><i class="fas fa-star"></i> 501® ORIGINAL DENIM</h2>
+                    <p>Ikonik sejak 1873 · Potongan lurus dengan raw denim 14oz premium</p>
+                    <a href="#" class="btn-slide">Lihat Koleksi</a>
+                </div>
+            </div>
+            <div class="carousel-slide" style="background: linear-gradient(135deg, #1a2e44 0%, #2a4b6e 100%);">
+                <div class="overlay-dark"></div>
+                <div class="slide-content">
+                    <h2><i class="fas fa-jacket"></i> TRUCKER JACKET & OUTER</h2>
+                    <p>Gaya ikonik denim modern untuk penampilan casual harian Anda</p>
+                    <a href="#" class="btn-slide">Lihat Koleksi</a>
+                </div>
+            </div>
+            <div class="carousel-slide" style="background: linear-gradient(135deg, #2a4b6e 0%, #0b1a2b 100%);">
+                <div class="overlay-dark"></div>
+                <div class="slide-content">
+                    <h2><i class="fas fa-tags"></i> SEASONAL SALE UP TO 40%</h2>
+                    <p>Diskon spesial koleksi denim elegan dengan harga khusus eksklusif</p>
+                    <a href="#" class="btn-slide">Lihat Promo</a>
+                </div>
+            </div>
+        </div>
+        <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
+        <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
+        <div class="carousel-dots" id="carouselDots"></div>
+    </section>
 
-        regMsg.className = 'msg success';
-        regMsg.innerText = '✅ Pendaftaran berhasil! Silakan login dan kirim bukti transfer untuk verifikasi.';
-        document.getElementById('regName').value = '';
-        document.getElementById('regEmail').value = '';
-        document.getElementById('regPassword').value = '';
-        document.getElementById('regSponsor').value = '';
-        setTimeout(() => {
-          document.querySelector('#authTabs .tab-btn[data-tab="login"]').click();
-        }, 1500);
-      }
+    <!-- ===== PRODUK POPULER ===== -->
+    <h2 class="section-title"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
+    <div class="product-grid" id="productGrid"></div>
 
-      function updateBinaryTree(userId, level) {
-        if (level > 10) return;
-        const user = users.find(u => u.id === userId);
-        if (!user) return;
-        if (!user.binary_tree) user.binary_tree = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        user.binary_tree[level - 1] = (user.binary_tree[level - 1] || 0) + 1;
-        if (level <= 5) {
-          if (!user.reward_levels) user.reward_levels = [0, 0, 0, 0, 0];
-          user.reward_levels[level - 1] = (user.reward_levels[level - 1] || 0) + 1;
-        }
-        saveUsers(users);
-        if (user.sponsor_id) {
-          updateBinaryTree(user.sponsor_id, level + 1);
-        }
-      }
+    <!-- ===== FITUR ===== -->
+    <div class="features">
+        <div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz bermutu tinggi</p></div>
+        <div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Pengiriman cepat seluruh Indonesia</p></div>
+        <div class="feature-item"><i class="fas fa-exchange-alt"></i><h4>GARANSI 30 HARI</h4><p>Penukaran size tanpa ribet</p></div>
+        <div class="feature-item"><i class="fas fa-user-tie"></i><h4>HARGA MEMBER</h4><p>Potongan untuk pemilik lisensi</p></div>
+    </div>
 
-      // ===== LOGIN =====
-      function login(email, password) {
-        const user = users.find(u => u.email === email && u.password === password);
-        if (!user) {
-          loginMsg.className = 'msg error';
-          loginMsg.innerText = '❌ Email atau password salah.';
-          return false;
-        }
-        currentUser = user;
-        localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
-        loginMsg.className = 'msg';
-        loginMsg.innerText = '';
-        if (user.email === 'admin@mlm.com') {
-          window.location.href = 'admin.html';
-        } else {
-          window.location.href = 'dashboard.html';
-        }
-        return true;
-      }
+    <!-- ===== FOOTER ===== -->
+    <footer class="footer">
+        <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Afiliasi & Reseller</p>
+        <p style="font-size:0.8rem; opacity:0.7; margin-top:6px;">Bonus Sponsor · Binary 10L · Reward 5L · RO Produk</p>
+        <p style="font-size:0.75rem; margin-top:12px;">&copy; 2026 · Sistem MLM terintegrasi</p>
+    </footer>
 
-      // ===== OVERLAY =====
-      function openOverlay() {
-        overlay.classList.add('show');
-        document.body.style.overflow = 'hidden';
-        loginMsg.innerText = '';
-        regMsg.innerText = '';
-      }
+    <!-- ============================================================ -->
+    <!-- JAVASCRIPT
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
 
-      function closeOverlayFn() {
-        overlay.classList.remove('show');
-        document.body.style.overflow = '';
-      }
+            // ============================================================
+            // 1. DATA PRODUK
+            // ============================================================
+            const products = [{
+                id: 1,
+                name: 'Slim Fit Premium Indigo 501®',
+                price: 250000,
+                original: 350000,
+                tag: 'BEST SELLER',
+                icon: 'fa-tshirt'
+            }, {
+                id: 2,
+                name: 'Classic Straight Cut Raw',
+                price: 280000,
+                original: 390000,
+                tag: 'NEW ARRIVAL',
+                icon: 'fa-tshirt'
+            }, {
+                id: 3,
+                name: 'Jet Black Stretch Comfort',
+                price: 240000,
+                original: 330000,
+                tag: 'HOT ITEM',
+                icon: 'fa-tshirt'
+            }, {
+                id: 4,
+                name: 'Light Wash Retro 90s',
+                price: 270000,
+                original: 370000,
+                tag: 'DISKON 27%',
+                icon: 'fa-tshirt'
+            }, {
+                id: 5,
+                name: 'Trucker Jacket Heritage Raw',
+                price: 420000,
+                original: 550000,
+                tag: 'LIMITED',
+                icon: 'fa-jacket'
+            }, {
+                id: 6,
+                name: 'High Waist Skinny Wanita 721',
+                price: 280000,
+                original: 380000,
+                tag: 'POPULER',
+                icon: 'fa-tshirt'
+            }, {
+                id: 7,
+                name: 'Genuine Leather Belt Vintage',
+                price: 120000,
+                original: 180000,
+                tag: 'AKSESORIS',
+                icon: 'fa-belt'
+            }, {
+                id: 8,
+                name: 'Oversized Shirt Vintage Wash',
+                price: 230000,
+                original: 320000,
+                tag: 'FAVORIT',
+                icon: 'fa-tshirt'
+            }];
 
-      closeOverlay.addEventListener('click', closeOverlayFn);
-      overlay.addEventListener('click', (e) => { if (e.target === overlay) closeOverlayFn(); });
-
-      // ===== UI UPDATE =====
-      function updateUI() {
-        if (currentUser) {
-          navUserName.innerText = currentUser.name;
-          navLoginBtn.style.display = 'none';
-          navRegisterBtn.style.display = 'none';
-        } else {
-          navUserName.innerText = 'Guest';
-          navLoginBtn.style.display = 'flex';
-          navRegisterBtn.style.display = 'flex';
-        }
-      }
-
-      // ===== EVENT BINDINGS =====
-      navLoginBtn.addEventListener('click', openOverlay);
-      navRegisterBtn.addEventListener('click', () => {
-        openOverlay();
-        document.querySelector('#authTabs .tab-btn[data-tab="register"]').click();
-      });
-      document.getElementById('navUserBadge').addEventListener('click', function() {
-        if (currentUser) {
-          if (currentUser.email === 'admin@mlm.com') window.location.href = 'admin.html';
-          else window.location.href = 'dashboard.html';
-        } else {
-          openOverlay();
-        }
-      });
-
-      document.getElementById('sideLoginBtn').addEventListener('click', () => { toggleSidebar(false);
-        openOverlay(); });
-      document.getElementById('sideRegisterBtn').addEventListener('click', () => {
-        toggleSidebar(false);
-        openOverlay();
-        document.querySelector('#authTabs .tab-btn[data-tab="register"]').click();
-      });
-      document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
-        item.addEventListener('click', function() {
-          const page = this.dataset.page;
-          toggleSidebar(false);
-          if (page === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
-          if (page === 'products') document.querySelector('.section-title')?.scrollIntoView({ behavior: 'smooth' });
-          if (page === 'about') document.querySelector('.features')?.scrollIntoView({ behavior: 'smooth' });
-        });
-      });
-
-      document.querySelectorAll('#authTabs .tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          document.querySelectorAll('#authTabs .tab-btn').forEach(b => b.classList.remove('active'));
-          this.classList.add('active');
-          const tab = this.dataset.tab;
-          if (tab === 'login') {
-            loginForm.classList.remove('hidden');
-            registerForm.classList.add('hidden');
-            loginMsg.innerText = '';
-          } else {
-            loginForm.classList.add('hidden');
-            registerForm.classList.remove('hidden');
-            regMsg.innerText = '';
-          }
-        });
-      });
-
-      document.getElementById('loginBtn').addEventListener('click', function() {
-        const email = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPassword').value.trim();
-        if (!email || !password) {
-          loginMsg.className = 'msg error';
-          loginMsg.innerText = '⚠️ Isi email dan password.';
-          return;
-        }
-        login(email, password);
-      });
-
-      document.getElementById('registerBtn').addEventListener('click', function() {
-        const name = document.getElementById('regName').value.trim();
-        const email = document.getElementById('regEmail').value.trim();
-        const password = document.getElementById('regPassword').value.trim();
-        const sponsor = document.getElementById('regSponsor').value.trim();
-        const position = document.getElementById('regPosition').value;
-        if (!name || !email || !password) {
-          regMsg.className = 'msg error';
-          regMsg.innerText = '⚠️ Semua field wajib diisi.';
-          return;
-        }
-        if (password.length < 6) {
-          regMsg.className = 'msg error';
-          regMsg.innerText = '⚠️ Password min 6 karakter.';
-          return;
-        }
-        register(name, email, password, sponsor, position);
-      });
-
-      document.getElementById('loginPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById(
-          'loginBtn').click(); });
-      document.getElementById('regPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById(
-          'registerBtn').click(); });
-
-      // ===== INIT =====
-      renderProducts();
-
-      const session = localStorage.getItem('mlm_session');
-      if (session) {
-        try {
-          const { id } = JSON.parse(session);
-          currentUser = users.find(u => u.id === id);
-          if (currentUser) {
-            updateUI();
-            if (currentUser.email === 'admin@mlm.com') {
-              window.location.href = 'admin.html';
-            } else {
-              window.location.href = 'dashboard.html';
+            // ============================================================
+            // 2. RENDER PRODUK
+            // ============================================================
+            function renderProducts() {
+                const grid = document.getElementById('productGrid');
+                grid.innerHTML = '';
+                products.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
+                        <div class="body">
+                            <span class="tag">${p.tag}</span>
+                            <h4>${p.name}</h4>
+                            <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
+                            <button class="btn-detail" data-id="${p.id}">lihat Detail</button>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
             }
-            return;
-          } else {
-            localStorage.removeItem('mlm_session');
-          }
-        } catch (_) { localStorage.removeItem('mlm_session'); }
-      }
-      updateUI();
 
-      console.log('🟥 HEDTRO JEANS · Soft Red, Gray & White Theme — Burger menu siap');
-    })();
-  </script>
+            // ============================================================
+            // 3. CAROUSEL
+            // ============================================================
+            const track = document.getElementById('carouselTrack');
+            const dots = document.getElementById('carouselDots');
+            const slides = track.querySelectorAll('.carousel-slide');
+            const totalSlides = slides.length;
+            let currentSlide = 0;
+            let slideInterval = null;
+
+            function createDots() {
+                dots.innerHTML = '';
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('span');
+                    dot.className = 'dot' + (i === 0 ? ' active' : '');
+                    dot.dataset.index = i;
+                    dot.addEventListener('click', () => goToSlide(i));
+                    dots.appendChild(dot);
+                }
+            }
+            createDots();
+
+            function goToSlide(index) {
+                currentSlide = (index + totalSlides) % totalSlides;
+                track.style.transform = `translateX(-${currentSlide * 100}%)`;
+                document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+            }
+
+            function nextSlide() { goToSlide(currentSlide + 1); }
+
+            function prevSlide() { goToSlide(currentSlide - 1); }
+
+            document.getElementById('carouselNext').addEventListener('click', () => { nextSlide();
+                resetInterval(); });
+            document.getElementById('carouselPrev').addEventListener('click', () => { prevSlide();
+                resetInterval(); });
+
+            function resetInterval() {
+                if (slideInterval) { clearInterval(slideInterval);
+                    slideInterval = null; }
+                slideInterval = setInterval(nextSlide, 4000);
+            }
+            resetInterval();
+
+            // ============================================================
+            // 4. SIDEBAR & BURGER
+            // ============================================================
+            const burgerBtn = document.getElementById('burgerBtn');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const closeSidebar = document.getElementById('closeSidebar');
+
+            function toggleSidebar(open) {
+                const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
+                sidebar.classList.toggle('open', isOpen);
+                sidebarOverlay.classList.toggle('active', isOpen);
+                burgerBtn.classList.toggle('active', isOpen);
+                document.body.style.overflow = isOpen ? 'hidden' : '';
+            }
+
+            burgerBtn.addEventListener('click', () => toggleSidebar());
+            closeSidebar.addEventListener('click', () => toggleSidebar(false));
+            sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
+
+            // ============================================================
+            // 5. SIDEBAR NAVIGATION
+            // ============================================================
+            document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
+                item.addEventListener('click', function() {
+                    const page = this.dataset.page;
+                    toggleSidebar(false);
+                    if (page === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
+                    if (page === 'products') document.querySelector('.section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    if (page === 'about') document.querySelector('.features')?.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+
+            // ============================================================
+            // 6. NAVIGASI LOGIN/REGISTER
+            // ============================================================
+            document.getElementById('sideLoginBtn').addEventListener('click', () => {
+                toggleSidebar(false);
+                alert('Fitur login akan segera hadir.');
+            });
+            document.getElementById('sideRegisterBtn').addEventListener('click', () => {
+                toggleSidebar(false);
+                alert('Fitur registrasi akan segera hadir.');
+            });
+
+            document.getElementById('navLoginBtn').addEventListener('click', () => {
+                alert('Fitur login akan segera hadir.');
+            });
+            document.getElementById('navRegisterBtn').addEventListener('click', () => {
+                alert('Fitur registrasi akan segera hadir.');
+            });
+            document.getElementById('navUserBadge').addEventListener('click', () => {
+                alert('Silakan login terlebih dahulu.');
+            });
+
+            // ============================================================
+            // 7. INIT
+            // ============================================================
+            renderProducts();
+
+            console.log('🟦 HEDTRO JEANS · Toko online siap');
+        })();
+    </script>
 
 </body>
 </html>
