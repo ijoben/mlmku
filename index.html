@@ -57,6 +57,7 @@
     }
     .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
     .navbar .logo span { font-weight:300; color:var(--gold-light); font-size:0.75rem; margin-left:2px; }
+
     .nav-right {
       display:flex; align-items:center; gap:12px;
     }
@@ -70,6 +71,7 @@
     }
     .nav-right .user-badge:hover { background:rgba(255,255,255,0.15); }
     .nav-right .user-badge i { color:var(--gold-accent); }
+
     .nav-right .btn-nav {
       padding:8px 18px; border-radius:60px;
       font-weight:600; font-size:0.8rem;
@@ -86,10 +88,10 @@
     .btn-nav-gold:hover { background:#b8963a; transform:scale(0.97); }
 
     /* ============================================================
-       BURGER - TAMPIL DI SEMUA UKURAN
+       BURGER - SELALU TAMPIL DI SEMUA UKURAN
        ============================================================ */
     .burger-btn {
-      display:flex; /* <-- selalu tampil */
+      display:flex !important; /* dipaksa tampil */
       flex-direction:column; gap:5px;
       padding:6px; background:transparent; border:none; cursor:pointer;
       z-index:1001;
@@ -349,7 +351,7 @@
     }
 
     /* ============================================================
-       RESPONSIVE - DI HP, TOMBOL LOGIN/DAFTAR SEMBUNYI
+       RESPONSIVE - BURGER TETAP TAMPIL DI SEMUA UKURAN
        ============================================================ */
     @media (max-width:768px) {
       body { padding-top:60px; }
@@ -357,8 +359,8 @@
       .navbar .logo { font-size:1.2rem; }
       .navbar .logo i { font-size:1.3rem; }
       .nav-right .user-badge span { display:none; }
-      .nav-right .btn-nav { display:none; } /* Sembunyi di HP */
-      .burger-btn { display:flex; } /* Tetap tampil */
+      .nav-right .btn-nav { display:none; }
+      .burger-btn { display:flex !important; } /* tetap tampil */
       .carousel-section { height:300px; }
       .carousel-slide { padding:20px 30px; }
       .carousel-slide .slide-content h2 { font-size:1.8rem; }
@@ -383,6 +385,13 @@
       .product-card .body h4 { font-size:0.8rem; }
       .product-card .body .price { font-size:0.85rem; }
       .product-card .body .btn-detail { font-size:0.65rem; padding:4px 12px; }
+    }
+
+    /* Desktop: burger tetap tampil */
+    @media (min-width:769px) {
+      .burger-btn {
+        display:flex !important;
+      }
     }
   </style>
 </head>
@@ -923,7 +932,7 @@
       }
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Menu burger selalu tampil');
+      console.log('🟦 HEDTRO JEANS · Burger selalu tampil di semua layar');
     })();
   </script>
 
