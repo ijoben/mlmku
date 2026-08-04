@@ -8,7 +8,7 @@
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
     /* ============================================================
-       PREMIUM DARK THEME · DENIM LUXURY
+       SOFT RED · GRAY · WHITE THEME
        ============================================================ */
     * {
       margin: 0;
@@ -17,22 +17,20 @@
     }
 
     :root {
-      --bg-primary: #0a0e17;
-      --bg-secondary: #111927;
-      --bg-card: rgba(255, 255, 255, 0.04);
-      --bg-card-hover: rgba(255, 255, 255, 0.08);
-      --border-glow: rgba(201, 168, 76, 0.3);
-      --gold: #c9a84c;
-      --gold-light: #e8d5a3;
-      --gold-glow: rgba(201, 168, 76, 0.15);
-      --text-primary: #f0ece4;
-      --text-secondary: #a8a0b0;
-      --text-muted: #6a6a7a;
-      --shadow: 0 8px 32px rgba(0, 0, 0, 0.4);
-      --shadow-glow: 0 0 40px rgba(201, 168, 76, 0.05);
+      --red-soft: #d45c5c;
+      --red-light: #fce8e8;
+      --red-pale: #fff5f5;
+      --red-dark: #b34a4a;
+      --gray-dark: #2c2c2c;
+      --gray-mid: #6b6b6b;
+      --gray-light: #e8e8e8;
+      --gray-bg: #f5f5f5;
+      --white: #ffffff;
+      --shadow: 0 8px 32px rgba(0, 0, 0, 0.06);
+      --shadow-hover: 0 16px 48px rgba(0, 0, 0, 0.10);
       --radius: 20px;
       --radius-sm: 12px;
-      --transition: 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      --transition: 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     html {
@@ -41,22 +39,21 @@
 
     body {
       font-family: 'Inter', sans-serif;
-      background: var(--bg-primary);
-      color: var(--text-primary);
+      background: var(--gray-bg);
+      color: var(--gray-dark);
       min-height: 100vh;
       overflow-x: hidden;
       padding-top: 72px;
-      background-image: radial-gradient(ellipse at 20% 50%, rgba(201, 168, 76, 0.03) 0%, transparent 70%);
     }
 
     ::-webkit-scrollbar {
       width: 6px;
     }
     ::-webkit-scrollbar-track {
-      background: var(--bg-primary);
+      background: var(--gray-bg);
     }
     ::-webkit-scrollbar-thumb {
-      background: var(--gold);
+      background: var(--red-soft);
       border-radius: 10px;
     }
 
@@ -78,10 +75,10 @@
       left: 0;
       right: 0;
       z-index: 1000;
-      background: rgba(10, 14, 23, 0.85);
-      backdrop-filter: blur(20px);
-      -webkit-backdrop-filter: blur(20px);
-      border-bottom: 1px solid rgba(201, 168, 76, 0.1);
+      background: rgba(255, 255, 255, 0.92);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--gray-light);
       padding: 14px 28px;
       display: flex;
       align-items: center;
@@ -96,18 +93,18 @@
       gap: 10px;
       font-family: 'Playfair Display', serif;
       font-weight: 800;
-      font-size: 1.6rem;
-      color: var(--text-primary);
+      font-size: 1.5rem;
+      color: var(--gray-dark);
       letter-spacing: -0.5px;
     }
 
     .navbar .logo i {
-      color: var(--gold);
-      font-size: 1.8rem;
+      color: var(--red-soft);
+      font-size: 1.6rem;
     }
 
     .navbar .logo span {
-      color: var(--gold);
+      color: var(--red-soft);
       font-weight: 300;
       font-size: 0.7rem;
       letter-spacing: 2px;
@@ -124,23 +121,23 @@
       display: flex;
       align-items: center;
       gap: 8px;
-      color: var(--text-secondary);
+      color: var(--gray-mid);
       font-size: 0.85rem;
       padding: 8px 18px;
       border-radius: 60px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid var(--gray-light);
+      background: var(--white);
       cursor: pointer;
       transition: var(--transition);
     }
 
     .nav-right .user-badge:hover {
-      border-color: var(--gold);
-      background: rgba(201, 168, 76, 0.05);
+      border-color: var(--red-soft);
+      background: var(--red-pale);
     }
 
     .nav-right .user-badge i {
-      color: var(--gold);
+      color: var(--red-soft);
     }
 
     .btn-nav {
@@ -153,23 +150,24 @@
     }
 
     .btn-nav-outline {
-      border: 1.5px solid rgba(255, 255, 255, 0.1);
-      color: var(--text-secondary);
+      border: 1.5px solid var(--gray-light);
+      color: var(--gray-mid);
+      background: var(--white);
     }
 
     .btn-nav-outline:hover {
-      border-color: var(--gold);
-      color: var(--text-primary);
-      background: rgba(201, 168, 76, 0.05);
+      border-color: var(--red-soft);
+      color: var(--red-soft);
+      background: var(--red-pale);
     }
 
-    .btn-nav-gold {
-      background: var(--gold);
-      color: var(--bg-primary);
+    .btn-nav-red {
+      background: var(--red-soft);
+      color: var(--white);
     }
 
-    .btn-nav-gold:hover {
-      background: #b8963a;
+    .btn-nav-red:hover {
+      background: var(--red-dark);
       transform: scale(0.97);
     }
 
@@ -187,7 +185,7 @@
       display: block;
       width: 26px;
       height: 2.5px;
-      background: var(--text-primary);
+      background: var(--gray-dark);
       border-radius: 4px;
       transition: var(--transition);
       transform-origin: center;
@@ -209,8 +207,8 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.6);
-      backdrop-filter: blur(8px);
+      background: rgba(0, 0, 0, 0.3);
+      backdrop-filter: blur(4px);
       z-index: 999;
       opacity: 0;
       transition: var(--transition);
@@ -228,15 +226,16 @@
       left: -320px;
       width: 300px;
       height: 100%;
-      background: var(--bg-secondary);
+      background: var(--white);
       z-index: 1000;
       padding: 28px 24px;
       transition: var(--transition);
       overflow-y: auto;
-      border-right: 1px solid rgba(201, 168, 76, 0.1);
+      border-right: 1px solid var(--gray-light);
       display: flex;
       flex-direction: column;
       gap: 4px;
+      box-shadow: var(--shadow);
     }
 
     .sidebar.open {
@@ -248,7 +247,7 @@
       align-items: center;
       justify-content: space-between;
       padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.04);
+      border-bottom: 1px solid var(--gray-light);
       margin-bottom: 16px;
     }
 
@@ -256,22 +255,22 @@
       font-family: 'Playfair Display', serif;
       font-weight: 800;
       font-size: 1.3rem;
-      color: var(--text-primary);
+      color: var(--gray-dark);
     }
 
     .sidebar .sidebar-header .logo-side i {
-      color: var(--gold);
+      color: var(--red-soft);
     }
 
     .sidebar .sidebar-header .close-side {
-      color: var(--text-secondary);
+      color: var(--gray-mid);
       font-size: 1.6rem;
       cursor: pointer;
       transition: var(--transition);
     }
 
     .sidebar .sidebar-header .close-side:hover {
-      color: var(--text-primary);
+      color: var(--gray-dark);
     }
 
     .sidebar .menu-item {
@@ -280,7 +279,7 @@
       gap: 14px;
       padding: 12px 16px;
       border-radius: var(--radius-sm);
-      color: var(--text-secondary);
+      color: var(--gray-mid);
       font-weight: 500;
       font-size: 0.9rem;
       transition: var(--transition);
@@ -288,23 +287,23 @@
     }
 
     .sidebar .menu-item:hover {
-      background: rgba(255, 255, 255, 0.04);
-      color: var(--text-primary);
+      background: var(--red-pale);
+      color: var(--gray-dark);
     }
 
     .sidebar .menu-item i {
       width: 22px;
-      color: var(--gold);
+      color: var(--red-soft);
     }
 
     .sidebar .menu-item.active {
-      background: rgba(201, 168, 76, 0.08);
-      color: var(--gold);
+      background: var(--red-pale);
+      color: var(--red-soft);
     }
 
     .sidebar .menu-divider {
       height: 1px;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--gray-light);
       margin: 6px 0;
     }
 
@@ -314,7 +313,7 @@
       width: 100%;
       height: 500px;
       overflow: hidden;
-      background: var(--bg-primary);
+      background: var(--gray-bg);
     }
 
     .carousel-track {
@@ -337,34 +336,34 @@
 
     .carousel-slide .slide-content {
       text-align: center;
-      color: var(--text-primary);
+      color: var(--white);
       z-index: 2;
       max-width: 700px;
     }
 
     .carousel-slide .slide-content h2 {
       font-family: 'Playfair Display', serif;
-      font-size: 3.5rem;
+      font-size: 3.2rem;
       font-weight: 800;
       letter-spacing: -1px;
       margin-bottom: 12px;
     }
 
     .carousel-slide .slide-content h2 i {
-      color: var(--gold);
+      color: var(--red-soft);
     }
 
     .carousel-slide .slide-content p {
-      font-size: 1.15rem;
-      color: var(--text-secondary);
+      font-size: 1.1rem;
+      color: rgba(255, 255, 255, 0.85);
       line-height: 1.6;
     }
 
     .carousel-slide .slide-content .btn-slide {
       display: inline-block;
       margin-top: 20px;
-      background: var(--gold);
-      color: var(--bg-primary);
+      background: var(--red-soft);
+      color: var(--white);
       padding: 14px 40px;
       border-radius: 60px;
       font-weight: 700;
@@ -372,14 +371,14 @@
     }
 
     .carousel-slide .slide-content .btn-slide:hover {
+      background: var(--red-dark);
       transform: scale(1.05);
-      background: #b8963a;
     }
 
     .carousel-slide .overlay-dark {
       position: absolute;
       inset: 0;
-      background: rgba(10, 14, 23, 0.6);
+      background: rgba(0, 0, 0, 0.4);
       z-index: 1;
     }
 
@@ -387,10 +386,10 @@
       position: absolute;
       top: 50%;
       transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.04);
-      backdrop-filter: blur(12px);
-      color: var(--text-primary);
-      border: 1px solid rgba(255, 255, 255, 0.06);
+      background: rgba(255, 255, 255, 0.15);
+      backdrop-filter: blur(8px);
+      color: var(--white);
+      border: 1px solid rgba(255, 255, 255, 0.1);
       width: 50px;
       height: 50px;
       border-radius: 50%;
@@ -404,8 +403,8 @@
     }
 
     .carousel-btn:hover {
-      background: rgba(201, 168, 76, 0.15);
-      border-color: var(--gold);
+      background: var(--red-soft);
+      border-color: var(--red-soft);
     }
 
     .carousel-btn.prev {
@@ -429,21 +428,21 @@
       width: 10px;
       height: 10px;
       border-radius: 50%;
-      background: rgba(255, 255, 255, 0.15);
+      background: rgba(255, 255, 255, 0.3);
       cursor: pointer;
       transition: var(--transition);
     }
 
     .carousel-dots .dot.active {
-      background: var(--gold);
-      box-shadow: 0 0 20px rgba(201, 168, 76, 0.3);
+      background: var(--red-soft);
+      box-shadow: 0 0 20px rgba(212, 92, 92, 0.4);
     }
 
     /* ===== SECTION TITLE ===== */
     .section-title {
       font-size: 1.8rem;
       font-weight: 700;
-      color: var(--text-primary);
+      color: var(--gray-dark);
       padding: 40px 32px 20px;
       display: flex;
       align-items: center;
@@ -451,7 +450,7 @@
     }
 
     .section-title i {
-      color: var(--gold);
+      color: var(--red-soft);
     }
 
     /* ===== PRODUCT GRID ===== */
@@ -463,30 +462,28 @@
     }
 
     .product-card {
-      background: var(--bg-card);
-      backdrop-filter: blur(12px);
+      background: var(--white);
       border-radius: var(--radius-sm);
       overflow: hidden;
-      border: 1px solid rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--gray-light);
       transition: var(--transition);
+      box-shadow: var(--shadow);
     }
 
     .product-card:hover {
-      transform: translateY(-8px);
-      border-color: var(--gold);
-      box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-      background: var(--bg-card-hover);
+      transform: translateY(-6px);
+      border-color: var(--red-soft);
+      box-shadow: var(--shadow-hover);
     }
 
     .product-card .img-placeholder {
       height: 180px;
-      background: linear-gradient(135deg, #1a1f2e, #0d1220);
+      background: var(--gray-bg);
       display: flex;
       align-items: center;
       justify-content: center;
-      color: var(--gold);
+      color: var(--gray-mid);
       font-size: 3rem;
-      opacity: 0.6;
     }
 
     .product-card .body {
@@ -495,8 +492,8 @@
 
     .product-card .body .tag {
       display: inline-block;
-      background: var(--gold);
-      color: var(--bg-primary);
+      background: var(--red-soft);
+      color: var(--white);
       font-size: 0.6rem;
       font-weight: 700;
       padding: 2px 14px;
@@ -509,18 +506,18 @@
     .product-card .body h4 {
       font-size: 0.95rem;
       font-weight: 600;
-      color: var(--text-primary);
+      color: var(--gray-dark);
       margin-bottom: 4px;
     }
 
     .product-card .body .price {
       font-weight: 700;
-      color: var(--gold);
+      color: var(--red-soft);
       font-size: 1.05rem;
     }
 
     .product-card .body .price del {
-      color: var(--text-muted);
+      color: var(--gray-mid);
       font-weight: 400;
       font-size: 0.8rem;
       margin-left: 8px;
@@ -529,19 +526,20 @@
     .product-card .body .btn-detail {
       margin-top: 12px;
       display: inline-block;
-      background: rgba(201, 168, 76, 0.12);
-      color: var(--gold);
+      background: var(--red-pale);
+      color: var(--red-soft);
       padding: 6px 20px;
       border-radius: 60px;
       font-size: 0.75rem;
       font-weight: 600;
       transition: var(--transition);
-      border: 1px solid rgba(201, 168, 76, 0.1);
+      border: 1px solid var(--red-light);
     }
 
     .product-card .body .btn-detail:hover {
-      background: var(--gold);
-      color: var(--bg-primary);
+      background: var(--red-soft);
+      color: var(--white);
+      border-color: var(--red-soft);
     }
 
     /* ===== FEATURES ===== */
@@ -553,56 +551,57 @@
     }
 
     .feature-item {
-      background: var(--bg-card);
-      backdrop-filter: blur(12px);
+      background: var(--white);
       border-radius: var(--radius-sm);
       padding: 24px 20px;
       text-align: center;
-      border: 1px solid rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--gray-light);
       transition: var(--transition);
+      box-shadow: var(--shadow);
     }
 
     .feature-item:hover {
-      border-color: var(--gold);
+      border-color: var(--red-soft);
       transform: translateY(-4px);
+      box-shadow: var(--shadow-hover);
     }
 
     .feature-item i {
       font-size: 2.2rem;
-      color: var(--gold);
+      color: var(--red-soft);
       margin-bottom: 10px;
     }
 
     .feature-item h4 {
       font-weight: 600;
-      color: var(--text-primary);
+      color: var(--gray-dark);
       font-size: 0.95rem;
     }
 
     .feature-item p {
       font-size: 0.8rem;
-      color: var(--text-secondary);
+      color: var(--gray-mid);
       margin-top: 2px;
     }
 
     /* ===== FOOTER ===== */
     .footer {
-      background: var(--bg-secondary);
-      color: var(--text-secondary);
+      background: var(--white);
+      color: var(--gray-mid);
       padding: 32px 32px 24px;
       text-align: center;
-      border-top: 1px solid rgba(201, 168, 76, 0.08);
+      border-top: 1px solid var(--gray-light);
     }
 
     .footer .brand {
       font-family: 'Playfair Display', serif;
       font-weight: 700;
       font-size: 1.2rem;
-      color: var(--text-primary);
+      color: var(--gray-dark);
     }
 
     .footer .brand i {
-      color: var(--gold);
+      color: var(--red-soft);
     }
 
     /* ===== OVERLAY ===== */
@@ -610,8 +609,8 @@
       display: none;
       position: fixed;
       inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(16px);
+      background: rgba(0, 0, 0, 0.4);
+      backdrop-filter: blur(8px);
       z-index: 2000;
       align-items: center;
       justify-content: center;
@@ -623,15 +622,14 @@
     }
 
     .overlay-card {
-      background: var(--bg-secondary);
+      background: var(--white);
       max-width: 480px;
       width: 100%;
       max-height: 90vh;
       overflow-y: auto;
       border-radius: var(--radius);
       padding: 32px 34px 40px;
-      border: 1px solid rgba(201, 168, 76, 0.1);
-      box-shadow: var(--shadow);
+      box-shadow: var(--shadow-hover);
       position: relative;
     }
 
@@ -640,20 +638,20 @@
       top: 16px;
       right: 20px;
       font-size: 1.6rem;
-      color: var(--text-secondary);
+      color: var(--gray-mid);
       cursor: pointer;
       transition: var(--transition);
     }
 
     .overlay-card .close-overlay:hover {
-      color: var(--text-primary);
+      color: var(--gray-dark);
     }
 
     /* ===== TABS ===== */
     .tab-bar {
       display: flex;
       gap: 4px;
-      background: rgba(255, 255, 255, 0.04);
+      background: var(--gray-bg);
       border-radius: 60px;
       padding: 4px;
       margin-bottom: 28px;
@@ -668,14 +666,14 @@
       border-radius: 60px;
       font-weight: 600;
       font-size: 0.85rem;
-      color: var(--text-secondary);
+      color: var(--gray-mid);
       transition: var(--transition);
       cursor: pointer;
     }
 
     .tab-btn.active {
-      background: var(--gold);
-      color: var(--bg-primary);
+      background: var(--red-soft);
+      color: var(--white);
     }
 
     .hidden {
@@ -690,7 +688,7 @@
     .form-group label {
       display: block;
       font-weight: 500;
-      color: var(--text-secondary);
+      color: var(--gray-mid);
       font-size: 0.85rem;
       margin-bottom: 4px;
     }
@@ -699,24 +697,24 @@
     .form-group select {
       width: 100%;
       padding: 14px 18px;
-      border: 1.5px solid rgba(255, 255, 255, 0.06);
+      border: 1.5px solid var(--gray-light);
       border-radius: 60px;
       font-size: 0.95rem;
-      background: rgba(255, 255, 255, 0.03);
-      color: var(--text-primary);
+      background: var(--white);
+      color: var(--gray-dark);
       font-family: inherit;
       transition: var(--transition);
     }
 
     .form-group input:focus,
     .form-group select:focus {
-      border-color: var(--gold);
+      border-color: var(--red-soft);
       outline: none;
-      box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.05);
+      box-shadow: 0 0 0 4px rgba(212, 92, 92, 0.08);
     }
 
     .form-group input::placeholder {
-      color: var(--text-muted);
+      color: var(--gray-light);
     }
 
     .btn-primary {
@@ -724,8 +722,8 @@
       padding: 16px;
       border: none;
       border-radius: 60px;
-      background: var(--gold);
-      color: var(--bg-primary);
+      background: var(--red-soft);
+      color: var(--white);
       font-weight: 700;
       font-size: 1rem;
       transition: var(--transition);
@@ -737,12 +735,8 @@
     }
 
     .btn-primary:hover {
-      background: #b8963a;
+      background: var(--red-dark);
       transform: scale(0.98);
-    }
-
-    .btn-gold {
-      background: var(--gold);
     }
 
     .msg {
@@ -760,18 +754,18 @@
     }
 
     .demo-hint {
-      background: rgba(255, 255, 255, 0.03);
+      background: var(--gray-bg);
       border-radius: var(--radius-sm);
       padding: 12px 16px;
       margin-top: 16px;
       font-size: 0.8rem;
       text-align: center;
-      color: var(--text-secondary);
-      border: 1px solid rgba(255, 255, 255, 0.04);
+      color: var(--gray-mid);
+      border: 1px solid var(--gray-light);
     }
 
     .demo-hint strong {
-      color: var(--gold);
+      color: var(--red-soft);
     }
 
     /* ===== RESPONSIVE ===== */
@@ -928,7 +922,7 @@
         <i class="fas fa-user-circle"></i> <span id="navUserName">Guest</span>
       </div>
       <button class="btn-nav btn-nav-outline" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
-      <button class="btn-nav btn-nav-gold" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
+      <button class="btn-nav btn-nav-red" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
       <button class="burger-btn" id="burgerBtn">
         <span></span><span></span><span></span>
       </button>
@@ -953,7 +947,7 @@
   <!-- ===== CAROUSEL ===== -->
   <section class="carousel-section" id="carouselSection">
     <div class="carousel-track" id="carouselTrack">
-      <div class="carousel-slide" style="background: linear-gradient(135deg, #0a0e17 0%, #1a1f2e 100%);">
+      <div class="carousel-slide" style="background: linear-gradient(135deg, #2c2c2c 0%, #4a4a4a 100%);">
         <div class="overlay-dark"></div>
         <div class="slide-content">
           <h2><i class="fas fa-star"></i> 501® ORIGINAL DENIM</h2>
@@ -961,7 +955,7 @@
           <a href="#" class="btn-slide">Lihat Koleksi</a>
         </div>
       </div>
-      <div class="carousel-slide" style="background: linear-gradient(135deg, #1a1f2e 0%, #2a2f44 100%);">
+      <div class="carousel-slide" style="background: linear-gradient(135deg, #4a4a4a 0%, #6b6b6b 100%);">
         <div class="overlay-dark"></div>
         <div class="slide-content">
           <h2><i class="fas fa-jacket"></i> TRUCKER JACKET & OUTER</h2>
@@ -969,7 +963,7 @@
           <a href="#" class="btn-slide">Lihat Koleksi</a>
         </div>
       </div>
-      <div class="carousel-slide" style="background: linear-gradient(135deg, #2a2f44 0%, #0a0e17 100%);">
+      <div class="carousel-slide" style="background: linear-gradient(135deg, #6b6b6b 0%, #2c2c2c 100%);">
         <div class="overlay-dark"></div>
         <div class="slide-content">
           <h2><i class="fas fa-tags"></i> SEASONAL SALE UP TO 40%</h2>
@@ -1041,7 +1035,7 @@
 
   <script>
     // ============================================================
-    // JAVASCRIPT index.html (Desain Premium)
+    // JAVASCRIPT index.html (Soft Red · Gray · White)
     // ============================================================
     (function() {
       'use strict';
@@ -1064,23 +1058,37 @@
         let users = loadUsers();
         if (users.length === 0) {
           users = [
-            { id: 1, name: 'Admin Utama', email: 'admin@mlm.com', password: 'admin123', sponsor_id: null, position: null, left: null, right: null, status: 'verified', wallet: 0, bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0, purchase_history: [], transactions: [], proof_image: null },
-            { id: 2, name: 'Budi Santoso', email: 'budi@mail.com', password: 'budi123', sponsor_id: 1, position: 'left', left: null, right: null, status: 'verified', wallet: 120000, bonus_sponsor: 50, bonus_binary: 120, bonus_reward: 30, bonus_ro: 12, purchase_history: [], transactions: [], proof_image: null },
-            { id: 3, name: 'Citra Dewi', email: 'citra@mail.com', password: 'citra123', sponsor_id: 1, position: 'right', left: null, right: null, status: 'verified', wallet: 80000, bonus_sponsor: 30, bonus_binary: 70, bonus_reward: 15, bonus_ro: 8, purchase_history: [], transactions: [], proof_image: null }
+            { id: 1, name: 'Admin Utama', email: 'admin@mlm.com', password: 'admin123', sponsor_id: null, position: null,
+              left: null, right: null, status: 'verified', wallet: 0, bonus_sponsor: 0, bonus_binary: 0,
+              bonus_reward: 0, bonus_ro: 0, purchase_history: [], transactions: [], proof_image: null },
+            { id: 2, name: 'Budi Santoso', email: 'budi@mail.com', password: 'budi123', sponsor_id: 1, position: 'left',
+              left: null, right: null, status: 'verified', wallet: 120000, bonus_sponsor: 50, bonus_binary: 120,
+              bonus_reward: 30, bonus_ro: 12, purchase_history: [], transactions: [], proof_image: null },
+            { id: 3, name: 'Citra Dewi', email: 'citra@mail.com', password: 'citra123', sponsor_id: 1, position: 'right',
+              left: null, right: null, status: 'verified', wallet: 80000, bonus_sponsor: 30, bonus_binary: 70,
+              bonus_reward: 15, bonus_ro: 8, purchase_history: [], transactions: [], proof_image: null }
           ];
           saveUsers(users);
         }
         let products = loadProducts();
         if (products.length === 0) {
           products = [
-            { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', stock: 45 },
-            { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', stock: 30 },
-            { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', stock: 25 },
-            { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%', icon: 'fa-tshirt', stock: 18 },
-            { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED', icon: 'fa-jacket', stock: 20 },
-            { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER', icon: 'fa-tshirt', stock: 35 },
-            { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS', icon: 'fa-belt', stock: 50 },
-            { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT', icon: 'fa-tshirt', stock: 22 }
+            { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
+              icon: 'fa-tshirt', stock: 45 },
+            { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
+              icon: 'fa-tshirt', stock: 30 },
+            { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM',
+              icon: 'fa-tshirt', stock: 25 },
+            { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%', icon: 'fa-tshirt',
+              stock: 18 },
+            { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED',
+              icon: 'fa-jacket', stock: 20 },
+            { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER',
+              icon: 'fa-tshirt', stock: 35 },
+            { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS',
+              icon: 'fa-belt', stock: 50 },
+            { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT',
+              icon: 'fa-tshirt', stock: 22 }
           ];
           saveProducts(products);
         }
@@ -1417,7 +1425,7 @@
       }
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Premium Dark Theme');
+      console.log('🟥 HEDTRO JEANS · Soft Red, Gray & White Theme');
     })();
   </script>
 </body>
