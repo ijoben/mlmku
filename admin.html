@@ -596,13 +596,6 @@
 
             function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
-            function getCurrentUser() {
-                const session = getSession();
-                if (!session) return null;
-                const users = loadUsers();
-                return users.find(u => u.id === session.id) || null;
-            }
-
             // ============================================================
             // TOAST
             // ============================================================
@@ -1149,6 +1142,8 @@
             const mainApp = document.getElementById('mainApp');
 
             function showAdminLogin() {
+                // HAPUS SESSION LAMA AGAR TIDAK KONFLIK
+                clearSession();
                 if (loginOverlay) loginOverlay.classList.remove('hidden');
                 if (mainApp) mainApp.style.display = 'none';
             }
@@ -1175,6 +1170,8 @@
                     return;
                 }
 
+                // HAPUS SESSION LAMA, BUAT SESSION BARU
+                clearSession();
                 saveSession({ id: user.id, role: user.role });
                 msgEl.className = 'msg success';
                 msgEl.innerText = '✅ Login berhasil!';
@@ -1217,7 +1214,7 @@
             });
 
             // ============================================================
-            // CHECK SESSION
+            // CHECK SESSION - PASTIKAN HANYA ADMIN YANG BISA AKSES
             // ============================================================
             function checkSession() {
                 const session = getSession();
@@ -1234,6 +1231,7 @@
                         applySettings();
                         return true;
                     } else {
+                        // SESSION TIDAK VALID ATAU BUKAN ADMIN
                         clearSession();
                     }
                 }
@@ -1304,6 +1302,7 @@
             console.log('🟦 HEDTRO · Admin Panel dengan login terpisah');
             console.log('🔑 Admin: admin@mlm.com / admin123');
             console.log('📌 User login di login.html');
+            console.log('🔄 Session lama otomatis dihapus saat buka admin.html');
         })();
     </script>
 
