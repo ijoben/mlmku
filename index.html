@@ -92,6 +92,7 @@
       color: var(--white);
       font-weight: 800;
       font-size: 1.4rem;
+      flex-shrink: 0;
     }
 
     .navbar .logo i {
@@ -110,6 +111,7 @@
       display: flex;
       align-items: center;
       gap: 8px;
+      flex-shrink: 0;
     }
 
     .nav-right .user-badge {
@@ -163,7 +165,7 @@
     }
 
     /* ============================================================
-       BURGER - PASTI MUNCUL DI SEMUA UKURAN
+       BURGER - PASTI MUNCUL & TIDAK OFFSIDE
        ============================================================ */
     .burger-btn {
       display: flex !important;
@@ -174,6 +176,14 @@
       border: none;
       cursor: pointer;
       z-index: 1001;
+      position: relative;
+      /* tidak boleh ada posisi absolute/relative yang salah */
+      right: 0;
+      /* pastikan di dalam flow */
+      flex-shrink: 0;
+      /* tidak mengecil */
+      margin-left: 4px;
+      /* jarak aman */
     }
 
     .burger-btn span {
@@ -745,7 +755,7 @@
     }
 
     /* ============================================================
-       RESPONSIVE
+       RESPONSIVE - BURGER PASTI MUNCUL & TIDAK OFFSIDE
        ============================================================ */
     @media (max-width: 768px) {
       body {
@@ -773,8 +783,17 @@
         display: none;
       }
 
+      /* BURGER TETAP TAMPIL DAN TIDAK OFFSIDE */
       .burger-btn {
         display: flex !important;
+        position: relative !important;
+        right: 0 !important;
+        margin-left: 4px !important;
+      }
+
+      .burger-btn span {
+        width: 26px;
+        height: 3px;
       }
 
       .carousel-section {
@@ -879,15 +898,21 @@
         padding: 4px 12px;
       }
 
+      /* PASTIKAN BURGER TIDAK OFFSIDE */
       .burger-btn {
         display: flex !important;
+        position: relative !important;
+        right: 0 !important;
+        margin-left: 2px !important;
       }
     }
 
-    /* DESKTOP */
+    /* DESKTOP - BURGER TETAP TAMPIL */
     @media (min-width: 769px) {
       .burger-btn {
         display: flex !important;
+        position: relative !important;
+        right: 0 !important;
       }
     }
   </style>
@@ -906,6 +931,7 @@
       </div>
       <button class="btn-nav btn-nav-outline" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
       <button class="btn-nav btn-nav-gold" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
+      <!-- BURGER - PASTI MUNCUL & TIDAK OFFSIDE -->
       <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
@@ -1153,9 +1179,6 @@
       const sidebarOverlay = document.getElementById('sidebarOverlay');
       const closeSidebar = document.getElementById('closeSidebar');
 
-      // PASTIKAN BURGER ADA
-      console.log('Burger element:', burgerBtn);
-
       function toggleSidebar(open) {
         const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
         sidebar.classList.toggle('open', isOpen);
@@ -1166,8 +1189,9 @@
 
       if (burgerBtn) {
         burgerBtn.addEventListener('click', () => toggleSidebar());
+        console.log('✅ Burger ditemukan dan siap pakai');
       } else {
-        console.error('Burger button tidak ditemukan!');
+        console.error('❌ Burger tidak ditemukan!');
       }
 
       closeSidebar.addEventListener('click', () => toggleSidebar(false));
@@ -1437,7 +1461,7 @@
       }
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Burger PASTI tampil di semua layar');
+      console.log('🟦 HEDTRO JEANS · Burger PASTI tampil dan tidak offside');
     })();
   </script>
 
