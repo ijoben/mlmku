@@ -67,7 +67,7 @@
     }
 
     /* ============================================================
-       NAVBAR
+       NAVBAR - HEADER
        ============================================================ */
     .navbar {
       position: fixed;
@@ -83,6 +83,9 @@
       border-bottom: 3px solid var(--gold-accent);
       height: 70px;
       transition: var(--transition);
+      width: 100%;
+      overflow: visible;
+      /* penting: biarkan child terlihat */
     }
 
     .navbar .logo {
@@ -93,6 +96,7 @@
       font-weight: 800;
       font-size: 1.4rem;
       flex-shrink: 0;
+      min-width: 0;
     }
 
     .navbar .logo i {
@@ -112,6 +116,10 @@
       align-items: center;
       gap: 8px;
       flex-shrink: 0;
+      /* penting: jangan mengecil */
+      min-width: 0;
+      overflow: visible;
+      /* penting: biarkan child terlihat */
     }
 
     .nav-right .user-badge {
@@ -126,6 +134,7 @@
       border: 1px solid rgba(255, 255, 255, 0.06);
       cursor: pointer;
       transition: var(--transition);
+      flex-shrink: 0;
     }
 
     .nav-right .user-badge:hover {
@@ -142,6 +151,7 @@
       font-weight: 600;
       font-size: 0.8rem;
       transition: var(--transition);
+      flex-shrink: 0;
     }
 
     .btn-nav-outline {
@@ -177,13 +187,11 @@
       cursor: pointer;
       z-index: 1001;
       position: relative;
-      /* tidak boleh ada posisi absolute/relative yang salah */
       right: 0;
-      /* pastikan di dalam flow */
       flex-shrink: 0;
-      /* tidak mengecil */
       margin-left: 4px;
-      /* jarak aman */
+      overflow: visible;
+      /* penting: biarkan span terlihat */
     }
 
     .burger-btn span {
@@ -755,7 +763,7 @@
     }
 
     /* ============================================================
-       RESPONSIVE - BURGER PASTI MUNCUL & TIDAK OFFSIDE
+       RESPONSIVE - HEADER TIDAK OFFSIDE
        ============================================================ */
     @media (max-width: 768px) {
       body {
@@ -765,35 +773,56 @@
       .navbar {
         padding: 10px 16px;
         height: 60px;
+        width: 100%;
+        overflow: visible;
       }
 
       .navbar .logo {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
+        flex-shrink: 0;
       }
 
       .navbar .logo i {
-        font-size: 1.3rem;
+        font-size: 1.2rem;
+      }
+
+      .navbar .logo span {
+        font-size: 0.6rem;
+      }
+
+      .nav-right {
+        gap: 4px;
+        overflow: visible;
+        flex-shrink: 0;
       }
 
       .nav-right .user-badge span {
         display: none;
       }
 
+      .nav-right .user-badge {
+        padding: 4px 10px;
+        font-size: 0.7rem;
+      }
+
       .nav-right .btn-nav {
         display: none;
       }
 
-      /* BURGER TETAP TAMPIL DAN TIDAK OFFSIDE */
+      /* BURGER - PASTI MUNCUL & TIDAK OFFSIDE */
       .burger-btn {
         display: flex !important;
         position: relative !important;
         right: 0 !important;
-        margin-left: 4px !important;
+        margin-left: 2px !important;
+        padding: 4px !important;
+        flex-shrink: 0 !important;
+        overflow: visible !important;
       }
 
       .burger-btn span {
-        width: 26px;
-        height: 3px;
+        width: 24px;
+        height: 2.5px;
       }
 
       .carousel-section {
@@ -899,11 +928,36 @@
       }
 
       /* PASTIKAN BURGER TIDAK OFFSIDE */
+      .navbar {
+        padding: 8px 12px;
+        height: 56px;
+      }
+
+      .navbar .logo {
+        font-size: 0.95rem;
+      }
+
+      .navbar .logo i {
+        font-size: 1rem;
+      }
+
       .burger-btn {
-        display: flex !important;
-        position: relative !important;
-        right: 0 !important;
         margin-left: 2px !important;
+        padding: 3px !important;
+      }
+
+      .burger-btn span {
+        width: 20px;
+        height: 2px;
+      }
+
+      .nav-right .user-badge {
+        padding: 3px 8px;
+        font-size: 0.6rem;
+      }
+
+      .nav-right .user-badge i {
+        font-size: 0.7rem;
       }
     }
 
@@ -931,7 +985,7 @@
       </div>
       <button class="btn-nav btn-nav-outline" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
       <button class="btn-nav btn-nav-gold" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
-      <!-- BURGER - PASTI MUNCUL & TIDAK OFFSIDE -->
+      <!-- BURGER -->
       <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
@@ -1461,7 +1515,7 @@
       }
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Burger PASTI tampil dan tidak offside');
+      console.log('🟦 HEDTRO JEANS · Header fixed, burger PASTI tampil dan tidak offside');
     })();
   </script>
 
