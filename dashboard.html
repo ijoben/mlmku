@@ -393,12 +393,17 @@
             justify-content:center;
             color:var(--denim-blue);
             font-size:2.5rem;
+            overflow:hidden;
+        }
+        .product-card .img-placeholder img {
+            width:100%;
+            height:100%;
+            object-fit:cover;
         }
         .product-card .body { padding:14px; }
         .product-card .body .tag {
             display:inline-block;
-            background:var(--gold-accent);
-            color:var(--denim-dark);
+            color:#fff;
             font-size:0.55rem;
             font-weight:700;
             padding:2px 12px;
@@ -412,6 +417,12 @@
             font-weight:700;
             color:var(--denim-blue);
             font-size:1rem;
+        }
+        .product-card .body .price del {
+            color:#8a9aa8;
+            font-weight:400;
+            font-size:0.75rem;
+            margin-left:8px;
         }
         .product-card .body .btn-sm {
             margin-top:6px;
@@ -443,6 +454,152 @@
         .section-content { display:none; }
         .section-content.active { display:block; }
 
+        /* ===== MODAL CUSTOM ===== */
+        .modal-overlay {
+            display:none;
+            position:fixed; inset:0; z-index:9998;
+            background:rgba(0,0,0,0.5);
+            backdrop-filter:blur(8px);
+            align-items:center; justify-content:center;
+            padding:20px;
+        }
+        .modal-overlay.show { display:flex; }
+        .modal-box {
+            background:var(--white);
+            max-width:500px; width:100%;
+            max-height:90vh;
+            overflow-y:auto;
+            border-radius:var(--radius);
+            padding:28px 30px 32px;
+            box-shadow:var(--shadow-lg);
+            position:relative;
+            animation:modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { transform:scale(0.9) translateY(20px); opacity:0; }
+            to { transform:scale(1) translateY(0); opacity:1; }
+        }
+        .modal-box .modal-close {
+            position:absolute; top:14px; right:18px;
+            font-size:1.6rem; color:var(--denim-navy);
+            cursor:pointer; transition:var(--transition);
+        }
+        .modal-box .modal-close:hover {
+            color:var(--denim-dark); transform:rotate(90deg);
+        }
+        .modal-box h3 {
+            font-family:'Playfair Display',serif;
+            font-size:1.3rem; font-weight:800;
+            color:var(--denim-dark); margin-bottom:4px;
+        }
+        .modal-box p.sub {
+            color:var(--denim-navy); font-size:0.85rem;
+            opacity:0.7; margin-bottom:16px;
+        }
+        .modal-box .form-group {
+            margin-bottom:14px;
+        }
+        .modal-box .form-group label {
+            display:block; font-weight:600; font-size:0.8rem;
+            color:var(--denim-navy); margin-bottom:4px;
+        }
+        .modal-box .form-group input,
+        .modal-box .form-group select,
+        .modal-box .form-group textarea {
+            width:100%; padding:10px 14px;
+            border:1.5px solid var(--denim-light);
+            border-radius:60px; font-size:0.9rem;
+            background:var(--cream);
+            font-family:inherit; transition:var(--transition);
+            outline:none;
+        }
+        .modal-box .form-group textarea {
+            border-radius:var(--radius-sm); resize:vertical; min-height:60px;
+        }
+        .modal-box .form-group input:focus,
+        .modal-box .form-group select:focus,
+        .modal-box .form-group textarea:focus {
+            border-color:var(--gold-accent);
+            box-shadow:0 0 0 4px rgba(201,168,76,0.08);
+        }
+        .modal-box .form-group .file-input-wrapper {
+            position:relative;
+            display:inline-block;
+            width:100%;
+        }
+        .modal-box .form-group .file-input-wrapper input[type="file"] {
+            position:absolute; left:0; top:0; opacity:0;
+            width:100%; height:100%; cursor:pointer;
+        }
+        .modal-box .form-group .file-input-wrapper .file-label {
+            display:flex; align-items:center; gap:10px;
+            padding:10px 16px;
+            border:2px dashed var(--denim-light);
+            border-radius:60px;
+            background:var(--cream);
+            color:var(--denim-navy);
+            font-size:0.85rem;
+            transition:var(--transition);
+            cursor:pointer;
+        }
+        .modal-box .form-group .file-input-wrapper .file-label:hover {
+            border-color:var(--gold-accent);
+        }
+        .modal-box .form-group .file-input-wrapper .file-label i {
+            color:var(--gold-accent);
+            font-size:1.2rem;
+        }
+        .modal-box .form-group .image-preview {
+            margin-top:8px;
+            max-width:150px; max-height:150px;
+            border-radius:var(--radius-sm);
+            overflow:hidden;
+            border:1px solid var(--denim-light);
+            display:none;
+        }
+        .modal-box .form-group .image-preview img {
+            width:100%; height:100%; object-fit:cover;
+        }
+        .modal-box .form-group .image-preview.show {
+            display:block;
+        }
+        .modal-box .btn-submit {
+            width:100%; padding:14px;
+            background:var(--gold-accent); color:var(--denim-dark);
+            border:none; border-radius:60px;
+            font-weight:700; font-size:1rem;
+            transition:var(--transition); font-family:inherit;
+            margin-top:4px;
+        }
+        .modal-box .btn-submit:hover {
+            background:#b8963a; transform:scale(0.98);
+        }
+        .modal-box .btn-danger {
+            background:#b13e3e; color:#fff;
+        }
+        .modal-box .btn-danger:hover {
+            background:#8f2f2f;
+        }
+        .modal-box .proof-image {
+            max-width:200px; max-height:200px;
+            border-radius:var(--radius-sm);
+            border:1px solid var(--denim-light);
+            margin:8px 0;
+        }
+        .modal-box .proof-image img {
+            width:100%; height:100%; object-fit:cover;
+        }
+        .modal-box .order-detail {
+            background:var(--cream);
+            border-radius:var(--radius-sm);
+            padding:14px 16px;
+            margin:10px 0;
+        }
+        .modal-box .order-detail .item {
+            display:flex; justify-content:space-between;
+            padding:4px 0; font-size:0.85rem;
+        }
+
         /* ===== TOAST ===== */
         .toast-container {
             position:fixed; top:100px; right:20px; z-index:9999;
@@ -472,6 +629,16 @@
         }
         .toast-item.removing { animation:slideOutRight 0.3s ease forwards; }
 
+        /* ===== BANK INFO ===== */
+        .bank-info {
+            background:var(--denim-light);
+            padding:12px 18px;
+            border-radius:var(--radius-sm);
+            margin-bottom:16px;
+        }
+        .bank-info p { margin:4px 0; }
+        .bank-info .text-muted { font-size:0.8rem; }
+
         @media (max-width: 768px) {
             .stats-grid { grid-template-columns:1fr 1fr; gap:12px; }
             .stat-card .value { font-size:1.4rem; }
@@ -481,12 +648,14 @@
             .tree { min-width:400px; }
             .tree-level { gap:20px; }
             .tree-node { min-width:60px; font-size:0.7rem; padding:4px 10px; }
+            .modal-box { padding:20px 16px 24px; }
         }
         @media (max-width: 480px) {
             .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
             .stat-card { padding:12px 14px; }
             .stat-card .value { font-size:1.2rem; }
             .product-grid { grid-template-columns:1fr 1fr; gap:8px; }
+            .modal-box { padding:16px 12px 20px; }
         }
     </style>
 </head>
@@ -494,6 +663,14 @@
 
     <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ===== MODAL ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box" id="modalBox">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
 
     <!-- ===== NAVBAR ===== -->
     <header class="navbar">
@@ -588,7 +765,14 @@
                     </select>
                 </div>
                 <div class="form-group"><label>Upload Bukti Transfer</label>
-                    <input type="file" id="depositProof" accept="image/*" />
+                    <div class="file-input-wrapper">
+                        <input type="file" id="depositProof" accept="image/*" />
+                        <div class="file-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span id="depositProofLabel">Upload bukti transfer</span>
+                        </div>
+                    </div>
+                    <div class="image-preview" id="depositPreview"></div>
                 </div>
                 <button class="btn-sm btn-sm-success" id="submitDeposit" style="width:100%; padding:12px;">Kirim Deposit</button>
                 <p class="text-muted mt-16">Minimal deposit Rp 10.000</p>
@@ -602,7 +786,14 @@
                 <div class="form-group"><label>Nominal Withdraw (Rp)</label><input type="number" id="withdrawAmount" placeholder="Masukkan nominal" min="50000" /></div>
                 <div class="form-group"><label>Rekening Tujuan</label><input type="text" id="withdrawAccount" placeholder="Nomor rekening / e-wallet" /></div>
                 <div class="form-group"><label>Upload Bukti Withdraw</label>
-                    <input type="file" id="withdrawProof" accept="image/*" />
+                    <div class="file-input-wrapper">
+                        <input type="file" id="withdrawProof" accept="image/*" />
+                        <div class="file-label">
+                            <i class="fas fa-cloud-upload-alt"></i>
+                            <span id="withdrawProofLabel">Upload bukti withdraw</span>
+                        </div>
+                    </div>
+                    <div class="image-preview" id="withdrawPreview"></div>
                 </div>
                 <button class="btn-sm btn-sm-primary" id="submitWithdraw" style="width:100%; padding:12px;">Ajukan Withdraw</button>
                 <p class="text-muted mt-16">Minimal withdraw Rp 50.000 · Proses 1x24 jam</p>
@@ -618,10 +809,10 @@
         <!-- KOLEKSI -->
         <div class="section-content" id="sec-products">
             <h1 class="page-title"><i class="fas fa-tshirt"></i> Koleksi Produk</h1>
-            <div id="bankInfo" style="background:var(--denim-light); padding:12px 18px; border-radius:var(--radius-sm); margin-bottom:16px;">
+            <div class="bank-info" id="bankInfo">
                 <p><strong>💳 Transfer ke Rekening Admin:</strong></p>
                 <p id="bankDetail">Bank: BCA · No. Rek: 1234567890 · a.n. HEDTRO JEANS</p>
-                <p class="text-muted" style="font-size:0.8rem;">Setelah transfer, admin akan memproses pesanan Anda.</p>
+                <p class="text-muted">Setelah transfer, admin akan memproses pesanan Anda.</p>
             </div>
             <div class="product-grid" id="productGridDashboard"></div>
         </div>
@@ -670,9 +861,7 @@
             function saveSession(s) { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
             function clearSession() { localStorage.removeItem(SESSION_KEY); }
 
-            function getNextId(arr) {
-                return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1;
-            }
+            function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
             function getCurrentUser() {
                 const session = getSession();
@@ -713,17 +902,43 @@
             }
 
             // ============================================================
+            // MODAL FUNCTIONS
+            // ============================================================
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBox = document.getElementById('modalBox');
+            const modalClose = document.getElementById('modalClose');
+            const modalContent = document.getElementById('modalContent');
+
+            function openModal(html) {
+                modalContent.innerHTML = html;
+                modalOverlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) closeModal();
+            });
+
+            // ============================================================
             // APPLY SETTINGS
             // ============================================================
             function applySettings() {
                 const settings = loadSettings();
                 const logoEl = document.getElementById('brandLogo');
-                if (settings.brandLogo && settings.brandLogo.startsWith('http')) {
-                    logoEl.innerHTML =
-                        `<img src="${settings.brandLogo}" alt="Logo" style="height:40px;width:auto;object-fit:contain;" /> <span>HEDTRO<span>JEANS</span></span>`;
-                } else if (settings.brandLogo) {
-                    logoEl.innerHTML =
-                        `<i class="fas ${settings.brandLogo}"></i> HEDTRO<span>JEANS</span>`;
+                if (logoEl) {
+                    if (settings.brandLogo && settings.brandLogo.startsWith('http')) {
+                        logoEl.innerHTML =
+                            `<img src="${settings.brandLogo}" alt="Logo" style="height:40px;width:auto;object-fit:contain;" /> <span>HEDTRO<span>JEANS</span></span>`;
+                    } else if (settings.brandLogo) {
+                        logoEl.innerHTML =
+                            `<i class="fas ${settings.brandLogo}"></i> HEDTRO<span>JEANS</span>`;
+                    }
                 }
                 if (settings.heroTitle) {
                     document.title = settings.heroTitle + ' · Dashboard';
@@ -842,8 +1057,8 @@
                 const node = {
                     id: user.id,
                     name: user.name || user.username,
-                    left: user.left ? buildTree(user.left, level+1, maxDepth) : null,
-                    right: user.right ? buildTree(user.right, level+1, maxDepth) : null
+                    left: user.left ? buildTree(user.left, level + 1, maxDepth) : null,
+                    right: user.right ? buildTree(user.right, level + 1, maxDepth) : null
                 };
                 return node;
             }
@@ -860,15 +1075,17 @@
                         <div class="branch right"></div>
                     </div>`;
                     html += `<div class="tree-level">`;
-                    html += `<div class="tree-node-wrapper">${node.left ? renderTreeHTML(node.left) : '<div class="tree-node empty">Kosong</div>'}</div>`;
-                    html += `<div class="tree-node-wrapper">${node.right ? renderTreeHTML(node.right) : '<div class="tree-node empty">Kosong</div>'}</div>`;
+                    html +=
+                        `<div class="tree-node-wrapper">${node.left ? renderTreeHTML(node.left) : '<div class="tree-node empty">Kosong</div>'}</div>`;
+                    html +=
+                        `<div class="tree-node-wrapper">${node.right ? renderTreeHTML(node.right) : '<div class="tree-node empty">Kosong</div>'}</div>`;
                     html += `</div>`;
                 }
                 return html;
             }
 
             // ============================================================
-            // DEPOSIT & WITHDRAW
+            // DEPOSIT & WITHDRAW - DENGAN MODAL
             // ============================================================
             function deposit(amount, method, proofFile) {
                 const user = getCurrentUser();
@@ -877,23 +1094,28 @@
                 if (amount < 10000) { showToast('Minimal deposit Rp 10.000', 'error'); return; }
                 if (!proofFile) { showToast('Upload bukti transfer terlebih dahulu!', 'error'); return; }
 
-                let users = loadUsers();
-                const current = users.find(u => u.id === user.id);
-                if (!current) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    let users = loadUsers();
+                    const current = users.find(u => u.id === user.id);
+                    if (!current) return;
 
-                current.wallet = (current.wallet || 0) + amount;
-                if (!current.transactions) current.transactions = [];
-                current.transactions.push({
-                    type: 'deposit',
-                    amount: amount,
-                    date: new Date().toISOString(),
-                    status: 'pending',
-                    method: method,
-                    proof: proofFile.name || 'Bukti diupload'
-                });
-                saveUsers(users);
-                showToast(`✅ Deposit Rp ${amount.toLocaleString()} berhasil diajukan! Menunggu verifikasi admin.`, 'success');
-                renderAll();
+                    current.wallet = (current.wallet || 0) + amount;
+                    if (!current.transactions) current.transactions = [];
+                    current.transactions.push({
+                        type: 'deposit',
+                        amount: amount,
+                        date: new Date().toISOString(),
+                        status: 'pending',
+                        method: method,
+                        proof: e.target.result
+                    });
+                    saveUsers(users);
+                    showToast(`✅ Deposit Rp ${amount.toLocaleString()} berhasil diajukan! Menunggu verifikasi admin.`,
+                    'success');
+                    renderAll();
+                };
+                reader.readAsDataURL(proofFile);
             }
 
             function withdraw(amount, account, proofFile) {
@@ -902,30 +1124,35 @@
                 if (amount <= 0 || isNaN(amount)) { showToast('Masukkan nominal yang valid.', 'error'); return; }
                 if (amount < 50000) { showToast('Minimal withdraw Rp 50.000', 'error'); return; }
                 if ((user.wallet || 0) < amount) { showToast('❌ Saldo tidak mencukupi!', 'error'); return; }
-                if (!account || account.trim() === '') { showToast('Masukkan nomor rekening / e-wallet tujuan.', 'error'); return; }
+                if (!account || account.trim() === '') { showToast('Masukkan nomor rekening / e-wallet tujuan.', 'error');
+                    return; }
                 if (!proofFile) { showToast('Upload bukti withdraw terlebih dahulu!', 'error'); return; }
 
-                let users = loadUsers();
-                const current = users.find(u => u.id === user.id);
-                if (!current) return;
+                const reader = new FileReader();
+                reader.onload = function(e) {
+                    let users = loadUsers();
+                    const current = users.find(u => u.id === user.id);
+                    if (!current) return;
 
-                current.wallet = (current.wallet || 0) - amount;
-                if (!current.transactions) current.transactions = [];
-                current.transactions.push({
-                    type: 'withdraw',
-                    amount: amount,
-                    date: new Date().toISOString(),
-                    status: 'pending',
-                    account: account.trim(),
-                    proof: proofFile.name || 'Bukti diupload'
-                });
-                saveUsers(users);
-                showToast(`✅ Withdraw Rp ${amount.toLocaleString()} diajukan! Menunggu verifikasi admin.`, 'success');
-                renderAll();
+                    current.wallet = (current.wallet || 0) - amount;
+                    if (!current.transactions) current.transactions = [];
+                    current.transactions.push({
+                        type: 'withdraw',
+                        amount: amount,
+                        date: new Date().toISOString(),
+                        status: 'pending',
+                        account: account.trim(),
+                        proof: e.target.result
+                    });
+                    saveUsers(users);
+                    showToast(`✅ Withdraw Rp ${amount.toLocaleString()} diajukan! Menunggu verifikasi admin.`, 'success');
+                    renderAll();
+                };
+                reader.readAsDataURL(proofFile);
             }
 
             // ============================================================
-            // RENDER PRODUCTS DASHBOARD
+            // RENDER PRODUCTS DASHBOARD - DENGAN GAMBAR
             // ============================================================
             function renderProductsDashboard() {
                 const grid = document.getElementById('productGridDashboard');
@@ -938,10 +1165,16 @@
                 products.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
+                    let imgHtml = `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
+                    if (p.image && p.image.startsWith('data:image')) {
+                        imgHtml = `<img src="${p.image}" />`;
+                    } else if (p.image && p.image.startsWith('http')) {
+                        imgHtml = `<img src="${p.image}" />`;
+                    }
                     card.innerHTML = `
-                        <div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>
+                        <div class="img-placeholder">${imgHtml}</div>
                         <div class="body">
-                            <span class="tag">${p.tag || 'PRODUK'}</span>
+                            <span class="tag" style="background:${p.badgeColor || '#c9a84c'};">${p.tag || 'PRODUK'}</span>
                             <h4>${p.name}</h4>
                             <div class="price">Rp ${p.price.toLocaleString()} ${p.original ? `<del>Rp ${p.original.toLocaleString()}</del>` : ''}</div>
                             <div style="font-size:0.7rem;color:#6a7e9a;">Stok: ${p.stock}</div>
@@ -961,7 +1194,7 @@
             }
 
             // ============================================================
-            // BUY RO
+            // BUY RO - DENGAN MODAL
             // ============================================================
             function buyRO(productId, price) {
                 const user = getCurrentUser();
@@ -975,55 +1208,119 @@
                 if (!product) { showToast('Produk tidak ditemukan', 'error'); return; }
                 if (product.stock <= 0) { showToast('Stok habis', 'error'); return; }
 
-                if (!confirm(`Beli ${product.name} seharga Rp ${price.toLocaleString()}? Anda akan transfer ke rekening admin.`)) return;
+                // Tampilkan modal konfirmasi
+                let html = `
+                    <h3><i class="fas fa-shopping-cart" style="color:var(--gold-accent);"></i> Konfirmasi Pembelian</h3>
+                    <p class="sub">Detail pesanan RO</p>
+                    <div class="order-detail">
+                        <div class="item"><strong>Produk</strong><span>${product.name}</span></div>
+                        <div class="item"><strong>Harga</strong><span>Rp ${price.toLocaleString()}</span></div>
+                        <div class="item"><strong>Stok Tersisa</strong><span>${product.stock}</span></div>
+                    </div>
+                    <p style="font-size:0.8rem;color:#6a7e9a;margin-bottom:12px;">Silakan transfer ke rekening admin di bawah ini:</p>
+                    <div class="bank-info" style="background:var(--denim-light);padding:12px;border-radius:var(--radius-sm);margin-bottom:12px;">
+                        <p id="bankDetailModal"><strong>${loadBankInfo().bank}</strong> - ${loadBankInfo().account} a.n. ${loadBankInfo().name}</p>
+                    </div>
+                    <div class="form-group">
+                        <label>Upload Bukti Transfer</label>
+                        <div class="file-input-wrapper">
+                            <input type="file" id="roProofFile" accept="image/*" />
+                            <div class="file-label">
+                                <i class="fas fa-cloud-upload-alt"></i>
+                                <span id="roProofLabel">Upload bukti transfer</span>
+                            </div>
+                        </div>
+                        <div class="image-preview" id="roProofPreview"></div>
+                    </div>
+                    <button class="btn-submit" id="confirmROBuy"><i class="fas fa-check"></i> Konfirmasi Pembelian</button>
+                `;
 
-                product.stock--;
-                saveProducts(products);
+                openModal(html);
 
-                let users = loadUsers();
-                const current = users.find(u => u.id === user.id);
-                if (!current) return;
+                // File input handler
+                const fileInput = document.getElementById('roProofFile');
+                const preview = document.getElementById('roProofPreview');
+                const label = document.getElementById('roProofLabel');
 
-                if (!current.transactions) current.transactions = [];
-                const bankInfo = loadBankInfo();
-                current.transactions.push({
-                    type: 'ro_purchase',
-                    productId: productId,
-                    productName: product.name,
-                    amount: price,
-                    date: new Date().toISOString(),
-                    status: 'pending',
-                    note: `Menunggu pembayaran transfer ke ${bankInfo.bank} - ${bankInfo.account}`
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            preview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
+                            preview.classList.add('show');
+                            label.textContent = file.name;
+                            fileInput.dataset.imageData = event.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
                 });
-                if (!current.purchase_history) current.purchase_history = [];
-                current.purchase_history.push({
-                    productId: productId,
-                    productName: product.name,
-                    price: price,
-                    date: new Date().toISOString(),
-                    status: 'pending'
-                });
-                saveUsers(users);
 
-                // Buat order juga
-                const orders = loadOrders();
-                orders.push({
-                    id: getNextId(orders),
-                    order_number: 'RO-' + Date.now().toString().slice(-6),
-                    user_id: user.id,
-                    user_name: user.name || user.username,
-                    items: [{ product_id: product.id, name: product.name, price: price, qty: 1 }],
-                    total: price,
-                    status: 'pending',
-                    type: 'ro',
-                    createdAt: new Date().toISOString(),
-                    updatedAt: new Date().toISOString()
-                });
-                saveOrders(orders);
+                document.getElementById('confirmROBuy').addEventListener('click', function() {
+                    const proofData = fileInput.dataset.imageData;
+                    if (!proofData) {
+                        showToast('Upload bukti transfer terlebih dahulu!', 'error');
+                        return;
+                    }
 
-                showToast('✅ Pesanan RO berhasil! Silakan transfer ke rekening admin.', 'success');
-                renderAll();
-                showSection('history');
+                    let products = loadProducts();
+                    const prod = products.find(p => p.id === productId);
+                    if (!prod || prod.stock <= 0) {
+                        showToast('Stok habis!', 'error');
+                        closeModal();
+                        return;
+                    }
+                    prod.stock--;
+                    saveProducts(products);
+
+                    let users = loadUsers();
+                    const current = users.find(u => u.id === user.id);
+                    if (!current) return;
+
+                    if (!current.transactions) current.transactions = [];
+                    const bankInfo = loadBankInfo();
+                    current.transactions.push({
+                        type: 'ro_purchase',
+                        productId: productId,
+                        productName: product.name,
+                        amount: price,
+                        date: new Date().toISOString(),
+                        status: 'pending',
+                        note: `Menunggu pembayaran transfer ke ${bankInfo.bank} - ${bankInfo.account}`,
+                        proof: proofData
+                    });
+                    if (!current.purchase_history) current.purchase_history = [];
+                    current.purchase_history.push({
+                        productId: productId,
+                        productName: product.name,
+                        price: price,
+                        date: new Date().toISOString(),
+                        status: 'pending'
+                    });
+                    saveUsers(users);
+
+                    // Buat order juga
+                    const orders = loadOrders();
+                    orders.push({
+                        id: getNextId(orders),
+                        order_number: 'RO-' + Date.now().toString().slice(-6),
+                        user_id: user.id,
+                        user_name: user.name || user.username,
+                        items: [{ product_id: product.id, name: product.name, price: price, qty: 1 }],
+                        total: price,
+                        status: 'pending',
+                        type: 'ro',
+                        proof_image: proofData,
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    });
+                    saveOrders(orders);
+
+                    closeModal();
+                    showToast('✅ Pesanan RO berhasil! Silakan transfer ke rekening admin.', 'success');
+                    renderAll();
+                    showSection('history');
+                });
             }
 
             // ============================================================
@@ -1059,8 +1356,10 @@
 
                 if (sectionId === 'network') renderNetwork();
                 if (sectionId === 'history') renderFullHistory();
-                if (sectionId === 'dashboard') { renderMemberStatusCard(); renderTransactionHistory(); }
-                if (sectionId === 'products') { renderProductsDashboard(); renderBankInfo(); }
+                if (sectionId === 'dashboard') { renderMemberStatusCard();
+                    renderTransactionHistory(); }
+                if (sectionId === 'products') { renderProductsDashboard();
+                    renderBankInfo(); }
             }
 
             // ============================================================
@@ -1104,10 +1403,46 @@
             });
 
             // ============================================================
-            // DEPOSIT & WITHDRAW EVENTS
+            // DEPOSIT & WITHDRAW EVENTS - DENGAN FILE UPLOAD
             // ============================================================
             document.getElementById('depositBtn').addEventListener('click', () => showSection('deposit'));
             document.getElementById('withdrawBtn').addEventListener('click', () => showSection('withdraw'));
+
+            // Deposit file upload preview
+            const depositFileInput = document.getElementById('depositProof');
+            const depositPreview = document.getElementById('depositPreview');
+            const depositLabel = document.getElementById('depositProofLabel');
+
+            depositFileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        depositPreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
+                        depositPreview.classList.add('show');
+                        depositLabel.textContent = file.name;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            // Withdraw file upload preview
+            const withdrawFileInput = document.getElementById('withdrawProof');
+            const withdrawPreview = document.getElementById('withdrawPreview');
+            const withdrawLabel = document.getElementById('withdrawProofLabel');
+
+            withdrawFileInput.addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(event) {
+                        withdrawPreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
+                        withdrawPreview.classList.add('show');
+                        withdrawLabel.textContent = file.name;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
 
             document.getElementById('submitDeposit').addEventListener('click', function() {
                 const amount = parseInt(document.getElementById('depositAmount').value);
@@ -1166,5 +1501,6 @@
             console.log('👤 Login sebagai:', user.name || user.username);
         })();
     </script>
+
 </body>
 </html>
