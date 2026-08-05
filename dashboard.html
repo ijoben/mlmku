@@ -1146,21 +1146,27 @@
                     showToast('❌ Anda harus terverifikasi (verified) untuk melakukan repeat order.', 'error');
                     return;
                 }
+                
+                // AMBIL DATA PRODUK TERBARU DARI DATABASE
                 const products = loadProducts();
                 const product = products.find(p => p.id === productId);
                 if (!product) { showToast('Produk tidak ditemukan', 'error'); return; }
                 if (product.stock <= 0) { showToast('Stok habis', 'error'); return; }
 
-                // Buat opsi size
+                console.log('📦 Data produk:', product);
+                console.log('📏 Sizes:', product.sizes);
+                console.log('🎨 Colors:', product.colors);
+
+                // Buat opsi size - ambil dari data produk
                 let sizeOptions = '';
-                const sizes = product.sizes || ['28', '29', '30', '31', '32', '33', '34', '36', '38', '40'];
+                const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : ['28', '29', '30', '31', '32', '33', '34', '36', '38', '40'];
                 sizes.forEach(s => {
                     sizeOptions += `<option value="${s}">Size ${s}</option>`;
                 });
 
-                // Buat opsi warna
+                // Buat opsi warna - ambil dari data produk
                 let colorOptions = '';
-                const colors = product.colors || ['Indigo Blue Raw Denim', 'Black Stretch', 'Light Wash', 'Dark Navy', 'Grey Stone', 'White'];
+                const colors = product.colors && product.colors.length > 0 ? product.colors : ['Indigo Blue Raw Denim', 'Black Stretch', 'Light Wash', 'Dark Navy', 'Grey Stone', 'White'];
                 colors.forEach(c => {
                     colorOptions += `<option value="${c}">${c}</option>`;
                 });
@@ -1259,6 +1265,7 @@
                     if (qty > product.stock) { showToast('Stok tidak mencukupi!', 'error'); return; }
                     if (!proofData) { showToast('Upload bukti transfer terlebih dahulu!', 'error'); return; }
 
+                    // AMBIL DATA PRODUK TERBARU LAGI UNTUK CEK STOK
                     let products = loadProducts();
                     const prod = products.find(p => p.id === productId);
                     if (!prod || prod.stock < qty) {
