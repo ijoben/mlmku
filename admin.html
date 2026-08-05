@@ -410,14 +410,164 @@
         }
         .login-overlay.hidden { display:none; }
 
+        /* ===== MODAL CUSTOM ===== */
+        .modal-overlay {
+            display:none;
+            position:fixed; inset:0; z-index:9998;
+            background:rgba(0,0,0,0.5);
+            backdrop-filter:blur(8px);
+            align-items:center; justify-content:center;
+            padding:20px;
+        }
+        .modal-overlay.show {
+            display:flex;
+        }
+        .modal-box {
+            background:var(--white);
+            max-width:600px; width:100%;
+            max-height:90vh;
+            overflow-y:auto;
+            border-radius:var(--radius);
+            padding:28px 30px 32px;
+            box-shadow:var(--shadow-lg);
+            position:relative;
+            animation:modalIn 0.3s ease;
+        }
+        @keyframes modalIn {
+            from { transform:scale(0.9) translateY(20px); opacity:0; }
+            to { transform:scale(1) translateY(0); opacity:1; }
+        }
+        .modal-box .modal-close {
+            position:absolute; top:14px; right:18px;
+            font-size:1.6rem; color:var(--denim-navy);
+            cursor:pointer; transition:var(--transition);
+        }
+        .modal-box .modal-close:hover {
+            color:var(--denim-dark); transform:rotate(90deg);
+        }
+        .modal-box h3 {
+            font-family:'Playfair Display',serif;
+            font-size:1.3rem; font-weight:800;
+            color:var(--denim-dark); margin-bottom:4px;
+        }
+        .modal-box p.sub {
+            color:var(--denim-navy); font-size:0.85rem;
+            opacity:0.7; margin-bottom:16px;
+        }
+        .modal-box .form-group {
+            margin-bottom:14px;
+        }
+        .modal-box .form-group label {
+            display:block; font-weight:600; font-size:0.8rem;
+            color:var(--denim-navy); margin-bottom:4px;
+        }
+        .modal-box .form-group input,
+        .modal-box .form-group select,
+        .modal-box .form-group textarea {
+            width:100%; padding:10px 14px;
+            border:1.5px solid var(--denim-light);
+            border-radius:60px; font-size:0.9rem;
+            background:var(--cream);
+            font-family:inherit; transition:var(--transition);
+            outline:none;
+        }
+        .modal-box .form-group textarea {
+            border-radius:var(--radius-sm); resize:vertical; min-height:60px;
+        }
+        .modal-box .form-group input:focus,
+        .modal-box .form-group select:focus,
+        .modal-box .form-group textarea:focus {
+            border-color:var(--gold-accent);
+            box-shadow:0 0 0 4px rgba(201,168,76,0.08);
+        }
+        .modal-box .form-group .file-input-wrapper {
+            position:relative;
+            display:inline-block;
+            width:100%;
+        }
+        .modal-box .form-group .file-input-wrapper input[type="file"] {
+            position:absolute; left:0; top:0; opacity:0;
+            width:100%; height:100%; cursor:pointer;
+        }
+        .modal-box .form-group .file-input-wrapper .file-label {
+            display:flex; align-items:center; gap:10px;
+            padding:10px 16px;
+            border:2px dashed var(--denim-light);
+            border-radius:60px;
+            background:var(--cream);
+            color:var(--denim-navy);
+            font-size:0.85rem;
+            transition:var(--transition);
+            cursor:pointer;
+        }
+        .modal-box .form-group .file-input-wrapper .file-label:hover {
+            border-color:var(--gold-accent);
+        }
+        .modal-box .form-group .file-input-wrapper .file-label i {
+            color:var(--gold-accent);
+            font-size:1.2rem;
+        }
+        .modal-box .form-group .image-preview {
+            margin-top:8px;
+            max-width:150px; max-height:150px;
+            border-radius:var(--radius-sm);
+            overflow:hidden;
+            border:1px solid var(--denim-light);
+            display:none;
+        }
+        .modal-box .form-group .image-preview img {
+            width:100%; height:100%; object-fit:cover;
+        }
+        .modal-box .form-group .image-preview.show {
+            display:block;
+        }
+        .modal-box .btn-submit {
+            width:100%; padding:14px;
+            background:var(--gold-accent); color:var(--denim-dark);
+            border:none; border-radius:60px;
+            font-weight:700; font-size:1rem;
+            transition:var(--transition); font-family:inherit;
+            margin-top:4px;
+        }
+        .modal-box .btn-submit:hover {
+            background:#b8963a; transform:scale(0.98);
+        }
+        .modal-box .btn-danger {
+            background:#b13e3e; color:#fff;
+        }
+        .modal-box .btn-danger:hover {
+            background:#8f2f2f;
+        }
+        .modal-box .proof-image {
+            max-width:200px; max-height:200px;
+            border-radius:var(--radius-sm);
+            border:1px solid var(--denim-light);
+            margin:8px 0;
+        }
+        .modal-box .proof-image img {
+            width:100%; height:100%; object-fit:cover;
+        }
+        .modal-box .order-detail {
+            background:var(--cream);
+            border-radius:var(--radius-sm);
+            padding:14px 16px;
+            margin:10px 0;
+        }
+        .modal-box .order-detail .item {
+            display:flex; justify-content:space-between;
+            padding:4px 0; font-size:0.85rem;
+        }
+
         @media (max-width:768px) {
             .stats-grid { grid-template-columns:1fr 1fr; gap:12px; }
             .stat-card .value { font-size:1.4rem; }
+            .modal-box { padding:20px 16px 24px; }
         }
         @media (max-width:480px) {
             .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
             .stat-card { padding:12px 14px; }
             .stat-card .value { font-size:1.2rem; }
+            .modal-box { padding:16px 12px 20px; }
         }
     </style>
 </head>
@@ -445,6 +595,14 @@
                 🔑 Demo: <span id="adminDemoBtn">admin@mlm.com / admin123</span>
             </div>
             <a href="index.html" class="back-to-home"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+        </div>
+    </div>
+
+    <!-- ===== MODAL ===== -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box" id="modalBox">
+            <button class="modal-close" id="modalClose">&times;</button>
+            <div id="modalContent"></div>
         </div>
     </div>
 
@@ -552,7 +710,7 @@
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>#</th><th>Member</th><th>Type</th><th>Produk</th><th>Total</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>#</th><th>Member</th><th>Type</th><th>Produk</th><th>Total</th><th>Status</th><th>Tanggal</th><th>Bukti</th><th>Aksi</th></tr></thead>
                         <tbody id="ordersTableBody"></tbody>
                     </table>
                 </div>
@@ -673,6 +831,30 @@
             }
 
             // ============================================================
+            // MODAL FUNCTIONS
+            // ============================================================
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalBox = document.getElementById('modalBox');
+            const modalClose = document.getElementById('modalClose');
+            const modalContent = document.getElementById('modalContent');
+
+            function openModal(html) {
+                modalContent.innerHTML = html;
+                modalOverlay.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeModal() {
+                modalOverlay.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            modalClose.addEventListener('click', closeModal);
+            modalOverlay.addEventListener('click', function(e) {
+                if (e.target === modalOverlay) closeModal();
+            });
+
+            // ============================================================
             // APPLY SETTINGS
             // ============================================================
             function applySettings() {
@@ -716,7 +898,7 @@
             if (sidebarOverlay) sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
             // ============================================================
-            // TAB NAVIGATION (HANYA SIDEBAR)
+            // TAB NAVIGATION
             // ============================================================
             function switchTab(tabId) {
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
@@ -751,21 +933,13 @@
                 const products = loadProducts();
                 const transactions = loadTransactions();
 
-                const totalMember = users.length;
-                const verifiedMember = users.filter(u => u.status === 'verified').length;
-                const totalOrders = orders.length;
-                const pendingOrders = orders.filter(o => o.status === 'pending').length;
-                const totalProducts = products.length;
-                const totalTransactionAmount = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+                document.getElementById('statTotalMember').textContent = users.length;
+                document.getElementById('statVerifiedMember').textContent = users.filter(u => u.status === 'verified').length;
+                document.getElementById('statTotalOrders').textContent = orders.length;
+                document.getElementById('statPendingOrders').textContent = orders.filter(o => o.status === 'pending').length;
+                document.getElementById('statTotalProducts').textContent = products.length;
+                document.getElementById('statTotalTransactions').textContent = 'Rp ' + transactions.reduce((sum, t) => sum + (t.amount || 0), 0).toLocaleString();
 
-                document.getElementById('statTotalMember').textContent = totalMember;
-                document.getElementById('statVerifiedMember').textContent = verifiedMember;
-                document.getElementById('statTotalOrders').textContent = totalOrders;
-                document.getElementById('statPendingOrders').textContent = pendingOrders;
-                document.getElementById('statTotalProducts').textContent = totalProducts;
-                document.getElementById('statTotalTransactions').textContent = 'Rp ' + totalTransactionAmount.toLocaleString();
-
-                // Riwayat transaksi
                 const container = document.getElementById('adminTransactionHistory');
                 const sorted = [...transactions].reverse().slice(0, 10);
                 if (sorted.length === 0) {
@@ -812,8 +986,7 @@
                     </tr>`;
                 });
                 tbody.innerHTML = html;
-                const totalEl = document.getElementById('totalMembers');
-                if (totalEl) totalEl.textContent = users.length;
+                document.getElementById('totalMembers').textContent = users.length;
 
                 document.querySelectorAll('.toggle-status').forEach(btn => {
                     btn.addEventListener('click', function() {
@@ -901,7 +1074,7 @@
             }
 
             // ============================================================
-            // RENDER PRODUCTS (LENGKAP DENGAN GAMBAR, UKURAN, WARNA, BADGE)
+            // RENDER PRODUCTS
             // ============================================================
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
@@ -952,115 +1125,259 @@
             }
 
             // ============================================================
-            // EDIT PRODUCT POPUP
+            // EDIT PRODUCT - MODAL CUSTOM
             // ============================================================
             function openEditProduct(id) {
                 const products = loadProducts();
                 const p = products.find(x => x.id === id);
                 if (!p) return;
 
-                const name = prompt('Nama produk:', p.name);
-                if (name === null) return;
+                const sizesStr = (p.sizes || []).join(', ');
+                const colorsStr = (p.colors || []).join(', ');
 
-                const price = parseInt(prompt('Harga Member (Rp):', p.price));
-                if (isNaN(price)) return;
+                let html = `
+                    <h3><i class="fas fa-edit" style="color:var(--gold-accent);"></i> Edit Produk</h3>
+                    <p class="sub">Ubah data produk di bawah ini</p>
+                    <form id="editProductForm" onsubmit="return false;">
+                        <div class="form-group">
+                            <label>Nama Produk <span style="color:red;">*</span></label>
+                            <input type="text" id="editName" value="${p.name}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Member (Rp) <span style="color:red;">*</span></label>
+                            <input type="number" id="editPrice" value="${p.price}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Normal (Rp)</label>
+                            <input type="number" id="editOriginal" value="${p.original || ''}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tag/Badge</label>
+                            <input type="text" id="editTag" value="${p.tag || 'PRODUK'}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Warna Badge (kode hex)</label>
+                            <input type="color" id="editBadgeColor" value="${p.badgeColor || '#c9a84c'}" style="padding:4px;height:50px;" />
+                        </div>
+                        <div class="form-group">
+                            <label>Stok</label>
+                            <input type="number" id="editStock" value="${p.stock || 0}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Ukuran (pisah dengan koma)</label>
+                            <input type="text" id="editSizes" value="${sizesStr}" placeholder="contoh: 28,29,30,31,32" />
+                        </div>
+                        <div class="form-group">
+                            <label>Warna (pisah dengan koma)</label>
+                            <input type="text" id="editColors" value="${colorsStr}" placeholder="contoh: Indigo Blue, Black Stretch" />
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi</label>
+                            <textarea id="editDesc" rows="3">${p.desc || ''}</textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Upload Gambar</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="editImageFile" accept="image/*" />
+                                <div class="file-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span id="editImageLabel">${p.image ? 'Ganti gambar' : 'Upload gambar'}</span>
+                                </div>
+                            </div>
+                            ${p.image ? `<div class="image-preview show" id="editImagePreview"><img src="${p.image}" alt="Preview" /></div>` : `<div class="image-preview" id="editImagePreview"></div>`}
+                            <input type="hidden" id="editImageUrl" value="${p.image || ''}" />
+                        </div>
+                        <button type="submit" class="btn-submit" id="saveEditProduct"><i class="fas fa-save"></i> Simpan Perubahan</button>
+                    </form>
+                `;
 
-                const original = parseInt(prompt('Harga Normal (Rp):', p.original || ''));
-                if (isNaN(original)) return;
+                openModal(html);
 
-                const tag = prompt('Tag/Badge (contoh: BEST SELLER):', p.tag || 'PRODUK');
-                if (tag === null) return;
+                // File input handler
+                const fileInput = document.getElementById('editImageFile');
+                const imagePreview = document.getElementById('editImagePreview');
+                const imageLabel = document.getElementById('editImageLabel');
 
-                const badgeColor = prompt('Warna Badge (kode hex atau nama warna):', p.badgeColor || '#c9a84c');
-                if (badgeColor === null) return;
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            imagePreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
+                            imagePreview.classList.add('show');
+                            document.getElementById('editImageUrl').value = event.target.result;
+                            imageLabel.textContent = file.name;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
 
-                const stock = parseInt(prompt('Stok:', p.stock));
-                if (isNaN(stock)) return;
+                document.getElementById('saveEditProduct').addEventListener('click', function() {
+                    const name = document.getElementById('editName').value.trim();
+                    const price = parseInt(document.getElementById('editPrice').value);
+                    const original = parseInt(document.getElementById('editOriginal').value) || 0;
+                    const tag = document.getElementById('editTag').value.trim() || 'PRODUK';
+                    const badgeColor = document.getElementById('editBadgeColor').value || '#c9a84c';
+                    const stock = parseInt(document.getElementById('editStock').value) || 0;
+                    const sizesStr = document.getElementById('editSizes').value.trim();
+                    const colorsStr = document.getElementById('editColors').value.trim();
+                    const desc = document.getElementById('editDesc').value.trim();
+                    const image = document.getElementById('editImageUrl').value.trim();
 
-                const sizesInput = prompt('Ukuran (pisah dengan koma, contoh: 28,29,30,31,32):', (p.sizes || ['28', '29', '30', '31', '32']).join(','));
-                if (sizesInput === null) return;
-                const sizes = sizesInput.split(',').map(s => s.trim()).filter(s => s);
+                    if (!name) { showToast('⚠️ Nama produk wajib diisi!', 'error'); return; }
+                    if (isNaN(price) || price <= 0) { showToast('⚠️ Harga member harus diisi!', 'error'); return; }
 
-                const colorsInput = prompt('Warna (pisah dengan koma, contoh: Indigo Blue Raw Denim, Black Stretch):', (p.colors || ['Indigo Blue Raw Denim', 'Black Stretch']).join(','));
-                if (colorsInput === null) return;
-                const colors = colorsInput.split(',').map(c => c.trim()).filter(c => c);
+                    const sizes = sizesStr ? sizesStr.split(',').map(s => s.trim()).filter(s => s) : [];
+                    const colors = colorsStr ? colorsStr.split(',').map(c => c.trim()).filter(c => c) : [];
 
-                const desc = prompt('Deskripsi produk:', p.desc || '');
-                if (desc === null) return;
-
-                const image = prompt('URL Gambar (kosongkan jika tidak ada):', p.image || '');
-                if (image === null) return;
-
-                p.name = name;
-                p.price = price;
-                p.original = original;
-                p.tag = tag;
-                p.badgeColor = badgeColor;
-                p.stock = stock;
-                p.sizes = sizes;
-                p.colors = colors;
-                p.desc = desc;
-                p.image = image || null;
-
-                saveProducts(products);
-                renderAdminProducts();
-                renderDashboard();
-                showToast('✅ Produk diupdate!', 'success');
+                    let products = loadProducts();
+                    const product = products.find(x => x.id === id);
+                    if (product) {
+                        product.name = name;
+                        product.price = price;
+                        product.original = original;
+                        product.tag = tag;
+                        product.badgeColor = badgeColor;
+                        product.stock = stock;
+                        product.sizes = sizes;
+                        product.colors = colors;
+                        product.desc = desc;
+                        if (image) product.image = image;
+                        saveProducts(products);
+                        renderAdminProducts();
+                        renderDashboard();
+                        closeModal();
+                        showToast('✅ Produk berhasil diupdate!', 'success');
+                    }
+                });
             }
 
             // ============================================================
-            // ADD PRODUCT
+            // ADD PRODUCT - MODAL CUSTOM
             // ============================================================
             document.getElementById('addProductBtn').addEventListener('click', function() {
-                const name = prompt('Nama produk:');
-                if (!name) return;
+                let html = `
+                    <h3><i class="fas fa-plus-circle" style="color:var(--gold-accent);"></i> Tambah Produk</h3>
+                    <p class="sub">Isi data produk baru di bawah ini</p>
+                    <form id="addProductForm" onsubmit="return false;">
+                        <div class="form-group">
+                            <label>Nama Produk <span style="color:red;">*</span></label>
+                            <input type="text" id="addName" placeholder="Nama produk" />
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Member (Rp) <span style="color:red;">*</span></label>
+                            <input type="number" id="addPrice" placeholder="250000" />
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Normal (Rp)</label>
+                            <input type="number" id="addOriginal" placeholder="350000" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tag/Badge</label>
+                            <input type="text" id="addTag" placeholder="BEST SELLER" value="PRODUK" />
+                        </div>
+                        <div class="form-group">
+                            <label>Warna Badge (kode hex)</label>
+                            <input type="color" id="addBadgeColor" value="#c9a84c" style="padding:4px;height:50px;" />
+                        </div>
+                        <div class="form-group">
+                            <label>Stok</label>
+                            <input type="number" id="addStock" placeholder="0" value="10" />
+                        </div>
+                        <div class="form-group">
+                            <label>Ukuran (pisah dengan koma)</label>
+                            <input type="text" id="addSizes" placeholder="28,29,30,31,32" value="28,29,30,31,32" />
+                        </div>
+                        <div class="form-group">
+                            <label>Warna (pisah dengan koma)</label>
+                            <input type="text" id="addColors" placeholder="Indigo Blue, Black Stretch" value="Indigo Blue, Black Stretch" />
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi</label>
+                            <textarea id="addDesc" rows="3" placeholder="Deskripsi produk..."></textarea>
+                        </div>
+                        <div class="form-group">
+                            <label>Upload Gambar</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="addImageFile" accept="image/*" />
+                                <div class="file-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span id="addImageLabel">Upload gambar</span>
+                                </div>
+                            </div>
+                            <div class="image-preview" id="addImagePreview"></div>
+                            <input type="hidden" id="addImageUrl" value="" />
+                        </div>
+                        <button type="submit" class="btn-submit" id="saveAddProduct"><i class="fas fa-plus"></i> Tambah Produk</button>
+                    </form>
+                `;
 
-                const price = parseInt(prompt('Harga Member (Rp):'));
-                if (isNaN(price)) return;
+                openModal(html);
 
-                const original = parseInt(prompt('Harga Normal (Rp):'));
-                if (isNaN(original)) return;
+                const fileInput = document.getElementById('addImageFile');
+                const imagePreview = document.getElementById('addImagePreview');
+                const imageLabel = document.getElementById('addImageLabel');
 
-                const tag = prompt('Tag/Badge (contoh: BEST SELLER):') || 'PRODUK';
-                const badgeColor = prompt('Warna Badge (kode hex):') || '#c9a84c';
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(event) {
+                            imagePreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
+                            imagePreview.classList.add('show');
+                            document.getElementById('addImageUrl').value = event.target.result;
+                            imageLabel.textContent = file.name;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
 
-                const stock = parseInt(prompt('Stok:')) || 0;
+                document.getElementById('saveAddProduct').addEventListener('click', function() {
+                    const name = document.getElementById('addName').value.trim();
+                    const price = parseInt(document.getElementById('addPrice').value);
+                    const original = parseInt(document.getElementById('addOriginal').value) || 0;
+                    const tag = document.getElementById('addTag').value.trim() || 'PRODUK';
+                    const badgeColor = document.getElementById('addBadgeColor').value || '#c9a84c';
+                    const stock = parseInt(document.getElementById('addStock').value) || 0;
+                    const sizesStr = document.getElementById('addSizes').value.trim();
+                    const colorsStr = document.getElementById('addColors').value.trim();
+                    const desc = document.getElementById('addDesc').value.trim();
+                    const image = document.getElementById('addImageUrl').value.trim();
 
-                const sizesInput = prompt('Ukuran (pisah dengan koma, contoh: 28,29,30,31,32):') || '28,29,30,31,32';
-                const sizes = sizesInput.split(',').map(s => s.trim()).filter(s => s);
+                    if (!name) { showToast('⚠️ Nama produk wajib diisi!', 'error'); return; }
+                    if (isNaN(price) || price <= 0) { showToast('⚠️ Harga member harus diisi!', 'error'); return; }
 
-                const colorsInput = prompt('Warna (pisah dengan koma, contoh: Indigo Blue Raw Denim, Black Stretch):') || 'Indigo Blue Raw Denim, Black Stretch';
-                const colors = colorsInput.split(',').map(c => c.trim()).filter(c => c);
+                    const sizes = sizesStr ? sizesStr.split(',').map(s => s.trim()).filter(s => s) : [];
+                    const colors = colorsStr ? colorsStr.split(',').map(c => c.trim()).filter(c => c) : [];
 
-                const desc = prompt('Deskripsi produk:') || 'Deskripsi produk ini akan diisi oleh admin.';
-                const image = prompt('URL Gambar (kosongkan jika tidak ada):') || null;
-
-                let products = loadProducts();
-                const newProd = {
-                    id: products.length ? Math.max(...products.map(p => p.id)) + 1 : 1,
-                    name,
-                    price,
-                    original,
-                    tag,
-                    badgeColor,
-                    icon: 'fa-tshirt',
-                    stock,
-                    sizes,
-                    colors,
-                    desc,
-                    image: image || null,
-                    favorite: false,
-                    serial: 'HDT-SERI-' + String(products.length + 1).padStart(3, '0')
-                };
-                products.push(newProd);
-                saveProducts(products);
-                renderAdminProducts();
-                renderDashboard();
-                showToast('✅ Produk ditambahkan!', 'success');
+                    let products = loadProducts();
+                    const newProd = {
+                        id: products.length ? Math.max(...products.map(p => p.id)) + 1 : 1,
+                        name,
+                        price,
+                        original,
+                        tag,
+                        badgeColor,
+                        icon: 'fa-tshirt',
+                        stock,
+                        sizes,
+                        colors,
+                        desc: desc || 'Deskripsi produk ini akan diisi oleh admin.',
+                        image: image || null,
+                        favorite: false,
+                        serial: 'HDT-SERI-' + String(products.length + 1).padStart(3, '0')
+                    };
+                    products.push(newProd);
+                    saveProducts(products);
+                    renderAdminProducts();
+                    renderDashboard();
+                    closeModal();
+                    showToast('✅ Produk berhasil ditambahkan!', 'success');
+                });
             });
 
             // ============================================================
-            // RENDER ORDERS
+            // RENDER ORDERS - DENGAN CEK BUKTI PEMBAYARAN
             // ============================================================
             function renderOrders() {
                 const tbody = document.getElementById('ordersTableBody');
@@ -1069,7 +1386,7 @@
                 const users = loadUsers();
 
                 if (orders.length === 0) {
-                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;">Belum ada pesanan.</td></tr>`;
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:20px;">Belum ada pesanan.</td></tr>`;
                     return;
                 }
 
@@ -1082,6 +1399,7 @@
                     const statusClass = 'badge-' + (o.status || 'pending');
                     const statusLabel = o.status === 'pending' ? '⏳ Pending' : (o.status === 'processing' ? '📦 Processing' : (o.status === 'shipped' ? '🚚 Shipped' : '✅ Done'));
                     const productNames = o.items ? o.items.map(i => i.name).join(', ') : '-';
+                    const hasProof = o.proof_image || o.proof || false;
                     html += `<tr>
                         <td>${idx+1}</td>
                         <td>${userName}</td>
@@ -1091,12 +1409,56 @@
                         <td><span class="badge-status ${statusClass}">${statusLabel}</span></td>
                         <td>${new Date(o.createdAt).toLocaleDateString()}</td>
                         <td>
+                            ${hasProof ? `<button class="btn-sm btn-sm-gold view-proof" data-id="${o.id}"><i class="fas fa-image"></i> Lihat</button>` : '<span style="color:#999;font-size:0.7rem;">Belum upload</span>'}
+                        </td>
+                        <td>
                             ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
                             ${o.status === 'processing' ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim</button>` : ''}
                         </td>
                     </tr>`;
                 });
                 tbody.innerHTML = html;
+
+                // View Proof
+                document.querySelectorAll('.view-proof').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        const orders = loadOrders();
+                        const order = orders.find(o => o.id === id);
+                        if (!order) return;
+                        const proof = order.proof_image || order.proof || '';
+                        const user = users.find(u => u.id === order.user_id);
+                        const userName = user ? (user.name || user.username) : 'Unknown';
+
+                        let itemsHtml = '';
+                        if (order.items) {
+                            order.items.forEach(item => {
+                                itemsHtml += `<div class="item"><span>${item.name} x${item.qty}</span><span>Rp ${(item.price * item.qty).toLocaleString()}</span></div>`;
+                            });
+                        }
+
+                        let html = `
+                            <h3><i class="fas fa-receipt" style="color:var(--gold-accent);"></i> Detail Order</h3>
+                            <p class="sub">${order.order_number || 'ORD-'+order.id}</p>
+                            <div class="order-detail">
+                                <div class="item"><strong>Member</strong><span>${userName}</span></div>
+                                <div class="item"><strong>Type</strong><span>${order.type || 'Regular'}</span></div>
+                                <div class="item"><strong>Status</strong><span>${order.status || 'Pending'}</span></div>
+                                <div class="item"><strong>Total</strong><span>Rp ${(order.total || 0).toLocaleString()}</span></div>
+                                <div style="margin-top:8px;border-top:1px solid #ddd;padding-top:8px;">
+                                    <strong>Produk:</strong>
+                                    ${itemsHtml || '<span class="text-muted">-</span>'}
+                                </div>
+                            </div>
+                            <div>
+                                <strong>Bukti Pembayaran:</strong>
+                                ${proof ? `<div class="proof-image"><img src="${proof}" alt="Bukti Pembayaran" /></div>` : '<p class="text-muted">Belum ada bukti pembayaran</p>'}
+                            </div>
+                            <button class="btn-submit" onclick="document.getElementById('modalClose').click();" style="margin-top:12px;">Tutup</button>
+                        `;
+                        openModal(html);
+                    });
+                });
 
                 document.querySelectorAll('.approve-order').forEach(btn => {
                     btn.addEventListener('click', function() {
@@ -1501,7 +1863,7 @@
                 }, 15000);
             }
 
-            console.log('🟦 HEDTRO · Admin Panel lengkap dengan Dashboard & CRUD produk');
+            console.log('🟦 HEDTRO · Admin Panel lengkap dengan Modal Custom');
             console.log('🔑 Admin: admin@mlm.com / admin123');
         })();
     </script>
