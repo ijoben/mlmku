@@ -73,7 +73,7 @@
         }
 
         /* ============================================================
-           NAVBAR - DESKTOP (semua menu horizontal)
+           NAVBAR
            ============================================================ */
         .navbar {
             position: fixed;
@@ -386,7 +386,7 @@
         }
 
         /* ============================================================
-           HP - SEARCH & CART ICON (tampil di HP)
+           HP - SEARCH & CART ICON
            ============================================================ */
         .search-icon-hp {
             display: none;
@@ -414,11 +414,6 @@
             cursor: pointer;
         }
 
-        .cart-hp:hover {
-            color: var(--gold-accent);
-            background: rgba(201, 168, 76, 0.08);
-        }
-
         .cart-hp .badge {
             position: absolute;
             top: 0;
@@ -436,7 +431,7 @@
         }
 
         /* ============================================================
-           POPUP OVERLAY (Search, Track, Cart)
+           POPUP OVERLAY (Search, Track, Cart, Product Detail)
            ============================================================ */
         .popup-overlay {
             display: none;
@@ -456,9 +451,9 @@
 
         .popup-overlay .popup-box {
             background: var(--white);
-            max-width: 500px;
+            max-width: 560px;
             width: 100%;
-            max-height: 80vh;
+            max-height: 85vh;
             overflow-y: auto;
             border-radius: var(--radius);
             padding: 28px 30px 32px;
@@ -553,6 +548,168 @@
         }
 
         /* ============================================================
+           PRODUCT DETAIL POPUP (FULL)
+           ============================================================ */
+        .product-detail-popup .popup-box {
+            max-width: 700px;
+        }
+
+        .product-detail-popup .popup-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 8px;
+        }
+
+        .product-detail-popup .popup-image {
+            background: var(--denim-light);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 5rem;
+            color: var(--denim-blue);
+            min-height: 260px;
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            user-select: none;
+        }
+
+        .product-detail-popup .popup-image .popup-icon-wrap {
+            transition: transform 0.3s ease;
+            font-size: 5rem;
+        }
+
+        .product-detail-popup .popup-image.zoomed .popup-icon-wrap {
+            transform: scale(1.8);
+        }
+
+        .product-detail-popup .popup-image .zoom-hint {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .product-detail-popup .popup-info h2 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--denim-dark);
+            margin-bottom: 4px;
+        }
+
+        .product-detail-popup .popup-info .popup-tag {
+            display: inline-block;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 14px;
+            border-radius: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .product-detail-popup .popup-info .popup-price {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--denim-blue);
+        }
+
+        .product-detail-popup .popup-info .popup-price del {
+            color: #8a9aa8;
+            font-weight: 400;
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+
+        .product-detail-popup .popup-info .popup-desc {
+            color: var(--denim-navy);
+            line-height: 1.7;
+            font-size: 0.9rem;
+            margin: 10px 0;
+        }
+
+        .product-detail-popup .popup-info .popup-specs {
+            background: var(--cream);
+            border-radius: var(--radius-sm);
+            padding: 10px 14px;
+            margin: 10px 0;
+            font-size: 0.8rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 16px;
+        }
+
+        .product-detail-popup .popup-info .popup-specs span {
+            padding: 2px 0;
+        }
+
+        .product-detail-popup .popup-info .popup-specs .label {
+            color: var(--denim-navy);
+            opacity: 0.6;
+            font-weight: 500;
+        }
+
+        .product-detail-popup .popup-info .popup-stock {
+            font-size: 0.85rem;
+            color: #1f7a4b;
+            margin-top: 4px;
+        }
+
+        .product-detail-popup .popup-info .popup-stock.out {
+            color: #b13e3e;
+        }
+
+        .product-detail-popup .popup-info .popup-options {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+        }
+
+        .product-detail-popup .popup-info .popup-options select {
+            padding: 8px 12px;
+            border: 1.5px solid var(--denim-light);
+            border-radius: 60px;
+            font-size: 0.85rem;
+            background: var(--cream);
+            color: var(--denim-dark);
+            font-family: inherit;
+            outline: none;
+            width: 100%;
+        }
+
+        .product-detail-popup .popup-info .popup-options select:focus {
+            border-color: var(--gold-accent);
+        }
+
+        .product-detail-popup .popup-info .btn-buy-large {
+            width: 100%;
+            padding: 14px;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: var(--transition);
+            margin-top: 10px;
+            font-family: inherit;
+        }
+
+        .product-detail-popup .popup-info .btn-buy-large:hover {
+            background: #b8963a;
+            transform: scale(0.98);
+        }
+
+        /* ============================================================
            TOAST NOTIFICATION
            ============================================================ */
         .toast-container {
@@ -636,17 +793,18 @@
         }
 
         /* ============================================================
-           CAROUSEL - HP FULL (tanpa rounded), DESKTOP rounded
+           CAROUSEL - FULL WIDTH (tanpa putih)
            ============================================================ */
         .carousel-section {
             position: relative;
             width: 100%;
-            height: 75vh;
+            height: 70vh;
             min-height: 400px;
             overflow: hidden;
             background: var(--denim-dark);
             border-radius: var(--radius);
             margin-bottom: 20px;
+            margin-top: 8px;
             touch-action: pan-y;
             user-select: none;
             -webkit-user-select: none;
@@ -655,6 +813,8 @@
         @media (max-width: 768px) {
             .carousel-section {
                 border-radius: 0 !important;
+                margin-top: 0;
+                height: 75vh;
             }
         }
 
@@ -1339,7 +1499,7 @@
         }
 
         /* ============================================================
-           RESPONSIVE - HP (burger muncul, desktop menu horizontal)
+           RESPONSIVE
            ============================================================ */
         @media (max-width: 768px) {
             body {
@@ -1347,7 +1507,7 @@
             }
 
             .app-container {
-                padding: 0 12px;
+                padding: 0 0px;
             }
 
             .navbar {
@@ -1365,7 +1525,6 @@
                 font-size: 0.6rem;
             }
 
-            /* HP: sembunyikan menu horizontal, tampilkan burger */
             .nav-menu {
                 display: none !important;
             }
@@ -1492,13 +1651,25 @@
 
             .popup-overlay .popup-box {
                 max-width: 95%;
-                padding: 20px 18px 24px;
+                padding: 20px 16px 24px;
             }
 
             .toast-container {
                 top: 80px;
                 right: 10px;
                 max-width: 300px;
+            }
+
+            .product-detail-popup .popup-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .product-detail-popup .popup-image {
+                min-height: 180px;
+                font-size: 3.5rem;
+            }
+            .product-detail-popup .popup-info .popup-options {
+                grid-template-columns: 1fr;
             }
         }
 
@@ -1588,10 +1759,24 @@
                 padding: 12px 14px;
                 font-size: 0.8rem;
             }
+
+            .product-detail-popup .popup-image {
+                min-height: 140px;
+                font-size: 2.5rem;
+            }
+            .product-detail-popup .popup-content {
+                padding: 16px 12px 20px;
+            }
+            .product-detail-popup .popup-info h2 {
+                font-size: 1rem;
+            }
+            .product-detail-popup .popup-info .popup-specs {
+                grid-template-columns: 1fr;
+                gap: 2px;
+            }
         }
 
         @media (min-width: 769px) {
-            /* DESKTOP: menu horizontal, burger & sidebar disembunyikan */
             .burger-btn {
                 display: none !important;
             }
@@ -1634,7 +1819,6 @@
             <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
         </div>
 
-        <!-- DESKTOP MENU (horizontal) -->
         <ul class="nav-menu" id="navMenu">
             <li><a href="#" class="active" data-page="home"><i class="fas fa-home"></i> Beranda</a></li>
             <li><a href="#" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</a></li>
@@ -1644,7 +1828,6 @@
         </ul>
 
         <div class="nav-right">
-            <!-- DESKTOP SEARCH & CART -->
             <div class="nav-actions">
                 <div class="search-box">
                     <input type="text" placeholder="Cari produk..." id="searchInputDesktop" />
@@ -1656,18 +1839,15 @@
                 </button>
             </div>
 
-            <!-- HP SEARCH & CART -->
             <span class="search-icon-hp" id="searchIconHp"><i class="fas fa-search"></i></span>
             <span class="cart-hp" id="cartHp">
                 <i class="fas fa-shopping-bag"></i>
                 <span class="badge">0</span>
             </span>
 
-            <!-- DESKTOP LOGIN/DAFTAR -->
             <a href="login.html" class="btn-nav btn-nav-outline">Login</a>
             <a href="register.html" class="btn-nav btn-nav-gold">Daftar</a>
 
-            <!-- BURGER (HP) -->
             <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
             </button>
@@ -1683,15 +1863,12 @@
             <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
             <span class="close-side" id="closeSidebar">&times;</span>
         </div>
-
         <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
         <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
         <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang Kami</div>
         <div class="menu-item" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</div>
         <div class="menu-item" id="sideTrackBtn"><i class="fas fa-truck"></i> Lacak Pesanan</div>
-
         <div class="menu-divider"></div>
-
         <a href="login.html" class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
         <a href="register.html" class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</a>
     </nav>
@@ -1738,6 +1915,54 @@
             <p class="sub" id="cartCountLabel">0 item di keranjang</p>
             <div id="cartItems" style="margin:12px 0; max-height:300px; overflow-y:auto;"></div>
             <button id="cartCheckoutBtn" style="width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border-radius:60px; font-weight:700; font-size:1rem; font-family:inherit; transition:var(--transition);">Checkout</button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    PRODUCT DETAIL POPUP (LENGKAP + ZOOM + PILIHAN WARNA & SIZE)
+    ============================================================ -->
+    <div class="popup-overlay product-detail-popup" id="productDetailPopup">
+        <div class="popup-box">
+            <button class="close-popup" id="closeDetailPopup">&times;</button>
+            <div class="popup-grid" id="detailGrid">
+                <div class="popup-image" id="detailImage">
+                    <div class="popup-icon-wrap" id="detailIconWrap"><i class="fas fa-tshirt" id="detailIcon"></i></div>
+                    <span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>
+                </div>
+                <div class="popup-info">
+                    <span class="popup-tag" id="detailTag">BEST SELLER</span>
+                    <h2 id="detailName">Nama Produk</h2>
+                    <div class="popup-price" id="detailPrice">Rp 250.000 <del>Rp 350.000</del></div>
+                    <div class="popup-desc" id="detailDesc">Deskripsi produk lengkap.</div>
+                    <div class="popup-specs" id="detailSpecs">
+                        <span><span class="label">Nomor Seri</span> <span id="detailSerial">HDT-001</span></span>
+                        <span><span class="label">Stok</span> <span id="detailStock">45</span></span>
+                    </div>
+                    <div class="popup-options">
+                        <select id="detailSize">
+                            <option value="28">Size 28</option>
+                            <option value="29">Size 29</option>
+                            <option value="30" selected>Size 30</option>
+                            <option value="31">Size 31</option>
+                            <option value="32">Size 32</option>
+                            <option value="33">Size 33</option>
+                            <option value="34">Size 34</option>
+                            <option value="36">Size 36</option>
+                            <option value="38">Size 38</option>
+                            <option value="40">Size 40</option>
+                        </select>
+                        <select id="detailColor">
+                            <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option>
+                            <option value="Black Stretch">Black Stretch</option>
+                            <option value="Light Wash">Light Wash</option>
+                            <option value="Dark Navy">Dark Navy</option>
+                            <option value="Grey Stone">Grey Stone</option>
+                            <option value="White">White</option>
+                        </select>
+                    </div>
+                    <button class="btn-buy-large" id="detailBuyBtn"><i class="fas fa-shopping-bag"></i> Beli Sekarang</button>
+                </div>
+            </div>
         </div>
     </div>
 
@@ -1934,33 +2159,61 @@
             }
 
             // ============================================================
-            // DATA PRODUK
+            // DATA PRODUK (dengan semua properti)
             // ============================================================
             const allProducts = [
                 { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
-                    icon: 'fa-tshirt', favorite: true, stock: 45 },
+                    icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', sizes: ['28', '29', '30',
+                        '31', '32'
+                    ], colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
+                    desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet.' },
                 { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
-                    icon: 'fa-tshirt', favorite: true, stock: 30 },
+                    icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', sizes: ['30', '32', '34'],
+                    colors: ['Raw Denim', 'Dark Navy'],
+                    desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor.' },
                 { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM',
-                    icon: 'fa-tshirt', favorite: true, stock: 25 },
+                    icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', sizes: ['29', '30', '31',
+                        '32'
+                    ], colors: ['Black Stretch', 'Grey Stone'],
+                    desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual. Sangat fleksibel (high stretch).' },
                 { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%',
-                    icon: 'fa-tshirt', favorite: true, stock: 18 },
+                    icon: 'fa-tshirt', favorite: true, stock: 18, serial: 'HDT-SERI-004', sizes: ['28', '29', '30',
+                        '31'
+                    ], colors: ['Light Wash', 'Indigo Blue Raw Denim'],
+                    desc: 'Tampilan retro klasik tahun 90-an dengan efek pencucian warna muda (light wash) yang kasual.' },
                 { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED',
-                    icon: 'fa-jacket', favorite: true, stock: 20 },
+                    icon: 'fa-jacket', favorite: true, stock: 20, serial: 'HDT-SERI-005', sizes: ['S', 'M', 'L',
+                        'XL'], colors: ['Raw Denim', 'Dark Navy'],
+                    desc: 'Jaket denim ikonik berbahan rigid denim 14.5oz dengan saku ganda di dada.' },
                 { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER',
-                    icon: 'fa-tshirt', favorite: false, stock: 35 },
+                    icon: 'fa-tshirt', favorite: false, stock: 35, serial: 'HDT-SERI-006', sizes: ['25', '26', '27',
+                        '28'
+                    ], colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
+                    desc: 'Celana jeans wanita potongan high-waist yang membentuk lekuk pinggang secara sempurna.' },
                 { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS',
-                    icon: 'fa-belt', favorite: false, stock: 50 },
+                    icon: 'fa-belt', favorite: false, stock: 50, serial: 'HDT-SERI-007', sizes: ['M', 'L', 'XL'],
+                    colors: ['Vintage Brown', 'Black'],
+                    desc: 'Ikat pinggang kulit sapi asli 100% dengan kepala gesper kuningan antik.' },
                 { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT',
-                    icon: 'fa-tshirt', favorite: false, stock: 22 },
+                    icon: 'fa-tshirt', favorite: false, stock: 22, serial: 'HDT-SERI-008', sizes: ['S', 'M', 'L',
+                        'XL'], colors: ['Vintage Wash', 'Light Wash'],
+                    desc: 'Kemeja denim kasual berbahan katun ringan 8oz yang lembut.' },
                 { id: 9, name: 'Slim Fit Black Raw Denim', price: 260000, original: 360000, tag: 'NEW', icon: 'fa-tshirt',
-                    favorite: false, stock: 28 },
+                    favorite: false, stock: 28, serial: 'HDT-SERI-009', sizes: ['28', '29', '30', '31', '32'],
+                    colors: ['Black Raw Denim', 'Indigo Blue Raw Denim'],
+                    desc: 'Hitam pekat raw denim, slim fit modern.' },
                 { id: 10, name: 'Cropped Trucker Jacket', price: 390000, original: 500000, tag: 'TRENDY',
-                    icon: 'fa-jacket', favorite: false, stock: 15 },
+                    icon: 'fa-jacket', favorite: false, stock: 15, serial: 'HDT-SERI-010', sizes: ['S', 'M', 'L'],
+                    colors: ['Blue Denim', 'Black'],
+                    desc: 'Jaket cropped pendek, gaya kekinian.' },
                 { id: 11, name: 'Denim Bucket Hat', price: 85000, original: 120000, tag: 'AKSESORIS',
-                    icon: 'fa-hat-cowboy', favorite: false, stock: 40 },
+                    icon: 'fa-hat-cowboy', favorite: false, stock: 40, serial: 'HDT-SERI-011', sizes: ['One Size'],
+                    colors: ['Blue Denim', 'Light Wash'],
+                    desc: 'Topi bucket denim, adjustable, nyaman.' },
                 { id: 12, name: 'Canvas Tote Bag Denim', price: 150000, original: 200000, tag: 'AKSESORIS',
-                    icon: 'fa-shopping-bag', favorite: false, stock: 25 }
+                    icon: 'fa-shopping-bag', favorite: false, stock: 25, serial: 'HDT-SERI-012', sizes: ['One Size'],
+                    colors: ['Denim Blue', 'Natural'],
+                    desc: 'Tas kanvas denim, besar, cocok untuk daily.' }
             ];
 
             // ============================================================
@@ -1984,7 +2237,7 @@
                         <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--denim-light);">
                             <div>
                                 <strong>${item.name}</strong>
-                                <span style="display:block; font-size:0.8rem; color:var(--denim-navy);">Rp ${item.price.toLocaleString()} x ${item.qty}</span>
+                                <span style="display:block; font-size:0.8rem; color:var(--denim-navy);">${item.size || ''} · ${item.color || ''} · Rp ${item.price.toLocaleString()} x ${item.qty}</span>
                             </div>
                             <button class="remove-cart-item" data-id="${item.id}" style="color:#b13e3e; font-size:0.9rem; padding:4px 10px;">✕</button>
                         </div>
@@ -2000,13 +2253,16 @@
                 });
             }
 
-            function addToCart(productId) {
-                const product = allProducts.find(p => p.id === productId);
-                if (!product) return;
-                const existing = cartItems.find(item => item.id === productId);
-                if (existing) { existing.qty += 1; } else { cartItems.push({ ...product, qty: 1 }); }
+            function addToCart(product, size, color) {
+                const existing = cartItems.find(item => item.id === product.id && item.size === size && item.color ===
+                    color);
+                if (existing) {
+                    existing.qty += 1;
+                } else {
+                    cartItems.push({ ...product, qty: 1, size, color });
+                }
                 updateCartUI();
-                showToast(`🛒 ${product.name} ditambahkan ke keranjang!`, 'success');
+                showToast(`🛒 ${product.name} (${size} · ${color}) ditambahkan!`, 'success');
             }
 
             // ============================================================
@@ -2099,25 +2355,112 @@
             }
 
             // ============================================================
-            // PRODUCT BUTTONS
+            // PRODUCT BUTTONS - BUKA DETAIL POPUP
             // ============================================================
             function bindProductButtons() {
                 document.querySelectorAll('.btn-detail').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.dataset.id);
-                        const product = allProducts.find(p => p.id === id);
-                        if (product) {
-                            showToast(`📦 ${product.name}\nTag: ${product.tag}\nStok: ${product.stock}`, 'info');
-                        }
+                        openProductDetail(id);
                     });
                 });
                 document.querySelectorAll('.btn-buy').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.dataset.id);
-                        addToCart(id);
+                        openProductDetail(id);
                     });
                 });
             }
+
+            // ============================================================
+            // PRODUCT DETAIL POPUP (LENGKAP)
+            // ============================================================
+            const detailPopup = document.getElementById('productDetailPopup');
+            const closeDetailPopup = document.getElementById('closeDetailPopup');
+            const detailImage = document.getElementById('detailImage');
+            const detailIconWrap = document.getElementById('detailIconWrap');
+            let currentDetailProduct = null;
+            let isZoomed = false;
+
+            function openProductDetail(id) {
+                const product = allProducts.find(p => p.id === id);
+                if (!product) return;
+                currentDetailProduct = product;
+
+                document.getElementById('detailTag').textContent = product.tag;
+                document.getElementById('detailName').textContent = product.name;
+                document.getElementById('detailPrice').innerHTML =
+                    `Rp ${product.price.toLocaleString()} <del>Rp ${product.original.toLocaleString()}</del>`;
+                document.getElementById('detailDesc').textContent = product.desc || 'Deskripsi produk tidak tersedia.';
+                document.getElementById('detailSerial').textContent = product.serial || '-';
+                const stockEl = document.getElementById('detailStock');
+                stockEl.textContent = product.stock;
+                stockEl.style.color = product.stock <= 0 ? '#b13e3e' : '#1f7a4b';
+                document.getElementById('detailIcon').className = `fas ${product.icon}`;
+
+                // Set size options
+                const sizeSelect = document.getElementById('detailSize');
+                sizeSelect.innerHTML = '';
+                const sizes = product.sizes || ['28', '29', '30', '31', '32'];
+                sizes.forEach(s => {
+                    const opt = document.createElement('option');
+                    opt.value = s;
+                    opt.textContent = `Size ${s}`;
+                    sizeSelect.appendChild(opt);
+                });
+
+                // Set color options
+                const colorSelect = document.getElementById('detailColor');
+                colorSelect.innerHTML = '';
+                const colors = product.colors || ['Indigo Blue Raw Denim'];
+                colors.forEach(c => {
+                    const opt = document.createElement('option');
+                    opt.value = c;
+                    opt.textContent = c;
+                    colorSelect.appendChild(opt);
+                });
+
+                // Reset zoom
+                detailImage.classList.remove('zoomed');
+                detailIconWrap.style.transform = 'scale(1)';
+                isZoomed = false;
+
+                // Tombol beli
+                document.getElementById('detailBuyBtn').onclick = function() {
+                    const size = document.getElementById('detailSize').value;
+                    const color = document.getElementById('detailColor').value;
+                    if (product.stock <= 0) {
+                        showToast('Stok habis!', 'error');
+                        return;
+                    }
+                    addToCart(product, size, color);
+                    closeDetailPopupFn();
+                };
+
+                detailPopup.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeDetailPopupFn() {
+                detailPopup.classList.remove('show');
+                document.body.style.overflow = '';
+                detailImage.classList.remove('zoomed');
+                detailIconWrap.style.transform = 'scale(1)';
+                isZoomed = false;
+            }
+
+            closeDetailPopup.addEventListener('click', closeDetailPopupFn);
+            detailPopup.addEventListener('click', function(e) {
+                if (e.target === detailPopup) closeDetailPopupFn();
+            });
+
+            // Zoom
+            detailImage.addEventListener('click', function(e) {
+                e.stopPropagation();
+                isZoomed = !isZoomed;
+                this.classList.toggle('zoomed', isZoomed);
+                detailIconWrap.style.transform = isZoomed ? 'scale(2)' : 'scale(1)';
+            });
 
             // ============================================================
             // CAROUSEL
@@ -2221,7 +2564,7 @@
             sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
             // ============================================================
-            // NAVIGASI - DESKTOP & SIDEBAR
+            // NAVIGASI
             // ============================================================
             function navigateTo(page) {
                 if (page === 'home') {
@@ -2235,7 +2578,6 @@
                 }
             }
 
-            // Desktop menu
             document.querySelectorAll('.nav-menu a[data-page]').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -2246,7 +2588,6 @@
                 });
             });
 
-            // Sidebar menu (HP)
             document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
                 item.addEventListener('click', function(e) {
                     e.preventDefault();
@@ -2314,8 +2655,7 @@
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.dataset.id);
                         closeSearchPopupFn();
-                        addToCart(id);
-                        showToast('🛒 Produk ditambahkan ke keranjang!', 'success');
+                        openProductDetail(id);
                     });
                 });
             });
@@ -2454,18 +2794,13 @@
             });
 
             // ============================================================
-            // SIDEBAR LOGIN/DAFTAR
-            // ============================================================
-            // Sudah pakai <a href> langsung
-
-            // ============================================================
             // INIT
             // ============================================================
             renderFavoriteCarousel();
             renderProductGrid(1);
             updateCartUI();
 
-            console.log('🟦 HEDTRO JEANS · HP: logo, search, cart, burger | PC: menu horizontal');
+            console.log('🟦 HEDTRO JEANS · Detail produk lengkap (warna, size, zoom)');
         })();
     </script>
 
