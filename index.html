@@ -166,6 +166,7 @@
        BURGER - PASTI MUNCUL DI SEMUA UKURAN
        ============================================================ */
     .burger-btn {
+      display: flex !important;
       flex-direction: column;
       gap: 5px;
       padding: 6px;
@@ -772,7 +773,6 @@
         display: none;
       }
 
-      /* === INI YANG PALING PENTING === */
       .burger-btn {
         display: flex !important;
       }
@@ -879,13 +879,12 @@
         padding: 4px 12px;
       }
 
-      /* === PASTIKAN BURGER TETAP TAMPIL === */
       .burger-btn {
         display: flex !important;
       }
     }
 
-    /* === DESKTOP: BURGER TETAP TAMPIL === */
+    /* DESKTOP */
     @media (min-width: 769px) {
       .burger-btn {
         display: flex !important;
@@ -907,7 +906,6 @@
       </div>
       <button class="btn-nav btn-nav-outline" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
       <button class="btn-nav btn-nav-gold" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
-      <!-- BURGER - PASTI MUNCUL -->
       <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
@@ -1155,6 +1153,9 @@
       const sidebarOverlay = document.getElementById('sidebarOverlay');
       const closeSidebar = document.getElementById('closeSidebar');
 
+      // PASTIKAN BURGER ADA
+      console.log('Burger element:', burgerBtn);
+
       function toggleSidebar(open) {
         const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
         sidebar.classList.toggle('open', isOpen);
@@ -1163,7 +1164,12 @@
         document.body.style.overflow = isOpen ? 'hidden' : '';
       }
 
-      burgerBtn.addEventListener('click', () => toggleSidebar());
+      if (burgerBtn) {
+        burgerBtn.addEventListener('click', () => toggleSidebar());
+      } else {
+        console.error('Burger button tidak ditemukan!');
+      }
+
       closeSidebar.addEventListener('click', () => toggleSidebar(false));
       sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
