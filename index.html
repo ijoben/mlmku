@@ -1,2611 +1,2675 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>HEDTRO JEANS · Afiliasi & Reseller</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-  <style>
-    /* ============================================================
-       RESET & ROOT
-       ============================================================ */
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    :root {
-      --denim-dark: #0b1a2b;
-      --denim-navy: #1a2e44;
-      --denim-blue: #2a4b6e;
-      --denim-light: #e8edf2;
-      --gold-accent: #c9a84c;
-      --gold-light: #e8d5a3;
-      --cream: #f7f4ef;
-      --white: #ffffff;
-      --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-      --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
-      --radius: 24px;
-      --radius-sm: 12px;
-      --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    html {
-      scroll-behavior: smooth;
-    }
-
-    body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background: var(--cream);
-      color: var(--denim-dark);
-      overflow-x: hidden;
-      padding-top: 70px;
-      min-height: 100vh;
-    }
-
-    a {
-      text-decoration: none;
-      color: inherit;
-    }
-    button {
-      cursor: pointer;
-      font-family: inherit;
-      border: none;
-      background: none;
-    }
-
-    ::-webkit-scrollbar {
-      width: 6px;
-    }
-    ::-webkit-scrollbar-track {
-      background: var(--cream);
-    }
-    ::-webkit-scrollbar-thumb {
-      background: var(--denim-blue);
-      border-radius: 10px;
-    }
-
-    /* ============================================================
-       NAVBAR
-       ============================================================ */
-    .navbar {
-      position: fixed;
-      top: 0;
-      left: 0;
-      right: 0;
-      z-index: 1000;
-      background: var(--denim-dark);
-      padding: 12px 20px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 3px solid var(--gold-accent);
-      height: 70px;
-      width: 100%;
-      overflow: visible;
-    }
-
-    .navbar .logo {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: var(--white);
-      font-weight: 800;
-      font-size: 1.4rem;
-      flex-shrink: 0;
-    }
-
-    .navbar .logo i {
-      color: var(--gold-accent);
-      font-size: 1.6rem;
-    }
-
-    .navbar .logo span {
-      font-weight: 300;
-      color: var(--gold-light);
-      font-size: 0.75rem;
-      margin-left: 2px;
-    }
-
-    .nav-right {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      flex-shrink: 0;
-      overflow: visible;
-    }
-
-    .nav-right .user-badge {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      color: var(--cream);
-      font-size: 0.75rem;
-      background: rgba(255, 255, 255, 0.08);
-      padding: 6px 14px;
-      border-radius: 60px;
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      cursor: pointer;
-      transition: var(--transition);
-      flex-shrink: 0;
-    }
-
-    .nav-right .user-badge:hover {
-      background: rgba(255, 255, 255, 0.15);
-    }
-
-    .nav-right .user-badge i {
-      color: var(--gold-accent);
-    }
-
-    .nav-right .btn-nav {
-      padding: 8px 18px;
-      border-radius: 60px;
-      font-weight: 600;
-      font-size: 0.8rem;
-      transition: var(--transition);
-      flex-shrink: 0;
-    }
-
-    .btn-nav-outline {
-      background: transparent;
-      border: 1.5px solid rgba(255, 255, 255, 0.2);
-      color: var(--cream);
-    }
-
-    .btn-nav-outline:hover {
-      background: rgba(255, 255, 255, 0.1);
-    }
-
-    .btn-nav-gold {
-      background: var(--gold-accent);
-      color: var(--denim-dark);
-    }
-
-    .btn-nav-gold:hover {
-      background: #b8963a;
-      transform: scale(0.97);
-    }
-
-    .burger-btn {
-      display: flex !important;
-      flex-direction: column;
-      gap: 5px;
-      padding: 6px;
-      background: transparent;
-      border: none;
-      cursor: pointer;
-      z-index: 1001;
-      position: relative;
-      right: 0;
-      flex-shrink: 0;
-      margin-left: 4px;
-      overflow: visible;
-    }
-
-    .burger-btn span {
-      display: block;
-      width: 28px;
-      height: 3px;
-      background: var(--cream);
-      border-radius: 4px;
-      transition: var(--transition);
-      transform-origin: center;
-    }
-
-    .burger-btn.active span:nth-child(1) {
-      transform: translateY(8px) rotate(45deg);
-    }
-    .burger-btn.active span:nth-child(2) {
-      opacity: 0;
-      transform: scaleX(0);
-    }
-    .burger-btn.active span:nth-child(3) {
-      transform: translateY(-8px) rotate(-45deg);
-    }
-
-    /* ============================================================
-       SIDEBAR
-       ============================================================ */
-    .sidebar-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 999;
-      opacity: 0;
-      pointer-events: none;
-      transition: var(--transition);
-    }
-
-    .sidebar-overlay.active {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    .sidebar {
-      position: fixed;
-      top: 0;
-      left: -320px;
-      width: 300px;
-      height: 100%;
-      background: var(--denim-dark);
-      z-index: 1000;
-      padding: 24px 20px;
-      transition: var(--transition);
-      overflow-y: auto;
-      border-right: 3px solid var(--gold-accent);
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .sidebar.open {
-      left: 0;
-    }
-
-    .sidebar .sidebar-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding-bottom: 20px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-      margin-bottom: 12px;
-    }
-
-    .sidebar .sidebar-header .logo-side {
-      color: var(--white);
-      font-weight: 800;
-      font-size: 1.3rem;
-    }
-
-    .sidebar .sidebar-header .logo-side i {
-      color: var(--gold-accent);
-    }
-
-    .sidebar .sidebar-header .close-side {
-      color: var(--cream);
-      font-size: 1.6rem;
-      cursor: pointer;
-    }
-
-    .sidebar .menu-item {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 16px;
-      border-radius: 12px;
-      color: var(--cream);
-      font-weight: 500;
-      font-size: 0.95rem;
-      transition: var(--transition);
-      cursor: pointer;
-    }
-
-    .sidebar .menu-item:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .sidebar .menu-item i {
-      width: 24px;
-      color: var(--gold-accent);
-    }
-
-    .sidebar .menu-item.active {
-      background: rgba(201, 168, 76, 0.15);
-      color: var(--gold-accent);
-    }
-
-    .sidebar .menu-divider {
-      height: 1px;
-      background: rgba(255, 255, 255, 0.06);
-      margin: 6px 0;
-    }
-
-    /* ============================================================
-       CAROUSEL - SLIDER 75%
-       ============================================================ */
-    .carousel-section {
-      position: relative;
-      width: 100%;
-      height: 75vh;
-      min-height: 400px;
-      overflow: hidden;
-      background: var(--denim-dark);
-    }
-
-    .carousel-track {
-      display: flex;
-      height: 100%;
-      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-    }
-
-    .carousel-slide {
-      min-width: 100%;
-      height: 100%;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      padding: 60px 60px;
-      background-size: cover;
-      background-position: center;
-      position: relative;
-      flex-direction: column;
-    }
-
-    .carousel-slide .overlay-dark {
-      position: absolute;
-      inset: 0;
-      background: linear-gradient(135deg, rgba(11, 26, 43, 0.6) 0%, rgba(11, 26, 43, 0.2) 100%);
-      z-index: 1;
-    }
-
-    .slide-image {
-      font-size: 10rem;
-      color: var(--white);
-      opacity: 0.2;
-      position: absolute;
-      right: -20px;
-      bottom: -30px;
-      z-index: 1;
-      transform: rotate(-10deg);
-      text-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-
-    .slide-image-left {
-      font-size: 8rem;
-      color: var(--white);
-      opacity: 0.15;
-      position: absolute;
-      left: -20px;
-      top: -10px;
-      z-index: 1;
-      transform: rotate(15deg);
-      text-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-    }
-
-    .carousel-slide .slide-content {
-      text-align: center;
-      color: var(--white);
-      z-index: 2;
-      max-width: 700px;
-      position: relative;
-    }
-
-    .carousel-slide .slide-content h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 3.5rem;
-      font-weight: 800;
-      letter-spacing: -1px;
-      margin-bottom: 12px;
-      text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-    }
-
-    .carousel-slide .slide-content h2 i {
-      color: var(--gold-accent);
-    }
-
-    .carousel-slide .slide-content p {
-      font-size: 1.2rem;
-      opacity: 0.9;
-      color: var(--gold-light);
-      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
-    }
-
-    .carousel-slide .slide-content .btn-slide {
-      display: inline-block;
-      margin-top: 20px;
-      background: var(--gold-accent);
-      color: var(--denim-dark);
-      padding: 14px 44px;
-      border-radius: 60px;
-      font-weight: 700;
-      font-size: 1rem;
-      transition: var(--transition);
-      text-shadow: none;
-    }
-
-    .carousel-slide .slide-content .btn-slide:hover {
-      transform: scale(1.05);
-      background: #b8963a;
-    }
-
-    .carousel-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: rgba(255, 255, 255, 0.08);
-      backdrop-filter: blur(12px);
-      color: #fff;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      width: 50px;
-      height: 50px;
-      border-radius: 50%;
-      font-size: 1.3rem;
-      cursor: pointer;
-      z-index: 10;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .carousel-btn:hover {
-      background: var(--gold-accent);
-      border-color: var(--gold-accent);
-      color: var(--denim-dark);
-      transform: translateY(-50%) scale(1.05);
-    }
-
-    .carousel-btn.prev {
-      left: 20px;
-    }
-
-    .carousel-btn.next {
-      right: 20px;
-    }
-
-    .carousel-dots {
-      position: absolute;
-      bottom: 24px;
-      left: 50%;
-      transform: translateX(-50%);
-      display: flex;
-      gap: 12px;
-      z-index: 10;
-    }
-
-    .carousel-dots .dot {
-      width: 12px;
-      height: 12px;
-      border-radius: 50%;
-      background: rgba(255, 255, 255, 0.2);
-      cursor: pointer;
-      transition: var(--transition);
-      border: 2px solid transparent;
-    }
-
-    .carousel-dots .dot.active {
-      background: var(--gold-accent);
-      border-color: var(--gold-light);
-      box-shadow: 0 0 30px rgba(201, 168, 76, 0.3);
-      transform: scale(1.15);
-    }
-
-    /* ============================================================
-       SECTION TITLE
-       ============================================================ */
-    .section-title {
-      font-size: 1.6rem;
-      font-weight: 700;
-      color: var(--denim-dark);
-      padding: 32px 24px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-    }
-
-    .section-title i {
-      color: var(--gold-accent);
-    }
-
-    /* ============================================================
-       PRODUCT CAROUSEL HORIZONTAL (FAVORIT)
-       ============================================================ */
-    .product-carousel-wrapper {
-      position: relative;
-      padding: 0 24px 20px;
-      overflow: hidden;
-    }
-
-    .product-carousel {
-      display: flex;
-      gap: 20px;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      padding: 8px 4px 20px;
-      scrollbar-width: none;
-      -webkit-overflow-scrolling: touch;
-    }
-
-    .product-carousel::-webkit-scrollbar {
-      display: none;
-    }
-
-    .product-carousel .product-card {
-      flex: 0 0 220px;
-      min-width: 200px;
-      background: var(--white);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      border: 1px solid #e8edf2;
-    }
-
-    .product-carousel .product-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .product-carousel .product-card .img-placeholder {
-      height: 180px;
-      background: var(--denim-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--denim-blue);
-      font-size: 3rem;
-    }
-
-    .product-carousel .product-card .body {
-      padding: 16px;
-    }
-
-    .product-carousel .product-card .body .tag {
-      display: inline-block;
-      background: var(--gold-accent);
-      color: var(--denim-dark);
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 2px 14px;
-      border-radius: 40px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-
-    .product-carousel .product-card .body h4 {
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .product-carousel .product-card .body .price {
-      font-weight: 700;
-      color: var(--denim-blue);
-      font-size: 1rem;
-    }
-
-    .product-carousel .product-card .body .price del {
-      color: #8a9aa8;
-      font-weight: 400;
-      font-size: 0.75rem;
-      margin-left: 8px;
-    }
-
-    .product-carousel .product-card .body .btn-detail {
-      margin-top: 10px;
-      display: inline-block;
-      background: var(--denim-dark);
-      color: #fff;
-      padding: 5px 18px;
-      border-radius: 60px;
-      font-size: 0.7rem;
-      font-weight: 600;
-      transition: var(--transition);
-    }
-
-    .product-carousel .product-card .body .btn-detail:hover {
-      background: var(--denim-blue);
-    }
-
-    .carousel-scroll-btn {
-      position: absolute;
-      top: 50%;
-      transform: translateY(-50%);
-      background: var(--white);
-      color: var(--denim-dark);
-      border: 1px solid var(--denim-light);
-      width: 40px;
-      height: 40px;
-      border-radius: 50%;
-      font-size: 1.2rem;
-      cursor: pointer;
-      z-index: 5;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-
-    .carousel-scroll-btn:hover {
-      background: var(--gold-accent);
-      color: var(--white);
-      border-color: var(--gold-accent);
-    }
-
-    .carousel-scroll-btn.left {
-      left: 8px;
-    }
-
-    .carousel-scroll-btn.right {
-      right: 8px;
-    }
-
-    /* ============================================================
-       PRODUCT GRID DENGAN PAGINATION
-       ============================================================ */
-    .product-grid-wrapper {
-      padding: 0 24px 40px;
-    }
-
-    .product-grid {
-      display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-      gap: 20px;
-    }
-
-    .product-grid .product-card {
-      background: var(--white);
-      border-radius: var(--radius-sm);
-      overflow: hidden;
-      box-shadow: var(--shadow);
-      transition: var(--transition);
-      border: 1px solid #e8edf2;
-    }
-
-    .product-grid .product-card:hover {
-      transform: translateY(-6px);
-      box-shadow: var(--shadow-lg);
-    }
-
-    .product-grid .product-card .img-placeholder {
-      height: 180px;
-      background: var(--denim-light);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      color: var(--denim-blue);
-      font-size: 3rem;
-    }
-
-    .product-grid .product-card .body {
-      padding: 16px;
-    }
-
-    .product-grid .product-card .body .tag {
-      display: inline-block;
-      background: var(--gold-accent);
-      color: var(--denim-dark);
-      font-size: 0.6rem;
-      font-weight: 700;
-      padding: 2px 14px;
-      border-radius: 40px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      margin-bottom: 6px;
-    }
-
-    .product-grid .product-card .body h4 {
-      font-size: 0.95rem;
-      font-weight: 600;
-      margin-bottom: 4px;
-    }
-
-    .product-grid .product-card .body .price {
-      font-weight: 700;
-      color: var(--denim-blue);
-      font-size: 1.05rem;
-    }
-
-    .product-grid .product-card .body .price del {
-      color: #8a9aa8;
-      font-weight: 400;
-      font-size: 0.8rem;
-      margin-left: 8px;
-    }
-
-    .product-grid .product-card .body .btn-detail {
-      margin-top: 10px;
-      display: inline-block;
-      background: var(--denim-dark);
-      color: #fff;
-      padding: 5px 18px;
-      border-radius: 60px;
-      font-size: 0.75rem;
-      font-weight: 600;
-      transition: var(--transition);
-    }
-
-    .product-grid .product-card .body .btn-detail:hover {
-      background: var(--denim-blue);
-    }
-
-    .pagination {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 8px;
-      margin-top: 24px;
-      flex-wrap: wrap;
-    }
-
-    .pagination button {
-      padding: 8px 16px;
-      border-radius: 60px;
-      font-weight: 600;
-      font-size: 0.85rem;
-      background: var(--white);
-      color: var(--denim-dark);
-      border: 1px solid var(--denim-light);
-      transition: var(--transition);
-      cursor: pointer;
-    }
-
-    .pagination button:hover {
-      background: var(--denim-blue);
-      color: var(--white);
-      border-color: var(--denim-blue);
-    }
-
-    .pagination button.active {
-      background: var(--gold-accent);
-      color: var(--denim-dark);
-      border-color: var(--gold-accent);
-    }
-
-    .pagination button:disabled {
-      opacity: 0.4;
-      cursor: not-allowed;
-    }
-
-    .pagination .page-info {
-      font-size: 0.85rem;
-      color: var(--denim-navy);
-      padding: 0 12px;
-    }
-
-    /* ============================================================
-       FEATURES
-       ============================================================ */
-    .features {
-      display: grid;
-      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-      gap: 16px;
-      padding: 20px 24px 40px;
-    }
-
-    .feature-item {
-      background: var(--white);
-      border-radius: var(--radius-sm);
-      padding: 20px 16px;
-      text-align: center;
-      box-shadow: var(--shadow);
-      border: 1px solid #e8edf2;
-    }
-
-    .feature-item i {
-      font-size: 2rem;
-      color: var(--gold-accent);
-      margin-bottom: 8px;
-    }
-
-    .feature-item h4 {
-      font-weight: 600;
-      font-size: 0.95rem;
-    }
-
-    .feature-item p {
-      font-size: 0.8rem;
-      color: #5a7a8a;
-    }
-
-    /* ============================================================
-       LANDING PAGE CONTENT
-       ============================================================ */
-    .landing-content {
-      display: block;
-    }
-
-    .landing-content.hidden {
-      display: none;
-    }
-
-    /* ============================================================
-       REGISTER FORM - 2 KOLOM COMPACT
-       ============================================================ */
-    .register-wrapper {
-      max-width: 1000px;
-      margin: 0 auto;
-      padding: 24px 20px 50px;
-      display: none;
-    }
-
-    .register-wrapper.active {
-      display: block;
-    }
-
-    .register-header {
-      text-align: center;
-      margin-bottom: 20px;
-    }
-
-    .register-header h1 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.8rem;
-      font-weight: 800;
-      color: var(--denim-dark);
-    }
-
-    .register-header h1 i {
-      color: var(--gold-accent);
-    }
-
-    .register-header p {
-      color: var(--denim-navy);
-      font-size: 0.85rem;
-      margin-top: 2px;
-      opacity: 0.7;
-    }
-
-    .form-section {
-      background: var(--white);
-      border-radius: var(--radius);
-      padding: 16px 20px;
-      margin-bottom: 12px;
-      box-shadow: var(--shadow);
-      border: 1px solid var(--denim-light);
-    }
-
-    .form-section .section-title {
-      font-size: 0.85rem;
-      font-weight: 700;
-      color: var(--denim-dark);
-      margin-bottom: 10px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 0;
-      border-bottom: 1px solid var(--denim-light);
-      padding-bottom: 6px;
-    }
-
-    .form-section .section-title i {
-      color: var(--gold-accent);
-      font-size: 0.95rem;
-    }
-
-    .form-section .section-title .badge-step {
-      background: var(--gold-accent);
-      color: var(--denim-dark);
-      font-size: 0.55rem;
-      padding: 1px 10px;
-      border-radius: 40px;
-      font-weight: 700;
-      margin-left: auto;
-    }
-
-    .form-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 8px 14px;
-    }
-
-    .form-group {
-      margin-bottom: 4px;
-    }
-
-    .form-group.full-width {
-      grid-column: 1 / -1;
-    }
-
-    .form-group label {
-      display: block;
-      font-weight: 600;
-      color: var(--denim-navy);
-      font-size: 0.7rem;
-      margin-bottom: 2px;
-    }
-
-    .form-group label .required {
-      color: #e74c3c;
-      margin-left: 2px;
-    }
-
-    .form-group label .helper {
-      font-weight: 400;
-      color: var(--denim-blue);
-      font-size: 0.55rem;
-      opacity: 0.6;
-      display: inline-block;
-      margin-left: 4px;
-    }
-
-    .form-group input,
-    .form-group select,
-    .form-group textarea {
-      width: 100%;
-      padding: 7px 12px;
-      border: 1.5px solid var(--denim-light);
-      border-radius: var(--radius-sm);
-      font-size: 0.8rem;
-      background: var(--cream);
-      color: var(--denim-dark);
-      font-family: inherit;
-      transition: var(--transition);
-    }
-
-    .form-group input:focus,
-    .form-group select:focus,
-    .form-group textarea:focus {
-      border-color: var(--gold-accent);
-      outline: none;
-      box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.08);
-      background: var(--white);
-    }
-
-    .form-group input::placeholder,
-    .form-group textarea::placeholder {
-      color: #b0b8c4;
-      font-size: 0.7rem;
-    }
-
-    .form-group textarea {
-      resize: vertical;
-      min-height: 40px;
-      border-radius: var(--radius-sm);
-    }
-
-    .position-selector {
-      display: flex;
-      gap: 8px;
-      margin-top: 2px;
-    }
-
-    .position-option {
-      flex: 1;
-      padding: 6px 10px;
-      border: 2px solid var(--denim-light);
-      border-radius: var(--radius-sm);
-      text-align: center;
-      cursor: pointer;
-      transition: var(--transition);
-      background: var(--cream);
-      font-weight: 600;
-      font-size: 0.7rem;
-      color: var(--denim-navy);
-    }
-
-    .position-option:hover {
-      border-color: var(--denim-blue);
-    }
-
-    .position-option.active {
-      border-color: var(--gold-accent);
-      background: rgba(201, 168, 76, 0.08);
-      color: var(--denim-dark);
-    }
-
-    .position-option i {
-      display: block;
-      font-size: 1rem;
-      margin-bottom: 2px;
-      color: var(--gold-accent);
-    }
-
-    .position-option .pos-label {
-      font-size: 0.45rem;
-      font-weight: 400;
-      opacity: 0.5;
-      display: block;
-    }
-
-    .btn-submit {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 60px;
-      background: var(--gold-accent);
-      color: var(--denim-dark);
-      font-weight: 700;
-      font-size: 0.95rem;
-      transition: var(--transition);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 10px;
-      font-family: inherit;
-      margin-top: 4px;
-    }
-
-    .btn-submit:hover {
-      background: #b8963a;
-      transform: scale(0.98);
-    }
-
-    .btn-submit i {
-      font-size: 0.95rem;
-    }
-
-    .form-footer {
-      text-align: center;
-      margin-top: 10px;
-      color: var(--denim-navy);
-      font-size: 0.8rem;
-    }
-
-    .form-footer a {
-      color: var(--gold-accent);
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .form-footer a:hover {
-      text-decoration: underline;
-    }
-
-    .msg {
-      margin-top: 8px;
-      text-align: center;
-      font-size: 0.8rem;
-      min-height: 22px;
-      padding: 6px 12px;
-      border-radius: var(--radius-sm);
-    }
-
-    .msg.error {
-      background: #fde8e8;
-      color: #b13e3e;
-    }
-    .msg.success {
-      background: #e8f5ed;
-      color: #1f7a4b;
-    }
-
-    /* ============================================================
-       LOGIN OVERLAY
-       ============================================================ */
-    .login-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.5);
-      backdrop-filter: blur(8px);
-      z-index: 2000;
-      align-items: center;
-      justify-content: center;
-      padding: 20px;
-    }
-
-    .login-overlay.show {
-      display: flex;
-    }
-
-    .login-card {
-      background: var(--white);
-      max-width: 420px;
-      width: 100%;
-      border-radius: var(--radius);
-      padding: 32px 34px 36px;
-      box-shadow: var(--shadow-lg);
-      position: relative;
-    }
-
-    .login-card .close-login {
-      position: absolute;
-      top: 14px;
-      right: 18px;
-      font-size: 1.6rem;
-      color: var(--denim-navy);
-      cursor: pointer;
-      transition: var(--transition);
-    }
-
-    .login-card .close-login:hover {
-      color: var(--denim-dark);
-    }
-
-    .login-card h2 {
-      font-family: 'Playfair Display', serif;
-      font-size: 1.6rem;
-      font-weight: 800;
-      color: var(--denim-dark);
-      margin-bottom: 4px;
-      text-align: center;
-    }
-
-    .login-card h2 i {
-      color: var(--gold-accent);
-    }
-
-    .login-card p {
-      text-align: center;
-      color: var(--denim-navy);
-      font-size: 0.85rem;
-      opacity: 0.7;
-      margin-bottom: 20px;
-    }
-
-    .login-card .form-group {
-      margin-bottom: 14px;
-    }
-
-    .login-card .form-group label {
-      font-size: 0.8rem;
-    }
-
-    .login-card .form-group input {
-      padding: 10px 16px;
-      font-size: 0.9rem;
-    }
-
-    .login-card .btn-login {
-      width: 100%;
-      padding: 12px;
-      border: none;
-      border-radius: 60px;
-      background: var(--gold-accent);
-      color: var(--denim-dark);
-      font-weight: 700;
-      font-size: 1rem;
-      transition: var(--transition);
-      font-family: inherit;
-      margin-top: 4px;
-    }
-
-    .login-card .btn-login:hover {
-      background: #b8963a;
-      transform: scale(0.98);
-    }
-
-    .login-card .login-footer {
-      text-align: center;
-      margin-top: 14px;
-      font-size: 0.85rem;
-      color: var(--denim-navy);
-    }
-
-    .login-card .login-footer a {
-      color: var(--gold-accent);
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    .login-card .login-footer a:hover {
-      text-decoration: underline;
-    }
-
-    .login-msg {
-      margin-top: 10px;
-      text-align: center;
-      font-size: 0.85rem;
-      min-height: 24px;
-    }
-
-    .login-msg.error {
-      color: #b13e3e;
-    }
-    .login-msg.success {
-      color: #1f7a4b;
-    }
-
-    /* ============================================================
-       FOOTER
-       ============================================================ */
-    .footer {
-      background: var(--denim-dark);
-      color: var(--cream);
-      padding: 24px 24px 16px;
-      text-align: center;
-      border-top: 3px solid var(--gold-accent);
-      margin-top: 16px;
-    }
-
-    .footer p {
-      font-size: 0.85rem;
-    }
-    .footer p:last-child {
-      font-size: 0.7rem;
-      opacity: 0.6;
-      margin-top: 2px;
-    }
-
-    /* ============================================================
-       RESPONSIVE
-       ============================================================ */
-    @media (max-width: 768px) {
-      body {
-        padding-top: 60px;
-      }
-
-      .navbar {
-        padding: 10px 16px;
-        height: 60px;
-      }
-
-      .navbar .logo {
-        font-size: 1.1rem;
-      }
-      .navbar .logo i {
-        font-size: 1.2rem;
-      }
-      .navbar .logo span {
-        font-size: 0.6rem;
-      }
-
-      .nav-right .user-badge span {
-        display: none;
-      }
-      .nav-right .user-badge {
-        padding: 4px 10px;
-        font-size: 0.7rem;
-      }
-      .nav-right .btn-nav {
-        display: none !important;
-      }
-
-      .burger-btn {
-        margin-left: 2px !important;
-        padding: 4px !important;
-      }
-      .burger-btn span {
-        width: 24px;
-        height: 2.5px;
-      }
-
-      .carousel-section {
-        height: 75vh;
-        min-height: 350px;
-      }
-
-      .carousel-slide {
-        padding: 30px 24px;
-      }
-
-      .carousel-slide .slide-content h2 {
-        font-size: 2rem;
-      }
-
-      .carousel-slide .slide-content p {
-        font-size: 0.95rem;
-      }
-
-      .carousel-slide .slide-content .btn-slide {
-        padding: 10px 28px;
-        font-size: 0.85rem;
-      }
-
-      .slide-image {
-        font-size: 6rem;
-        right: -20px;
-        bottom: -10px;
-      }
-
-      .slide-image-left {
-        font-size: 5rem;
-        left: -20px;
-        top: -5px;
-      }
-
-      .carousel-btn {
-        width: 36px;
-        height: 36px;
-        font-size: 0.9rem;
-      }
-
-      .carousel-btn.prev {
-        left: 8px;
-      }
-
-      .carousel-btn.next {
-        right: 8px;
-      }
-
-      .carousel-dots .dot {
-        width: 10px;
-        height: 10px;
-      }
-
-      .sidebar {
-        width: 280px;
-        left: -300px;
-      }
-
-      .product-carousel .product-card {
-        flex: 0 0 170px;
-        min-width: 150px;
-      }
-
-      .product-carousel .product-card .img-placeholder {
-        height: 140px;
-        font-size: 2.2rem;
-      }
-
-      .product-carousel .product-card .body {
-        padding: 12px;
-      }
-
-      .product-carousel .product-card .body h4 {
-        font-size: 0.8rem;
-      }
-
-      .product-carousel .product-card .body .price {
-        font-size: 0.85rem;
-      }
-
-      .product-grid {
-        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-        gap: 14px;
-      }
-
-      .product-grid .product-card .img-placeholder {
-        height: 140px;
-        font-size: 2.2rem;
-      }
-
-      .product-grid .product-card .body {
-        padding: 12px;
-      }
-
-      .product-grid .product-card .body h4 {
-        font-size: 0.8rem;
-      }
-
-      .product-grid .product-card .body .price {
-        font-size: 0.85rem;
-      }
-
-      .section-title {
-        font-size: 1.3rem;
-        padding: 24px 16px 12px;
-      }
-
-      .features {
-        padding: 12px 16px 30px;
-        gap: 12px;
-      }
-
-      .product-carousel-wrapper {
-        padding: 0 16px 10px;
-      }
-
-      .product-grid-wrapper {
-        padding: 0 16px 30px;
-      }
-
-      .carousel-scroll-btn {
-        width: 32px;
-        height: 32px;
-        font-size: 0.9rem;
-      }
-
-      .carousel-scroll-btn.left {
-        left: 4px;
-      }
-
-      .carousel-scroll-btn.right {
-        right: 4px;
-      }
-
-      .register-wrapper {
-        padding: 16px 12px 30px;
-      }
-
-      .register-header h1 {
-        font-size: 1.4rem;
-      }
-      .register-header p {
-        font-size: 0.75rem;
-      }
-
-      .form-section {
-        padding: 12px 14px;
-        margin-bottom: 10px;
-      }
-
-      .form-section .section-title {
-        font-size: 0.75rem;
-        margin-bottom: 8px;
-        padding-bottom: 6px;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr 1fr;
-        gap: 6px 10px;
-      }
-
-      .form-group {
-        margin-bottom: 4px;
-      }
-      .form-group.full-width {
-        grid-column: 1 / -1;
-      }
-
-      .form-group label {
-        font-size: 0.6rem;
-      }
-
-      .form-group input,
-      .form-group select,
-      .form-group textarea {
-        padding: 5px 10px;
-        font-size: 0.7rem;
-      }
-
-      .form-group input::placeholder,
-      .form-group textarea::placeholder {
-        font-size: 0.65rem;
-      }
-
-      .form-group textarea {
-        min-height: 34px;
-      }
-
-      .position-selector {
-        flex-direction: row;
-        gap: 6px;
-      }
-
-      .position-option {
-        padding: 5px 8px;
-        font-size: 0.65rem;
-      }
-      .position-option i {
-        font-size: 0.9rem;
-      }
-
-      .btn-submit {
-        padding: 10px;
-        font-size: 0.85rem;
-      }
-
-      .login-card {
-        padding: 24px 20px 28px;
-      }
-
-      .login-card h2 {
-        font-size: 1.3rem;
-      }
-    }
-
-    @media (max-width: 480px) {
-      .navbar {
-        padding: 6px 10px;
-        height: 50px;
-      }
-
-      .navbar .logo {
-        font-size: 0.85rem;
-      }
-      .navbar .logo i {
-        font-size: 0.9rem;
-      }
-
-      .burger-btn {
-        padding: 3px !important;
-      }
-      .burger-btn span {
-        width: 20px;
-        height: 2px;
-      }
-
-      .nav-right .user-badge {
-        padding: 2px 6px;
-        font-size: 0.55rem;
-      }
-      .nav-right .user-badge i {
-        font-size: 0.6rem;
-      }
-
-      .carousel-section {
-        height: 75vh;
-        min-height: 300px;
-      }
-
-      .carousel-slide .slide-content h2 {
-        font-size: 1.6rem;
-      }
-
-      .carousel-slide .slide-content p {
-        font-size: 0.8rem;
-      }
-
-      .carousel-slide .slide-content .btn-slide {
-        padding: 8px 20px;
-        font-size: 0.75rem;
-      }
-
-      .slide-image {
-        font-size: 4.5rem;
-        right: -15px;
-        bottom: -5px;
-      }
-
-      .slide-image-left {
-        font-size: 3.5rem;
-        left: -15px;
-        top: -5px;
-      }
-
-      .carousel-btn {
-        width: 30px;
-        height: 30px;
-        font-size: 0.7rem;
-      }
-
-      .carousel-btn.prev {
-        left: 4px;
-      }
-
-      .carousel-btn.next {
-        right: 4px;
-      }
-
-      .carousel-dots .dot {
-        width: 8px;
-        height: 8px;
-        gap: 6px;
-      }
-
-      .product-grid {
-        grid-template-columns: 1fr 1fr;
-        gap: 10px;
-      }
-
-      .product-grid .product-card .img-placeholder {
-        height: 120px;
-        font-size: 1.8rem;
-      }
-
-      .product-grid .product-card .body {
-        padding: 10px;
-      }
-
-      .product-grid .product-card .body h4 {
-        font-size: 0.75rem;
-      }
-
-      .product-grid .product-card .body .price {
-        font-size: 0.8rem;
-      }
-
-      .product-grid .product-card .body .btn-detail {
-        font-size: 0.6rem;
-        padding: 4px 12px;
-      }
-
-      .product-carousel .product-card {
-        flex: 0 0 150px;
-        min-width: 130px;
-      }
-
-      .product-carousel .product-card .img-placeholder {
-        height: 120px;
-        font-size: 1.8rem;
-      }
-
-      .product-carousel .product-card .body {
-        padding: 10px;
-      }
-
-      .product-carousel .product-card .body h4 {
-        font-size: 0.7rem;
-      }
-
-      .product-carousel .product-card .body .price {
-        font-size: 0.75rem;
-      }
-
-      .product-carousel .product-card .body .btn-detail {
-        font-size: 0.6rem;
-        padding: 4px 10px;
-      }
-
-      .pagination button {
-        padding: 6px 12px;
-        font-size: 0.75rem;
-      }
-
-      .carousel-scroll-btn {
-        width: 28px;
-        height: 28px;
-        font-size: 0.7rem;
-      }
-
-      .register-wrapper {
-        padding: 12px 8px 20px;
-      }
-
-      .register-header h1 {
-        font-size: 1.1rem;
-      }
-      .register-header p {
-        font-size: 0.65rem;
-      }
-
-      .form-section {
-        padding: 8px 10px;
-      }
-
-      .form-section .section-title {
-        font-size: 0.65rem;
-      }
-
-      .form-row {
-        grid-template-columns: 1fr 1fr;
-        gap: 4px 6px;
-      }
-
-      .form-group input,
-      .form-group select,
-      .form-group textarea {
-        padding: 4px 8px;
-        font-size: 0.65rem;
-      }
-
-      .form-group input::placeholder,
-      .form-group textarea::placeholder {
-        font-size: 0.6rem;
-      }
-
-      .form-group textarea {
-        min-height: 28px;
-      }
-
-      .form-group label {
-        font-size: 0.55rem;
-      }
-
-      .position-option {
-        padding: 4px 6px;
-        font-size: 0.55rem;
-      }
-      .position-option i {
-        font-size: 0.7rem;
-      }
-
-      .btn-submit {
-        padding: 8px;
-        font-size: 0.75rem;
-      }
-
-      .login-card {
-        padding: 20px 16px 24px;
-      }
-
-      .login-card h2 {
-        font-size: 1.1rem;
-      }
-      .login-card p {
-        font-size: 0.75rem;
-      }
-      .login-card .form-group input {
-        padding: 8px 12px;
-        font-size: 0.8rem;
-      }
-
-      .footer p {
-        font-size: 0.7rem;
-      }
-    }
-
-    @media (min-width: 769px) {
-      .burger-btn {
-        display: flex !important;
-      }
-      .nav-right .btn-nav {
-        display: flex !important;
-      }
-    }
-  </style>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>HEDTRO JEANS · Premium Denim</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        /* ============================================================
+           RESET & ROOT
+           ============================================================ */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --denim-dark: #0b1a2b;
+            --denim-navy: #1a2e44;
+            --denim-blue: #2a4b6e;
+            --denim-light: #e8edf2;
+            --gold-accent: #c9a84c;
+            --gold-light: #e8d5a3;
+            --cream: #f7f4ef;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --radius: 24px;
+            --radius-sm: 12px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--cream);
+            color: var(--denim-dark);
+            overflow-x: hidden;
+            padding-top: 80px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+        button {
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+            background: none;
+        }
+
+        ::-webkit-scrollbar {
+            width: 6px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--cream);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--denim-blue);
+            border-radius: 10px;
+        }
+
+        /* ============================================================
+           NAVBAR - DESKTOP MENU
+           ============================================================ */
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--denim-dark);
+            padding: 10px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--gold-accent);
+            height: 80px;
+            width: 100%;
+            overflow: visible;
+        }
+
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--white);
+            font-weight: 800;
+            font-size: 1.4rem;
+            flex-shrink: 0;
+        }
+
+        .navbar .logo i {
+            color: var(--gold-accent);
+            font-size: 1.6rem;
+        }
+
+        .navbar .logo span {
+            font-weight: 300;
+            color: var(--gold-light);
+            font-size: 0.75rem;
+            margin-left: 2px;
+        }
+
+        /* NAV MENU DESKTOP */
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            list-style: none;
+        }
+
+        .nav-menu li {
+            position: relative;
+        }
+
+        .nav-menu li a {
+            color: var(--cream);
+            font-size: 0.8rem;
+            font-weight: 500;
+            padding: 8px 14px;
+            border-radius: 60px;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            letter-spacing: 0.3px;
+        }
+
+        .nav-menu li a:hover,
+        .nav-menu li a.active {
+            background: rgba(201, 168, 76, 0.12);
+            color: var(--gold-accent);
+        }
+
+        .nav-menu li a i {
+            font-size: 0.9rem;
+        }
+
+        /* Search & Cart di desktop */
+        .nav-actions {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-shrink: 0;
+        }
+
+        .nav-actions .search-box {
+            display: flex;
+            align-items: center;
+            background: rgba(255, 255, 255, 0.06);
+            border-radius: 60px;
+            padding: 4px 6px 4px 16px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            transition: var(--transition);
+        }
+
+        .nav-actions .search-box:focus-within {
+            border-color: var(--gold-accent);
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .nav-actions .search-box input {
+            background: transparent;
+            border: none;
+            color: var(--cream);
+            font-size: 0.8rem;
+            padding: 6px 0;
+            width: 140px;
+            outline: none;
+        }
+
+        .nav-actions .search-box input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .nav-actions .search-box button {
+            color: rgba(255, 255, 255, 0.4);
+            padding: 6px 12px;
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .nav-actions .search-box button:hover {
+            color: var(--gold-accent);
+        }
+
+        .nav-actions .cart-btn {
+            color: var(--cream);
+            font-size: 1.1rem;
+            padding: 8px 12px;
+            border-radius: 60px;
+            transition: var(--transition);
+            position: relative;
+        }
+
+        .nav-actions .cart-btn:hover {
+            color: var(--gold-accent);
+            background: rgba(201, 168, 76, 0.08);
+        }
+
+        .nav-actions .cart-btn .badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-size: 0.6rem;
+            font-weight: 700;
+            width: 18px;
+            height: 18px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .nav-right-desktop {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .nav-right-desktop .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--cream);
+            font-size: 0.75rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 14px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .nav-right-desktop .user-badge:hover {
+            background: rgba(255, 255, 255, 0.15);
+        }
+
+        .nav-right-desktop .user-badge i {
+            color: var(--gold-accent);
+        }
+
+        /* ============================================================
+           BURGER - HANYA UNTUK HP
+           ============================================================ */
+        .burger-btn {
+            display: none !important;
+            flex-direction: column;
+            gap: 5px;
+            padding: 6px;
+            background: transparent;
+            border: none;
+            cursor: pointer;
+            z-index: 1001;
+        }
+
+        .burger-btn span {
+            display: block;
+            width: 26px;
+            height: 2.5px;
+            background: var(--cream);
+            border-radius: 4px;
+            transition: var(--transition);
+            transform-origin: center;
+        }
+
+        .burger-btn.active span:nth-child(1) {
+            transform: translateY(7px) rotate(45deg);
+        }
+        .burger-btn.active span:nth-child(2) {
+            opacity: 0;
+            transform: scaleX(0);
+        }
+        .burger-btn.active span:nth-child(3) {
+            transform: translateY(-7px) rotate(-45deg);
+        }
+
+        /* ============================================================
+           SIDEBAR - HANYA UNTUK HP
+           ============================================================ */
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 999;
+            opacity: 0;
+            pointer-events: none;
+            transition: var(--transition);
+        }
+
+        .sidebar-overlay.active {
+            opacity: 1;
+            pointer-events: all;
+        }
+
+        .sidebar {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: -320px;
+            width: 300px;
+            height: 100%;
+            background: var(--denim-dark);
+            z-index: 1000;
+            padding: 24px 20px;
+            transition: var(--transition);
+            overflow-y: auto;
+            border-right: 3px solid var(--gold-accent);
+            flex-direction: column;
+            gap: 4px;
+        }
+
+        .sidebar.open {
+            left: 0;
+        }
+
+        .sidebar .sidebar-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+            margin-bottom: 12px;
+        }
+
+        .sidebar .sidebar-header .logo-side {
+            color: var(--white);
+            font-weight: 800;
+            font-size: 1.3rem;
+        }
+
+        .sidebar .sidebar-header .logo-side i {
+            color: var(--gold-accent);
+        }
+
+        .sidebar .sidebar-header .close-side {
+            color: var(--cream);
+            font-size: 1.6rem;
+            cursor: pointer;
+        }
+
+        .sidebar .menu-item {
+            display: flex;
+            align-items: center;
+            gap: 14px;
+            padding: 12px 16px;
+            border-radius: 12px;
+            color: var(--cream);
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .sidebar .menu-item:hover {
+            background: rgba(255, 255, 255, 0.08);
+        }
+
+        .sidebar .menu-item i {
+            width: 24px;
+            color: var(--gold-accent);
+        }
+
+        .sidebar .menu-item.active {
+            background: rgba(201, 168, 76, 0.15);
+            color: var(--gold-accent);
+        }
+
+        .sidebar .menu-divider {
+            height: 1px;
+            background: rgba(255, 255, 255, 0.06);
+            margin: 6px 0;
+        }
+
+        /* ============================================================
+           CAROUSEL - SLIDER 75%
+           ============================================================ */
+        .carousel-section {
+            position: relative;
+            width: 100%;
+            height: 75vh;
+            min-height: 400px;
+            overflow: hidden;
+            background: var(--denim-dark);
+        }
+
+        .carousel-track {
+            display: flex;
+            height: 100%;
+            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+        }
+
+        .carousel-slide {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 60px 60px;
+            background-size: cover;
+            background-position: center;
+            position: relative;
+            flex-direction: column;
+        }
+
+        .carousel-slide .overlay-dark {
+            position: absolute;
+            inset: 0;
+            background: linear-gradient(135deg, rgba(11, 26, 43, 0.6) 0%, rgba(11, 26, 43, 0.2) 100%);
+            z-index: 1;
+        }
+
+        .slide-image {
+            font-size: 10rem;
+            color: var(--white);
+            opacity: 0.2;
+            position: absolute;
+            right: -20px;
+            bottom: -30px;
+            z-index: 1;
+            transform: rotate(-10deg);
+        }
+
+        .slide-image-left {
+            font-size: 8rem;
+            color: var(--white);
+            opacity: 0.15;
+            position: absolute;
+            left: -20px;
+            top: -10px;
+            z-index: 1;
+            transform: rotate(15deg);
+        }
+
+        .carousel-slide .slide-content {
+            text-align: center;
+            color: var(--white);
+            z-index: 2;
+            max-width: 700px;
+            position: relative;
+        }
+
+        .carousel-slide .slide-content h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 3.5rem;
+            font-weight: 800;
+            letter-spacing: -1px;
+            margin-bottom: 12px;
+            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+        }
+
+        .carousel-slide .slide-content h2 i {
+            color: var(--gold-accent);
+        }
+
+        .carousel-slide .slide-content p {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            color: var(--gold-light);
+            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+        }
+
+        .carousel-slide .slide-content .btn-slide {
+            display: inline-block;
+            margin-top: 20px;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            padding: 14px 44px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: var(--transition);
+        }
+
+        .carousel-slide .slide-content .btn-slide:hover {
+            transform: scale(1.05);
+            background: #b8963a;
+        }
+
+        .carousel-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(12px);
+            color: #fff;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            font-size: 1.3rem;
+            cursor: pointer;
+            z-index: 10;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-btn:hover {
+            background: var(--gold-accent);
+            border-color: var(--gold-accent);
+            color: var(--denim-dark);
+        }
+
+        .carousel-btn.prev {
+            left: 20px;
+        }
+        .carousel-btn.next {
+            right: 20px;
+        }
+
+        .carousel-dots {
+            position: absolute;
+            bottom: 24px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 12px;
+            z-index: 10;
+        }
+
+        .carousel-dots .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            cursor: pointer;
+            transition: var(--transition);
+            border: 2px solid transparent;
+        }
+
+        .carousel-dots .dot.active {
+            background: var(--gold-accent);
+            border-color: var(--gold-light);
+            box-shadow: 0 0 30px rgba(201, 168, 76, 0.3);
+            transform: scale(1.15);
+        }
+
+        /* ============================================================
+           SECTION TITLE
+           ============================================================ */
+        .section-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--denim-dark);
+            padding: 32px 24px 16px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-title i {
+            color: var(--gold-accent);
+        }
+
+        /* ============================================================
+           PRODUCT CAROUSEL HORIZONTAL
+           ============================================================ */
+        .product-carousel-wrapper {
+            position: relative;
+            padding: 0 24px 20px;
+            overflow: hidden;
+        }
+
+        .product-carousel {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            scroll-behavior: smooth;
+            padding: 8px 4px 20px;
+            scrollbar-width: none;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        .product-carousel::-webkit-scrollbar {
+            display: none;
+        }
+
+        .product-carousel .product-card {
+            flex: 0 0 220px;
+            min-width: 200px;
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid #e8edf2;
+        }
+
+        .product-carousel .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .product-carousel .product-card .img-placeholder {
+            height: 180px;
+            background: var(--denim-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--denim-blue);
+            font-size: 3rem;
+        }
+
+        .product-carousel .product-card .body {
+            padding: 16px;
+        }
+
+        .product-carousel .product-card .body .tag {
+            display: inline-block;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 14px;
+            border-radius: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .product-carousel .product-card .body h4 {
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .product-carousel .product-card .body .price {
+            font-weight: 700;
+            color: var(--denim-blue);
+            font-size: 1rem;
+        }
+
+        .product-carousel .product-card .body .price del {
+            color: #8a9aa8;
+            font-weight: 400;
+            font-size: 0.75rem;
+            margin-left: 8px;
+        }
+
+        .product-carousel .product-card .body .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .product-carousel .product-card .body .btn-group .btn-detail {
+            flex: 1;
+            background: var(--denim-dark);
+            color: #fff;
+            padding: 5px 12px;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .product-carousel .product-card .body .btn-group .btn-detail:hover {
+            background: var(--denim-blue);
+        }
+
+        .product-carousel .product-card .body .btn-group .btn-buy {
+            flex: 1;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            padding: 5px 12px;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .product-carousel .product-card .body .btn-group .btn-buy:hover {
+            background: #b8963a;
+            transform: scale(0.97);
+        }
+
+        .carousel-scroll-btn {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: var(--white);
+            color: var(--denim-dark);
+            border: 1px solid var(--denim-light);
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            font-size: 1.2rem;
+            cursor: pointer;
+            z-index: 5;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .carousel-scroll-btn:hover {
+            background: var(--gold-accent);
+            color: var(--white);
+            border-color: var(--gold-accent);
+        }
+
+        .carousel-scroll-btn.left {
+            left: 8px;
+        }
+        .carousel-scroll-btn.right {
+            right: 8px;
+        }
+
+        /* ============================================================
+           PRODUCT GRID DENGAN PAGINATION
+           ============================================================ */
+        .product-grid-wrapper {
+            padding: 0 24px 40px;
+        }
+
+        .product-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+            gap: 20px;
+        }
+
+        .product-grid .product-card {
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            overflow: hidden;
+            box-shadow: var(--shadow);
+            transition: var(--transition);
+            border: 1px solid #e8edf2;
+        }
+
+        .product-grid .product-card:hover {
+            transform: translateY(-6px);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .product-grid .product-card .img-placeholder {
+            height: 180px;
+            background: var(--denim-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--denim-blue);
+            font-size: 3rem;
+        }
+
+        .product-grid .product-card .body {
+            padding: 16px;
+        }
+
+        .product-grid .product-card .body .tag {
+            display: inline-block;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 14px;
+            border-radius: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 6px;
+        }
+
+        .product-grid .product-card .body h4 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            margin-bottom: 4px;
+        }
+
+        .product-grid .product-card .body .price {
+            font-weight: 700;
+            color: var(--denim-blue);
+            font-size: 1.05rem;
+        }
+
+        .product-grid .product-card .body .price del {
+            color: #8a9aa8;
+            font-weight: 400;
+            font-size: 0.8rem;
+            margin-left: 8px;
+        }
+
+        .product-grid .product-card .body .btn-group {
+            display: flex;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .product-grid .product-card .body .btn-group .btn-detail {
+            flex: 1;
+            background: var(--denim-dark);
+            color: #fff;
+            padding: 6px 12px;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .product-grid .product-card .body .btn-group .btn-detail:hover {
+            background: var(--denim-blue);
+        }
+
+        .product-grid .product-card .body .btn-group .btn-buy {
+            flex: 1;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            padding: 6px 12px;
+            border-radius: 60px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            transition: var(--transition);
+            text-align: center;
+        }
+
+        .product-grid .product-card .body .btn-group .btn-buy:hover {
+            background: #b8963a;
+            transform: scale(0.97);
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 8px;
+            margin-top: 24px;
+            flex-wrap: wrap;
+        }
+
+        .pagination button {
+            padding: 8px 16px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            background: var(--white);
+            color: var(--denim-dark);
+            border: 1px solid var(--denim-light);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .pagination button:hover {
+            background: var(--denim-blue);
+            color: var(--white);
+            border-color: var(--denim-blue);
+        }
+
+        .pagination button.active {
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            border-color: var(--gold-accent);
+        }
+
+        .pagination button:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        /* ============================================================
+           FEATURES
+           ============================================================ */
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 16px;
+            padding: 20px 24px 40px;
+        }
+
+        .feature-item {
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 20px 16px;
+            text-align: center;
+            box-shadow: var(--shadow);
+            border: 1px solid #e8edf2;
+        }
+
+        .feature-item i {
+            font-size: 2rem;
+            color: var(--gold-accent);
+            margin-bottom: 8px;
+        }
+
+        .feature-item h4 {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .feature-item p {
+            font-size: 0.8rem;
+            color: #5a7a8a;
+        }
+
+        /* ============================================================
+           TENTANG KAMI SECTION
+           ============================================================ */
+        .about-section {
+            padding: 40px 24px 50px;
+            background: var(--white);
+            margin: 0 24px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--denim-light);
+        }
+
+        .about-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--denim-dark);
+            margin-bottom: 16px;
+        }
+
+        .about-section h2 i {
+            color: var(--gold-accent);
+        }
+
+        .about-section p {
+            color: var(--denim-navy);
+            line-height: 1.8;
+            font-size: 1rem;
+            max-width: 800px;
+            margin-bottom: 10px;
+        }
+
+        /* ============================================================
+           FAQ SECTION
+           ============================================================ */
+        .faq-section {
+            padding: 40px 24px 50px;
+            background: var(--white);
+            margin: 0 24px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--denim-light);
+        }
+
+        .faq-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--denim-dark);
+            margin-bottom: 16px;
+        }
+
+        .faq-section h2 i {
+            color: var(--gold-accent);
+        }
+
+        .faq-item {
+            border-bottom: 1px solid var(--denim-light);
+            padding: 14px 0;
+        }
+
+        .faq-item:last-child {
+            border-bottom: none;
+        }
+
+        .faq-item .faq-question {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            color: var(--denim-dark);
+            font-size: 1rem;
+        }
+
+        .faq-item .faq-question i {
+            color: var(--gold-accent);
+            transition: var(--transition);
+        }
+
+        .faq-item .faq-question.active i {
+            transform: rotate(180deg);
+        }
+
+        .faq-item .faq-answer {
+            display: none;
+            padding-top: 10px;
+            color: var(--denim-navy);
+            line-height: 1.6;
+            font-size: 0.95rem;
+        }
+
+        .faq-item .faq-answer.open {
+            display: block;
+        }
+
+        /* ============================================================
+           TRACK ORDER SECTION
+           ============================================================ */
+        .track-section {
+            padding: 40px 24px 50px;
+            background: var(--white);
+            margin: 0 24px 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid var(--denim-light);
+        }
+
+        .track-section h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--denim-dark);
+            margin-bottom: 16px;
+        }
+
+        .track-section h2 i {
+            color: var(--gold-accent);
+        }
+
+        .track-section .track-form {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+            max-width: 500px;
+        }
+
+        .track-section .track-form input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1.5px solid var(--denim-light);
+            border-radius: 60px;
+            font-size: 0.95rem;
+            background: var(--cream);
+            color: var(--denim-dark);
+            font-family: inherit;
+            min-width: 200px;
+        }
+
+        .track-section .track-form input:focus {
+            border-color: var(--gold-accent);
+            outline: none;
+        }
+
+        .track-section .track-form button {
+            padding: 12px 32px;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .track-section .track-form button:hover {
+            background: #b8963a;
+            transform: scale(0.97);
+        }
+
+        /* ============================================================
+           FOOTER 4 KOLOM
+           ============================================================ */
+        .footer {
+            background: var(--denim-dark);
+            color: var(--cream);
+            padding: 40px 28px 20px;
+            border-top: 3px solid var(--gold-accent);
+            margin-top: 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto 30px;
+        }
+
+        .footer-col h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--gold-light);
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-col p,
+        .footer-col li {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.8;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            padding: 2px 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .footer-col ul li:hover {
+            color: var(--gold-light);
+        }
+
+        .footer-col .social-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .footer-col .social-icons a {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .footer-col .social-icons a:hover {
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 16px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ============================================================
+           PRODUCT DETAIL POPUP
+           ============================================================ */
+        .product-popup {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(12px);
+            z-index: 3000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .product-popup.show {
+            display: flex;
+        }
+
+        .product-popup .popup-content {
+            background: var(--white);
+            max-width: 820px;
+            width: 100%;
+            max-height: 90vh;
+            overflow-y: auto;
+            border-radius: var(--radius);
+            padding: 30px 34px 36px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .product-popup .popup-content .close-popup {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            font-size: 1.8rem;
+            color: var(--denim-navy);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .product-popup .popup-content .close-popup:hover {
+            color: var(--denim-dark);
+            transform: rotate(90deg);
+        }
+
+        .product-popup .popup-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin-top: 10px;
+        }
+
+        .product-popup .popup-image {
+            background: var(--denim-light);
+            border-radius: var(--radius-sm);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 6rem;
+            color: var(--denim-blue);
+            min-height: 320px;
+            position: relative;
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+
+        .product-popup .popup-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .product-popup .popup-image.zoomed img {
+            transform: scale(2);
+            cursor: zoom-out;
+        }
+
+        .product-popup .popup-image .zoom-hint {
+            position: absolute;
+            bottom: 12px;
+            right: 12px;
+            background: rgba(0, 0, 0, 0.5);
+            color: #fff;
+            padding: 4px 12px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            backdrop-filter: blur(4px);
+        }
+
+        .product-popup .popup-info h2 {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--denim-dark);
+            margin-bottom: 6px;
+        }
+
+        .product-popup .popup-info .popup-tag {
+            display: inline-block;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-size: 0.6rem;
+            font-weight: 700;
+            padding: 2px 14px;
+            border-radius: 40px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 8px;
+        }
+
+        .product-popup .popup-info .popup-price {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--denim-blue);
+        }
+
+        .product-popup .popup-info .popup-price del {
+            color: #8a9aa8;
+            font-weight: 400;
+            font-size: 1rem;
+            margin-left: 10px;
+        }
+
+        .product-popup .popup-info .popup-desc {
+            color: var(--denim-navy);
+            line-height: 1.7;
+            font-size: 0.95rem;
+            margin: 12px 0;
+        }
+
+        .product-popup .popup-info .popup-stock {
+            font-size: 0.85rem;
+            color: #1f7a4b;
+        }
+
+        .product-popup .popup-info .popup-stock.out {
+            color: #b13e3e;
+        }
+
+        .product-popup .popup-info .btn-buy-large {
+            width: 100%;
+            padding: 14px;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: var(--transition);
+            margin-top: 16px;
+            font-family: inherit;
+        }
+
+        .product-popup .popup-info .btn-buy-large:hover {
+            background: #b8963a;
+            transform: scale(0.98);
+        }
+
+        /* ============================================================
+           RESPONSIVE - HP
+           ============================================================ */
+        @media (max-width: 768px) {
+            body {
+                padding-top: 60px;
+            }
+
+            .navbar {
+                padding: 10px 16px;
+                height: 60px;
+            }
+
+            .navbar .logo {
+                font-size: 1.1rem;
+            }
+            .navbar .logo i {
+                font-size: 1.2rem;
+            }
+            .navbar .logo span {
+                font-size: 0.6rem;
+            }
+
+            /* Sembunyikan menu desktop, tampilkan burger */
+            .nav-menu {
+                display: none !important;
+            }
+            .nav-actions {
+                display: none !important;
+            }
+            .nav-right-desktop .user-badge span {
+                display: none;
+            }
+            .nav-right-desktop .user-badge {
+                padding: 4px 10px;
+                font-size: 0.7rem;
+            }
+
+            .burger-btn {
+                display: flex !important;
+            }
+
+            .sidebar {
+                display: flex;
+            }
+            .sidebar-overlay {
+                display: block;
+            }
+
+            .carousel-section {
+                height: 75vh;
+                min-height: 350px;
+            }
+            .carousel-slide {
+                padding: 30px 24px;
+            }
+            .carousel-slide .slide-content h2 {
+                font-size: 2rem;
+            }
+            .carousel-slide .slide-content p {
+                font-size: 0.95rem;
+            }
+            .carousel-slide .slide-content .btn-slide {
+                padding: 10px 28px;
+                font-size: 0.85rem;
+            }
+            .slide-image {
+                font-size: 6rem;
+                right: -20px;
+                bottom: -10px;
+            }
+            .slide-image-left {
+                font-size: 5rem;
+                left: -20px;
+                top: -5px;
+            }
+            .carousel-btn {
+                width: 36px;
+                height: 36px;
+                font-size: 0.9rem;
+            }
+            .carousel-btn.prev {
+                left: 8px;
+            }
+            .carousel-btn.next {
+                right: 8px;
+            }
+
+            .product-carousel .product-card {
+                flex: 0 0 170px;
+                min-width: 150px;
+            }
+            .product-carousel .product-card .img-placeholder {
+                height: 140px;
+                font-size: 2.2rem;
+            }
+            .product-grid {
+                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+                gap: 14px;
+            }
+            .product-grid .product-card .img-placeholder {
+                height: 140px;
+                font-size: 2.2rem;
+            }
+            .section-title {
+                font-size: 1.3rem;
+                padding: 24px 16px 12px;
+            }
+            .features {
+                padding: 12px 16px 30px;
+                gap: 12px;
+            }
+            .product-carousel-wrapper {
+                padding: 0 16px 10px;
+            }
+            .product-grid-wrapper {
+                padding: 0 16px 30px;
+            }
+            .carousel-scroll-btn {
+                width: 32px;
+                height: 32px;
+                font-size: 0.9rem;
+            }
+            .carousel-scroll-btn.left {
+                left: 4px;
+            }
+            .carousel-scroll-btn.right {
+                right: 4px;
+            }
+
+            .about-section,
+            .faq-section,
+            .track-section {
+                margin: 0 16px 16px;
+                padding: 24px 18px 30px;
+            }
+            .about-section h2,
+            .faq-section h2,
+            .track-section h2 {
+                font-size: 1.5rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+
+            .product-popup .popup-grid {
+                grid-template-columns: 1fr;
+                gap: 16px;
+            }
+            .product-popup .popup-image {
+                min-height: 200px;
+                font-size: 4rem;
+            }
+            .product-popup .popup-content {
+                padding: 20px 16px 24px;
+            }
+            .product-popup .popup-info h2 {
+                font-size: 1.1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .carousel-section {
+                height: 75vh;
+                min-height: 300px;
+            }
+            .carousel-slide .slide-content h2 {
+                font-size: 1.6rem;
+            }
+            .carousel-slide .slide-content p {
+                font-size: 0.8rem;
+            }
+            .carousel-slide .slide-content .btn-slide {
+                padding: 8px 20px;
+                font-size: 0.75rem;
+            }
+            .slide-image {
+                font-size: 4.5rem;
+                right: -15px;
+                bottom: -5px;
+            }
+            .slide-image-left {
+                font-size: 3.5rem;
+                left: -15px;
+                top: -5px;
+            }
+            .carousel-btn {
+                width: 30px;
+                height: 30px;
+                font-size: 0.7rem;
+            }
+            .carousel-btn.prev {
+                left: 4px;
+            }
+            .carousel-btn.next {
+                right: 4px;
+            }
+
+            .product-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 10px;
+            }
+            .product-grid .product-card .img-placeholder {
+                height: 120px;
+                font-size: 1.8rem;
+            }
+            .product-grid .product-card .body {
+                padding: 10px;
+            }
+            .product-grid .product-card .body h4 {
+                font-size: 0.75rem;
+            }
+            .product-grid .product-card .body .price {
+                font-size: 0.8rem;
+            }
+            .product-grid .product-card .body .btn-group .btn-detail,
+            .product-grid .product-card .body .btn-group .btn-buy {
+                font-size: 0.55rem;
+                padding: 4px 8px;
+            }
+
+            .product-carousel .product-card {
+                flex: 0 0 150px;
+                min-width: 130px;
+            }
+            .product-carousel .product-card .img-placeholder {
+                height: 120px;
+                font-size: 1.8rem;
+            }
+            .product-carousel .product-card .body {
+                padding: 10px;
+            }
+            .product-carousel .product-card .body h4 {
+                font-size: 0.7rem;
+            }
+            .product-carousel .product-card .body .price {
+                font-size: 0.75rem;
+            }
+
+            .footer-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 16px;
+            }
+            .footer {
+                padding: 24px 16px 16px;
+            }
+
+            .product-popup .popup-image {
+                min-height: 160px;
+                font-size: 3rem;
+            }
+            .product-popup .popup-content {
+                padding: 16px 12px 20px;
+            }
+        }
+
+        /* ============================================================
+           DESKTOP - BURGER & SIDEBAR SEMBUNYI
+           ============================================================ */
+        @media (min-width: 769px) {
+            .burger-btn {
+                display: none !important;
+            }
+            .sidebar {
+                display: none !important;
+            }
+            .sidebar-overlay {
+                display: none !important;
+            }
+            .nav-menu {
+                display: flex !important;
+            }
+            .nav-actions {
+                display: flex !important;
+            }
+        }
+    </style>
 </head>
-
 <body>
 
-  <!-- ===== NAVBAR ===== -->
-  <header class="navbar" id="navbar">
-    <div class="logo">
-      <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
-    </div>
-    <div class="nav-right">
-      <div class="user-badge" id="navUserBadge">
-        <i class="fas fa-user-circle"></i> <span id="navUserName">Guest</span>
-      </div>
-      <button class="btn-nav btn-nav-outline" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
-      <button class="btn-nav btn-nav-gold" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
-      <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
-        <span></span><span></span><span></span>
-      </button>
-    </div>
-  </header>
-
-  <!-- ===== SIDEBAR ===== -->
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
-      <span class="close-side" id="closeSidebar">&times;</span>
-    </div>
-    <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
-    <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
-    <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang</div>
-    <div class="menu-divider"></div>
-    <div class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</div>
-    <div class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</div>
-  </nav>
-
-  <!-- ===== LANDING PAGE CONTENT ===== -->
-  <div class="landing-content" id="landingContent">
-
-    <!-- CAROUSEL -->
-    <section class="carousel-section" id="carouselSection">
-      <div class="carousel-track" id="carouselTrack">
-        <div class="carousel-slide" style="background: linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%);">
-          <div class="overlay-dark"></div>
-          <div class="slide-image"><i class="fas fa-tshirt"></i></div>
-          <div class="slide-image-left"><i class="fas fa-tshirt"></i></div>
-          <div class="slide-content">
-            <h2><i class="fas fa-star"></i> 501® ORIGINAL DENIM</h2>
-            <p>Ikonik sejak 1873 · Potongan lurus dengan raw denim 14oz premium</p>
-            <a href="#" class="btn-slide">Lihat Koleksi</a>
-          </div>
+    <!-- ============================================================
+    NAVBAR
+    ============================================================ -->
+    <header class="navbar" id="navbar">
+        <div class="logo">
+            <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
         </div>
-        <div class="carousel-slide" style="background: linear-gradient(135deg, #1a2e44 0%, #2a4b6e 50%, #3a5f7e 100%);">
-          <div class="overlay-dark"></div>
-          <div class="slide-image"><i class="fas fa-jacket"></i></div>
-          <div class="slide-content">
-            <h2><i class="fas fa-jacket"></i> TRUCKER JACKET & OUTER</h2>
-            <p>Gaya ikonik denim modern untuk penampilan casual harian Anda</p>
-            <a href="#" class="btn-slide">Lihat Koleksi</a>
-          </div>
-        </div>
-        <div class="carousel-slide" style="background: linear-gradient(135deg, #2a4b6e 0%, #1a2e44 50%, #0b1a2b 100%);">
-          <div class="overlay-dark"></div>
-          <div class="slide-image"><i class="fas fa-tags"></i></div>
-          <div class="slide-content">
-            <h2><i class="fas fa-tags"></i> SEASONAL SALE UP TO 40%</h2>
-            <p>Diskon spesial koleksi denim elegan dengan harga khusus eksklusif</p>
-            <a href="#" class="btn-slide">Lihat Promo</a>
-          </div>
-        </div>
-      </div>
-      <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
-      <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
-      <div class="carousel-dots" id="carouselDots"></div>
-    </section>
 
-    <!-- PRODUK FAVORIT -->
-    <h2 class="section-title"><i class="fas fa-heart" style="color:var(--gold-accent);"></i> PRODUK FAVORIT</h2>
-    <div class="product-carousel-wrapper">
-      <button class="carousel-scroll-btn left" id="favScrollLeft"><i class="fas fa-chevron-left"></i></button>
-      <button class="carousel-scroll-btn right" id="favScrollRight"><i class="fas fa-chevron-right"></i></button>
-      <div class="product-carousel" id="favoriteCarousel"></div>
-    </div>
+        <!-- Desktop Menu -->
+        <ul class="nav-menu" id="navMenu">
+            <li><a href="#home" class="active"><i class="fas fa-home"></i> Beranda</a></li>
+            <li><a href="#products"><i class="fas fa-tshirt"></i> Koleksi</a></li>
+            <li><a href="#about"><i class="fas fa-info-circle"></i> Tentang</a></li>
+            <li><a href="#faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
+            <li><a href="#track"><i class="fas fa-truck"></i> Lacak</a></li>
+        </ul>
 
-    <!-- PRODUK POPULER -->
-    <h2 class="section-title"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
-    <div class="product-grid-wrapper">
-      <div class="product-grid" id="productGrid"></div>
-      <div class="pagination" id="pagination"></div>
-    </div>
-
-    <!-- FEATURES -->
-    <div class="features">
-      <div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz bermutu tinggi</p></div>
-      <div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Pengiriman cepat seluruh Indonesia</p></div>
-      <div class="feature-item"><i class="fas fa-exchange-alt"></i><h4>GARANSI 30 HARI</h4><p>Penukaran size tanpa ribet</p></div>
-      <div class="feature-item"><i class="fas fa-user-tie"></i><h4>HARGA MEMBER</h4><p>Potongan untuk pemilik lisensi</p></div>
-    </div>
-
-  </div>
-
-  <!-- ===== REGISTER FORM ===== -->
-  <div class="register-wrapper" id="registerWrapper">
-    <div class="register-header">
-      <h1><i class="fas fa-user-plus"></i> Daftar Member</h1>
-      <p>Lengkapi data diri untuk bergabung menjadi member HEDTRO JEANS</p>
-    </div>
-
-    <form id="registerForm" onsubmit="return false;">
-
-      <div class="form-section">
-        <div class="section-title">
-          <i class="fas fa-lock"></i> Akun & Keamanan
-          <span class="badge-step">1</span>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Username <span class="required">*</span> <span class="helper">agus2026</span></label>
-            <input type="text" id="username" placeholder="Username" required />
-          </div>
-          <div class="form-group">
-            <label>Email <span class="required">*</span> <span class="helper">nama@email.com</span></label>
-            <input type="email" id="email" placeholder="Email aktif" required />
-          </div>
-          <div class="form-group">
-            <label>Kata Sandi <span class="required">*</span></label>
-            <input type="password" id="password" placeholder="Min 6 karakter" required />
-          </div>
-          <div class="form-group">
-            <label>Konfirmasi Sandi <span class="required">*</span></label>
-            <input type="password" id="confirmPassword" placeholder="Ulangi sandi" required />
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 2: IDENTITAS & KONTAK - NAMA & NIK 1 BARIS, HP & WA 1 BARIS -->
-      <div class="form-section">
-        <div class="section-title">
-          <i class="fas fa-id-card"></i> Identitas & Kontak
-          <span class="badge-step">2</span>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nama Lengkap <span class="required">*</span></label>
-            <input type="text" id="fullname" placeholder="Nama lengkap" required />
-          </div>
-          <div class="form-group">
-            <label>NIK (16 Digit) <span class="required">*</span> <span class="helper">3271xxxxxxxxxxxx</span></label>
-            <input type="text" id="nik" placeholder="16 digit NIK" maxlength="16" required />
-          </div>
-          <div class="form-group">
-            <label>No. HP <span class="required">*</span> <span class="helper">0812345678</span></label>
-            <input type="text" id="phone" placeholder="No. HP" required />
-          </div>
-          <div class="form-group">
-            <label>No. WhatsApp <span class="required">*</span> <span class="helper">0812345678</span></label>
-            <input type="text" id="whatsapp" placeholder="No. WhatsApp aktif" required />
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 3: REKENING BANK -->
-      <div class="form-section">
-        <div class="section-title">
-          <i class="fas fa-university"></i> Rekening Bank
-          <span class="badge-step">3</span>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nama Bank <span class="required">*</span></label>
-            <select id="bankName">
-              <option value="BCA">BCA</option>
-              <option value="BNI">BNI</option>
-              <option value="BRI">BRI</option>
-              <option value="Mandiri">Mandiri</option>
-              <option value="CIMB Niaga">CIMB Niaga</option>
-              <option value="Danamon">Danamon</option>
-              <option value="BSI">BSI</option>
-              <option value="Lainnya">Lainnya</option>
-            </select>
-          </div>
-          <div class="form-group">
-            <label>No. Rekening <span class="required">*</span> <span class="helper">1234567890</span></label>
-            <input type="text" id="bankAccount" placeholder="No. rekening" required />
-          </div>
-          <div class="form-group full-width">
-            <label>Atas Nama <span class="required">*</span></label>
-            <input type="text" id="bankHolder" placeholder="Atas nama..." required />
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 4: ALAMAT PENGIRIMAN -->
-      <div class="form-section">
-        <div class="section-title">
-          <i class="fas fa-map-pin"></i> Alamat Pengiriman
-          <span class="badge-step">4</span>
-        </div>
-        <div class="form-row">
-          <div class="form-group full-width">
-            <label>Alamat Lengkap <span class="required">*</span></label>
-            <textarea id="address" placeholder="Jalan, RT/RW, No. Rumah, Kel/Kec" required></textarea>
-          </div>
-          <div class="form-group full-width">
-            <label>Kota & Provinsi <span class="required">*</span> <span class="helper">Jakarta Selatan, DKI Jakarta</span></label>
-            <input type="text" id="city" placeholder="Kota & provinsi" required />
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 5: SPESIFIKASI JEANS -->
-      <div class="form-section">
-        <div class="section-title">
-          <i class="fas fa-tshirt"></i> Spesifikasi Jeans
-          <span class="badge-step">5</span>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Nomor Seri <span class="required">*</span> <span class="helper">HDT-SERI-001</span></label>
-            <input type="text" id="serialNumber" placeholder="Nomor seri" required />
-          </div>
-          <div class="form-group">
-            <label>Ukuran <span class="required">*</span></label>
-            <select id="jeansSize">
-              <option value="28">Size 28</option>
-              <option value="29">Size 29</option>
-              <option value="30" selected>Size 30</option>
-              <option value="31">Size 31</option>
-              <option value="32">Size 32</option>
-              <option value="33">Size 33</option>
-              <option value="34">Size 34</option>
-              <option value="36">Size 36</option>
-              <option value="38">Size 38</option>
-              <option value="40">Size 40</option>
-            </select>
-          </div>
-          <div class="form-group full-width">
-            <label>Warna <span class="required">*</span></label>
-            <select id="jeansColor">
-              <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option>
-              <option value="Black Stretch">Black Stretch</option>
-              <option value="Light Wash">Light Wash</option>
-              <option value="Dark Navy">Dark Navy</option>
-              <option value="Grey Stone">Grey Stone</option>
-              <option value="White">White</option>
-            </select>
-          </div>
-        </div>
-      </div>
-
-      <!-- SECTION 6: PENEMPATAN TIM -->
-      <div class="form-section">
-        <div class="section-title">
-          <i class="fas fa-sitemap"></i> Penempatan Tim
-          <span class="badge-step">6</span>
-        </div>
-        <div class="form-row">
-          <div class="form-group">
-            <label>Username Sponsor <span class="helper">(kosong = Admin)</span></label>
-            <input type="text" id="sponsor" placeholder="Username sponsor" />
-          </div>
-          <div class="form-group">
-            <label>Username Upline <span class="helper">(kosong = Admin)</span></label>
-            <input type="text" id="upline" placeholder="Username upline" />
-          </div>
-          <div class="form-group full-width">
-            <label>Posisi Tim <span class="required">*</span></label>
-            <div class="position-selector" id="positionSelector">
-              <div class="position-option active" data-value="left">
-                <i class="fas fa-arrow-left"></i>
-                KIRI (L)
-                <span class="pos-label">Kiri</span>
-              </div>
-              <div class="position-option" data-value="right">
-                <i class="fas fa-arrow-right"></i>
-                KANAN (R)
-                <span class="pos-label">Kanan</span>
-              </div>
+        <div class="nav-right-desktop">
+            <!-- Search & Cart Desktop -->
+            <div class="nav-actions">
+                <div class="search-box">
+                    <input type="text" placeholder="Cari produk..." id="searchInput" />
+                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                </div>
+                <button class="cart-btn" id="cartBtn">
+                    <i class="fas fa-shopping-bag"></i>
+                    <span class="badge">0</span>
+                </button>
             </div>
-            <input type="hidden" id="position" value="left" />
-          </div>
-        </div>
-      </div>
 
-      <button type="submit" class="btn-submit" id="registerBtn">
-        <i class="fas fa-user-plus"></i> Daftar Member
-      </button>
+            <div class="user-badge" id="navUserBadge">
+                <i class="fas fa-user-circle"></i> <span id="navUserName">Guest</span>
+            </div>
+            <button class="btn-nav btn-nav-outline" id="navLoginBtn" style="color:var(--cream); padding:8px 18px; border-radius:60px; border:1.5px solid rgba(255,255,255,0.2); font-size:0.8rem;">Login</button>
+            <button class="btn-nav btn-nav-gold" id="navRegisterBtn" style="background:var(--gold-accent); color:var(--denim-dark); padding:8px 18px; border-radius:60px; font-weight:600; font-size:0.8rem;">Daftar</button>
 
-      <div class="msg" id="regMsg"></div>
+            <!-- Burger (hanya di HP) -->
+            <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
+                <span></span><span></span><span></span>
+            </button>
+        </div>
+    </header>
 
-      <div class="form-footer">
-        Sudah punya akun? <a id="backToLoginFromRegister">Login di sini</a>
-      </div>
-    </form>
-  </div>
+    <!-- ============================================================
+    SIDEBAR (HP ONLY)
+    ============================================================ -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
+            <span class="close-side" id="closeSidebar">&times;</span>
+        </div>
+        <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
+        <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
+        <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang</div>
+        <div class="menu-item" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</div>
+        <div class="menu-item" data-page="track"><i class="fas fa-truck"></i> Lacak Pesanan</div>
+        <div class="menu-divider"></div>
+        <div class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</div>
+        <div class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</div>
+    </nav>
 
-  <!-- ===== LOGIN OVERLAY ===== -->
-  <div class="login-overlay" id="loginOverlay">
-    <div class="login-card">
-      <button class="close-login" id="closeLogin">&times;</button>
-      <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
-      <p>Masuk ke akun member Anda</p>
-      <form id="loginForm" onsubmit="return false;">
-        <div class="form-group">
-          <label>Email atau Username</label>
-          <input type="text" id="loginEmail" placeholder="email@domain.com" />
+    <!-- ============================================================
+    LANDING PAGE CONTENT
+    ============================================================ -->
+    <div class="landing-content" id="landingContent">
+
+        <!-- CAROUSEL -->
+        <section class="carousel-section" id="carouselSection">
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide" style="background: linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%);">
+                    <div class="overlay-dark"></div>
+                    <div class="slide-image"><i class="fas fa-tshirt"></i></div>
+                    <div class="slide-image-left"><i class="fas fa-tshirt"></i></div>
+                    <div class="slide-content">
+                        <h2><i class="fas fa-star"></i> 501® ORIGINAL DENIM</h2>
+                        <p>Ikonik sejak 1873 · Potongan lurus dengan raw denim 14oz premium</p>
+                        <a href="#" class="btn-slide">Lihat Koleksi</a>
+                    </div>
+                </div>
+                <div class="carousel-slide" style="background: linear-gradient(135deg, #1a2e44 0%, #2a4b6e 50%, #3a5f7e 100%);">
+                    <div class="overlay-dark"></div>
+                    <div class="slide-image"><i class="fas fa-jacket"></i></div>
+                    <div class="slide-content">
+                        <h2><i class="fas fa-jacket"></i> TRUCKER JACKET & OUTER</h2>
+                        <p>Gaya ikonik denim modern untuk penampilan casual harian Anda</p>
+                        <a href="#" class="btn-slide">Lihat Koleksi</a>
+                    </div>
+                </div>
+                <div class="carousel-slide" style="background: linear-gradient(135deg, #2a4b6e 0%, #1a2e44 50%, #0b1a2b 100%);">
+                    <div class="overlay-dark"></div>
+                    <div class="slide-image"><i class="fas fa-tags"></i></div>
+                    <div class="slide-content">
+                        <h2><i class="fas fa-tags"></i> SEASONAL SALE UP TO 40%</h2>
+                        <p>Diskon spesial koleksi denim elegan dengan harga khusus eksklusif</p>
+                        <a href="#" class="btn-slide">Lihat Promo</a>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
+            <div class="carousel-dots" id="carouselDots"></div>
+        </section>
+
+        <!-- PRODUK FAVORIT -->
+        <h2 class="section-title"><i class="fas fa-heart" style="color:var(--gold-accent);"></i> PRODUK FAVORIT</h2>
+        <div class="product-carousel-wrapper">
+            <button class="carousel-scroll-btn left" id="favScrollLeft"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-scroll-btn right" id="favScrollRight"><i class="fas fa-chevron-right"></i></button>
+            <div class="product-carousel" id="favoriteCarousel"></div>
         </div>
-        <div class="form-group">
-          <label>Kata Sandi</label>
-          <input type="password" id="loginPassword" placeholder="••••••••" />
+
+        <!-- PRODUK POPULER -->
+        <h2 class="section-title" id="products"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
+        <div class="product-grid-wrapper">
+            <div class="product-grid" id="productGrid"></div>
+            <div class="pagination" id="pagination"></div>
         </div>
-        <button type="submit" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
-        <div class="login-msg" id="loginMsg"></div>
-        <div class="login-footer">
-          Belum punya akun? <a id="goToRegister">Daftar di sini</a>
+
+        <!-- TENTANG KAMI -->
+        <div class="about-section" id="about">
+            <h2><i class="fas fa-info-circle"></i> Tentang Kami</h2>
+            <p><strong>HEDTRO JEANS</strong> adalah brand denim premium yang menghadirkan celana jeans berkualitas tinggi dengan bahan raw denim 14oz pilihan. Kami berkomitmen untuk memberikan produk dengan kualitas terbaik, desain ikonik, dan harga yang kompetitif.</p>
+            <p>Sejak 1873, kami menghadirkan gaya denim klasik yang tetap relevan sepanjang masa. Setiap produk kami melalui proses seleksi ketat untuk memastikan kepuasan pelanggan.</p>
+            <p><i class="fas fa-check-circle" style="color:var(--gold-accent);"></i> 100% Bahan Premium &nbsp; <i class="fas fa-check-circle" style="color:var(--gold-accent);"></i> Desain Ikonik &nbsp; <i class="fas fa-check-circle" style="color:var(--gold-accent);"></i> Garansi 30 Hari</p>
         </div>
-      </form>
+
+        <!-- FAQ -->
+        <div class="faq-section" id="faq">
+            <h2><i class="fas fa-question-circle"></i> Pertanyaan yang Sering Diajukan</h2>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Bagaimana cara menjadi member?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">Anda dapat mendaftar melalui tombol Daftar di navbar. Isi data diri lengkap dan verifikasi email untuk mengaktifkan akun member.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Apakah produk HEDTRO 100% original?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">Ya, semua produk HEDTRO JEANS adalah 100% original dengan bahan raw denim berkualitas ekspor. Setiap produk dilengkapi dengan nomor seri keaslian.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Bagaimana cara melacak pesanan saya?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">Masukkan nomor pesanan Anda di form Lacak Pesanan di bawah ini. Status pengiriman akan ditampilkan secara real-time.</div>
+            </div>
+            <div class="faq-item">
+                <div class="faq-question" onclick="toggleFaq(this)">
+                    <span>Apa itu sistem MLM di HEDTRO?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">HEDTRO menggunakan sistem afiliasi MLM dengan bonus sponsor, binary 10 level, reward 5 level, dan RO produk. Member bisa mendapatkan komisi dari penjualan dan jaringan downline.</div>
+            </div>
+        </div>
+
+        <!-- LACAK PESANAN -->
+        <div class="track-section" id="track">
+            <h2><i class="fas fa-truck"></i> Lacak Pesanan</h2>
+            <p style="color:var(--denim-navy); margin-bottom:16px;">Masukkan nomor pesanan Anda untuk melihat status pengiriman.</p>
+            <div class="track-form">
+                <input type="text" placeholder="Masukkan nomor pesanan..." id="trackInput" />
+                <button id="trackBtn"><i class="fas fa-search"></i> Lacak</button>
+            </div>
+            <div id="trackResult" style="margin-top:16px; color:var(--denim-navy); font-size:0.95rem;"></div>
+        </div>
+
+        <!-- FEATURES -->
+        <div class="features">
+            <div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz bermutu tinggi</p></div>
+            <div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Pengiriman cepat seluruh Indonesia</p></div>
+            <div class="feature-item"><i class="fas fa-exchange-alt"></i><h4>GARANSI 30 HARI</h4><p>Penukaran size tanpa ribet</p></div>
+            <div class="feature-item"><i class="fas fa-user-tie"></i><h4>HARGA MEMBER</h4><p>Potongan untuk pemilik lisensi</p></div>
+        </div>
+
     </div>
-  </div>
 
-  <!-- ===== FOOTER ===== -->
-  <footer class="footer">
-    <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Afiliasi & Reseller</p>
-    <p>Bonus Sponsor · Binary 10L · Reward 5L · RO Produk</p>
-  </footer>
-
-  <!-- ============================================================ -->
-  <!-- JAVASCRIPT
-  ============================================================ -->
-  <script>
-    (function() {
-      'use strict';
-
-      // ============================================================
-      // DATA PRODUK
-      // ============================================================
-      const allProducts = [
-        { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
-          icon: 'fa-tshirt', favorite: true },
-        { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
-          icon: 'fa-tshirt', favorite: true },
-        { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt',
-          favorite: true },
-        { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%', icon: 'fa-tshirt',
-          favorite: true },
-        { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED', icon: 'fa-jacket',
-          favorite: true },
-        { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER', icon: 'fa-tshirt',
-          favorite: false },
-        { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS', icon: 'fa-belt',
-          favorite: false },
-        { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT', icon: 'fa-tshirt',
-          favorite: false },
-        { id: 9, name: 'Slim Fit Black Raw Denim', price: 260000, original: 360000, tag: 'NEW', icon: 'fa-tshirt',
-          favorite: false },
-        { id: 10, name: 'Cropped Trucker Jacket', price: 390000, original: 500000, tag: 'TRENDY', icon: 'fa-jacket',
-          favorite: false },
-        { id: 11, name: 'Denim Bucket Hat', price: 85000, original: 120000, tag: 'AKSESORIS', icon: 'fa-hat-cowboy',
-          favorite: false },
-        { id: 12, name: 'Canvas Tote Bag Denim', price: 150000, original: 200000, tag: 'AKSESORIS', icon: 'fa-shopping-bag',
-          favorite: false }
-      ];
-
-      // ============================================================
-      // RENDER FAVORITE CAROUSEL
-      // ============================================================
-      function renderFavoriteCarousel() {
-        const container = document.getElementById('favoriteCarousel');
-        const favorites = allProducts.filter(p => p.favorite === true);
-        container.innerHTML = '';
-        favorites.forEach(p => {
-          const card = document.createElement('div');
-          card.className = 'product-card';
-          card.innerHTML = `
-            <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
-            <div class="body">
-              <span class="tag">${p.tag}</span>
-              <h4>${p.name}</h4>
-              <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
-              <button class="btn-detail" data-id="${p.id}">lihat Detail</button>
+    <!-- ============================================================
+    REGISTER FORM
+    ============================================================ -->
+    <div class="register-wrapper" id="registerWrapper" style="display:none; max-width:1000px; margin:0 auto; padding:24px 20px 50px;">
+        <div class="register-header" style="text-align:center; margin-bottom:20px;">
+            <h1 style="font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:800; color:var(--denim-dark);"><i class="fas fa-user-plus" style="color:var(--gold-accent);"></i> Daftar Member</h1>
+            <p style="color:var(--denim-navy); font-size:0.85rem; opacity:0.7;">Lengkapi data diri untuk bergabung menjadi member HEDTRO JEANS</p>
+        </div>
+        <form id="registerForm" onsubmit="return false;">
+            <!-- Form sama seperti sebelumnya, saya singkat -->
+            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
+                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
+                    <i class="fas fa-lock" style="color:var(--gold-accent);"></i> Akun & Keamanan <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">1</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;">
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Username <span style="color:#e74c3c;">*</span></label><input type="text" id="username" placeholder="Username" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Email <span style="color:#e74c3c;">*</span></label><input type="email" id="email" placeholder="Email aktif" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Kata Sandi <span style="color:#e74c3c;">*</span></label><input type="password" id="password" placeholder="Min 6 karakter" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Konfirmasi Sandi <span style="color:#e74c3c;">*</span></label><input type="password" id="confirmPassword" placeholder="Ulangi sandi" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                </div>
             </div>
-          `;
-          container.appendChild(card);
-        });
-      }
-
-      // ============================================================
-      // CAROUSEL SCROLL
-      // ============================================================
-      document.getElementById('favScrollLeft').addEventListener('click', function() {
-        const carousel = document.getElementById('favoriteCarousel');
-        carousel.scrollBy({ left: -240, behavior: 'smooth' });
-      });
-
-      document.getElementById('favScrollRight').addEventListener('click', function() {
-        const carousel = document.getElementById('favoriteCarousel');
-        carousel.scrollBy({ left: 240, behavior: 'smooth' });
-      });
-
-      // ============================================================
-      // PRODUCT GRID WITH PAGINATION
-      // ============================================================
-      const itemsPerPage = 6;
-      let currentPage = 1;
-      const nonFavoriteProducts = allProducts.filter(p => p.favorite !== true);
-
-      function renderProductGrid(page) {
-        const grid = document.getElementById('productGrid');
-        const start = (page - 1) * itemsPerPage;
-        const end = start + itemsPerPage;
-        const pageItems = nonFavoriteProducts.slice(start, end);
-
-        grid.innerHTML = '';
-        pageItems.forEach(p => {
-          const card = document.createElement('div');
-          card.className = 'product-card';
-          card.innerHTML = `
-            <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
-            <div class="body">
-              <span class="tag">${p.tag}</span>
-              <h4>${p.name}</h4>
-              <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
-              <button class="btn-detail" data-id="${p.id}">lihat Detail</button>
+            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
+                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
+                    <i class="fas fa-id-card" style="color:var(--gold-accent);"></i> Identitas & Kontak <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">2</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;">
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Nama Lengkap <span style="color:#e74c3c;">*</span></label><input type="text" id="fullname" placeholder="Nama lengkap" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">NIK (16 Digit) <span style="color:#e74c3c;">*</span></label><input type="text" id="nik" placeholder="16 digit NIK" maxlength="16" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">No. HP <span style="color:#e74c3c;">*</span></label><input type="text" id="phone" placeholder="No. HP" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">No. WhatsApp <span style="color:#e74c3c;">*</span></label><input type="text" id="whatsapp" placeholder="No. WhatsApp" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                </div>
             </div>
-          `;
-          grid.appendChild(card);
-        });
-        renderPagination();
-      }
+            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
+                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
+                    <i class="fas fa-university" style="color:var(--gold-accent);"></i> Rekening Bank <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">3</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;">
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Nama Bank <span style="color:#e74c3c;">*</span></label>
+                        <select id="bankName" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);">
+                            <option value="BCA">BCA</option><option value="BNI">BNI</option><option value="BRI">BRI</option><option value="Mandiri">Mandiri</option><option value="CIMB Niaga">CIMB Niaga</option><option value="Danamon">Danamon</option><option value="BSI">BSI</option><option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">No. Rekening <span style="color:#e74c3c;">*</span></label><input type="text" id="bankAccount" placeholder="No. rekening" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                    <div style="grid-column:1/-1;"><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Atas Nama <span style="color:#e74c3c;">*</span></label><input type="text" id="bankHolder" placeholder="Atas nama..." style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                </div>
+            </div>
+            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
+                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
+                    <i class="fas fa-map-pin" style="color:var(--gold-accent);"></i> Alamat Pengiriman <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">4</span>
+                </div>
+                <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Alamat Lengkap <span style="color:#e74c3c;">*</span></label><textarea id="address" placeholder="Jalan, RT/RW, No. Rumah, Kel/Kec" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream); min-height:44px; resize:vertical;"></textarea></div>
+                <div style="margin-top:8px;"><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Kota & Provinsi <span style="color:#e74c3c;">*</span></label><input type="text" id="city" placeholder="Kota & provinsi" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+            </div>
+            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
+                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
+                    <i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> Spesifikasi Jeans <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">5</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;">
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Nomor Seri <span style="color:#e74c3c;">*</span></label><input type="text" id="serialNumber" placeholder="Nomor seri" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Ukuran <span style="color:#e74c3c;">*</span></label>
+                        <select id="jeansSize" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);">
+                            <option value="28">Size 28</option><option value="29">Size 29</option><option value="30" selected>Size 30</option>
+                            <option value="31">Size 31</option><option value="32">Size 32</option><option value="33">Size 33</option>
+                            <option value="34">Size 34</option><option value="36">Size 36</option><option value="38">Size 38</option><option value="40">Size 40</option>
+                        </select>
+                    </div>
+                    <div style="grid-column:1/-1;"><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Warna <span style="color:#e74c3c;">*</span></label>
+                        <select id="jeansColor" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);">
+                            <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option><option value="Black Stretch">Black Stretch</option>
+                            <option value="Light Wash">Light Wash</option><option value="Dark Navy">Dark Navy</option>
+                            <option value="Grey Stone">Grey Stone</option><option value="White">White</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
+                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
+                    <i class="fas fa-sitemap" style="color:var(--gold-accent);"></i> Penempatan Tim <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">6</span>
+                </div>
+                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;">
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Username Sponsor</label><input type="text" id="sponsor" placeholder="Username sponsor" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Username Upline</label><input type="text" id="upline" placeholder="Username upline" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
+                    <div style="grid-column:1/-1;">
+                        <label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Posisi Tim <span style="color:#e74c3c;">*</span></label>
+                        <div style="display:flex; gap:8px; margin-top:2px;">
+                            <div class="position-option active" data-value="left" style="flex:1; padding:6px 10px; border:2px solid var(--denim-light); border-radius:12px; text-align:center; cursor:pointer; background:var(--cream); font-weight:600; font-size:0.7rem; color:var(--denim-navy);">
+                                <i class="fas fa-arrow-left" style="display:block; font-size:1rem; margin-bottom:2px; color:var(--gold-accent);"></i> KIRI (L)
+                                <span style="font-size:0.45rem; font-weight:400; opacity:0.5; display:block;">Kiri</span>
+                            </div>
+                            <div class="position-option" data-value="right" style="flex:1; padding:6px 10px; border:2px solid var(--denim-light); border-radius:12px; text-align:center; cursor:pointer; background:var(--cream); font-weight:600; font-size:0.7rem; color:var(--denim-navy);">
+                                <i class="fas fa-arrow-right" style="display:block; font-size:1rem; margin-bottom:2px; color:var(--gold-accent);"></i> KANAN (R)
+                                <span style="font-size:0.45rem; font-weight:400; opacity:0.5; display:block;">Kanan</span>
+                            </div>
+                        </div>
+                        <input type="hidden" id="position" value="left" />
+                    </div>
+                </div>
+            </div>
+            <button type="submit" class="btn-submit" id="registerBtn" style="width:100%; padding:12px; border:none; border-radius:60px; background:var(--gold-accent); color:var(--denim-dark); font-weight:700; font-size:0.95rem; display:flex; align-items:center; justify-content:center; gap:10px; font-family:inherit;"><i class="fas fa-user-plus"></i> Daftar Member</button>
+            <div class="msg" id="regMsg" style="margin-top:8px; text-align:center; font-size:0.8rem; min-height:22px; padding:6px 12px; border-radius:12px;"></div>
+            <div style="text-align:center; margin-top:10px; color:var(--denim-navy); font-size:0.8rem;">Sudah punya akun? <a id="backToLoginFromRegister" style="color:var(--gold-accent); font-weight:600; cursor:pointer;">Login di sini</a></div>
+        </form>
+    </div>
 
-      function renderPagination() {
-        const container = document.getElementById('pagination');
-        const totalPages = Math.ceil(nonFavoriteProducts.length / itemsPerPage);
-        let html = '';
+    <!-- ============================================================
+    LOGIN OVERLAY
+    ============================================================ -->
+    <div class="login-overlay" id="loginOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); z-index:2000; align-items:center; justify-content:center; padding:20px;">
+        <div class="login-card" style="background:var(--white); max-width:420px; width:100%; border-radius:var(--radius); padding:32px 34px 36px; box-shadow:var(--shadow-lg); position:relative;">
+            <button class="close-login" id="closeLogin" style="position:absolute; top:14px; right:18px; font-size:1.6rem; color:var(--denim-navy); cursor:pointer; background:none; border:none;">&times;</button>
+            <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:800; color:var(--denim-dark); margin-bottom:4px; text-align:center;"><i class="fas fa-sign-in-alt" style="color:var(--gold-accent);"></i> Login</h2>
+            <p style="text-align:center; color:var(--denim-navy); font-size:0.85rem; opacity:0.7; margin-bottom:20px;">Masuk ke akun member Anda</p>
+            <form id="loginForm" onsubmit="return false;">
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label style="font-size:0.8rem; font-weight:600; color:var(--denim-navy); display:block; margin-bottom:2px;">Email atau Username</label>
+                    <input type="text" id="loginEmail" placeholder="email@domain.com" style="width:100%; padding:10px 16px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.9rem; background:var(--cream);" />
+                </div>
+                <div class="form-group" style="margin-bottom:14px;">
+                    <label style="font-size:0.8rem; font-weight:600; color:var(--denim-navy); display:block; margin-bottom:2px;">Kata Sandi</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" style="width:100%; padding:10px 16px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.9rem; background:var(--cream);" />
+                </div>
+                <button type="submit" class="btn-login" id="loginBtn" style="width:100%; padding:12px; border:none; border-radius:60px; background:var(--gold-accent); color:var(--denim-dark); font-weight:700; font-size:1rem; font-family:inherit;"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+                <div class="login-msg" id="loginMsg" style="margin-top:10px; text-align:center; font-size:0.85rem; min-height:24px;"></div>
+                <div style="text-align:center; margin-top:14px; font-size:0.85rem; color:var(--denim-navy);">Belum punya akun? <a id="goToRegister" style="color:var(--gold-accent); font-weight:600; cursor:pointer;">Daftar di sini</a></div>
+            </form>
+        </div>
+    </div>
 
-        html +=
-          `<button class="page-btn" data-page="prev" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+    <!-- ============================================================
+    PRODUCT DETAIL POPUP
+    ============================================================ -->
+    <div class="product-popup" id="productPopup">
+        <div class="popup-content">
+            <button class="close-popup" id="closePopup">&times;</button>
+            <div class="popup-grid" id="popupGrid">
+                <div class="popup-image" id="popupImage">
+                    <i class="fas fa-tshirt" id="popupIcon"></i>
+                    <span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>
+                </div>
+                <div class="popup-info">
+                    <span class="popup-tag" id="popupTag">BEST SELLER</span>
+                    <h2 id="popupName">Nama Produk</h2>
+                    <div class="popup-price" id="popupPrice">Rp 250.000 <del>Rp 350.000</del></div>
+                    <div class="popup-desc" id="popupDesc">Deskripsi produk lengkap tentang celana jeans premium ini.</div>
+                    <div class="popup-stock" id="popupStock">Stok: 45</div>
+                    <button class="btn-buy-large" id="popupBuyBtn"><i class="fas fa-shopping-bag"></i> Beli Sekarang</button>
+                </div>
+            </div>
+        </div>
+    </div>
 
-        for (let i = 1; i <= totalPages; i++) {
-          html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-        }
+    <!-- ============================================================
+    FOOTER 4 KOLOM
+    ============================================================ -->
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col">
+                <h4><i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> HEDTRO JEANS</h4>
+                <p>Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.</p>
+                <div class="social-icons">
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-youtube"></i></a>
+                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                </div>
+            </div>
+            <div class="footer-col">
+                <h4>Koleksi Katalog</h4>
+                <ul>
+                    <li>Celana Jeans Pria</li>
+                    <li>Celana Jeans Wanita</li>
+                    <li>Jaket Denim</li>
+                    <li>Aksesoris</li>
+                    <li>Limited Edition</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Layanan Pelanggan</h4>
+                <ul>
+                    <li>Panduan Belanja</li>
+                    <li>Lacak Pesanan</li>
+                    <li>Pengembalian Produk</li>
+                    <li>Syarat & Ketentuan</li>
+                    <li>Kebijakan Privasi</li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Hubungi Kami</h4>
+                <p><i class="fas fa-envelope" style="color:var(--gold-accent);"></i> cs@hedtrojeans.com</p>
+                <p><i class="fas fa-phone" style="color:var(--gold-accent);"></i> +62 812 3456 7890</p>
+                <p><i class="fas fa-map-marker-alt" style="color:var(--gold-accent);"></i> Jakarta, Indonesia</p>
+                <p style="margin-top:6px;"><strong>Jam Operasional:</strong><br />Senin - Jumat 09:00 - 21:00</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            &copy; 2026 HEDTRO JEANS · All Rights Reserved
+        </div>
+    </footer>
 
-        html +=
-          `<button class="page-btn" data-page="next" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
 
-        container.innerHTML = html;
+            // ============================================================
+            // DATA PRODUK
+            // ============================================================
+            const allProducts = [
+                { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
+                    icon: 'fa-tshirt', favorite: true, stock: 45,
+                    desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet. Cocok untuk gaya casual hingga semi-formal.' },
+                { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
+                    icon: 'fa-tshirt', favorite: true, stock: 30,
+                    desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor yang akan membentuk fading alami seiring pemakaian.' },
+                { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM',
+                    icon: 'fa-tshirt', favorite: true, stock: 25,
+                    desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual. Sangat fleksibel (high stretch), pas di paha dan kaki.' },
+                { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%',
+                    icon: 'fa-tshirt', favorite: true, stock: 18,
+                    desc: 'Tampilan retro klasik tahun 90-an dengan efek pencucian warna muda (light wash) yang kasual dan santai.' },
+                { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED',
+                    icon: 'fa-jacket', favorite: true, stock: 20,
+                    desc: 'Jaket denim ikonik berbahan rigid denim 14.5oz dengan saku ganda di dada dan jahitan kontras emas klasik.' },
+                { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER',
+                    icon: 'fa-tshirt', favorite: false, stock: 35,
+                    desc: 'Celana jeans wanita potongan high-waist yang membentuk lekuk pinggang secara sempurna, sangat elastis dan nyaman.' },
+                { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS',
+                    icon: 'fa-belt', favorite: false, stock: 50,
+                    desc: 'Ikat pinggang kulit sapi asli 100% berkualitas tinggi dengan kepala gesper kuningan antik yang tahan karat.' },
+                { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT',
+                    icon: 'fa-tshirt', favorite: false, stock: 22,
+                    desc: 'Kemeja denim kasual pria/wanita berbahan katun ringan 8oz yang lembut, cocok sebagai luaran maupun kemeja utama.' },
+                { id: 9, name: 'Slim Fit Black Raw Denim', price: 260000, original: 360000, tag: 'NEW', icon: 'fa-tshirt',
+                    favorite: false, stock: 28, desc: 'Hitam pekat raw denim, slim fit modern.' },
+                { id: 10, name: 'Cropped Trucker Jacket', price: 390000, original: 500000, tag: 'TRENDY',
+                    icon: 'fa-jacket', favorite: false, stock: 15, desc: 'Jaket cropped pendek, gaya kekinian.' },
+                { id: 11, name: 'Denim Bucket Hat', price: 85000, original: 120000, tag: 'AKSESORIS',
+                    icon: 'fa-hat-cowboy', favorite: false, stock: 40, desc: 'Topi bucket denim, adjustable, nyaman.' },
+                { id: 12, name: 'Canvas Tote Bag Denim', price: 150000, original: 200000, tag: 'AKSESORIS',
+                    icon: 'fa-shopping-bag', favorite: false, stock: 25, desc: 'Tas kanvas denim, besar, cocok untuk daily.' }
+            ];
 
-        container.querySelectorAll('.page-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const page = this.dataset.page;
-            const totalPages = Math.ceil(nonFavoriteProducts.length / itemsPerPage);
-
-            if (page === 'prev' && currentPage > 1) {
-              currentPage--;
-            } else if (page === 'next' && currentPage < totalPages) {
-              currentPage++;
-            } else if (page !== 'prev' && page !== 'next') {
-              currentPage = parseInt(page);
+            // ============================================================
+            // RENDER FAVORITE CAROUSEL
+            // ============================================================
+            function renderFavoriteCarousel() {
+                const container = document.getElementById('favoriteCarousel');
+                const favorites = allProducts.filter(p => p.favorite === true);
+                container.innerHTML = '';
+                favorites.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
+                        <div class="body">
+                            <span class="tag">${p.tag}</span>
+                            <h4>${p.name}</h4>
+                            <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
+                            <div class="btn-group">
+                                <button class="btn-detail" data-id="${p.id}">Detail</button>
+                                <button class="btn-buy" data-id="${p.id}">Beli</button>
+                            </div>
+                        </div>
+                    `;
+                    container.appendChild(card);
+                });
+                bindProductButtons();
             }
-            renderProductGrid(currentPage);
-            document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
-          });
-        });
-      }
 
-      // ============================================================
-      // CAROUSEL HERO
-      // ============================================================
-      const track = document.getElementById('carouselTrack');
-      const dots = document.getElementById('carouselDots');
-      const slides = track.querySelectorAll('.carousel-slide');
-      const totalSlides = slides.length;
-      let currentSlide = 0;
-      let slideInterval = null;
+            // ============================================================
+            // PRODUCT GRID WITH PAGINATION
+            // ============================================================
+            const itemsPerPage = 6;
+            let currentPage = 1;
+            const nonFavoriteProducts = allProducts.filter(p => p.favorite !== true);
 
-      function createDots() {
-        dots.innerHTML = '';
-        for (let i = 0; i < totalSlides; i++) {
-          const dot = document.createElement('span');
-          dot.className = 'dot' + (i === 0 ? ' active' : '');
-          dot.dataset.index = i;
-          dot.addEventListener('click', () => goToSlide(i));
-          dots.appendChild(dot);
-        }
-      }
-      createDots();
+            function renderProductGrid(page) {
+                const grid = document.getElementById('productGrid');
+                const start = (page - 1) * itemsPerPage;
+                const end = start + itemsPerPage;
+                const pageItems = nonFavoriteProducts.slice(start, end);
 
-      function goToSlide(index) {
-        currentSlide = (index + totalSlides) % totalSlides;
-        track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
-        document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
-      }
-
-      function nextSlide() { goToSlide(currentSlide + 1); }
-
-      function prevSlide() { goToSlide(currentSlide - 1); }
-
-      document.getElementById('carouselNext').addEventListener('click', () => { nextSlide();
-        resetInterval(); });
-      document.getElementById('carouselPrev').addEventListener('click', () => { prevSlide();
-        resetInterval(); });
-
-      function resetInterval() { if (slideInterval) clearInterval(slideInterval);
-        slideInterval = setInterval(nextSlide, 5000); }
-      resetInterval();
-
-      // ============================================================
-      // SIDEBAR & BURGER
-      // ============================================================
-      const burgerBtn = document.getElementById('burgerBtn');
-      const sidebar = document.getElementById('sidebar');
-      const sidebarOverlay = document.getElementById('sidebarOverlay');
-      const closeSidebar = document.getElementById('closeSidebar');
-
-      function toggleSidebar(open) {
-        const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
-        sidebar.classList.toggle('open', isOpen);
-        sidebarOverlay.classList.toggle('active', isOpen);
-        burgerBtn.classList.toggle('active', isOpen);
-        document.body.style.overflow = isOpen ? 'hidden' : '';
-      }
-
-      burgerBtn.addEventListener('click', () => toggleSidebar());
-      closeSidebar.addEventListener('click', () => toggleSidebar(false));
-      sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
-
-      // ============================================================
-      // LOGIN OVERLAY
-      // ============================================================
-      const loginOverlay = document.getElementById('loginOverlay');
-      const closeLogin = document.getElementById('closeLogin');
-      const loginMsg = document.getElementById('loginMsg');
-
-      function openLogin() {
-        loginOverlay.classList.add('show');
-        document.body.style.overflow = 'hidden';
-        loginMsg.innerText = '';
-        document.getElementById('loginEmail').value = '';
-        document.getElementById('loginPassword').value = '';
-      }
-
-      function closeLoginFn() {
-        loginOverlay.classList.remove('show');
-        document.body.style.overflow = '';
-      }
-
-      closeLogin.addEventListener('click', closeLoginFn);
-      loginOverlay.addEventListener('click', (e) => { if (e.target === loginOverlay) closeLoginFn(); });
-
-      // ============================================================
-      // NAVIGASI LANDING vs REGISTER vs LOGIN
-      // ============================================================
-      const landingContent = document.getElementById('landingContent');
-      const registerWrapper = document.getElementById('registerWrapper');
-
-      function showLanding() {
-        landingContent.classList.remove('hidden');
-        registerWrapper.classList.remove('active');
-        closeLoginFn();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
-      function showRegister() {
-        landingContent.classList.add('hidden');
-        registerWrapper.classList.add('active');
-        closeLoginFn();
-        window.scrollTo({ top: 0, behavior: 'smooth' });
-      }
-
-      // Tombol login di navbar
-      document.getElementById('navLoginBtn').addEventListener('click', openLogin);
-
-      // Tombol login di sidebar
-      document.getElementById('sideLoginBtn').addEventListener('click', () => {
-        toggleSidebar(false);
-        openLogin();
-      });
-
-      // Tombol daftar di navbar
-      document.getElementById('navRegisterBtn').addEventListener('click', showRegister);
-
-      // Tombol daftar di sidebar
-      document.getElementById('sideRegisterBtn').addEventListener('click', () => {
-        toggleSidebar(false);
-        showRegister();
-      });
-
-      // Back to login dari register
-      document.getElementById('backToLoginFromRegister').addEventListener('click', (e) => {
-        e.preventDefault();
-        openLogin();
-      });
-
-      // Go to register dari login
-      document.getElementById('goToRegister').addEventListener('click', (e) => {
-        e.preventDefault();
-        showRegister();
-      });
-
-      // User badge
-      document.getElementById('navUserBadge').addEventListener('click', function() {
-        const session = localStorage.getItem('mlm_session');
-        if (session) {
-          try {
-            const { id } = JSON.parse(session);
-            const users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
-            const user = users.find(u => u.id === id);
-            if (user) {
-              if (user.email === 'admin@mlm.com') window.location.href = 'admin.html';
-              else window.location.href = 'dashboard.html';
-              return;
+                grid.innerHTML = '';
+                pageItems.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
+                        <div class="body">
+                            <span class="tag">${p.tag}</span>
+                            <h4>${p.name}</h4>
+                            <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
+                            <div class="btn-group">
+                                <button class="btn-detail" data-id="${p.id}">Detail</button>
+                                <button class="btn-buy" data-id="${p.id}">Beli</button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                bindProductButtons();
+                renderPagination();
             }
-          } catch (_) {}
-        }
-        openLogin();
-      });
 
-      // Sidebar menu
-      document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
-        item.addEventListener('click', function() {
-          const page = this.dataset.page;
-          toggleSidebar(false);
-          if (page === 'home') { showLanding();
-            window.scrollTo({ top: 0, behavior: 'smooth' }); }
-          if (page === 'products') { showLanding();
-            document.querySelector('.section-title')?.scrollIntoView({ behavior: 'smooth' }); }
-          if (page === 'about') { showLanding();
-            document.querySelector('.features')?.scrollIntoView({ behavior: 'smooth' }); }
-        });
-      });
+            function renderPagination() {
+                const container = document.getElementById('pagination');
+                const totalPages = Math.ceil(nonFavoriteProducts.length / itemsPerPage);
+                let html = '';
+                html +=
+                    `<button class="page-btn" data-page="prev" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+                for (let i = 1; i <= totalPages; i++) {
+                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                }
+                html +=
+                    `<button class="page-btn" data-page="next" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+                container.innerHTML = html;
 
-      // ============================================================
-      // LOGIN FUNCTION
-      // ============================================================
-      document.getElementById('loginBtn').addEventListener('click', function() {
-        const email = document.getElementById('loginEmail').value.trim();
-        const password = document.getElementById('loginPassword').value.trim();
-        const msgEl = document.getElementById('loginMsg');
-
-        if (!email || !password) {
-          msgEl.className = 'login-msg error';
-          msgEl.innerText = '⚠️ Isi email/username dan password.';
-          return;
-        }
-
-        const users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
-        const user = users.find(u => (u.email === email || u.username === email) && u.password === password);
-
-        if (!user) {
-          msgEl.className = 'login-msg error';
-          msgEl.innerText = '❌ Email/Username atau password salah.';
-          return;
-        }
-
-        localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
-        msgEl.className = 'login-msg success';
-        msgEl.innerText = '✅ Login berhasil!';
-
-        setTimeout(() => {
-          if (user.email === 'admin@mlm.com') {
-            window.location.href = 'admin.html';
-          } else {
-            window.location.href = 'dashboard.html';
-          }
-        }, 1000);
-      });
-
-      // Enter key on login
-      document.getElementById('loginPassword').addEventListener('keydown', function(e) {
-        if (e.key === 'Enter') document.getElementById('loginBtn').click();
-      });
-
-      // ============================================================
-      // REGISTER FUNCTION
-      // ============================================================
-      const DB_KEY = 'hedtro_mlm_users';
-
-      function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
-
-      function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-
-      // Position selector
-      const positionOptions = document.querySelectorAll('.position-option');
-      const positionInput = document.getElementById('position');
-
-      positionOptions.forEach(opt => {
-        opt.addEventListener('click', function() {
-          positionOptions.forEach(o => o.classList.remove('active'));
-          this.classList.add('active');
-          positionInput.value = this.dataset.value;
-        });
-      });
-
-      function registerUser() {
-        const username = document.getElementById('username').value.trim();
-        const email = document.getElementById('email').value.trim();
-        const password = document.getElementById('password').value.trim();
-        const confirmPassword = document.getElementById('confirmPassword').value.trim();
-        const fullname = document.getElementById('fullname').value.trim();
-        const nik = document.getElementById('nik').value.trim();
-        const phone = document.getElementById('phone').value.trim();
-        const whatsapp = document.getElementById('whatsapp').value.trim();
-        const bankName = document.getElementById('bankName').value;
-        const bankAccount = document.getElementById('bankAccount').value.trim();
-        const bankHolder = document.getElementById('bankHolder').value.trim();
-        const address = document.getElementById('address').value.trim();
-        const city = document.getElementById('city').value.trim();
-        const serialNumber = document.getElementById('serialNumber').value.trim();
-        const jeansSize = document.getElementById('jeansSize').value;
-        const jeansColor = document.getElementById('jeansColor').value;
-        const sponsor = document.getElementById('sponsor').value.trim();
-        const upline = document.getElementById('upline').value.trim();
-        const position = document.getElementById('position').value;
-        const msgEl = document.getElementById('regMsg');
-
-        if (!username || !email || !password || !confirmPassword || !fullname || !nik || !phone || !whatsapp ||
-          !bankAccount || !bankHolder || !address || !city || !serialNumber) {
-          msgEl.className = 'msg error';
-          msgEl.innerText = '⚠️ Semua field wajib diisi (kecuali sponsor & upline).';
-          return;
-        }
-
-        if (password.length < 6) {
-          msgEl.className = 'msg error';
-          msgEl.innerText = '⚠️ Kata sandi minimal 6 karakter.';
-          return;
-        }
-
-        if (password !== confirmPassword) {
-          msgEl.className = 'msg error';
-          msgEl.innerText = '⚠️ Kata sandi dan konfirmasi tidak sama.';
-          return;
-        }
-
-        if (nik.length !== 16 || isNaN(nik)) {
-          msgEl.className = 'msg error';
-          msgEl.innerText = '⚠️ NIK harus 16 digit angka.';
-          return;
-        }
-
-        let users = loadUsers();
-
-        if (users.find(u => u.username === username)) {
-          msgEl.className = 'msg error';
-          msgEl.innerText = '⚠️ Username sudah terdaftar.';
-          return;
-        }
-
-        if (users.find(u => u.email === email)) {
-          msgEl.className = 'msg error';
-          msgEl.innerText = '⚠️ Email sudah terdaftar.';
-          return;
-        }
-
-        let sponsorId = null;
-        let uplineId = null;
-
-        if (sponsor) {
-          const sponsorUser = users.find(u => u.username === sponsor);
-          if (!sponsorUser) {
-            msgEl.className = 'msg error';
-            msgEl.innerText = '⚠️ Username sponsor tidak ditemukan.';
-            return;
-          }
-          sponsorId = sponsorUser.id;
-        }
-
-        if (upline) {
-          const uplineUser = users.find(u => u.username === upline);
-          if (!uplineUser) {
-            msgEl.className = 'msg error';
-            msgEl.innerText = '⚠️ Username upline tidak ditemukan.';
-            return;
-          }
-          uplineId = uplineUser.id;
-        }
-
-        if (sponsorId) {
-          const sponsorUser = users.find(u => u.id === sponsorId);
-          if (position === 'left' && sponsorUser.left) {
-            msgEl.className = 'msg error';
-            msgEl.innerText = '⚠️ Posisi kiri sponsor sudah terisi.';
-            return;
-          }
-          if (position === 'right' && sponsorUser.right) {
-            msgEl.className = 'msg error';
-            msgEl.innerText = '⚠️ Posisi kanan sponsor sudah terisi.';
-            return;
-          }
-        }
-
-        const newUser = {
-          id: users.length ? Math.max(...users.map(u => u.id)) + 1 : 1,
-          username,
-          email,
-          password,
-          fullname,
-          nik,
-          phone,
-          whatsapp,
-          bankName,
-          bankAccount,
-          bankHolder,
-          address,
-          city,
-          serialNumber,
-          jeansSize,
-          jeansColor,
-          sponsor_id: sponsorId,
-          upline_id: uplineId,
-          position: position || 'left',
-          left: null,
-          right: null,
-          status: 'free',
-          wallet: 0,
-          bonus_sponsor: 0,
-          bonus_binary: 0,
-          bonus_reward: 0,
-          bonus_ro: 0,
-          binary_tree: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-          reward_levels: [0, 0, 0, 0, 0],
-          purchase_history: [],
-          transactions: [],
-          proof_image: null,
-          registeredAt: new Date().toISOString()
-        };
-
-        users.push(newUser);
-        saveUsers(users);
-
-        if (sponsorId) {
-          const sponsorUser = users.find(u => u.id === sponsorId);
-          if (position === 'left') sponsorUser.left = newUser.id;
-          else sponsorUser.right = newUser.id;
-          saveUsers(users);
-          updateBinaryTree(sponsorId, 1);
-        }
-
-        msgEl.className = 'msg success';
-        msgEl.innerText = '✅ Pendaftaran berhasil! Silakan login.';
-
-        document.getElementById('registerForm').reset();
-
-        setTimeout(() => {
-          showLanding();
-        }, 2000);
-      }
-
-      function updateBinaryTree(userId, level) {
-        if (level > 10) return;
-        let users = loadUsers();
-        const user = users.find(u => u.id === userId);
-        if (!user) return;
-        if (!user.binary_tree) user.binary_tree = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-        user.binary_tree[level - 1] = (user.binary_tree[level - 1] || 0) + 1;
-        if (level <= 5) {
-          if (!user.reward_levels) user.reward_levels = [0, 0, 0, 0, 0];
-          user.reward_levels[level - 1] = (user.reward_levels[level - 1] || 0) + 1;
-        }
-        saveUsers(users);
-        if (user.sponsor_id) {
-          updateBinaryTree(user.sponsor_id, level + 1);
-        }
-      }
-
-      document.getElementById('registerBtn').addEventListener('click', registerUser);
-
-      document.querySelectorAll('#registerForm input, #registerForm select, #registerForm textarea').forEach(el => {
-        el.addEventListener('keydown', function(e) {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            registerUser();
-          }
-        });
-      });
-
-      // ============================================================
-      // UPDATE UI
-      // ============================================================
-      function updateUI() {
-        const navUserName = document.getElementById('navUserName');
-        const navLoginBtn = document.getElementById('navLoginBtn');
-        const navRegisterBtn = document.getElementById('navRegisterBtn');
-        const session = localStorage.getItem('mlm_session');
-        if (session) {
-          try {
-            const { id } = JSON.parse(session);
-            const users = loadUsers();
-            const user = users.find(u => u.id === id);
-            if (user) {
-              navUserName.innerText = user.username || user.name;
-              navLoginBtn.style.display = 'none';
-              navRegisterBtn.style.display = 'none';
-              return;
+                container.querySelectorAll('.page-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const page = this.dataset.page;
+                        const totalPages = Math.ceil(nonFavoriteProducts.length / itemsPerPage);
+                        if (page === 'prev' && currentPage > 1) { currentPage--; } else if (page === 'next' &&
+                            currentPage < totalPages) { currentPage++; } else if (page !== 'prev' && page !==
+                            'next') { currentPage = parseInt(page); }
+                        renderProductGrid(currentPage);
+                        document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth',
+                            block: 'start' });
+                    });
+                });
             }
-          } catch (_) {}
-        }
-        navUserName.innerText = 'Guest';
-        navLoginBtn.style.display = 'flex';
-        navRegisterBtn.style.display = 'flex';
-      }
 
-      // ============================================================
-      // INIT
-      // ============================================================
-      renderFavoriteCarousel();
-      renderProductGrid(1);
-      updateUI();
+            // ============================================================
+            // PRODUCT BUTTONS (Detail & Beli)
+            // ============================================================
+            function bindProductButtons() {
+                document.querySelectorAll('.btn-detail').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        openProductPopup(id);
+                    });
+                });
+                document.querySelectorAll('.btn-buy').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        const product = allProducts.find(p => p.id === id);
+                        if (product) {
+                            alert(`🛒 ${product.name} ditambahkan ke keranjang!\nHarga: Rp ${product.price.toLocaleString()}`);
+                            updateCartBadge();
+                        }
+                    });
+                });
+            }
 
-      console.log('🟦 HEDTRO JEANS · Landing + Login + Register siap');
-    })();
-  </script>
+            // ============================================================
+            // PRODUCT POPUP
+            // ============================================================
+            const productPopup = document.getElementById('productPopup');
+            const closePopup = document.getElementById('closePopup');
+            const popupImage = document.getElementById('popupImage');
+            let isZoomed = false;
+
+            function openProductPopup(id) {
+                const product = allProducts.find(p => p.id === id);
+                if (!product) return;
+
+                document.getElementById('popupTag').textContent = product.tag;
+                document.getElementById('popupName').textContent = product.name;
+                document.getElementById('popupPrice').innerHTML =
+                    `Rp ${product.price.toLocaleString()} <del>Rp ${product.original.toLocaleString()}</del>`;
+                document.getElementById('popupDesc').textContent = product.desc || 'Deskripsi produk tidak tersedia.';
+                const stockEl = document.getElementById('popupStock');
+                stockEl.textContent = `Stok: ${product.stock}`;
+                stockEl.className = `popup-stock${product.stock <= 0 ? ' out' : ''}`;
+                document.getElementById('popupIcon').className = `fas ${product.icon}`;
+
+                // Set buy button
+                document.getElementById('popupBuyBtn').onclick = function() {
+                    alert(`🛒 ${product.name} ditambahkan ke keranjang!`);
+                    updateCartBadge();
+                    closePopupFn();
+                };
+
+                // Reset zoom
+                popupImage.classList.remove('zoomed');
+                isZoomed = false;
+
+                productPopup.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closePopupFn() {
+                productPopup.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            closePopup.addEventListener('click', closePopupFn);
+            productPopup.addEventListener('click', function(e) {
+                if (e.target === productPopup) closePopupFn();
+            });
+
+            // Zoom image
+            popupImage.addEventListener('click', function() {
+                isZoomed = !isZoomed;
+                this.classList.toggle('zoomed', isZoomed);
+            });
+
+            // ============================================================
+            // CAROUSEL SCROLL
+            // ============================================================
+            document.getElementById('favScrollLeft').addEventListener('click', function() {
+                document.getElementById('favoriteCarousel').scrollBy({ left: -240, behavior: 'smooth' });
+            });
+            document.getElementById('favScrollRight').addEventListener('click', function() {
+                document.getElementById('favoriteCarousel').scrollBy({ left: 240, behavior: 'smooth' });
+            });
+
+            // ============================================================
+            // CAROUSEL HERO
+            // ============================================================
+            const track = document.getElementById('carouselTrack');
+            const dots = document.getElementById('carouselDots');
+            const slides = track.querySelectorAll('.carousel-slide');
+            const totalSlides = slides.length;
+            let currentSlide = 0;
+            let slideInterval = null;
+
+            function createDots() {
+                dots.innerHTML = '';
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('span');
+                    dot.className = 'dot' + (i === 0 ? ' active' : '');
+                    dot.dataset.index = i;
+                    dot.addEventListener('click', () => goToSlide(i));
+                    dots.appendChild(dot);
+                }
+            }
+            createDots();
+
+            function goToSlide(index) {
+                currentSlide = (index + totalSlides) % totalSlides;
+                track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+                document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+            }
+
+            function nextSlide() { goToSlide(currentSlide + 1); }
+
+            function prevSlide() { goToSlide(currentSlide - 1); }
+
+            document.getElementById('carouselNext').addEventListener('click', () => { nextSlide();
+                resetInterval(); });
+            document.getElementById('carouselPrev').addEventListener('click', () => { prevSlide();
+                resetInterval(); });
+
+            function resetInterval() { if (slideInterval) clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, 5000); }
+            resetInterval();
+
+            // ============================================================
+            // FAQ TOGGLE
+            // ============================================================
+            window.toggleFaq = function(el) {
+                const answer = el.parentElement.querySelector('.faq-answer');
+                const icon = el.querySelector('i');
+                const isOpen = answer.classList.contains('open');
+                // Close all
+                document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+                document.querySelectorAll('.faq-question i').forEach(i => i.classList.remove('active'));
+                if (!isOpen) {
+                    answer.classList.add('open');
+                    icon.classList.add('active');
+                }
+            };
+
+            // ============================================================
+            // TRACK ORDER
+            // ============================================================
+            document.getElementById('trackBtn').addEventListener('click', function() {
+                const input = document.getElementById('trackInput').value.trim();
+                const result = document.getElementById('trackResult');
+                if (!input) {
+                    result.innerHTML = '⚠️ Masukkan nomor pesanan terlebih dahulu.';
+                    result.style.color = '#b13e3e';
+                    return;
+                }
+                const orders = ['HDT-2024-001', 'HDT-2024-002', 'HDT-2024-003'];
+                if (orders.includes(input.toUpperCase())) {
+                    const statuses = ['📦 Pesanan sedang diproses', '🚚 Pesanan dalam perjalanan',
+                        '✅ Pesanan telah sampai'
+                    ];
+                    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                    result.innerHTML =
+                        `✅ <strong>${input.toUpperCase()}</strong> - ${randomStatus} <br /><span style="font-size:0.8rem; opacity:0.6;">Update terakhir: ${new Date().toLocaleDateString()}</span>`;
+                    result.style.color = '#1f7a4b';
+                } else {
+                    result.innerHTML = '❌ Nomor pesanan tidak ditemukan. Periksa kembali.';
+                    result.style.color = '#b13e3e';
+                }
+            });
+
+            // ============================================================
+            // SEARCH
+            // ============================================================
+            document.getElementById('searchBtn').addEventListener('click', function() {
+                const query = document.getElementById('searchInput').value.trim().toLowerCase();
+                if (!query) {
+                    document.querySelector('.section-title').scrollIntoView({ behavior: 'smooth' });
+                    renderProductGrid(1);
+                    return;
+                }
+                const results = allProducts.filter(p => p.name.toLowerCase().includes(query) || p.tag.toLowerCase()
+                .includes(query));
+                const grid = document.getElementById('productGrid');
+                grid.innerHTML = '';
+                if (results.length === 0) {
+                    grid.innerHTML =
+                        '<p style="grid-column:1/-1; text-align:center; padding:40px; color:var(--denim-navy);">Tidak ada produk yang ditemukan.</p>';
+                    return;
+                }
+                results.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
+                        <div class="body">
+                            <span class="tag">${p.tag}</span>
+                            <h4>${p.name}</h4>
+                            <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
+                            <div class="btn-group">
+                                <button class="btn-detail" data-id="${p.id}">Detail</button>
+                                <button class="btn-buy" data-id="${p.id}">Beli</button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                bindProductButtons();
+                document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+
+            document.getElementById('searchInput').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('searchBtn').click();
+            });
+
+            // ============================================================
+            // CART BADGE
+            // ============================================================
+            let cartCount = 0;
+
+            function updateCartBadge() {
+                cartCount++;
+                document.querySelector('.cart-btn .badge').textContent = cartCount;
+            }
+
+            document.getElementById('cartBtn').addEventListener('click', function() {
+                alert(`🛒 Keranjang belanja (${cartCount} item)`);
+            });
+
+            // ============================================================
+            // SIDEBAR & BURGER (HP ONLY)
+            // ============================================================
+            const burgerBtn = document.getElementById('burgerBtn');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const closeSidebar = document.getElementById('closeSidebar');
+
+            function toggleSidebar(open) {
+                const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
+                sidebar.classList.toggle('open', isOpen);
+                sidebarOverlay.classList.toggle('active', isOpen);
+                burgerBtn.classList.toggle('active', isOpen);
+                document.body.style.overflow = isOpen ? 'hidden' : '';
+            }
+
+            burgerBtn.addEventListener('click', () => toggleSidebar());
+            closeSidebar.addEventListener('click', () => toggleSidebar(false));
+            sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
+
+            // ============================================================
+            // NAVIGASI
+            // ============================================================
+            const landingContent = document.getElementById('landingContent');
+            const registerWrapper = document.getElementById('registerWrapper');
+            const loginOverlay = document.getElementById('loginOverlay');
+
+            function showLanding() {
+                landingContent.style.display = 'block';
+                registerWrapper.style.display = 'none';
+                loginOverlay.style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function showRegister() {
+                landingContent.style.display = 'none';
+                registerWrapper.style.display = 'block';
+                loginOverlay.style.display = 'none';
+                window.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            function openLogin() {
+                loginOverlay.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeLoginFn() {
+                loginOverlay.style.display = 'none';
+                document.body.style.overflow = '';
+            }
+
+            document.getElementById('closeLogin').addEventListener('click', closeLoginFn);
+            loginOverlay.addEventListener('click', function(e) { if (e.target === loginOverlay) closeLoginFn(); });
+
+            // Navbar buttons
+            document.getElementById('navLoginBtn').addEventListener('click', openLogin);
+            document.getElementById('navRegisterBtn').addEventListener('click', showRegister);
+
+            // Sidebar login/register
+            document.getElementById('sideLoginBtn').addEventListener('click', () => { toggleSidebar(false);
+                openLogin(); });
+            document.getElementById('sideRegisterBtn').addEventListener('click', () => { toggleSidebar(false);
+                showRegister(); });
+
+            // Back to login from register
+            document.getElementById('backToLoginFromRegister').addEventListener('click', (e) => {
+                e.preventDefault();
+                openLogin();
+            });
+
+            // Go to register from login
+            document.getElementById('goToRegister').addEventListener('click', (e) => {
+                e.preventDefault();
+                showRegister();
+            });
+
+            // Sidebar menu navigation
+            document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
+                item.addEventListener('click', function() {
+                    const page = this.dataset.page;
+                    toggleSidebar(false);
+                    showLanding();
+                    const target = document.getElementById(page);
+                    if (target) target.scrollIntoView({ behavior: 'smooth' });
+                    if (page === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
+                    if (page === 'products') document.querySelector('.section-title')?.scrollIntoView({ behavior: 'smooth' });
+                });
+            });
+
+            // Desktop menu navigation
+            document.querySelectorAll('.nav-menu a').forEach(link => {
+                link.addEventListener('click', function(e) {
+                    const href = this.getAttribute('href');
+                    if (href && href.startsWith('#')) {
+                        e.preventDefault();
+                        const target = document.querySelector(href);
+                        if (target) target.scrollIntoView({ behavior: 'smooth' });
+                    }
+                });
+            });
+
+            // ============================================================
+            // LOGIN FUNCTION
+            // ============================================================
+            document.getElementById('loginBtn').addEventListener('click', function() {
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value.trim();
+                const msgEl = document.getElementById('loginMsg');
+                if (!email || !password) {
+                    msgEl.className = 'login-msg error';
+                    msgEl.innerText = '⚠️ Isi email/username dan password.';
+                    return;
+                }
+                const users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
+                const user = users.find(u => (u.email === email || u.username === email) && u.password === password);
+                if (!user) {
+                    msgEl.className = 'login-msg error';
+                    msgEl.innerText = '❌ Email/Username atau password salah.';
+                    return;
+                }
+                localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
+                msgEl.className = 'login-msg success';
+                msgEl.innerText = '✅ Login berhasil!';
+                setTimeout(() => {
+                    window.location.href = user.email === 'admin@mlm.com' ? 'admin.html' : 'dashboard.html';
+                }, 1000);
+            });
+
+            document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('loginBtn').click();
+            });
+
+            // ============================================================
+            // REGISTER FUNCTION
+            // ============================================================
+            const positionOptions = document.querySelectorAll('.position-option');
+            const positionInput = document.getElementById('position');
+
+            positionOptions.forEach(opt => {
+                opt.addEventListener('click', function() {
+                    positionOptions.forEach(o => o.classList.remove('active'));
+                    this.classList.add('active');
+                    positionInput.value = this.dataset.value;
+                });
+            });
+
+            document.getElementById('registerBtn').addEventListener('click', function() {
+                const username = document.getElementById('username').value.trim();
+                const email = document.getElementById('email').value.trim();
+                const password = document.getElementById('password').value.trim();
+                const confirmPassword = document.getElementById('confirmPassword').value.trim();
+                const fullname = document.getElementById('fullname').value.trim();
+                const nik = document.getElementById('nik').value.trim();
+                const phone = document.getElementById('phone').value.trim();
+                const whatsapp = document.getElementById('whatsapp').value.trim();
+                const bankName = document.getElementById('bankName').value;
+                const bankAccount = document.getElementById('bankAccount').value.trim();
+                const bankHolder = document.getElementById('bankHolder').value.trim();
+                const address = document.getElementById('address').value.trim();
+                const city = document.getElementById('city').value.trim();
+                const serialNumber = document.getElementById('serialNumber').value.trim();
+                const jeansSize = document.getElementById('jeansSize').value;
+                const jeansColor = document.getElementById('jeansColor').value;
+                const sponsor = document.getElementById('sponsor').value.trim();
+                const upline = document.getElementById('upline').value.trim();
+                const position = document.getElementById('position').value;
+                const msgEl = document.getElementById('regMsg');
+
+                if (!username || !email || !password || !confirmPassword || !fullname || !nik || !phone || !whatsapp ||
+                    !bankAccount || !bankHolder || !address || !city || !serialNumber) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ Semua field wajib diisi (kecuali sponsor & upline).';
+                    return;
+                }
+                if (password.length < 6) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ Kata sandi minimal 6 karakter.';
+                    return;
+                }
+                if (password !== confirmPassword) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ Kata sandi dan konfirmasi tidak sama.';
+                    return;
+                }
+                if (nik.length !== 16 || isNaN(nik)) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ NIK harus 16 digit angka.';
+                    return;
+                }
+
+                let users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
+                if (users.find(u => u.username === username)) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ Username sudah terdaftar.';
+                    return;
+                }
+                if (users.find(u => u.email === email)) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ Email sudah terdaftar.';
+                    return;
+                }
+
+                let sponsorId = null;
+                if (sponsor) {
+                    const sponsorUser = users.find(u => u.username === sponsor);
+                    if (!sponsorUser) {
+                        msgEl.className = 'msg error';
+                        msgEl.innerText = '⚠️ Username sponsor tidak ditemukan.';
+                        return;
+                    }
+                    sponsorId = sponsorUser.id;
+                    if (position === 'left' && sponsorUser.left) {
+                        msgEl.className = 'msg error';
+                        msgEl.innerText = '⚠️ Posisi kiri sponsor sudah terisi.';
+                        return;
+                    }
+                    if (position === 'right' && sponsorUser.right) {
+                        msgEl.className = 'msg error';
+                        msgEl.innerText = '⚠️ Posisi kanan sponsor sudah terisi.';
+                        return;
+                    }
+                }
+
+                const newUser = {
+                    id: users.length ? Math.max(...users.map(u => u.id)) + 1 : 1,
+                    username,
+                    email,
+                    password,
+                    fullname,
+                    nik,
+                    phone,
+                    whatsapp,
+                    bankName,
+                    bankAccount,
+                    bankHolder,
+                    address,
+                    city,
+                    serialNumber,
+                    jeansSize,
+                    jeansColor,
+                    sponsor_id: sponsorId,
+                    upline_id: null,
+                    position: position || 'left',
+                    left: null,
+                    right: null,
+                    status: 'free',
+                    wallet: 0,
+                    bonus_sponsor: 0,
+                    bonus_binary: 0,
+                    bonus_reward: 0,
+                    bonus_ro: 0,
+                    binary_tree: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                    reward_levels: [0, 0, 0, 0, 0],
+                    purchase_history: [],
+                    transactions: [],
+                    proof_image: null,
+                    registeredAt: new Date().toISOString()
+                };
+                users.push(newUser);
+                localStorage.setItem('hedtro_mlm_users', JSON.stringify(users));
+
+                if (sponsorId) {
+                    const sponsorUser = users.find(u => u.id === sponsorId);
+                    if (position === 'left') sponsorUser.left = newUser.id;
+                    else sponsorUser.right = newUser.id;
+                    localStorage.setItem('hedtro_mlm_users', JSON.stringify(users));
+                    updateBinaryTree(sponsorId, 1);
+                }
+
+                msgEl.className = 'msg success';
+                msgEl.innerText = '✅ Pendaftaran berhasil! Silakan login.';
+                document.getElementById('registerForm').reset();
+                setTimeout(() => showLanding(), 2000);
+            });
+
+            function updateBinaryTree(userId, level) {
+                if (level > 10) return;
+                let users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
+                const user = users.find(u => u.id === userId);
+                if (!user) return;
+                if (!user.binary_tree) user.binary_tree = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                user.binary_tree[level - 1] = (user.binary_tree[level - 1] || 0) + 1;
+                if (level <= 5) {
+                    if (!user.reward_levels) user.reward_levels = [0, 0, 0, 0, 0];
+                    user.reward_levels[level - 1] = (user.reward_levels[level - 1] || 0) + 1;
+                }
+                localStorage.setItem('hedtro_mlm_users', JSON.stringify(users));
+                if (user.sponsor_id) updateBinaryTree(user.sponsor_id, level + 1);
+            }
+
+            // ============================================================
+            // USER BADGE
+            // ============================================================
+            function updateUI() {
+                const navUserName = document.getElementById('navUserName');
+                const navLoginBtn = document.getElementById('navLoginBtn');
+                const navRegisterBtn = document.getElementById('navRegisterBtn');
+                const session = localStorage.getItem('mlm_session');
+                if (session) {
+                    try {
+                        const { id } = JSON.parse(session);
+                        const users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
+                        const user = users.find(u => u.id === id);
+                        if (user) {
+                            navUserName.innerText = user.username || user.name;
+                            navLoginBtn.style.display = 'none';
+                            navRegisterBtn.style.display = 'none';
+                            return;
+                        }
+                    } catch (_) {}
+                }
+                navUserName.innerText = 'Guest';
+                navLoginBtn.style.display = 'flex';
+                navRegisterBtn.style.display = 'flex';
+            }
+
+            document.getElementById('navUserBadge').addEventListener('click', function() {
+                const session = localStorage.getItem('mlm_session');
+                if (session) {
+                    try {
+                        const { id } = JSON.parse(session);
+                        const users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
+                        const user = users.find(u => u.id === id);
+                        if (user) {
+                            window.location.href = user.email === 'admin@mlm.com' ? 'admin.html' : 'dashboard.html';
+                            return;
+                        }
+                    } catch (_) {}
+                }
+                openLogin();
+            });
+
+            // ============================================================
+            // INIT
+            // ============================================================
+            renderFavoriteCarousel();
+            renderProductGrid(1);
+            updateUI();
+
+            console.log('🟦 HEDTRO JEANS · Desktop menu + semua fitur siap');
+        })();
+    </script>
 
 </body>
 </html>
