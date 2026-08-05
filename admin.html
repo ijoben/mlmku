@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <style>
+        /* ===== SAMA SEPERTI SEBELUMNYA ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --denim-dark: #0b1a2b;
@@ -272,7 +273,6 @@
             margin-top:30px; font-size:0.8rem;
         }
 
-        /* ===== DASHBOARD STATS ===== */
         .stats-grid {
             display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
             gap:16px; margin-bottom:28px;
@@ -314,7 +314,6 @@
         .history-item .amount.plus { color:#1f7a4b; }
         .history-item .amount.minus { color:#b13e3e; }
 
-        /* ===== LOGIN OVERLAY ===== */
         .login-overlay {
             position:fixed; inset:0; z-index:9999;
             background:rgba(0,0,0,0.7);
@@ -410,7 +409,6 @@
         }
         .login-overlay.hidden { display:none; }
 
-        /* ===== MODAL CUSTOM ===== */
         .modal-overlay {
             display:none;
             position:fixed; inset:0; z-index:9998;
@@ -419,9 +417,7 @@
             align-items:center; justify-content:center;
             padding:20px;
         }
-        .modal-overlay.show {
-            display:flex;
-        }
+        .modal-overlay.show { display:flex; }
         .modal-box {
             background:var(--white);
             max-width:600px; width:100%;
@@ -639,8 +635,7 @@
         </nav>
 
         <div class="main-content">
-
-            <!-- ===== DASHBOARD ===== -->
+            <!-- DASHBOARD -->
             <div class="tab-content active" id="tabDashboard">
                 <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
                 <div class="stats-grid" id="dashboardStats">
@@ -657,7 +652,7 @@
                 </div>
             </div>
 
-            <!-- ===== MEMBERS ===== -->
+            <!-- MEMBERS -->
             <div class="tab-content" id="tabMembers">
                 <h1 class="page-title"><i class="fas fa-users"></i> Member</h1>
                 <div class="flex-row">
@@ -674,7 +669,7 @@
                 <div class="text-muted mt-16">Total member: <span id="totalMembers">0</span></div>
             </div>
 
-            <!-- ===== PRODUCTS ===== -->
+            <!-- PRODUCTS -->
             <div class="tab-content" id="tabProducts">
                 <h1 class="page-title"><i class="fas fa-boxes"></i> Produk</h1>
                 <div class="flex-row">
@@ -688,7 +683,7 @@
                 </div>
             </div>
 
-            <!-- ===== VERIFICATION ===== -->
+            <!-- VERIFICATION -->
             <div class="tab-content" id="tabVerification">
                 <h1 class="page-title"><i class="fas fa-check-double"></i> Verifikasi</h1>
                 <div class="flex-row">
@@ -702,7 +697,7 @@
                 </div>
             </div>
 
-            <!-- ===== ORDERS ===== -->
+            <!-- ORDERS -->
             <div class="tab-content" id="tabOrders">
                 <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Orders</h1>
                 <div class="flex-row">
@@ -716,7 +711,7 @@
                 </div>
             </div>
 
-            <!-- ===== SETTINGS ===== -->
+            <!-- SETTINGS -->
             <div class="tab-content" id="tabSettings">
                 <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan</h1>
                 <div class="settings-grid">
@@ -749,14 +744,12 @@
                     </div>
                 </div>
             </div>
-
         </div>
 
         <footer class="footer">
             <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Admin Panel</p>
             <p style="opacity:0.6; margin-top:4px;">Sistem MLM terintegrasi</p>
         </footer>
-
     </div>
 
     <script>
@@ -1074,7 +1067,7 @@
             }
 
             // ============================================================
-            // RENDER PRODUCTS
+            // RENDER PRODUCTS - GAMBAR LANGSUNG DARI DATA
             // ============================================================
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
@@ -1084,7 +1077,13 @@
                 products.forEach((p, idx) => {
                     const sizes = (p.sizes || []).join(', ') || '-';
                     const colors = (p.colors || []).join(', ') || '-';
-                    const imgHtml = p.image ? `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />` : `<i class="fas fa-tshirt" style="font-size:1.5rem;color:var(--denim-blue);"></i>`;
+                    // Tampilkan gambar jika ada
+                    let imgHtml = `<i class="fas fa-tshirt" style="font-size:1.5rem;color:var(--denim-blue);"></i>`;
+                    if (p.image && p.image.startsWith('data:image')) {
+                        imgHtml = `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />`;
+                    } else if (p.image && p.image.startsWith('http')) {
+                        imgHtml = `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />`;
+                    }
                     html += `<tr>
                         <td>${idx+1}</td>
                         <td>${imgHtml}</td>
@@ -1134,6 +1133,7 @@
 
                 const sizesStr = (p.sizes || []).join(', ');
                 const colorsStr = (p.colors || []).join(', ');
+                const imagePreviewHtml = p.image ? `<img src="${p.image}" alt="Preview" />` : '';
 
                 let html = `
                     <h3><i class="fas fa-edit" style="color:var(--gold-accent);"></i> Edit Produk</h3>
@@ -1193,7 +1193,6 @@
 
                 openModal(html);
 
-                // File input handler
                 const fileInput = document.getElementById('editImageFile');
                 const imagePreview = document.getElementById('editImagePreview');
                 const imageLabel = document.getElementById('editImageLabel');
@@ -1377,7 +1376,7 @@
             });
 
             // ============================================================
-            // RENDER ORDERS - DENGAN CEK BUKTI PEMBAYARAN
+            // RENDER ORDERS
             // ============================================================
             function renderOrders() {
                 const tbody = document.getElementById('ordersTableBody');
@@ -1419,7 +1418,6 @@
                 });
                 tbody.innerHTML = html;
 
-                // View Proof
                 document.querySelectorAll('.view-proof').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.dataset.id);
@@ -1863,7 +1861,7 @@
                 }, 15000);
             }
 
-            console.log('🟦 HEDTRO · Admin Panel lengkap dengan Modal Custom');
+            console.log('🟦 HEDTRO · Admin Panel lengkap');
             console.log('🔑 Admin: admin@mlm.com / admin123');
         })();
     </script>
