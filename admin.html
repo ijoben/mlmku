@@ -382,12 +382,20 @@
         .login-overlay .login-box .demo-hint span:hover {
             text-decoration:underline;
         }
+        .login-overlay .login-box .back-to-home {
+            display:inline-block; margin-top:12px;
+            color:var(--denim-blue); font-size:0.8rem;
+            cursor:pointer;
+        }
+        .login-overlay .login-box .back-to-home:hover {
+            text-decoration:underline;
+        }
         .login-overlay.hidden { display:none; }
     </style>
 </head>
 <body>
 
-    <!-- ===== LOGIN OVERLAY (Halaman Login Terpisah di Admin) ===== -->
+    <!-- ===== LOGIN OVERLAY ===== -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <div class="logo-icon"><i class="fas fa-tshirt"></i></div>
@@ -407,8 +415,8 @@
             </form>
             <div class="demo-hint">
                 🔑 Demo: <span id="adminDemoBtn">admin@mlm.com / admin123</span>
-                &nbsp;|&nbsp; <a href="index.html" style="color:var(--denim-blue);">Kembali</a>
             </div>
+            <a href="index.html" class="back-to-home"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
         </div>
     </div>
 
@@ -1295,6 +1303,7 @@
 
             console.log('🟦 HEDTRO · Admin Panel dengan login terpisah');
             console.log('🔑 Admin: admin@mlm.com / admin123');
+            console.log('📌 User login di login.html');
         })();
     </script>
 
