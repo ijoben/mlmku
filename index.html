@@ -7,6 +7,9 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
   <style>
+    /* ============================================================
+       RESET & ROOT
+       ============================================================ */
     * {
       margin: 0;
       padding: 0;
@@ -50,10 +53,6 @@
       font-family: inherit;
       border: none;
       background: none;
-    }
-    img {
-      max-width: 100%;
-      display: block;
     }
 
     ::-webkit-scrollbar {
@@ -167,7 +166,6 @@
        BURGER - PASTI MUNCUL DI SEMUA UKURAN
        ============================================================ */
     .burger-btn {
-      display: flex !important;
       flex-direction: column;
       gap: 5px;
       padding: 6px;
@@ -774,7 +772,7 @@
         display: none;
       }
 
-      /* BURGER TETAP TAMPIL */
+      /* === INI YANG PALING PENTING === */
       .burger-btn {
         display: flex !important;
       }
@@ -880,9 +878,14 @@
         font-size: 0.65rem;
         padding: 4px 12px;
       }
+
+      /* === PASTIKAN BURGER TETAP TAMPIL === */
+      .burger-btn {
+        display: flex !important;
+      }
     }
 
-    /* DESKTOP - BURGER TETAP TAMPIL */
+    /* === DESKTOP: BURGER TETAP TAMPIL === */
     @media (min-width: 769px) {
       .burger-btn {
         display: flex !important;
@@ -1428,7 +1431,7 @@
       }
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Burger selalu tampil di semua layar');
+      console.log('🟦 HEDTRO JEANS · Burger PASTI tampil di semua layar');
     })();
   </script>
 
