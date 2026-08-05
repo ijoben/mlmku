@@ -1,845 +1,1036 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Admin · HEDTRO JEANS</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-  <style>
-    /* ===== SAMA SEPERTI SEBELUMNYA ===== */
-    * { margin:0; padding:0; box-sizing:border-box; }
-    :root {
-      --denim-dark: #0b1a2b;
-      --denim-navy: #1a2e44;
-      --denim-blue: #2a4b6e;
-      --denim-light: #e8edf2;
-      --gold-accent: #c9a84c;
-      --gold-light: #e8d5a3;
-      --cream: #f7f4ef;
-      --white: #ffffff;
-      --shadow: 0 4px 20px rgba(0,0,0,0.08);
-      --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
-      --radius: 28px;
-      --radius-sm: 14px;
-      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
-      --sidebar-width: 280px;
-    }
-    body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background: var(--cream);
-      color: var(--denim-dark);
-      padding-top: 70px;
-      overflow-x: hidden;
-    }
-    a { text-decoration:none; color:inherit; }
-    button { cursor:pointer; font-family:inherit; border:none; background:none; }
-    ::-webkit-scrollbar { width:6px; }
-    ::-webkit-scrollbar-track { background:var(--cream); }
-    ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Admin · HEDTRO JEANS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :root {
+            --denim-dark: #0b1a2b;
+            --denim-navy: #1a2e44;
+            --denim-blue: #2a4b6e;
+            --denim-light: #e8edf2;
+            --gold-accent: #c9a84c;
+            --gold-light: #e8d5a3;
+            --cream: #f7f4ef;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 28px;
+            --radius-sm: 14px;
+            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+            --sidebar-width: 280px;
+        }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--cream);
+            color: var(--denim-dark);
+            padding-top: 70px;
+            overflow-x: hidden;
+        }
+        a { text-decoration:none; color:inherit; }
+        button { cursor:pointer; font-family:inherit; border:none; background:none; }
+        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar-track { background:var(--cream); }
+        ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
-    .navbar {
-      position: fixed; top:0; left:0; right:0; z-index:1100;
-      background: var(--denim-dark);
-      padding: 12px 20px;
-      display: flex; align-items:center; justify-content:space-between;
-      border-bottom:3px solid var(--gold-accent);
-      height:70px;
-    }
-    .navbar .logo {
-      display:flex; align-items:center; gap:8px;
-      color:var(--white); font-weight:800; font-size:1.4rem;
-    }
-    .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
-    .navbar .logo span { font-weight:300; color:var(--gold-light); font-size:0.75rem; margin-left:2px; }
-    .nav-right {
-      display:flex; align-items:center; gap:12px;
-    }
-    .nav-right .user-badge {
-      display:flex; align-items:center; gap:6px;
-      color:var(--cream); font-size:0.8rem;
-      background:rgba(255,255,255,0.08);
-      padding:6px 14px; border-radius:60px;
-      border:1px solid rgba(255,255,255,0.06);
-      cursor:pointer;
-    }
-    .nav-right .user-badge i { color:var(--gold-accent); }
+        .navbar {
+            position: fixed; top:0; left:0; right:0; z-index:1100;
+            background: var(--denim-dark);
+            padding: 12px 20px;
+            display: flex; align-items:center; justify-content:space-between;
+            border-bottom:3px solid var(--gold-accent);
+            height:70px;
+        }
+        .navbar .logo {
+            display:flex; align-items:center; gap:8px;
+            color:var(--white); font-weight:800; font-size:1.4rem;
+        }
+        .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
+        .navbar .logo img { height:40px; width:auto; object-fit:contain; }
+        .navbar .logo span { font-weight:300; color:var(--gold-light); font-size:0.75rem; margin-left:2px; }
+        .nav-right {
+            display:flex; align-items:center; gap:12px;
+        }
+        .nav-right .user-badge {
+            display:flex; align-items:center; gap:6px;
+            color:var(--cream); font-size:0.8rem;
+            background:rgba(255,255,255,0.08);
+            padding:6px 14px; border-radius:60px;
+            border:1px solid rgba(255,255,255,0.06);
+            cursor:pointer;
+        }
+        .nav-right .user-badge i { color:var(--gold-accent); }
 
-    .burger-btn {
-      display:none;
-      flex-direction:column; gap:5px;
-      padding:6px; background:transparent; border:none; cursor:pointer;
-      z-index:1101;
-    }
-    .burger-btn span {
-      display:block; width:28px; height:3px;
-      background:var(--cream); border-radius:4px;
-      transition:var(--transition); transform-origin:center;
-    }
-    .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
-    .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
-    .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
+        .burger-btn {
+            display:none;
+            flex-direction:column; gap:5px;
+            padding:6px; background:transparent; border:none; cursor:pointer;
+            z-index:1101;
+        }
+        .burger-btn span {
+            display:block; width:28px; height:3px;
+            background:var(--cream); border-radius:4px;
+            transition:var(--transition); transform-origin:center;
+        }
+        .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
+        .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
+        .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
 
-    .sidebar-overlay {
-      display:none;
-      position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.5); z-index:1050;
-      opacity:0; pointer-events:none;
-      transition:var(--transition);
-    }
-    .sidebar-overlay.active { opacity:1; pointer-events:all; }
-    .sidebar {
-      position:fixed; top:0; left:0; bottom:0;
-      width:var(--sidebar-width);
-      background:var(--denim-dark);
-      z-index:1060;
-      padding:24px 20px;
-      overflow-y:auto;
-      border-right:3px solid var(--gold-accent);
-      display:flex; flex-direction:column; gap:4px;
-      transition:left 0.3s ease;
-      left:0;
-    }
-    @media (max-width: 768px) {
-      .sidebar { left:-320px; }
-      .sidebar.open { left:0; }
-      .burger-btn { display:flex; }
-      .sidebar-overlay { display:block; }
-    }
-    .sidebar .sidebar-header {
-      display:flex; align-items:center; justify-content:space-between;
-      padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);
-      margin-bottom:12px;
-    }
-    .sidebar .sidebar-header .logo-side {
-      color:var(--white); font-weight:800; font-size:1.3rem;
-    }
-    .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
-    .sidebar .sidebar-header .close-side {
-      display:none;
-      color:var(--cream); font-size:1.6rem; cursor:pointer;
-    }
-    @media (max-width: 768px) {
-      .sidebar .sidebar-header .close-side { display:block; }
-    }
-    .sidebar .menu-item {
-      display:flex; align-items:center; gap:14px;
-      padding:12px 16px; border-radius:12px;
-      color:var(--cream); font-weight:500; font-size:0.95rem;
-      transition:var(--transition); cursor:pointer;
-    }
-    .sidebar .menu-item:hover { background:rgba(255,255,255,0.08); }
-    .sidebar .menu-item i { width:24px; color:var(--gold-accent); }
-    .sidebar .menu-item.active { background:rgba(201,168,76,0.15); color:var(--gold-accent); }
-    .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:6px 0; }
-    .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
-    .sidebar .menu-item.logout i { color:#e74c3c; }
+        .sidebar-overlay {
+            display:none;
+            position:fixed; top:0; left:0; width:100%; height:100%;
+            background:rgba(0,0,0,0.5); z-index:1050;
+            opacity:0; pointer-events:none;
+            transition:var(--transition);
+        }
+        .sidebar-overlay.active { opacity:1; pointer-events:all; }
+        .sidebar {
+            position:fixed; top:0; left:0; bottom:0;
+            width:var(--sidebar-width);
+            background:var(--denim-dark);
+            z-index:1060;
+            padding:24px 20px;
+            overflow-y:auto;
+            border-right:3px solid var(--gold-accent);
+            display:flex; flex-direction:column; gap:4px;
+            transition:left 0.3s ease;
+            left:0;
+        }
+        @media (max-width: 768px) {
+            .sidebar { left:-320px; }
+            .sidebar.open { left:0; }
+            .burger-btn { display:flex; }
+            .sidebar-overlay { display:block; }
+        }
+        .sidebar .sidebar-header {
+            display:flex; align-items:center; justify-content:space-between;
+            padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);
+            margin-bottom:12px;
+        }
+        .sidebar .sidebar-header .logo-side {
+            color:var(--white); font-weight:800; font-size:1.3rem;
+        }
+        .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
+        .sidebar .sidebar-header .close-side {
+            display:none;
+            color:var(--cream); font-size:1.6rem; cursor:pointer;
+        }
+        @media (max-width: 768px) {
+            .sidebar .sidebar-header .close-side { display:block; }
+        }
+        .sidebar .menu-item {
+            display:flex; align-items:center; gap:14px;
+            padding:12px 16px; border-radius:12px;
+            color:var(--cream); font-weight:500; font-size:0.95rem;
+            transition:var(--transition); cursor:pointer;
+        }
+        .sidebar .menu-item:hover { background:rgba(255,255,255,0.08); }
+        .sidebar .menu-item i { width:24px; color:var(--gold-accent); }
+        .sidebar .menu-item.active { background:rgba(201,168,76,0.15); color:var(--gold-accent); }
+        .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:6px 0; }
+        .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
+        .sidebar .menu-item.logout i { color:#e74c3c; }
 
-    .main-content {
-      margin-left: var(--sidebar-width);
-      padding: 20px 24px 40px;
-      transition: margin-left 0.3s ease;
-      max-width: calc(100% - var(--sidebar-width));
-    }
-    @media (max-width: 768px) {
-      .main-content {
-        margin-left: 0;
-        max-width: 100%;
-        padding: 16px 16px 30px;
-      }
-    }
-    .page-title {
-      font-size:1.6rem; font-weight:700; color:var(--denim-dark);
-      margin-bottom:20px; display:flex; align-items:center; gap:12px;
-    }
-    .page-title i { color:var(--gold-accent); }
+        .main-content {
+            margin-left: var(--sidebar-width);
+            padding: 20px 24px 40px;
+            transition: margin-left 0.3s ease;
+            max-width: calc(100% - var(--sidebar-width));
+        }
+        @media (max-width: 768px) {
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 16px 16px 30px;
+            }
+        }
+        .page-title {
+            font-size:1.6rem; font-weight:700; color:var(--denim-dark);
+            margin-bottom:20px; display:flex; align-items:center; gap:12px;
+        }
+        .page-title i { color:var(--gold-accent); }
 
-    .admin-tabs {
-      display:flex; gap:8px; flex-wrap:wrap;
-      margin-bottom:20px; border-bottom:2px solid var(--denim-light);
-      padding-bottom:12px;
-    }
-    .admin-tabs .tab-btn {
-      padding:10px 22px; border-radius:60px;
-      font-weight:600; font-size:0.85rem;
-      color:var(--denim-navy); transition:var(--transition);
-      cursor:pointer; background:transparent;
-    }
-    .admin-tabs .tab-btn.active {
-      background:var(--denim-blue); color:#fff;
-      box-shadow:0 4px 14px rgba(42,75,110,0.25);
-    }
-    .admin-tabs .tab-btn:hover:not(.active) { background:var(--denim-light); }
-    .tab-content { display:none; }
-    .tab-content.active { display:block; }
+        .admin-tabs {
+            display:flex; gap:8px; flex-wrap:wrap;
+            margin-bottom:20px; border-bottom:2px solid var(--denim-light);
+            padding-bottom:12px;
+        }
+        .admin-tabs .tab-btn {
+            padding:10px 22px; border-radius:60px;
+            font-weight:600; font-size:0.85rem;
+            color:var(--denim-navy); transition:var(--transition);
+            cursor:pointer; background:transparent;
+        }
+        .admin-tabs .tab-btn.active {
+            background:var(--denim-blue); color:#fff;
+            box-shadow:0 4px 14px rgba(42,75,110,0.25);
+        }
+        .admin-tabs .tab-btn:hover:not(.active) { background:var(--denim-light); }
+        .tab-content { display:none; }
+        .tab-content.active { display:block; }
 
-    .btn-sm {
-      padding:8px 18px; border-radius:60px;
-      font-weight:600; font-size:0.8rem;
-      transition:var(--transition); font-family:inherit;
-    }
-    .btn-sm-primary { background:var(--denim-blue); color:#fff; }
-    .btn-sm-primary:hover { background:var(--denim-dark); }
-    .btn-sm-success { background:#1f7a4b; color:#fff; }
-    .btn-sm-success:hover { background:#155d38; }
-    .btn-sm-danger { background:#b13e3e; color:#fff; }
-    .btn-sm-danger:hover { background:#8f2f2f; }
-    .btn-sm-warning { background:#d4a02b; color:#fff; }
-    .btn-sm-warning:hover { background:#b8891f; }
-    .btn-sm-gold { background:var(--gold-accent); color:var(--denim-dark); }
-    .btn-sm-gold:hover { background:#b8963a; }
+        .btn-sm {
+            padding:8px 18px; border-radius:60px;
+            font-weight:600; font-size:0.8rem;
+            transition:var(--transition); font-family:inherit;
+        }
+        .btn-sm-primary { background:var(--denim-blue); color:#fff; }
+        .btn-sm-primary:hover { background:var(--denim-dark); }
+        .btn-sm-success { background:#1f7a4b; color:#fff; }
+        .btn-sm-success:hover { background:#155d38; }
+        .btn-sm-danger { background:#b13e3e; color:#fff; }
+        .btn-sm-danger:hover { background:#8f2f2f; }
+        .btn-sm-warning { background:#d4a02b; color:#fff; }
+        .btn-sm-warning:hover { background:#b8891f; }
+        .btn-sm-gold { background:var(--gold-accent); color:var(--denim-dark); }
+        .btn-sm-gold:hover { background:#b8963a; }
 
-    .flex-row {
-      display:flex; flex-wrap:wrap; gap:10px; align-items:center;
-      margin-bottom:12px;
-    }
+        .flex-row {
+            display:flex; flex-wrap:wrap; gap:10px; align-items:center;
+            margin-bottom:12px;
+        }
 
-    .table-wrap {
-      overflow-x:auto; border-radius:var(--radius-sm);
-      border:1px solid #e2e8f0; background:var(--white);
-    }
-    table {
-      width:100%; border-collapse:collapse; font-size:0.82rem;
-      min-width:700px;
-    }
-    thead { background:var(--denim-dark); color:var(--cream); }
-    th { padding:12px 14px; text-align:left; font-weight:600; }
-    td { padding:10px 14px; border-bottom:1px solid #eef2f7; }
+        .table-wrap {
+            overflow-x:auto; border-radius:var(--radius-sm);
+            border:1px solid #e2e8f0; background:var(--white);
+        }
+        table {
+            width:100%; border-collapse:collapse; font-size:0.82rem;
+            min-width:700px;
+        }
+        thead { background:var(--denim-dark); color:var(--cream); }
+        th { padding:12px 14px; text-align:left; font-weight:600; }
+        td { padding:10px 14px; border-bottom:1px solid #eef2f7; }
 
-    .badge-admin {
-      background:var(--gold-accent); color:var(--denim-dark);
-      padding:1px 10px; border-radius:40px;
-      font-size:0.6rem; font-weight:700; margin-left:4px;
-    }
-    .badge-status {
-      padding:2px 12px; border-radius:40px; font-size:0.7rem; font-weight:600;
-    }
-    .badge-pending { background:#fff3cd; color:#856404; }
-    .badge-success { background:#d4edda; color:#155724; }
-    .badge-failed { background:#f8d7da; color:#721c24; }
-    .badge-free { background:#f8d7da; color:#721c24; }
-    .badge-verified { background:#d4edda; color:#155724; }
+        .badge-admin {
+            background:var(--gold-accent); color:var(--denim-dark);
+            padding:1px 10px; border-radius:40px;
+            font-size:0.6rem; font-weight:700; margin-left:4px;
+        }
+        .badge-status {
+            padding:2px 12px; border-radius:40px; font-size:0.7rem; font-weight:600;
+        }
+        .badge-pending { background:#fff3cd; color:#856404; }
+        .badge-success { background:#d4edda; color:#155724; }
+        .badge-failed { background:#f8d7da; color:#721c24; }
+        .badge-free { background:#f8d7da; color:#721c24; }
+        .badge-verified { background:#d4edda; color:#155724; }
 
-    .text-muted { color:#6a7e9a; font-size:0.8rem; }
-    .mt-16 { margin-top:16px; }
+        .text-muted { color:#6a7e9a; font-size:0.8rem; }
+        .mt-16 { margin-top:16px; }
 
-    .settings-grid {
-      display:grid; grid-template-columns:1fr 1fr; gap:20px;
-    }
-    @media (max-width:700px) { .settings-grid { grid-template-columns:1fr; } }
-    .settings-card {
-      background:var(--white); border-radius:var(--radius-sm);
-      padding:18px 20px; box-shadow:var(--shadow);
-      border:1px solid #e2e8f0;
-    }
-    .settings-card h4 {
-      font-size:0.9rem; font-weight:600; margin-bottom:14px;
-      display:flex; align-items:center; gap:8px;
-    }
-    .settings-card h4 i { color:var(--gold-accent); }
-    .form-group { margin-bottom:12px; }
-    .form-group label {
-      display:block; font-weight:500; color:var(--denim-navy);
-      font-size:0.8rem; margin-bottom:4px;
-    }
-    .form-group input {
-      width:100%; padding:10px 14px;
-      border:1.5px solid #dde3ea; border-radius:60px;
-      font-size:0.9rem; background:#fafcff;
-      font-family:inherit; transition:var(--transition);
-    }
-    .form-group input:focus {
-      border-color:var(--denim-blue); outline:none;
-      box-shadow:0 0 0 4px rgba(42,75,110,0.1);
-    }
+        .settings-grid {
+            display:grid; grid-template-columns:1fr 1fr; gap:20px;
+        }
+        @media (max-width:700px) { .settings-grid { grid-template-columns:1fr; } }
+        .settings-card {
+            background:var(--white); border-radius:var(--radius-sm);
+            padding:18px 20px; box-shadow:var(--shadow);
+            border:1px solid #e2e8f0;
+        }
+        .settings-card h4 {
+            font-size:0.9rem; font-weight:600; margin-bottom:14px;
+            display:flex; align-items:center; gap:8px;
+        }
+        .settings-card h4 i { color:var(--gold-accent); }
+        .form-group { margin-bottom:12px; }
+        .form-group label {
+            display:block; font-weight:500; color:var(--denim-navy);
+            font-size:0.8rem; margin-bottom:4px;
+        }
+        .form-group input, .form-group select, .form-group textarea {
+            width:100%; padding:10px 14px;
+            border:1.5px solid #dde3ea; border-radius:60px;
+            font-size:0.9rem; background:#fafcff;
+            font-family:inherit; transition:var(--transition);
+        }
+        .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+            border-color:var(--denim-blue); outline:none;
+            box-shadow:0 0 0 4px rgba(42,75,110,0.1);
+        }
 
-    .footer {
-      background:var(--denim-dark); color:var(--cream);
-      padding:20px 24px; text-align:center;
-      border-top:3px solid var(--gold-accent);
-      margin-top:30px; font-size:0.8rem;
-    }
+        .toast-container {
+            position:fixed; top:100px; right:20px; z-index:9999;
+            display:flex; flex-direction:column; gap:10px;
+            max-width:360px; width:100%; pointer-events:none;
+        }
+        .toast-item {
+            background:var(--denim-dark); color:var(--cream);
+            padding:16px 20px; border-radius:var(--radius-sm);
+            border-left:4px solid var(--gold-accent);
+            box-shadow:var(--shadow-lg); animation:slideInRight 0.4s ease;
+            pointer-events:all; display:flex; align-items:center; gap:12px;
+        }
+        .toast-item.success { border-left-color:#2ecc71; }
+        .toast-item.error { border-left-color:#e74c3c; }
+        .toast-item .toast-icon { font-size:1.2rem; flex-shrink:0; }
+        .toast-item .toast-msg { font-size:0.9rem; flex:1; }
+        .toast-item .toast-close { color:rgba(255,255,255,0.4); font-size:1.2rem; cursor:pointer; }
+        @keyframes slideInRight {
+            from { opacity:0; transform:translateX(60px) scale(0.9); }
+            to { opacity:1; transform:translateX(0) scale(1); }
+        }
+        @keyframes slideOutRight {
+            from { opacity:1; transform:translateX(0) scale(1); }
+            to { opacity:0; transform:translateX(60px) scale(0.9); }
+        }
+        .toast-item.removing { animation:slideOutRight 0.3s ease forwards; }
 
-    @media (max-width:768px) {
-      .admin-tabs .tab-btn { padding:8px 16px; font-size:0.75rem; }
-    }
-    @media (max-width:480px) {
-      .admin-tabs { gap:4px; }
-      .admin-tabs .tab-btn { padding:6px 12px; font-size:0.7rem; }
-    }
-  </style>
+        .footer {
+            background:var(--denim-dark); color:var(--cream);
+            padding:20px 24px; text-align:center;
+            border-top:3px solid var(--gold-accent);
+            margin-top:30px; font-size:0.8rem;
+        }
+
+        @media (max-width:768px) {
+            .admin-tabs .tab-btn { padding:8px 16px; font-size:0.75rem; }
+        }
+        @media (max-width:480px) {
+            .admin-tabs { gap:4px; }
+            .admin-tabs .tab-btn { padding:6px 12px; font-size:0.7rem; }
+        }
+    </style>
 </head>
 <body>
 
-  <header class="navbar">
-    <div class="logo"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></div>
-    <div class="nav-right">
-      <div class="user-badge" id="navUserBadge"><i class="fas fa-user-cog"></i> <span id="navUserName">Admin</span></div>
-      <button class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></button>
-    </div>
-  </header>
+    <!-- ===== TOAST ===== -->
+    <div class="toast-container" id="toastContainer"></div>
 
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
-      <span class="close-side" id="closeSidebar">&times;</span>
-    </div>
-    <div class="menu-item active" data-tab="members"><i class="fas fa-users"></i> Member</div>
-    <div class="menu-item" data-tab="products"><i class="fas fa-boxes"></i> Produk</div>
-    <div class="menu-item" data-tab="verification"><i class="fas fa-check-double"></i> Verifikasi</div>
-    <div class="menu-item" data-tab="ro-orders"><i class="fas fa-shopping-cart"></i> RO Orders</div>
-    <div class="menu-item" data-tab="settings"><i class="fas fa-sliders-h"></i> Pengaturan</div>
-    <div class="menu-divider"></div>
-    <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
-  </nav>
-
-  <div class="main-content">
-    <h1 class="page-title"><i class="fas fa-users-cog"></i> Admin Panel</h1>
-
-    <div class="admin-tabs" id="adminTabs">
-      <button class="tab-btn active" data-tab="members">Member</button>
-      <button class="tab-btn" data-tab="products">Produk</button>
-      <button class="tab-btn" data-tab="verification">Verifikasi</button>
-      <button class="tab-btn" data-tab="ro-orders">RO Orders</button>
-      <button class="tab-btn" data-tab="settings">Pengaturan</button>
-    </div>
-
-    <div class="tab-content active" id="tabMembers">
-      <div class="flex-row">
-        <button class="btn-sm btn-sm-primary" id="refreshBtn"><i class="fas fa-sync"></i> Refresh</button>
-        <button class="btn-sm btn-sm-success" id="seedDemoBtn"><i class="fas fa-database"></i> Seed Demo</button>
-        <button class="btn-sm btn-sm-danger" id="resetAllBtn"><i class="fas fa-trash"></i> Reset Semua</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Sponsor</th><th>Posisi</th><th>Status</th><th>Wallet</th><th>Aksi</th></tr></thead>
-          <tbody id="adminTableBody"></tbody>
-        </table>
-      </div>
-      <div class="text-muted mt-16">Total member: <span id="totalMembers">0</span></div>
-    </div>
-
-    <div class="tab-content" id="tabProducts">
-      <div class="flex-row">
-        <button class="btn-sm btn-sm-success" id="addProductBtn"><i class="fas fa-plus"></i> Tambah Produk</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>#</th><th>Nama</th><th>Harga Member</th><th>Harga Normal</th><th>Tag</th><th>Stok</th><th>Aksi</th></tr></thead>
-          <tbody id="adminProductTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="tab-content" id="tabVerification">
-      <div class="flex-row">
-        <button class="btn-sm btn-sm-primary" id="refreshVerifBtn"><i class="fas fa-sync"></i> Refresh</button>
-      </div>
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Status</th><th>Bukti Transfer</th><th>Aksi</th></tr></thead>
-          <tbody id="verifTableBody"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="tab-content" id="tabRoOrders">
-      <div class="table-wrap">
-        <table>
-          <thead><tr><th>#</th><th>Member</th><th>Produk</th><th>Nominal</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
-          <tbody id="roOrdersTable"></tbody>
-        </table>
-      </div>
-    </div>
-
-    <div class="tab-content" id="tabSettings">
-      <div class="settings-grid">
-        <div class="settings-card">
-          <h4><i class="fas fa-percent"></i> Komisi Bonus</h4>
-          <div class="form-group"><label>Bonus Sponsor (%)</label><input type="number" id="setSponsorBonus" /></div>
-          <div class="form-group"><label>Bonus Binary (%)</label><input type="number" id="setBinaryBonus" /></div>
-          <div class="form-group"><label>Bonus Reward (%)</label><input type="number" id="setRewardBonus" /></div>
-          <div class="form-group"><label>Bonus RO (%)</label><input type="number" id="setRoBonus" /></div>
-          <button class="btn-sm btn-sm-primary" id="saveBonusSettings">Simpan</button>
+    <header class="navbar">
+        <div class="logo" id="brandLogo"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></div>
+        <div class="nav-right">
+            <div class="user-badge" id="navUserBadge"><i class="fas fa-user-cog"></i> <span id="navUserName">Admin</span></div>
+            <a href="index.html" class="user-badge" style="background:rgba(255,255,255,0.04);"><i class="fas fa-home"></i></a>
+            <button class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></button>
         </div>
-        <div class="settings-card">
-          <h4><i class="fas fa-box"></i> Toko & Member</h4>
-          <div class="form-group"><label>Diskon Member (%)</label><input type="number" id="setMemberDiscount" /></div>
-          <div class="form-group"><label>Ongkir (Rp)</label><input type="number" id="setShippingCost" /></div>
-          <div class="form-group"><label>Harga Paket Member (Rp)</label><input type="number" id="setMemberPrice" /></div>
-          <button class="btn-sm btn-sm-primary" id="saveShopSettings">Simpan</button>
+    </header>
+
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+    <nav class="sidebar" id="sidebar">
+        <div class="sidebar-header">
+            <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
+            <span class="close-side" id="closeSidebar">&times;</span>
         </div>
-      </div>
+        <div class="menu-item active" data-tab="members"><i class="fas fa-users"></i> Member</div>
+        <div class="menu-item" data-tab="products"><i class="fas fa-boxes"></i> Produk</div>
+        <div class="menu-item" data-tab="verification"><i class="fas fa-check-double"></i> Verifikasi</div>
+        <div class="menu-item" data-tab="orders"><i class="fas fa-shopping-cart"></i> Orders</div>
+        <div class="menu-item" data-tab="settings"><i class="fas fa-sliders-h"></i> Pengaturan</div>
+        <div class="menu-divider"></div>
+        <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
+    </nav>
+
+    <div class="main-content">
+        <h1 class="page-title"><i class="fas fa-users-cog"></i> Admin Panel</h1>
+
+        <div class="admin-tabs" id="adminTabs">
+            <button class="tab-btn active" data-tab="members">Member</button>
+            <button class="tab-btn" data-tab="products">Produk</button>
+            <button class="tab-btn" data-tab="verification">Verifikasi</button>
+            <button class="tab-btn" data-tab="orders">Orders</button>
+            <button class="tab-btn" data-tab="settings">Pengaturan</button>
+        </div>
+
+        <div class="tab-content active" id="tabMembers">
+            <div class="flex-row">
+                <button class="btn-sm btn-sm-primary" id="refreshBtn"><i class="fas fa-sync"></i> Refresh</button>
+                <button class="btn-sm btn-sm-success" id="seedDemoBtn"><i class="fas fa-database"></i> Seed Demo</button>
+                <button class="btn-sm btn-sm-danger" id="resetAllBtn"><i class="fas fa-trash"></i> Reset Semua</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Sponsor</th><th>Posisi</th><th>Status</th><th>Wallet</th><th>Aksi</th></tr></thead>
+                    <tbody id="adminTableBody"></tbody>
+                </table>
+            </div>
+            <div class="text-muted mt-16">Total member: <span id="totalMembers">0</span></div>
+        </div>
+
+        <div class="tab-content" id="tabProducts">
+            <div class="flex-row">
+                <button class="btn-sm btn-sm-success" id="addProductBtn"><i class="fas fa-plus"></i> Tambah Produk</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>#</th><th>Nama</th><th>Harga Member</th><th>Harga Normal</th><th>Tag</th><th>Stok</th><th>Aksi</th></tr></thead>
+                    <tbody id="adminProductTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="tabVerification">
+            <div class="flex-row">
+                <button class="btn-sm btn-sm-primary" id="refreshVerifBtn"><i class="fas fa-sync"></i> Refresh</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Status</th><th>Bukti Transfer</th><th>Aksi</th></tr></thead>
+                    <tbody id="verifTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="tabOrders">
+            <div class="flex-row">
+                <button class="btn-sm btn-sm-primary" id="refreshOrdersBtn"><i class="fas fa-sync"></i> Refresh</button>
+            </div>
+            <div class="table-wrap">
+                <table>
+                    <thead><tr><th>#</th><th>Member</th><th>Type</th><th>Produk</th><th>Total</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+                    <tbody id="ordersTableBody"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <div class="tab-content" id="tabSettings">
+            <div class="settings-grid">
+                <div class="settings-card">
+                    <h4><i class="fas fa-percent"></i> Komisi Bonus</h4>
+                    <div class="form-group"><label>Bonus Sponsor (%)</label><input type="number" id="setSponsorBonus" /></div>
+                    <div class="form-group"><label>Bonus Binary (%)</label><input type="number" id="setBinaryBonus" /></div>
+                    <div class="form-group"><label>Bonus Reward (%)</label><input type="number" id="setRewardBonus" /></div>
+                    <div class="form-group"><label>Bonus RO (%)</label><input type="number" id="setRoBonus" /></div>
+                    <button class="btn-sm btn-sm-primary" id="saveBonusSettings">Simpan</button>
+                </div>
+                <div class="settings-card">
+                    <h4><i class="fas fa-paint-brush"></i> Brand & Tampilan</h4>
+                    <div class="form-group"><label>Nama Brand</label><input type="text" id="setBrandName" /></div>
+                    <div class="form-group"><label>Logo (icon Font Awesome)</label><input type="text" id="setBrandLogo" placeholder="fa-tshirt" /></div>
+                    <div class="form-group"><label>Judul Halaman</label><input type="text" id="setHeroTitle" /></div>
+                    <button class="btn-sm btn-sm-primary" id="saveBrandSettings">Simpan</button>
+                </div>
+                <div class="settings-card">
+                    <h4><i class="fas fa-university"></i> Rekening Admin</h4>
+                    <div class="form-group"><label>Nama Bank</label><input type="text" id="setBankName" /></div>
+                    <div class="form-group"><label>No. Rekening</label><input type="text" id="setBankAccount" /></div>
+                    <div class="form-group"><label>Atas Nama</label><input type="text" id="setBankHolder" /></div>
+                    <button class="btn-sm btn-sm-primary" id="saveBankSettings">Simpan</button>
+                </div>
+                <div class="settings-card">
+                    <h4><i class="fas fa-store"></i> Toko & Member</h4>
+                    <div class="form-group"><label>Harga Paket Member (Rp)</label><input type="number" id="setMemberPrice" /></div>
+                    <button class="btn-sm btn-sm-primary" id="saveShopSettings">Simpan</button>
+                </div>
+            </div>
+        </div>
     </div>
-  </div>
 
-  <footer class="footer">
-    <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Admin Panel</p>
-    <p style="opacity:0.6; margin-top:4px;">Sistem MLM terintegrasi</p>
-  </footer>
+    <footer class="footer">
+        <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Admin Panel</p>
+        <p style="opacity:0.6; margin-top:4px;">Sistem MLM terintegrasi</p>
+    </footer>
 
-  <script>
-    (function() {
-      'use strict';
+    <script>
+        (function() {
+            'use strict';
 
-      const DB_KEY = 'hedtro_mlm_users';
-      const PRODUCT_KEY = 'hedtro_products';
-      const SETTINGS_KEY = 'hedtro_settings';
+            // ============================================================
+            // DATABASE KEYS
+            // ============================================================
+            const DB_KEY = 'hedtro_mlm_users';
+            const PRODUCT_KEY = 'hedtro_products';
+            const SETTINGS_KEY = 'hedtro_settings';
+            const ORDER_KEY = 'hedtro_orders';
+            const TRANSACTION_KEY = 'hedtro_transactions';
+            const BANK_KEY = 'hedtro_bank_info';
+            const SESSION_KEY = 'mlm_session';
 
-      function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
-      function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-      function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
-      function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-      function loadSettings() { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"sponsorBonus":10,"binaryBonus":8,"rewardBonus":5,"roBonus":3,"memberPrice":550000}'); }
-      function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
-
-      let settings = loadSettings();
-
-      const session = localStorage.getItem('mlm_session');
-      if (session) {
-        try {
-          const { id } = JSON.parse(session);
-          let users = loadUsers();
-          const currentUser = users.find(u => u.id === id);
-          if (!currentUser || currentUser.email !== 'admin@mlm.com') {
-            window.location.href = 'index.html';
-            return;
-          }
-        } catch (_) { window.location.href = 'index.html'; return; }
-      } else {
-        window.location.href = 'index.html';
-        return;
-      }
-
-      // ===== BURGER TOGGLE =====
-      const burgerBtn = document.getElementById('burgerBtn');
-      const sidebar = document.getElementById('sidebar');
-      const sidebarOverlay = document.getElementById('sidebarOverlay');
-      const closeSidebar = document.getElementById('closeSidebar');
-
-      function toggleSidebar(open) {
-        const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
-        if (window.innerWidth <= 768) {
-          sidebar.classList.toggle('open', isOpen);
-          sidebarOverlay.classList.toggle('active', isOpen);
-          burgerBtn.classList.toggle('active', isOpen);
-          document.body.style.overflow = isOpen ? 'hidden' : '';
-        }
-      }
-      burgerBtn.addEventListener('click', () => toggleSidebar());
-      closeSidebar.addEventListener('click', () => toggleSidebar(false));
-      sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
-
-      // ===== SIDEBAR NAV =====
-      document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(item => {
-        item.addEventListener('click', function() {
-          const tab = this.dataset.tab;
-          toggleSidebar(false);
-          switchTab(tab);
-        });
-      });
-
-      document.getElementById('sideLogoutBtn').addEventListener('click', function() {
-        localStorage.removeItem('mlm_session');
-        window.location.href = 'index.html';
-      });
-
-      // ===== TABS =====
-      function switchTab(tabId) {
-        document.querySelectorAll('.admin-tabs .tab-btn').forEach(b => b.classList.remove('active'));
-        document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-        const tabBtn = document.querySelector(`.admin-tabs .tab-btn[data-tab="${tabId}"]`);
-        if (tabBtn) tabBtn.classList.add('active');
-        const tabContent = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
-        if (tabContent) tabContent.classList.add('active');
-        if (tabId === 'members') renderAdminMembers();
-        if (tabId === 'products') renderAdminProducts();
-        if (tabId === 'verification') renderVerification();
-        if (tabId === 'ro-orders') renderRoOrders();
-        if (tabId === 'settings') loadSettingsToForm();
-      }
-
-      document.querySelectorAll('.admin-tabs .tab-btn').forEach(btn => {
-        btn.addEventListener('click', function() {
-          switchTab(this.dataset.tab);
-        });
-      });
-
-      // ===== RENDER MEMBERS =====
-      function renderAdminMembers() {
-        const tbody = document.getElementById('adminTableBody');
-        const users = loadUsers();
-        let html = '';
-        users.forEach(u => {
-          const isAdmin = u.email === 'admin@mlm.com';
-          const statusClass = 'badge-' + (u.status || 'free');
-          html += `<tr>
-            <td>${u.id}</td>
-            <td>${u.name} ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}</td>
-            <td>${u.email}</td>
-            <td>${u.sponsor_id || '-'}</td>
-            <td>${u.position || '-'}</td>
-            <td><span class="badge-status ${statusClass}">${(u.status || 'free').toUpperCase()}</span></td>
-            <td>Rp ${(u.wallet || 0).toLocaleString()}</td>
-            <td>${!isAdmin ? `<button class="btn-sm btn-sm-warning toggle-status" data-id="${u.id}">Ubah Status</button>` : ''}</td>
-          </tr>`;
-        });
-        tbody.innerHTML = html;
-        document.getElementById('totalMembers').textContent = users.length;
-
-        document.querySelectorAll('.toggle-status').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const id = parseInt(this.dataset.id);
-            let users = loadUsers();
-            const user = users.find(u => u.id === id);
-            if (!user) return;
-            const statuses = ['free', 'pending', 'verified'];
-            const currentIdx = statuses.indexOf(user.status);
-            const nextIdx = (currentIdx + 1) % statuses.length;
-            user.status = statuses[nextIdx];
-            saveUsers(users);
-            renderAdminMembers();
-            renderVerification();
-            alert(`Status ${user.name} diubah menjadi ${user.status.toUpperCase()}`);
-          });
-        });
-      }
-
-      // ===== RENDER VERIFICATION =====
-      function renderVerification() {
-        const tbody = document.getElementById('verifTableBody');
-        const users = loadUsers();
-        const pendingUsers = users.filter(u => u.status === 'pending' || u.status === 'free');
-        if (pendingUsers.length === 0) {
-          tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;">✅ Semua member sudah terverifikasi.</td></tr>`;
-          return;
-        }
-        let html = '';
-        pendingUsers.forEach(u => {
-          html += `<tr>
-            <td>${u.id}</td>
-            <td>${u.name}</td>
-            <td>${u.email}</td>
-            <td><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td>
-            <td>${u.proof_image ? '📷 Telah diupload' : '❌ Belum upload'}</td>
-            <td>
-              ${u.status === 'pending' ? `<button class="btn-sm btn-sm-success verify-btn" data-id="${u.id}">✅ Verifikasi</button>` : ''}
-              ${u.status === 'free' ? `<button class="btn-sm btn-sm-warning pending-btn" data-id="${u.id}">⏳ Jadikan Pending</button>` : ''}
-            </td>
-          </tr>`;
-        });
-        tbody.innerHTML = html;
-
-        document.querySelectorAll('.verify-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const id = parseInt(this.dataset.id);
-            let users = loadUsers();
-            const user = users.find(u => u.id === id);
-            if (user) {
-              user.status = 'verified';
-              saveUsers(users);
-              renderVerification();
-              renderAdminMembers();
-              alert(`✅ ${user.name} telah diverifikasi!`);
+            // ============================================================
+            // DATABASE FUNCTIONS
+            // ============================================================
+            function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
+            function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
+            function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
+            function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
+            function loadSettings() {
+                return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"sponsorBonus":10,"binaryBonus":8,"rewardBonus":5,"roBonus":3,"memberPrice":550000,"brandName":"HEDTRO JEANS","brandLogo":"fa-tshirt","heroTitle":"HEDTRO JEANS · Premium Denim"}');
             }
-          });
-        });
-
-        document.querySelectorAll('.pending-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const id = parseInt(this.dataset.id);
-            let users = loadUsers();
-            const user = users.find(u => u.id === id);
-            if (user) {
-              const proof = prompt('Masukkan link/deskripsi bukti transfer:');
-              if (proof !== null) {
-                user.status = 'pending';
-                user.proof_image = proof || 'Telah upload bukti';
-                saveUsers(users);
-                renderVerification();
-                renderAdminMembers();
-                alert(`⏳ ${user.name} sekarang pending verifikasi.`);
-              }
+            function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
+            function loadOrders() { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); }
+            function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
+            function loadTransactions() { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); }
+            function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
+            function loadBankInfo() {
+                return JSON.parse(localStorage.getItem(BANK_KEY) || '{"bank":"BCA","account":"1234567890","name":"HEDTRO JEANS"}');
             }
-          });
-        });
-      }
+            function saveBankInfo(b) { localStorage.setItem(BANK_KEY, JSON.stringify(b)); }
+            function getSession() {
+                const session = localStorage.getItem(SESSION_KEY);
+                if (!session) return null;
+                try { return JSON.parse(session); } catch (_) { return null; }
+            }
+            function saveSession(s) { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
+            function clearSession() { localStorage.removeItem(SESSION_KEY); }
 
-      // ===== RENDER PRODUCTS =====
-      function renderAdminProducts() {
-        const tbody = document.getElementById('adminProductTableBody');
-        const products = loadProducts();
-        let html = '';
-        products.forEach((p, idx) => {
-          html += `<tr>
-            <td>${idx+1}</td>
-            <td>${p.name}</td>
-            <td>Rp ${p.price.toLocaleString()}</td>
-            <td>Rp ${p.original?.toLocaleString() || '-'}</td>
-            <td>${p.tag || '-'}</td>
-            <td>${p.stock}</td>
-            <td>
-              <button class="btn-sm btn-sm-warning edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button>
-              <button class="btn-sm btn-sm-danger delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button>
-            </td>
-          </tr>`;
-        });
-        tbody.innerHTML = html;
+            function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
-        document.querySelectorAll('.edit-product').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const id = parseInt(this.dataset.id);
-            let products = loadProducts();
-            const p = products.find(x => x.id === id);
-            if (!p) return;
-            const name = prompt('Nama produk:', p.name);
-            if (name === null) return;
-            const price = parseInt(prompt('Harga Member (Rp):', p.price));
-            if (isNaN(price)) return;
-            const original = parseInt(prompt('Harga Normal (Rp):', p.original));
-            if (isNaN(original)) return;
-            const tag = prompt('Tag:', p.tag);
-            if (tag === null) return;
-            const stock = parseInt(prompt('Stok:', p.stock));
-            if (isNaN(stock)) return;
-            p.name = name; p.price = price; p.original = original; p.tag = tag; p.stock = stock;
-            saveProducts(products);
-            renderAdminProducts();
-            alert('✅ Produk diupdate.');
-          });
-        });
+            function getCurrentUser() {
+                const session = getSession();
+                if (!session) return null;
+                const users = loadUsers();
+                return users.find(u => u.id === session.id) || null;
+            }
 
-        document.querySelectorAll('.delete-product').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const id = parseInt(this.dataset.id);
-            if (!confirm('Hapus produk ini?')) return;
-            let products = loadProducts();
-            products = products.filter(x => x.id !== id);
-            saveProducts(products);
-            renderAdminProducts();
-          });
-        });
-      }
-
-      document.getElementById('addProductBtn').addEventListener('click', function() {
-        const name = prompt('Nama produk:');
-        if (!name) return;
-        const price = parseInt(prompt('Harga Member (Rp):'));
-        if (isNaN(price)) return;
-        const original = parseInt(prompt('Harga Normal (Rp):'));
-        if (isNaN(original)) return;
-        const tag = prompt('Tag (contoh: BEST SELLER):') || 'PRODUK';
-        const stock = parseInt(prompt('Stok:')) || 0;
-        let products = loadProducts();
-        const newProd = {
-          id: products.length ? Math.max(...products.map(p=>p.id)) + 1 : 1,
-          name, price, original, tag, icon: 'fa-tshirt', stock
-        };
-        products.push(newProd);
-        saveProducts(products);
-        renderAdminProducts();
-        alert('✅ Produk ditambahkan!');
-      });
-
-      // ===== APPROVE RO =====
-      function approveRO(userId, txDate) {
-        if (!confirm('Approve pesanan RO ini? Bonus akan didistribusikan ke upline.')) return;
-
-        let freshUsers = loadUsers();
-        const user = freshUsers.find(u => u.id === userId);
-        if (!user) { alert('User tidak ditemukan'); return; }
-
-        const txIndex = user.transactions.findIndex(t => t.type === 'ro_purchase' && t.date === txDate && t.status === 'pending');
-        if (txIndex === -1) { alert('Transaksi tidak ditemukan'); return; }
-
-        user.transactions[txIndex].status = 'success';
-        const amount = user.transactions[txIndex].amount;
-
-        if (user.purchase_history) {
-          const phIndex = user.purchase_history.findIndex(p => p.date === txDate);
-          if (phIndex !== -1) user.purchase_history[phIndex].status = 'success';
-        }
-
-        const roBonusPercent = settings.roBonus || 3;
-        const bonusRO = (amount * roBonusPercent) / 100;
-
-        let sponsorId = user.sponsor_id;
-        let level = 1;
-        while (sponsorId && level <= 10) {
-          const sponsor = freshUsers.find(u => u.id === sponsorId);
-          if (!sponsor) break;
-          sponsor.bonus_ro = (sponsor.bonus_ro || 0) + bonusRO;
-          sponsor.wallet = (sponsor.wallet || 0) + bonusRO;
-          if (!sponsor.transactions) sponsor.transactions = [];
-          sponsor.transactions.push({
-            type: 'bonus_ro',
-            amount: bonusRO,
-            date: new Date().toISOString(),
-            status: 'success',
-            note: `Bonus RO dari ${user.name} (level ${level})`
-          });
-          sponsorId = sponsor.sponsor_id;
-          level++;
-        }
-
-        saveUsers(freshUsers);
-        renderRoOrders();
-        renderAdminMembers();
-        alert('✅ RO approved, bonus telah didistribusikan ke upline.');
-      }
-
-      // ===== RENDER RO ORDERS (TERBARU) =====
-      function renderRoOrders() {
-        const tbody = document.getElementById('roOrdersTable');
-        if (!tbody) return;
-
-        // === AMBIL DATA FRESH DARI LOCALSTORAGE ===
-        const freshUsers = loadUsers();
-
-        let html = '';
-        let allRO = [];
-        freshUsers.forEach(u => {
-          if (u.transactions && Array.isArray(u.transactions)) {
-            u.transactions.forEach(t => {
-              if (t.type === 'ro_purchase') {
-                allRO.push({
-                  userId: u.id,
-                  userName: u.name,
-                  ...t
+            // ============================================================
+            // TOAST
+            // ============================================================
+            function showToast(message, type = 'info', duration = 3000) {
+                const container = document.getElementById('toastContainer');
+                const icons = { success: 'fas fa-check-circle', error: 'fas fa-exclamation-circle', info: 'fas fa-info-circle' };
+                const toast = document.createElement('div');
+                toast.className = `toast-item ${type}`;
+                toast.innerHTML = `
+                    <span class="toast-icon"><i class="${icons[type] || icons.info}"></i></span>
+                    <span class="toast-msg">${message}</span>
+                    <span class="toast-close">&times;</span>
+                `;
+                container.appendChild(toast);
+                const closeBtn = toast.querySelector('.toast-close');
+                closeBtn.addEventListener('click', function() {
+                    if (toast.classList.contains('removing')) return;
+                    toast.classList.add('removing');
+                    setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
                 });
-              }
+                setTimeout(() => {
+                    if (toast.classList.contains('removing')) return;
+                    toast.classList.add('removing');
+                    setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
+                }, duration);
+            }
+
+            // ============================================================
+            // SIDEBAR TOGGLE
+            // ============================================================
+            const burgerBtn = document.getElementById('burgerBtn');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const closeSidebar = document.getElementById('closeSidebar');
+
+            function toggleSidebar(open) {
+                const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('open', isOpen);
+                    sidebarOverlay.classList.toggle('active', isOpen);
+                    burgerBtn.classList.toggle('active', isOpen);
+                    document.body.style.overflow = isOpen ? 'hidden' : '';
+                }
+            }
+            burgerBtn.addEventListener('click', () => toggleSidebar());
+            closeSidebar.addEventListener('click', () => toggleSidebar(false));
+            sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
+
+            // ============================================================
+            // TAB NAVIGATION
+            // ============================================================
+            function switchTab(tabId) {
+                document.querySelectorAll('.admin-tabs .tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                const tabBtn = document.querySelector(`.admin-tabs .tab-btn[data-tab="${tabId}"]`);
+                if (tabBtn) tabBtn.classList.add('active');
+                const tabContent = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+                if (tabContent) tabContent.classList.add('active');
+                document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(el => el.classList.remove('active'));
+                const activeMenuItem = document.querySelector(`.sidebar .menu-item[data-tab="${tabId}"]`);
+                if (activeMenuItem) activeMenuItem.classList.add('active');
+                if (tabId === 'members') renderAdminMembers();
+                if (tabId === 'products') renderAdminProducts();
+                if (tabId === 'verification') renderVerification();
+                if (tabId === 'orders') renderOrders();
+                if (tabId === 'settings') loadSettingsToForm();
+            }
+
+            document.querySelectorAll('.admin-tabs .tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    switchTab(this.dataset.tab);
+                });
             });
-          }
-        });
-        allRO.sort((a,b) => new Date(b.date) - new Date(a.date));
 
-        if (allRO.length === 0) {
-          html = '<tr><td colspan="7" style="text-align:center;padding:20px;">Belum ada pesanan RO.</td></tr>';
-        } else {
-          allRO.forEach((ro, idx) => {
-            const statusClass = ro.status === 'pending' ? 'badge-pending' : (ro.status === 'success' ? 'badge-success' : 'badge-failed');
-            html += `<tr>
-              <td>${idx+1}</td>
-              <td>${ro.userName}</td>
-              <td>${ro.productName || 'Produk'}</td>
-              <td>Rp ${ro.amount.toLocaleString()}</td>
-              <td><span class="badge-status ${statusClass}">${ro.status.toUpperCase()}</span></td>
-              <td>${new Date(ro.date).toLocaleDateString()}</td>
-              <td>
-                ${ro.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-ro" data-userid="${ro.userId}" data-txdate="${ro.date}">Approve</button>` : '-'}
-              </td>
-            </tr>`;
-          });
-        }
-        tbody.innerHTML = html;
+            document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(item => {
+                item.addEventListener('click', function() {
+                    toggleSidebar(false);
+                    switchTab(this.dataset.tab);
+                });
+            });
 
-        document.querySelectorAll('.approve-ro').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const userId = parseInt(this.dataset.userid);
-            const txDate = this.dataset.txdate;
-            approveRO(userId, txDate);
-          });
-        });
-      }
+            // ============================================================
+            // RENDER MEMBERS
+            // ============================================================
+            function renderAdminMembers() {
+                const tbody = document.getElementById('adminTableBody');
+                const users = loadUsers();
+                let html = '';
+                users.forEach(u => {
+                    const isAdmin = u.email === 'admin@mlm.com';
+                    const statusClass = 'badge-' + (u.status || 'free');
+                    html += `<tr>
+                        <td>${u.id}</td>
+                        <td>${u.name || u.username} ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}</td>
+                        <td>${u.email}</td>
+                        <td>${u.sponsor_id || '-'}</td>
+                        <td>${u.position || '-'}</td>
+                        <td><span class="badge-status ${statusClass}">${(u.status || 'free').toUpperCase()}</span></td>
+                        <td>Rp ${(u.wallet || 0).toLocaleString()}</td>
+                        <td>${!isAdmin ? `<button class="btn-sm btn-sm-warning toggle-status" data-id="${u.id}">Ubah Status</button>` : ''}</td>
+                    </tr>`;
+                });
+                tbody.innerHTML = html;
+                document.getElementById('totalMembers').textContent = users.length;
 
-      // ===== SETTINGS =====
-      function loadSettingsToForm() {
-        const settings = loadSettings();
-        document.getElementById('setSponsorBonus').value = settings.sponsorBonus || 10;
-        document.getElementById('setBinaryBonus').value = settings.binaryBonus || 8;
-        document.getElementById('setRewardBonus').value = settings.rewardBonus || 5;
-        document.getElementById('setRoBonus').value = settings.roBonus || 3;
-        document.getElementById('setMemberDiscount').value = settings.memberDiscount || 20;
-        document.getElementById('setShippingCost').value = settings.shippingCost || 0;
-        document.getElementById('setMemberPrice').value = settings.memberPrice || 550000;
-      }
+                document.querySelectorAll('.toggle-status').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        let users = loadUsers();
+                        const user = users.find(u => u.id === id);
+                        if (!user) return;
+                        const statuses = ['free', 'pending', 'verified'];
+                        const currentIdx = statuses.indexOf(user.status);
+                        const nextIdx = (currentIdx + 1) % statuses.length;
+                        user.status = statuses[nextIdx];
+                        saveUsers(users);
+                        renderAdminMembers();
+                        renderVerification();
+                        renderOrders();
+                        showToast(`Status ${user.name} diubah menjadi ${user.status.toUpperCase()}`, 'success');
+                    });
+                });
+            }
 
-      document.getElementById('saveBonusSettings').addEventListener('click', function() {
-        let settings = loadSettings();
-        settings.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value) || 0;
-        settings.binaryBonus = parseFloat(document.getElementById('setBinaryBonus').value) || 0;
-        settings.rewardBonus = parseFloat(document.getElementById('setRewardBonus').value) || 0;
-        settings.roBonus = parseFloat(document.getElementById('setRoBonus').value) || 0;
-        saveSettings(settings);
-        alert('✅ Pengaturan bonus disimpan!');
-      });
+            // ============================================================
+            // RENDER VERIFICATION
+            // ============================================================
+            function renderVerification() {
+                const tbody = document.getElementById('verifTableBody');
+                const users = loadUsers();
+                const pendingUsers = users.filter(u => u.status === 'pending' || u.status === 'free');
+                if (pendingUsers.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;">✅ Semua member sudah terverifikasi.</td></tr>`;
+                    return;
+                }
+                let html = '';
+                pendingUsers.forEach(u => {
+                    html += `<tr>
+                        <td>${u.id}</td>
+                        <td>${u.name || u.username}</td>
+                        <td>${u.email}</td>
+                        <td><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td>
+                        <td>${u.proof_image ? '📷 Telah diupload' : '❌ Belum upload'}</td>
+                        <td>
+                            ${u.status === 'pending' ? `<button class="btn-sm btn-sm-success verify-btn" data-id="${u.id}">✅ Verifikasi</button>` : ''}
+                            ${u.status === 'free' ? `<button class="btn-sm btn-sm-warning pending-btn" data-id="${u.id}">⏳ Jadikan Pending</button>` : ''}
+                        </td>
+                    </tr>`;
+                });
+                tbody.innerHTML = html;
 
-      document.getElementById('saveShopSettings').addEventListener('click', function() {
-        let settings = loadSettings();
-        settings.memberDiscount = parseFloat(document.getElementById('setMemberDiscount').value) || 0;
-        settings.shippingCost = parseFloat(document.getElementById('setShippingCost').value) || 0;
-        settings.memberPrice = parseFloat(document.getElementById('setMemberPrice').value) || 550000;
-        saveSettings(settings);
-        alert('✅ Pengaturan toko disimpan!');
-      });
+                document.querySelectorAll('.verify-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        let users = loadUsers();
+                        const user = users.find(u => u.id === id);
+                        if (user) {
+                            user.status = 'verified';
+                            saveUsers(users);
+                            renderVerification();
+                            renderAdminMembers();
+                            renderOrders();
+                            showToast(`✅ ${user.name} telah diverifikasi!`, 'success');
+                        }
+                    });
+                });
 
-      // ===== SEED & RESET =====
-      document.getElementById('seedDemoBtn').addEventListener('click', function() {
-        let users = loadUsers();
-        const demo = [
-          { name: 'Dewi Lestari', email: 'dewi@mail.com', password: 'dewi123', sponsor_id: 1, position: 'left', status: 'verified', wallet: 50000, bonus_sponsor:25, bonus_binary:60, bonus_reward:12, bonus_ro:5, purchase_history:[], transactions:[], proof_image:null },
-          { name: 'Eko Prasetyo', email: 'eko@mail.com', password: 'eko123', sponsor_id: 2, position: 'right', status: 'pending', wallet: 30000, bonus_sponsor:15, bonus_binary:40, bonus_reward:8, bonus_ro:3, purchase_history:[], transactions:[], proof_image:'https://via.placeholder.com/150' }
-        ];
-        demo.forEach(d => {
-          d.id = users.length ? Math.max(...users.map(u=>u.id)) + 1 : 1;
-          users.push(d);
-        });
-        saveUsers(users);
-        renderAdminMembers();
-        renderVerification();
-        renderRoOrders();
-        alert('✅ 2 member demo ditambahkan.');
-      });
+                document.querySelectorAll('.pending-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        let users = loadUsers();
+                        const user = users.find(u => u.id === id);
+                        if (user) {
+                            const proof = prompt('Masukkan link/deskripsi bukti transfer:');
+                            if (proof !== null) {
+                                user.status = 'pending';
+                                user.proof_image = proof || 'Telah upload bukti';
+                                saveUsers(users);
+                                renderVerification();
+                                renderAdminMembers();
+                                showToast(`⏳ ${user.name} sekarang pending verifikasi.`, 'info');
+                            }
+                        }
+                    });
+                });
+            }
 
-      document.getElementById('resetAllBtn').addEventListener('click', function() {
-        if (!confirm('⚠️ Hapus SEMUA data (kecuali admin)?')) return;
-        let users = loadUsers();
-        users = users.filter(u => u.email === 'admin@mlm.com');
-        saveUsers(users);
-        renderAdminMembers();
-        renderVerification();
-        renderRoOrders();
-        alert('✅ Data non-admin dihapus.');
-      });
+            // ============================================================
+            // RENDER PRODUCTS
+            // ============================================================
+            function renderAdminProducts() {
+                const tbody = document.getElementById('adminProductTableBody');
+                const products = loadProducts();
+                let html = '';
+                products.forEach((p, idx) => {
+                    html += `<tr>
+                        <td>${idx+1}</td>
+                        <td>${p.name}</td>
+                        <td>Rp ${p.price.toLocaleString()}</td>
+                        <td>Rp ${p.original?.toLocaleString() || '-'}</td>
+                        <td>${p.tag || '-'}</td>
+                        <td>${p.stock}</td>
+                        <td>
+                            <button class="btn-sm btn-sm-warning edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button>
+                            <button class="btn-sm btn-sm-danger delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+                        </td>
+                    </tr>`;
+                });
+                tbody.innerHTML = html;
 
-      document.getElementById('refreshBtn').addEventListener('click', function() {
-        renderAdminMembers();
-        renderAdminProducts();
-        renderVerification();
-        renderRoOrders();
-        loadSettingsToForm();
-      });
+                document.querySelectorAll('.edit-product').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        let products = loadProducts();
+                        const p = products.find(x => x.id === id);
+                        if (!p) return;
+                        const name = prompt('Nama produk:', p.name);
+                        if (name === null) return;
+                        const price = parseInt(prompt('Harga Member (Rp):', p.price));
+                        if (isNaN(price)) return;
+                        const original = parseInt(prompt('Harga Normal (Rp):', p.original));
+                        if (isNaN(original)) return;
+                        const tag = prompt('Tag:', p.tag);
+                        if (tag === null) return;
+                        const stock = parseInt(prompt('Stok:', p.stock));
+                        if (isNaN(stock)) return;
+                        p.name = name; p.price = price; p.original = original; p.tag = tag; p.stock = stock;
+                        saveProducts(products);
+                        renderAdminProducts();
+                        showToast('✅ Produk diupdate.', 'success');
+                    });
+                });
 
-      document.getElementById('refreshVerifBtn').addEventListener('click', function() {
-        renderVerification();
-      });
+                document.querySelectorAll('.delete-product').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        if (!confirm('Hapus produk ini?')) return;
+                        let products = loadProducts();
+                        products = products.filter(x => x.id !== id);
+                        saveProducts(products);
+                        renderAdminProducts();
+                        showToast('✅ Produk dihapus.', 'info');
+                    });
+                });
+            }
 
-      document.getElementById('navUserBadge').addEventListener('click', function() {
-        renderAdminMembers();
-        renderVerification();
-        renderRoOrders();
-      });
+            document.getElementById('addProductBtn').addEventListener('click', function() {
+                const name = prompt('Nama produk:');
+                if (!name) return;
+                const price = parseInt(prompt('Harga Member (Rp):'));
+                if (isNaN(price)) return;
+                const original = parseInt(prompt('Harga Normal (Rp):'));
+                if (isNaN(original)) return;
+                const tag = prompt('Tag (contoh: BEST SELLER):') || 'PRODUK';
+                const stock = parseInt(prompt('Stok:')) || 0;
+                let products = loadProducts();
+                const newProd = {
+                    id: products.length ? Math.max(...products.map(p=>p.id)) + 1 : 1,
+                    name, price, original, tag, icon: 'fa-tshirt', stock,
+                    serial: 'HDT-SERI-' + String(products.length + 1).padStart(3, '0'),
+                    desc: 'Deskripsi produk ini akan diisi oleh admin.'
+                };
+                products.push(newProd);
+                saveProducts(products);
+                renderAdminProducts();
+                showToast('✅ Produk ditambahkan!', 'success');
+            });
 
-      // ===== INIT =====
-      document.getElementById('navUserName').textContent = 'Admin';
-      renderAdminMembers();
-      renderAdminProducts();
-      renderVerification();
-      renderRoOrders();
-      loadSettingsToForm();
+            // ============================================================
+            // RENDER ORDERS
+            // ============================================================
+            function renderOrders() {
+                const tbody = document.getElementById('ordersTableBody');
+                const orders = loadOrders();
+                const users = loadUsers();
 
-      // Auto-refresh setiap 10 detik untuk RO Orders
-      setInterval(() => {
-        const activeTab = document.querySelector('.admin-tabs .tab-btn.active')?.dataset.tab;
-        if (activeTab === 'ro-orders') renderRoOrders();
-        if (activeTab === 'members') renderAdminMembers();
-        if (activeTab === 'verification') renderVerification();
-        if (activeTab === 'products') renderAdminProducts();
-      }, 10000);
+                if (orders.length === 0) {
+                    tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;">Belum ada pesanan.</td></tr>`;
+                    return;
+                }
 
-      console.log('🟦 HEDTRO · Admin Panel dengan RO auto-refresh');
-    })();
-  </script>
+                let html = '';
+                const sorted = [...orders].reverse();
+                sorted.forEach((o, idx) => {
+                    const user = users.find(u => u.id === o.user_id);
+                    const userName = user ? (user.name || user.username) : o.user_name || 'Unknown';
+                    const typeLabel = o.type === 'first_order' ? '🎯 First Order' : (o.type === 'ro' ? '🔄 RO' : '📦 Regular');
+                    const statusClass = 'badge-' + (o.status || 'pending');
+                    const statusLabel = o.status === 'pending' ? '⏳ Pending' : (o.status === 'processing' ? '📦 Processing' : (o.status === 'shipped' ? '🚚 Shipped' : '✅ Done'));
+                    const productNames = o.items ? o.items.map(i => i.name).join(', ') : '-';
+                    html += `<tr>
+                        <td>${idx+1}</td>
+                        <td>${userName}</td>
+                        <td>${typeLabel}</td>
+                        <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${productNames}</td>
+                        <td>Rp ${(o.total || 0).toLocaleString()}</td>
+                        <td><span class="badge-status ${statusClass}">${statusLabel}</span></td>
+                        <td>${new Date(o.createdAt).toLocaleDateString()}</td>
+                        <td>
+                            ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
+                            ${o.status === 'processing' ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim</button>` : ''}
+                        </td>
+                    </tr>`;
+                });
+                tbody.innerHTML = html;
+
+                document.querySelectorAll('.approve-order').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        let orders = loadOrders();
+                        const order = orders.find(o => o.id === id);
+                        if (!order) return;
+                        order.status = 'processing';
+                        saveOrders(orders);
+                        renderOrders();
+                        showToast(`✅ Order ${order.order_number} diproses.`, 'success');
+                    });
+                });
+
+                document.querySelectorAll('.ship-order').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        let orders = loadOrders();
+                        const order = orders.find(o => o.id === id);
+                        if (!order) return;
+                        order.status = 'shipped';
+                        saveOrders(orders);
+                        renderOrders();
+                        showToast(`🚚 Order ${order.order_number} dikirim.`, 'success');
+                    });
+                });
+            }
+
+            // ============================================================
+            // SETTINGS
+            // ============================================================
+            function loadSettingsToForm() {
+                const settings = loadSettings();
+                const bankInfo = loadBankInfo();
+
+                document.getElementById('setSponsorBonus').value = settings.sponsorBonus || 10;
+                document.getElementById('setBinaryBonus').value = settings.binaryBonus || 8;
+                document.getElementById('setRewardBonus').value = settings.rewardBonus || 5;
+                document.getElementById('setRoBonus').value = settings.roBonus || 3;
+                document.getElementById('setMemberPrice').value = settings.memberPrice || 550000;
+                document.getElementById('setBrandName').value = settings.brandName || 'HEDTRO JEANS';
+                document.getElementById('setBrandLogo').value = settings.brandLogo || 'fa-tshirt';
+                document.getElementById('setHeroTitle').value = settings.heroTitle || 'HEDTRO JEANS · Premium Denim';
+                document.getElementById('setBankName').value = bankInfo.bank || 'BCA';
+                document.getElementById('setBankAccount').value = bankInfo.account || '1234567890';
+                document.getElementById('setBankHolder').value = bankInfo.name || 'HEDTRO JEANS';
+            }
+
+            document.getElementById('saveBonusSettings').addEventListener('click', function() {
+                let settings = loadSettings();
+                settings.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value) || 0;
+                settings.binaryBonus = parseFloat(document.getElementById('setBinaryBonus').value) || 0;
+                settings.rewardBonus = parseFloat(document.getElementById('setRewardBonus').value) || 0;
+                settings.roBonus = parseFloat(document.getElementById('setRoBonus').value) || 0;
+                saveSettings(settings);
+                showToast('✅ Pengaturan bonus disimpan!', 'success');
+            });
+
+            document.getElementById('saveBrandSettings').addEventListener('click', function() {
+                let settings = loadSettings();
+                settings.brandName = document.getElementById('setBrandName').value.trim() || 'HEDTRO JEANS';
+                settings.brandLogo = document.getElementById('setBrandLogo').value.trim() || 'fa-tshirt';
+                settings.heroTitle = document.getElementById('setHeroTitle').value.trim() || 'HEDTRO JEANS · Premium Denim';
+                saveSettings(settings);
+                applySettings();
+                showToast('✅ Pengaturan brand disimpan!', 'success');
+            });
+
+            document.getElementById('saveBankSettings').addEventListener('click', function() {
+                const bankInfo = {
+                    bank: document.getElementById('setBankName').value.trim() || 'BCA',
+                    account: document.getElementById('setBankAccount').value.trim() || '1234567890',
+                    name: document.getElementById('setBankHolder').value.trim() || 'HEDTRO JEANS'
+                };
+                saveBankInfo(bankInfo);
+                showToast('✅ Rekening admin disimpan!', 'success');
+            });
+
+            document.getElementById('saveShopSettings').addEventListener('click', function() {
+                let settings = loadSettings();
+                settings.memberPrice = parseFloat(document.getElementById('setMemberPrice').value) || 550000;
+                saveSettings(settings);
+                showToast('✅ Pengaturan toko disimpan!', 'success');
+            });
+
+            // ============================================================
+            // APPLY SETTINGS
+            // ============================================================
+            function applySettings() {
+                const settings = loadSettings();
+                const logoEl = document.getElementById('brandLogo');
+                if (settings.brandLogo && settings.brandLogo.startsWith('http')) {
+                    logoEl.innerHTML =
+                        `<img src="${settings.brandLogo}" alt="Logo" style="height:40px;width:auto;object-fit:contain;" /> <span>HEDTRO<span>JEANS</span></span>`;
+                } else if (settings.brandLogo) {
+                    logoEl.innerHTML =
+                        `<i class="fas ${settings.brandLogo}"></i> HEDTRO<span>JEANS</span>`;
+                }
+                if (settings.heroTitle) {
+                    document.title = settings.heroTitle + ' · Admin';
+                }
+                document.getElementById('navUserName').textContent = 'Admin';
+            }
+
+            // ============================================================
+            // SEED & RESET
+            // ============================================================
+            document.getElementById('seedDemoBtn').addEventListener('click', function() {
+                let users = loadUsers();
+                const demoNames = ['Dewi Lestari', 'Eko Prasetyo', 'Rina Cahyani', 'Bambang S', 'Siti Rahayu'];
+                let added = 0;
+                demoNames.forEach((name, i) => {
+                    if (!users.find(u => u.email === name.toLowerCase().replace(/ /g,'') + '@mail.com')) {
+                        const newUser = {
+                            id: getNextId(users),
+                            username: name.toLowerCase().replace(/ /g, ''),
+                            email: name.toLowerCase().replace(/ /g, '') + '@mail.com',
+                            password: 'demo123',
+                            name: name,
+                            role: 'user',
+                            status: i < 2 ? 'verified' : 'free',
+                            wallet: Math.floor(Math.random() * 100000) + 10000,
+                            bonus_sponsor: Math.floor(Math.random() * 50),
+                            bonus_binary: Math.floor(Math.random() * 100),
+                            bonus_reward: Math.floor(Math.random() * 20),
+                            bonus_ro: Math.floor(Math.random() * 10),
+                            left: null, right: null, sponsor_id: 1, upline_id: 1,
+                            position: i % 2 === 0 ? 'left' : 'right',
+                            purchase_history: [], transactions: [], orders: [],
+                            proof_image: null,
+                            registeredAt: new Date().toISOString()
+                        };
+                        // Set tree
+                        if (i === 0) { users.find(u => u.id === 1).left = newUser.id; }
+                        if (i === 1) { users.find(u => u.id === 1).right = newUser.id; }
+                        users.push(newUser);
+                        added++;
+                    }
+                });
+                saveUsers(users);
+                renderAdminMembers();
+                renderVerification();
+                renderOrders();
+                showToast(`✅ ${added} member demo ditambahkan.`, 'success');
+            });
+
+            document.getElementById('resetAllBtn').addEventListener('click', function() {
+                if (!confirm('⚠️ Hapus SEMUA data (kecuali admin)?')) return;
+                let users = loadUsers();
+                const admin = users.find(u => u.email === 'admin@mlm.com');
+                if (admin) {
+                    admin.left = null;
+                    admin.right = null;
+                    admin.wallet = 0;
+                    admin.bonus_sponsor = 0;
+                    admin.bonus_binary = 0;
+                    admin.bonus_reward = 0;
+                    admin.bonus_ro = 0;
+                    admin.transactions = [];
+                    admin.orders = [];
+                    admin.purchase_history = [];
+                }
+                users = users.filter(u => u.email === 'admin@mlm.com');
+                saveUsers(users);
+                saveOrders([]);
+                saveTransactions([]);
+
+                // Reset products ke default
+                const defaultProducts = [
+                    { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', desc: 'Celana jeans premium dengan potongan slim-fit modern.' },
+                    { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', desc: 'Model straight cut klasik legendaris.' },
+                    { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', desc: 'Warna hitam legam pekat yang elegan.' },
+                    { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%', icon: 'fa-tshirt', favorite: true, stock: 18, serial: 'HDT-SERI-004', desc: 'Tampilan retro klasik tahun 90-an.' },
+                    { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED', icon: 'fa-jacket', favorite: true, stock: 20, serial: 'HDT-SERI-005', desc: 'Jaket denim ikonik berbahan rigid denim.' }
+                ];
+                saveProducts(defaultProducts);
+
+                renderAdminMembers();
+                renderVerification();
+                renderOrders();
+                renderAdminProducts();
+                showToast('✅ Semua data direset (kecuali admin).', 'info');
+            });
+
+            document.getElementById('refreshBtn').addEventListener('click', function() {
+                renderAdminMembers();
+                renderAdminProducts();
+                renderVerification();
+                renderOrders();
+                loadSettingsToForm();
+                showToast('🔄 Data direfresh.', 'info');
+            });
+
+            document.getElementById('refreshVerifBtn').addEventListener('click', function() {
+                renderVerification();
+            });
+
+            document.getElementById('refreshOrdersBtn').addEventListener('click', function() {
+                renderOrders();
+            });
+
+            document.getElementById('navUserBadge').addEventListener('click', function() {
+                renderAdminMembers();
+                renderVerification();
+                renderOrders();
+            });
+
+            document.getElementById('sideLogoutBtn').addEventListener('click', function() {
+                clearSession();
+                window.location.href = 'index.html';
+            });
+
+            // ============================================================
+            // CHECK SESSION
+            // ============================================================
+            const session = getSession();
+            if (!session) {
+                window.location.href = 'login.html';
+                return;
+            }
+            const user = getCurrentUser();
+            if (!user || user.email !== 'admin@mlm.com') {
+                clearSession();
+                window.location.href = 'login.html';
+                return;
+            }
+
+            // ============================================================
+            // INIT
+            // ============================================================
+            applySettings();
+            renderAdminMembers();
+            renderAdminProducts();
+            renderVerification();
+            renderOrders();
+            loadSettingsToForm();
+
+            // Auto refresh
+            setInterval(() => {
+                const activeTab = document.querySelector('.admin-tabs .tab-btn.active')?.dataset.tab;
+                if (activeTab === 'members') renderAdminMembers();
+                if (activeTab === 'verification') renderVerification();
+                if (activeTab === 'orders') renderOrders();
+                if (activeTab === 'products') renderAdminProducts();
+            }, 15000);
+
+            console.log('🟦 HEDTRO · Admin Panel siap');
+            console.log('👤 Login sebagai: Admin');
+        })();
+    </script>
 </body>
 </html>
