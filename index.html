@@ -67,7 +67,7 @@
     }
 
     /* ============================================================
-       NAVBAR - HEADER
+       NAVBAR
        ============================================================ */
     .navbar {
       position: fixed;
@@ -85,7 +85,6 @@
       transition: var(--transition);
       width: 100%;
       overflow: visible;
-      /* penting: biarkan child terlihat */
     }
 
     .navbar .logo {
@@ -96,7 +95,6 @@
       font-weight: 800;
       font-size: 1.4rem;
       flex-shrink: 0;
-      min-width: 0;
     }
 
     .navbar .logo i {
@@ -116,10 +114,7 @@
       align-items: center;
       gap: 8px;
       flex-shrink: 0;
-      /* penting: jangan mengecil */
-      min-width: 0;
       overflow: visible;
-      /* penting: biarkan child terlihat */
     }
 
     .nav-right .user-badge {
@@ -175,7 +170,7 @@
     }
 
     /* ============================================================
-       BURGER - PASTI MUNCUL & TIDAK OFFSIDE
+       BURGER - TAMPIL DI SEMUA UKURAN
        ============================================================ */
     .burger-btn {
       display: flex !important;
@@ -191,7 +186,6 @@
       flex-shrink: 0;
       margin-left: 4px;
       overflow: visible;
-      /* penting: biarkan span terlihat */
     }
 
     .burger-btn span {
@@ -763,7 +757,7 @@
     }
 
     /* ============================================================
-       RESPONSIVE - HEADER TIDAK OFFSIDE
+       RESPONSIVE - HP HIDE LOGIN/DAFTAR DI NAVBAR
        ============================================================ */
     @media (max-width: 768px) {
       body {
@@ -805,11 +799,12 @@
         font-size: 0.7rem;
       }
 
+      /* === SEMBUNYIKAN TOMBOL LOGIN & DAFTAR DI HP === */
       .nav-right .btn-nav {
-        display: none;
+        display: none !important;
       }
 
-      /* BURGER - PASTI MUNCUL & TIDAK OFFSIDE */
+      /* BURGER TETAP TAMPIL */
       .burger-btn {
         display: flex !important;
         position: relative !important;
@@ -927,7 +922,6 @@
         padding: 4px 12px;
       }
 
-      /* PASTIKAN BURGER TIDAK OFFSIDE */
       .navbar {
         padding: 8px 12px;
         height: 56px;
@@ -961,12 +955,16 @@
       }
     }
 
-    /* DESKTOP - BURGER TETAP TAMPIL */
+    /* DESKTOP - TOMBOL LOGIN/DAFTAR TAMPIL, BURGER TETAP TAMPIL */
     @media (min-width: 769px) {
       .burger-btn {
         display: flex !important;
         position: relative !important;
         right: 0 !important;
+      }
+
+      .nav-right .btn-nav {
+        display: flex !important;
       }
     }
   </style>
@@ -985,7 +983,6 @@
       </div>
       <button class="btn-nav btn-nav-outline" id="navLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</button>
       <button class="btn-nav btn-nav-gold" id="navRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</button>
-      <!-- BURGER -->
       <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
         <span></span><span></span><span></span>
       </button>
@@ -1003,6 +1000,7 @@
     <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
     <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang</div>
     <div class="menu-divider"></div>
+    <!-- ===== LOGIN & DAFTAR DI SIDEBAR ===== -->
     <div class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</div>
     <div class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</div>
   </nav>
@@ -1515,7 +1513,7 @@
       }
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Header fixed, burger PASTI tampil dan tidak offside');
+      console.log('🟦 HEDTRO JEANS · Login/Daftar di HP disembunyikan, ada di sidebar');
     })();
   </script>
 
