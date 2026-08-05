@@ -262,11 +262,11 @@
             <form id="loginForm" onsubmit="return false;">
                 <div class="form-group">
                     <label>Email atau Username</label>
-                    <input type="text" id="loginEmail" placeholder="email@domain.com" />
+                    <input type="text" id="loginEmail" placeholder="email@domain.com" value="admin@mlm.com" />
                 </div>
                 <div class="form-group">
                     <label>Kata Sandi</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" />
+                    <input type="password" id="loginPassword" placeholder="••••••••" value="admin123" />
                 </div>
                 <button type="submit" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
                 <div class="msg" id="loginMsg"></div>
@@ -340,7 +340,56 @@
                         orders: [],
                         proof_image: null,
                         registeredAt: new Date().toISOString()
+                    }, {
+                        id: 2,
+                        username: 'budi',
+                        name: 'Budi Santoso',
+                        email: 'budi@mail.com',
+                        password: 'budi123',
+                        role: 'user',
+                        status: 'verified',
+                        wallet: 120000,
+                        bonus_sponsor: 50,
+                        bonus_binary: 120,
+                        bonus_reward: 30,
+                        bonus_ro: 12,
+                        left: null,
+                        right: null,
+                        sponsor_id: 1,
+                        upline_id: 1,
+                        position: 'left',
+                        purchase_history: [],
+                        transactions: [],
+                        orders: [],
+                        proof_image: null,
+                        registeredAt: new Date().toISOString()
+                    }, {
+                        id: 3,
+                        username: 'citra',
+                        name: 'Citra Dewi',
+                        email: 'citra@mail.com',
+                        password: 'citra123',
+                        role: 'user',
+                        status: 'pending',
+                        wallet: 80000,
+                        bonus_sponsor: 30,
+                        bonus_binary: 70,
+                        bonus_reward: 15,
+                        bonus_ro: 8,
+                        left: null,
+                        right: null,
+                        sponsor_id: 1,
+                        upline_id: 1,
+                        position: 'right',
+                        purchase_history: [],
+                        transactions: [],
+                        orders: [],
+                        proof_image: 'https://via.placeholder.com/150',
+                        registeredAt: new Date().toISOString()
                     }];
+                    // Set tree
+                    users[0].left = 2;
+                    users[0].right = 3;
                     saveUsers(users);
                 }
                 return users;
@@ -361,7 +410,8 @@
                     return;
                 }
 
-                saveSession({ id: user.id });
+                // Simpan session dengan role
+                saveSession({ id: user.id, role: user.role });
                 msgEl.className = 'msg success';
                 msgEl.innerText = '✅ Login berhasil! Mengarahkan...';
 
@@ -430,6 +480,8 @@
             }
 
             console.log('🟦 HEDTRO JEANS · Login siap');
+            console.log('🔑 Admin: admin@mlm.com / admin123');
+            console.log('🔑 User: budi@mail.com / budi123');
         })();
     </script>
 
