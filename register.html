@@ -580,14 +580,22 @@
         </form>
     </div>
 
-    <!-- ============================================================
-    JAVASCRIPT
-    ============================================================ -->
     <script>
         (function() {
             'use strict';
 
             const DB_KEY = 'hedtro_mlm_users';
+            const ORDER_KEY = 'hedtro_orders';
+            const PRODUCT_KEY = 'hedtro_products';
+            const SESSION_KEY = 'mlm_session';
+
+            function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
+            function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
+            function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
+            function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
+            function loadOrders() { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); }
+            function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
+            function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
             // ============================================================
             // POSITION SELECTOR
@@ -654,7 +662,7 @@
                     return;
                 }
 
-                let users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+                let users = loadUsers();
 
                 if (users.find(u => u.username === username)) {
                     msgEl.className = 'msg error';
@@ -702,13 +710,13 @@
                     uplineId = uplineUser.id;
                 }
 
-                // Buat user baru
+                // Buat user baru - status FREE
                 const newUser = {
-                    id: users.length ? Math.max(...users.map(u => u.id)) + 1 : 1,
+                    id: getNextId(users),
                     username,
                     email,
                     password,
-                    fullname,
+                    name: fullname,
                     nik,
                     phone,
                     whatsapp,
@@ -726,34 +734,64 @@
                     left: null,
                     right: null,
                     role: 'user',
-                    status: 'free',
+                    status: 'free', // FREE MEMBER
                     wallet: 0,
                     bonus_sponsor: 0,
                     bonus_binary: 0,
                     bonus_reward: 0,
                     bonus_ro: 0,
-                    binary_tree: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                    reward_levels: [0, 0, 0, 0, 0],
                     purchase_history: [],
                     transactions: [],
+                    orders: [],
                     proof_image: null,
                     registeredAt: new Date().toISOString()
                 };
 
                 users.push(newUser);
-                localStorage.setItem(DB_KEY, JSON.stringify(users));
+                saveUsers(users);
 
                 // Update tree di sponsor
                 if (sponsorId) {
                     const sponsorUser = users.find(u => u.id === sponsorId);
                     if (position === 'left') sponsorUser.left = newUser.id;
                     else sponsorUser.right = newUser.id;
-                    localStorage.setItem(DB_KEY, JSON.stringify(users));
+                    saveUsers(users);
                     updateBinaryTree(sponsorId, 1);
                 }
 
+                // Buat order perdana otomatis (1 produk) - status pending
+                const products = loadProducts();
+                const firstProduct = products.length > 0 ? products[0] : null;
+                if (firstProduct) {
+                    const orders = loadOrders();
+                    orders.push({
+                        id: getNextId(orders),
+                        order_number: 'FIRST-' + Date.now().toString().slice(-6),
+                        user_id: newUser.id,
+                        user_name: fullname,
+                        items: [{
+                            product_id: firstProduct.id,
+                            name: firstProduct.name,
+                            price: firstProduct.price,
+                            qty: 1,
+                            size: jeansSize,
+                            color: jeansColor
+                        }],
+                        total: firstProduct.price,
+                        status: 'pending',
+                        type: 'first_order',
+                        createdAt: new Date().toISOString(),
+                        updatedAt: new Date().toISOString()
+                    });
+                    saveOrders(orders);
+
+                    // Kurangi stok
+                    firstProduct.stock = (firstProduct.stock || 0) - 1;
+                    saveProducts(products);
+                }
+
                 msgEl.className = 'msg success';
-                msgEl.innerText = '✅ Pendaftaran berhasil! Silakan login.';
+                msgEl.innerText = '✅ Pendaftaran berhasil! Status: FREE MEMBER. Silakan login dan upload bukti TF ke admin untuk verifikasi.';
 
                 document.getElementById('registerForm').reset();
                 positionOptions.forEach(o => o.classList.remove('active'));
@@ -761,12 +799,12 @@
 
                 setTimeout(() => {
                     window.location.href = 'login.html';
-                }, 2000);
+                }, 3000);
             }
 
             function updateBinaryTree(userId, level) {
                 if (level > 10) return;
-                let users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+                let users = loadUsers();
                 const user = users.find(u => u.id === userId);
                 if (!user) return;
                 if (!user.binary_tree) user.binary_tree = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
@@ -775,7 +813,7 @@
                     if (!user.reward_levels) user.reward_levels = [0, 0, 0, 0, 0];
                     user.reward_levels[level - 1] = (user.reward_levels[level - 1] || 0) + 1;
                 }
-                localStorage.setItem(DB_KEY, JSON.stringify(users));
+                saveUsers(users);
                 if (user.sponsor_id) {
                     updateBinaryTree(user.sponsor_id, level + 1);
                 }
@@ -796,13 +834,13 @@
             });
 
             // ============================================================
-            // REDIRECT IF ALREADY LOGGED IN
+            // CHECK SESSION
             // ============================================================
-            const session = localStorage.getItem('mlm_session');
+            const session = localStorage.getItem(SESSION_KEY);
             if (session) {
                 try {
                     const { id } = JSON.parse(session);
-                    const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+                    const users = loadUsers();
                     const user = users.find(u => u.id === id);
                     if (user) {
                         if (user.role === 'admin') {
@@ -816,6 +854,7 @@
             }
 
             console.log('🟦 HEDTRO JEANS · Form pendaftaran siap');
+            console.log('📝 Status awal: FREE MEMBER, perlu verifikasi admin');
         })();
     </script>
 
