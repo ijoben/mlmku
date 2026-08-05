@@ -124,7 +124,6 @@
             display: inline-block;
         }
 
-        /* DESKTOP MENU - horizontal */
         .nav-menu {
             display: flex;
             align-items: center;
@@ -263,7 +262,7 @@
         }
 
         /* ============================================================
-           BURGER & SIDEBAR - HANYA UNTUK HP
+           BURGER & SIDEBAR
            ============================================================ */
         .burger-btn {
             display: none !important;
@@ -586,6 +585,12 @@
             user-select: none;
         }
 
+        .product-detail-popup .popup-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
         .product-detail-popup .popup-image .popup-icon-wrap {
             transition: transform 0.3s ease;
             font-size: 5rem;
@@ -616,8 +621,7 @@
 
         .product-detail-popup .popup-info .popup-tag {
             display: inline-block;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
+            color: #fff;
             font-size: 0.6rem;
             font-weight: 700;
             padding: 2px 14px;
@@ -1044,6 +1048,13 @@
             justify-content: center;
             color: var(--denim-blue);
             font-size: 3rem;
+            overflow: hidden;
+        }
+
+        .product-carousel .product-card .img-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .product-carousel .product-card .body {
@@ -1052,8 +1063,7 @@
 
         .product-carousel .product-card .body .tag {
             display: inline-block;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
+            color: #fff;
             font-size: 0.6rem;
             font-weight: 700;
             padding: 2px 14px;
@@ -1186,6 +1196,13 @@
             justify-content: center;
             color: var(--denim-blue);
             font-size: 3rem;
+            overflow: hidden;
+        }
+
+        .product-grid .product-card .img-placeholder img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .product-grid .product-card .body {
@@ -1194,8 +1211,7 @@
 
         .product-grid .product-card .body .tag {
             display: inline-block;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
+            color: #fff;
             font-size: 0.6rem;
             font-weight: 700;
             padding: 2px 14px;
@@ -1940,7 +1956,7 @@
                     <span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>
                 </div>
                 <div class="popup-info">
-                    <span class="popup-tag" id="detailTag">BEST SELLER</span>
+                    <span class="popup-tag" id="detailTag" style="background:#c9a84c;">BEST SELLER</span>
                     <h2 id="detailName">Nama Produk</h2>
                     <div class="popup-price" id="detailPrice">Rp 250.000 <del>Rp 350.000</del></div>
                     <div class="popup-desc" id="detailDesc">Deskripsi produk lengkap.</div>
@@ -2164,10 +2180,6 @@
             function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
             function loadTransactions() { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); }
             function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
-            function loadBankInfo() {
-                return JSON.parse(localStorage.getItem(BANK_KEY) || '{"bank":"BCA","account":"1234567890","name":"HEDTRO JEANS"}');
-            }
-            function saveBankInfo(b) { localStorage.setItem(BANK_KEY, JSON.stringify(b)); }
             function loadCart() { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
             function saveCart(c) { localStorage.setItem(CART_KEY, JSON.stringify(c)); }
             function getSession() {
@@ -2226,28 +2238,39 @@
             function getDefaultProducts() {
                 return [
                     { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
-                        icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet.' },
+                        badgeColor: '#c9a84c', icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001',
+                        desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet.',
+                        sizes: ['28', '29', '30', '31', '32'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
+                        image: null },
                     { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
-                        icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002',
-                        desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor.' },
+                        badgeColor: '#2a4b6e', icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002',
+                        desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor.',
+                        sizes: ['30', '32', '34'], colors: ['Raw Denim', 'Dark Navy'], image: null },
                     { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM',
-                        icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003',
-                        desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual. Sangat fleksibel (high stretch).' },
+                        badgeColor: '#b13e3e', icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003',
+                        desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual. Sangat fleksibel (high stretch).',
+                        sizes: ['29', '30', '31', '32'], colors: ['Black Stretch', 'Grey Stone'], image: null },
                     { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%',
-                        icon: 'fa-tshirt', favorite: true, stock: 18, serial: 'HDT-SERI-004',
-                        desc: 'Tampilan retro klasik tahun 90-an dengan efek pencucian warna muda (light wash) yang kasual.' },
+                        badgeColor: '#1f7a4b', icon: 'fa-tshirt', favorite: true, stock: 18, serial: 'HDT-SERI-004',
+                        desc: 'Tampilan retro klasik tahun 90-an dengan efek pencucian warna muda (light wash) yang kasual.',
+                        sizes: ['28', '29', '30', '31'], colors: ['Light Wash', 'Indigo Blue Raw Denim'], image: null },
                     { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED',
-                        icon: 'fa-jacket', favorite: true, stock: 20, serial: 'HDT-SERI-005',
-                        desc: 'Jaket denim ikonik berbahan rigid denim 14.5oz dengan saku ganda di dada.' },
+                        badgeColor: '#8f2f2f', icon: 'fa-jacket', favorite: true, stock: 20, serial: 'HDT-SERI-005',
+                        desc: 'Jaket denim ikonik berbahan rigid denim 14.5oz dengan saku ganda di dada.',
+                        sizes: ['S', 'M', 'L', 'XL'], colors: ['Raw Denim', 'Dark Navy'], image: null },
                     { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER',
-                        icon: 'fa-tshirt', favorite: false, stock: 35, serial: 'HDT-SERI-006',
-                        desc: 'Celana jeans wanita potongan high-waist yang membentuk lekuk pinggang secara sempurna.' },
+                        badgeColor: '#d4a02b', icon: 'fa-tshirt', favorite: false, stock: 35, serial: 'HDT-SERI-006',
+                        desc: 'Celana jeans wanita potongan high-waist yang membentuk lekuk pinggang secara sempurna.',
+                        sizes: ['25', '26', '27', '28'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
+                        image: null },
                     { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS',
-                        icon: 'fa-belt', favorite: false, stock: 50, serial: 'HDT-SERI-007',
-                        desc: 'Ikat pinggang kulit sapi asli 100% dengan kepala gesper kuningan antik.' },
+                        badgeColor: '#6a7e9a', icon: 'fa-belt', favorite: false, stock: 50, serial: 'HDT-SERI-007',
+                        desc: 'Ikat pinggang kulit sapi asli 100% dengan kepala gesper kuningan antik.',
+                        sizes: ['M', 'L', 'XL'], colors: ['Vintage Brown', 'Black'], image: null },
                     { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT',
-                        icon: 'fa-tshirt', favorite: false, stock: 22, serial: 'HDT-SERI-008',
-                        desc: 'Kemeja denim kasual berbahan katun ringan 8oz yang lembut.' }
+                        badgeColor: '#2a4b6e', icon: 'fa-tshirt', favorite: false, stock: 22, serial: 'HDT-SERI-008',
+                        desc: 'Kemeja denim kasual berbahan katun ringan 8oz yang lembut.', sizes: ['S', 'M', 'L', 'XL'],
+                        colors: ['Vintage Wash', 'Light Wash'], image: null }
                 ];
             }
 
@@ -2297,7 +2320,7 @@
             }
 
             // ============================================================
-            // RENDER PRODUCTS
+            // RENDER PRODUCTS - DENGAN GAMBAR
             // ============================================================
             function renderFavoriteCarousel() {
                 const container = document.getElementById('favoriteCarousel');
@@ -2307,10 +2330,16 @@
                 favorites.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
+                    let imgHtml = `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
+                    if (p.image && p.image.startsWith('data:image')) {
+                        imgHtml = `<img src="${p.image}" />`;
+                    } else if (p.image && p.image.startsWith('http')) {
+                        imgHtml = `<img src="${p.image}" />`;
+                    }
                     card.innerHTML = `
-                        <div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>
+                        <div class="img-placeholder">${imgHtml}</div>
                         <div class="body">
-                            <span class="tag">${p.tag || 'PRODUK'}</span>
+                            <span class="tag" style="background:${p.badgeColor || '#c9a84c'};">${p.tag || 'PRODUK'}</span>
                             <h4>${p.name}</h4>
                             <div class="price">Rp ${p.price.toLocaleString()} ${p.original ? `<del>Rp ${p.original.toLocaleString()}</del>` : ''}</div>
                             <div class="btn-group">
@@ -2339,10 +2368,16 @@
                 pageItems.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
+                    let imgHtml = `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
+                    if (p.image && p.image.startsWith('data:image')) {
+                        imgHtml = `<img src="${p.image}" />`;
+                    } else if (p.image && p.image.startsWith('http')) {
+                        imgHtml = `<img src="${p.image}" />`;
+                    }
                     card.innerHTML = `
-                        <div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>
+                        <div class="img-placeholder">${imgHtml}</div>
                         <div class="body">
-                            <span class="tag">${p.tag || 'PRODUK'}</span>
+                            <span class="tag" style="background:${p.badgeColor || '#c9a84c'};">${p.tag || 'PRODUK'}</span>
                             <h4>${p.name}</h4>
                             <div class="price">Rp ${p.price.toLocaleString()} ${p.original ? `<del>Rp ${p.original.toLocaleString()}</del>` : ''}</div>
                             <div class="btn-group">
@@ -2416,6 +2451,7 @@
                 if (!product) return;
 
                 document.getElementById('detailTag').textContent = product.tag || 'PRODUK';
+                document.getElementById('detailTag').style.background = product.badgeColor || '#c9a84c';
                 document.getElementById('detailName').textContent = product.name;
                 document.getElementById('detailPrice').innerHTML =
                     `Rp ${product.price.toLocaleString()} ${product.original ? `<del>Rp ${product.original.toLocaleString()}</del>` : ''}`;
@@ -2426,8 +2462,15 @@
                 stockEl.style.color = (product.stock || 0) <= 0 ? '#b13e3e' : '#1f7a4b';
                 document.getElementById('detailIcon').className = `fas ${product.icon || 'fa-tshirt'}`;
 
+                // Tampilkan gambar jika ada
+                const iconWrap = document.getElementById('detailIconWrap');
+                if (product.image && (product.image.startsWith('data:image') || product.image.startsWith('http'))) {
+                    iconWrap.innerHTML = `<img src="${product.image}" style="width:100%;height:100%;object-fit:cover;" />`;
+                } else {
+                    iconWrap.innerHTML = `<i class="fas ${product.icon || 'fa-tshirt'}" id="detailIcon"></i>`;
+                }
+
                 detailImage.classList.remove('zoomed');
-                detailIconWrap.style.transform = 'scale(1)';
                 isZoomed = false;
 
                 document.getElementById('detailBuyBtn').onclick = function() {
@@ -2449,7 +2492,6 @@
                 detailPopup.classList.remove('show');
                 document.body.style.overflow = '';
                 detailImage.classList.remove('zoomed');
-                detailIconWrap.style.transform = 'scale(1)';
                 isZoomed = false;
             }
 
@@ -2462,7 +2504,12 @@
                 e.stopPropagation();
                 isZoomed = !isZoomed;
                 this.classList.toggle('zoomed', isZoomed);
-                detailIconWrap.style.transform = isZoomed ? 'scale(2)' : 'scale(1)';
+                const wrap = document.getElementById('detailIconWrap');
+                if (wrap.querySelector('img')) {
+                    wrap.style.transform = isZoomed ? 'scale(1.8)' : 'scale(1)';
+                } else {
+                    wrap.style.transform = isZoomed ? 'scale(2)' : 'scale(1)';
+                }
             });
 
             // ============================================================
@@ -2721,10 +2768,16 @@
                 results.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
+                    let imgHtml = `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
+                    if (p.image && p.image.startsWith('data:image')) {
+                        imgHtml = `<img src="${p.image}" />`;
+                    } else if (p.image && p.image.startsWith('http')) {
+                        imgHtml = `<img src="${p.image}" />`;
+                    }
                     card.innerHTML = `
-                        <div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>
+                        <div class="img-placeholder">${imgHtml}</div>
                         <div class="body">
-                            <span class="tag">${p.tag || 'PRODUK'}</span>
+                            <span class="tag" style="background:${p.badgeColor || '#c9a84c'};">${p.tag || 'PRODUK'}</span>
                             <h4>${p.name}</h4>
                             <div class="price">Rp ${p.price.toLocaleString()} ${p.original ? `<del>Rp ${p.original.toLocaleString()}</del>` : ''}</div>
                             <div class="btn-group">
