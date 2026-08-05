@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>HEDTRO JEANS · Afiliasi & Reseller</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
   <style>
     /* ============================================================
        RESET & ROOT
@@ -312,13 +312,14 @@
     }
 
     /* ============================================================
-       CAROUSEL - SLIDER TINGGI DENGAN FOTO JEANS
+       CAROUSEL - FULL LAYAR HP DENGAN GAMBAR JEANS
        ============================================================ */
     .carousel-section {
       position: relative;
       width: 100%;
-      height: 650px;
-      /* Lebih tinggi */
+      height: calc(100vh - 70px);
+      /* Full layar dikurangi navbar */
+      min-height: 500px;
       overflow: hidden;
       background: var(--denim-dark);
     }
@@ -326,7 +327,7 @@
     .carousel-track {
       display: flex;
       height: 100%;
-      transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
     }
 
     .carousel-slide {
@@ -335,18 +336,70 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      padding: 40px 60px;
+      padding: 60px 60px;
       background-size: cover;
       background-position: center;
       position: relative;
+      flex-direction: column;
     }
 
-    /* Efek overlay gradasi agar teks tetap terbaca */
+    /* Efek overlay gradasi */
     .carousel-slide .overlay-dark {
       position: absolute;
       inset: 0;
-      background: linear-gradient(135deg, rgba(11, 26, 43, 0.7) 0%, rgba(11, 26, 43, 0.3) 100%);
+      background: linear-gradient(135deg, rgba(11, 26, 43, 0.6) 0%, rgba(11, 26, 43, 0.2) 100%);
       z-index: 1;
+    }
+
+    /* Gambar jeans besar di slide */
+    .slide-image {
+      font-size: 12rem;
+      color: var(--white);
+      opacity: 0.25;
+      position: absolute;
+      right: -20px;
+      bottom: -40px;
+      z-index: 1;
+      transform: rotate(-10deg);
+      text-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .slide-image-left {
+      font-size: 10rem;
+      color: var(--white);
+      opacity: 0.2;
+      position: absolute;
+      left: -20px;
+      top: -20px;
+      z-index: 1;
+      transform: rotate(15deg);
+      text-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Gambar jeans di slide 2 (jacket) */
+    .slide-image-jacket {
+      font-size: 10rem;
+      color: var(--white);
+      opacity: 0.25;
+      position: absolute;
+      right: -10px;
+      bottom: -30px;
+      z-index: 1;
+      transform: rotate(-5deg);
+      text-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Gambar jeans di slide 3 (sale) */
+    .slide-image-sale {
+      font-size: 11rem;
+      color: var(--white);
+      opacity: 0.2;
+      position: absolute;
+      left: -30px;
+      bottom: -40px;
+      z-index: 1;
+      transform: rotate(10deg);
+      text-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
     }
 
     .carousel-slide .slide-content {
@@ -354,11 +407,12 @@
       color: var(--white);
       z-index: 2;
       max-width: 700px;
+      position: relative;
     }
 
     .carousel-slide .slide-content h2 {
       font-family: 'Playfair Display', serif;
-      font-size: 3.5rem;
+      font-size: 3.8rem;
       font-weight: 800;
       letter-spacing: -1px;
       margin-bottom: 12px;
@@ -378,12 +432,13 @@
 
     .carousel-slide .slide-content .btn-slide {
       display: inline-block;
-      margin-top: 20px;
+      margin-top: 24px;
       background: var(--gold-accent);
       color: var(--denim-dark);
-      padding: 14px 44px;
+      padding: 16px 48px;
       border-radius: 60px;
       font-weight: 700;
+      font-size: 1rem;
       transition: var(--transition);
       text-shadow: none;
     }
@@ -770,7 +825,7 @@
     }
 
     /* ============================================================
-       RESPONSIVE
+       RESPONSIVE - FULL LAYAR HP
        ============================================================ */
     @media (max-width: 768px) {
       body {
@@ -831,26 +886,53 @@
         height: 2.5px;
       }
 
+      /* CAROUSEL FULL LAYAR HP */
       .carousel-section {
-        height: 400px;
-        /* Tetap tinggi di HP */
+        height: calc(100vh - 60px);
+        /* Full layar minus navbar */
+        min-height: 400px;
       }
 
       .carousel-slide {
-        padding: 20px 30px;
+        padding: 30px 24px;
       }
 
       .carousel-slide .slide-content h2 {
-        font-size: 2rem;
+        font-size: 2.2rem;
       }
 
       .carousel-slide .slide-content p {
-        font-size: 0.95rem;
+        font-size: 1rem;
       }
 
       .carousel-slide .slide-content .btn-slide {
-        padding: 10px 28px;
+        padding: 12px 32px;
         font-size: 0.9rem;
+      }
+
+      /* Gambar jeans di HP lebih kecil */
+      .slide-image {
+        font-size: 8rem;
+        right: -30px;
+        bottom: -20px;
+      }
+
+      .slide-image-left {
+        font-size: 6rem;
+        left: -30px;
+        top: -10px;
+      }
+
+      .slide-image-jacket {
+        font-size: 7rem;
+        right: -20px;
+        bottom: -10px;
+      }
+
+      .slide-image-sale {
+        font-size: 7rem;
+        left: -30px;
+        bottom: -20px;
       }
 
       .carousel-btn {
@@ -900,20 +982,46 @@
 
     @media (max-width: 480px) {
       .carousel-section {
-        height: 320px;
+        height: calc(100vh - 56px);
+        min-height: 350px;
       }
 
       .carousel-slide .slide-content h2 {
-        font-size: 1.5rem;
+        font-size: 1.8rem;
       }
 
       .carousel-slide .slide-content p {
-        font-size: 0.8rem;
+        font-size: 0.85rem;
       }
 
       .carousel-slide .slide-content .btn-slide {
-        padding: 8px 20px;
+        padding: 10px 24px;
         font-size: 0.8rem;
+      }
+
+      /* Gambar jeans lebih kecil di HP kecil */
+      .slide-image {
+        font-size: 6rem;
+        right: -20px;
+        bottom: -10px;
+      }
+
+      .slide-image-left {
+        font-size: 5rem;
+        left: -20px;
+        top: -5px;
+      }
+
+      .slide-image-jacket {
+        font-size: 5.5rem;
+        right: -15px;
+        bottom: -5px;
+      }
+
+      .slide-image-sale {
+        font-size: 5.5rem;
+        left: -20px;
+        bottom: -10px;
       }
 
       .carousel-btn {
@@ -1045,30 +1153,34 @@
     <div class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</div>
   </nav>
 
-  <!-- ===== CAROUSEL - SLIDER TINGGI DENGAN FOTO JEANS ===== -->
+  <!-- ===== CAROUSEL - FULL LAYAR DENGAN GAMBAR JEANS ===== -->
   <section class="carousel-section" id="carouselSection">
     <div class="carousel-track" id="carouselTrack">
-      <!-- SLIDE 1 - Denim Blue -->
+      <!-- SLIDE 1 - Denim Blue dengan gambar jeans -->
       <div class="carousel-slide" style="background: linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%);">
         <div class="overlay-dark"></div>
+        <div class="slide-image"><i class="fas fa-tshirt"></i></div>
+        <div class="slide-image-left"><i class="fas fa-tshirt"></i></div>
         <div class="slide-content">
           <h2><i class="fas fa-star"></i> 501® ORIGINAL DENIM</h2>
           <p>Ikonik sejak 1873 · Potongan lurus dengan raw denim 14oz premium</p>
           <a href="#" class="btn-slide">Lihat Koleksi</a>
         </div>
       </div>
-      <!-- SLIDE 2 - Jacket Denim -->
+      <!-- SLIDE 2 - Jacket Denim dengan gambar jacket -->
       <div class="carousel-slide" style="background: linear-gradient(135deg, #1a2e44 0%, #2a4b6e 50%, #3a5f7e 100%);">
         <div class="overlay-dark"></div>
+        <div class="slide-image-jacket"><i class="fas fa-jacket"></i></div>
         <div class="slide-content">
           <h2><i class="fas fa-jacket"></i> TRUCKER JACKET & OUTER</h2>
           <p>Gaya ikonik denim modern untuk penampilan casual harian Anda</p>
           <a href="#" class="btn-slide">Lihat Koleksi</a>
         </div>
       </div>
-      <!-- SLIDE 3 - Sale -->
+      <!-- SLIDE 3 - Sale dengan gambar jeans -->
       <div class="carousel-slide" style="background: linear-gradient(135deg, #2a4b6e 0%, #1a2e44 50%, #0b1a2b 100%);">
         <div class="overlay-dark"></div>
+        <div class="slide-image-sale"><i class="fas fa-tshirt"></i></div>
         <div class="slide-content">
           <h2><i class="fas fa-tags"></i> SEASONAL SALE UP TO 40%</h2>
           <p>Diskon spesial koleksi denim elegan dengan harga khusus eksklusif</p>
@@ -1556,7 +1668,7 @@
       }
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Slider tinggi dengan foto jeans');
+      console.log('🟦 HEDTRO JEANS · Slider full layar dengan gambar jeans');
     })();
   </script>
 
