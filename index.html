@@ -44,6 +44,12 @@
             padding-top: 80px;
         }
 
+        .app-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
         a {
             text-decoration: none;
             color: inherit;
@@ -142,7 +148,7 @@
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
             flex-shrink: 0;
         }
 
@@ -222,7 +228,6 @@
             gap: 10px;
         }
 
-        /* User badge & login/daftar hanya untuk desktop */
         .nav-right-desktop .user-badge {
             display: flex;
             align-items: center;
@@ -310,7 +315,7 @@
         }
 
         /* ============================================================
-           SIDEBAR (HP) - SEMUA MENU + LOGIN/DAFTAR/USER
+           SIDEBAR (HP)
            ============================================================ */
         .sidebar-overlay {
             display: none;
@@ -411,87 +416,124 @@
         }
 
         /* ============================================================
-           SEARCH POPUP (HP)
+           POPUP OVERLAY (Search, Track, Cart, Buy)
            ============================================================ */
-        .search-popup {
+        .popup-overlay {
             display: none;
             position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
             z-index: 2000;
-            background: var(--denim-dark);
-            padding: 20px 24px;
-            border-bottom: 3px solid var(--gold-accent);
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .popup-overlay.show {
+            display: flex;
+        }
+
+        .popup-overlay .popup-box {
+            background: var(--white);
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: var(--radius);
+            padding: 28px 30px 32px;
             box-shadow: var(--shadow-lg);
+            position: relative;
+            animation: popupIn 0.3s ease;
         }
 
-        .search-popup.show {
-            display: block;
-            animation: slideDown 0.3s ease;
-        }
-
-        @keyframes slideDown {
+        @keyframes popupIn {
             from {
-                transform: translateY(-100%);
+                transform: scale(0.9) translateY(20px);
                 opacity: 0;
             }
             to {
-                transform: translateY(0);
+                transform: scale(1) translateY(0);
                 opacity: 1;
             }
         }
 
-        .search-popup .search-inner {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            max-width: 600px;
-            margin: 0 auto;
+        .popup-overlay .popup-box .close-popup {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            font-size: 1.6rem;
+            color: var(--denim-navy);
+            cursor: pointer;
+            transition: var(--transition);
         }
 
-        .search-popup .search-inner input {
-            flex: 1;
+        .popup-overlay .popup-box .close-popup:hover {
+            color: var(--denim-dark);
+            transform: rotate(90deg);
+        }
+
+        .popup-overlay .popup-box h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--denim-dark);
+            margin-bottom: 4px;
+        }
+
+        .popup-overlay .popup-box p.sub {
+            color: var(--denim-navy);
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-bottom: 16px;
+        }
+
+        .popup-overlay .popup-box .popup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .popup-overlay .popup-box .popup-form input {
             padding: 12px 18px;
-            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border: 1.5px solid var(--denim-light);
             border-radius: 60px;
             font-size: 0.95rem;
-            background: rgba(255, 255, 255, 0.05);
-            color: var(--cream);
+            background: var(--cream);
+            color: var(--denim-dark);
             font-family: inherit;
             outline: none;
+            transition: var(--transition);
         }
 
-        .search-popup .search-inner input::placeholder {
-            color: rgba(255, 255, 255, 0.3);
-        }
-
-        .search-popup .search-inner input:focus {
+        .popup-overlay .popup-box .popup-form input:focus {
             border-color: var(--gold-accent);
         }
 
-        .search-popup .search-inner button {
-            padding: 12px 24px;
+        .popup-overlay .popup-box .popup-form button {
+            padding: 14px;
             background: var(--gold-accent);
             color: var(--denim-dark);
             border-radius: 60px;
             font-weight: 700;
-            font-size: 0.9rem;
+            font-size: 1rem;
             transition: var(--transition);
+            font-family: inherit;
         }
 
-        .search-popup .search-inner button:hover {
+        .popup-overlay .popup-box .popup-form button:hover {
             background: #b8963a;
+            transform: scale(0.98);
         }
 
-        .search-popup .search-inner .close-search {
-            color: var(--cream);
-            font-size: 1.6rem;
-            cursor: pointer;
+        .popup-overlay .popup-box .popup-result {
+            margin-top: 14px;
+            font-size: 0.9rem;
+            color: var(--denim-navy);
         }
 
         /* ============================================================
-           CAROUSEL, PRODUCTS, FEATURES, etc. (sama seperti sebelumnya)
+           CAROUSEL, PRODUCTS, etc.
            ============================================================ */
         .carousel-section {
             position: relative;
@@ -500,6 +542,8 @@
             min-height: 400px;
             overflow: hidden;
             background: var(--denim-dark);
+            border-radius: var(--radius);
+            margin-bottom: 20px;
         }
 
         .carousel-track {
@@ -659,7 +703,7 @@
             font-size: 1.6rem;
             font-weight: 700;
             color: var(--denim-dark);
-            padding: 32px 24px 16px;
+            padding: 32px 0 16px;
             display: flex;
             align-items: center;
             gap: 12px;
@@ -671,7 +715,7 @@
 
         .product-carousel-wrapper {
             position: relative;
-            padding: 0 24px 20px;
+            padding: 0 0 20px;
             overflow: hidden;
         }
 
@@ -824,7 +868,7 @@
         }
 
         .product-grid-wrapper {
-            padding: 0 24px 40px;
+            padding: 0 0 40px;
         }
 
         .product-grid {
@@ -974,7 +1018,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 16px;
-            padding: 20px 24px 40px;
+            padding: 20px 0 40px;
         }
 
         .feature-item {
@@ -1002,10 +1046,13 @@
             color: #5a7a8a;
         }
 
+        /* ============================================================
+           ABOUT, FAQ (dalam container)
+           ============================================================ */
         .about-section {
-            padding: 40px 24px 50px;
+            padding: 40px 30px 50px;
             background: var(--white);
-            margin: 0 24px 20px;
+            margin: 0 0 20px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             border: 1px solid var(--denim-light);
@@ -1032,9 +1079,9 @@
         }
 
         .faq-section {
-            padding: 40px 24px 50px;
+            padding: 40px 30px 50px;
             background: var(--white);
-            margin: 0 24px 20px;
+            margin: 0 0 20px;
             border-radius: var(--radius);
             box-shadow: var(--shadow);
             border: 1px solid var(--denim-light);
@@ -1092,66 +1139,9 @@
             display: block;
         }
 
-        .track-section {
-            padding: 40px 24px 50px;
-            background: var(--white);
-            margin: 0 24px 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--denim-light);
-        }
-
-        .track-section h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--denim-dark);
-            margin-bottom: 16px;
-        }
-
-        .track-section h2 i {
-            color: var(--gold-accent);
-        }
-
-        .track-section .track-form {
-            display: flex;
-            gap: 12px;
-            flex-wrap: wrap;
-            max-width: 500px;
-        }
-
-        .track-section .track-form input {
-            flex: 1;
-            padding: 12px 18px;
-            border: 1.5px solid var(--denim-light);
-            border-radius: 60px;
-            font-size: 0.95rem;
-            background: var(--cream);
-            color: var(--denim-dark);
-            font-family: inherit;
-            min-width: 200px;
-        }
-
-        .track-section .track-form input:focus {
-            border-color: var(--gold-accent);
-            outline: none;
-        }
-
-        .track-section .track-form button {
-            padding: 12px 32px;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 0.95rem;
-            transition: var(--transition);
-        }
-
-        .track-section .track-form button:hover {
-            background: #b8963a;
-            transform: scale(0.97);
-        }
-
+        /* ============================================================
+           PRODUCT DETAIL POPUP (LENGKAP + ZOOM FIX)
+           ============================================================ */
         .product-popup {
             display: none;
             position: fixed;
@@ -1170,7 +1160,7 @@
 
         .product-popup .popup-content {
             background: var(--white);
-            max-width: 820px;
+            max-width: 860px;
             width: 100%;
             max-height: 90vh;
             overflow-y: auto;
@@ -1178,6 +1168,7 @@
             padding: 30px 34px 36px;
             box-shadow: var(--shadow-lg);
             position: relative;
+            animation: popupIn 0.3s ease;
         }
 
         .product-popup .popup-content .close-popup {
@@ -1208,17 +1199,27 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 6rem;
+            font-size: 5rem;
             color: var(--denim-blue);
             min-height: 320px;
             position: relative;
             overflow: hidden;
-            cursor: zoom-in;
+            cursor: pointer;
+            transition: transform 0.3s ease;
+            user-select: none;
         }
 
-        .product-popup .popup-image.zoomed img {
-            transform: scale(2);
+        .product-popup .popup-image.zoomed {
             cursor: zoom-out;
+        }
+
+        .product-popup .popup-image .popup-icon-wrap {
+            transition: transform 0.3s ease;
+            font-size: 5rem;
+        }
+
+        .product-popup .popup-image.zoomed .popup-icon-wrap {
+            transform: scale(1.8);
         }
 
         .product-popup .popup-image .zoom-hint {
@@ -1237,7 +1238,7 @@
             font-size: 1.3rem;
             font-weight: 700;
             color: var(--denim-dark);
-            margin-bottom: 6px;
+            margin-bottom: 4px;
         }
 
         .product-popup .popup-info .popup-tag {
@@ -1270,12 +1271,34 @@
             color: var(--denim-navy);
             line-height: 1.7;
             font-size: 0.95rem;
-            margin: 12px 0;
+            margin: 10px 0;
+        }
+
+        .product-popup .popup-info .popup-specs {
+            background: var(--cream);
+            border-radius: var(--radius-sm);
+            padding: 12px 16px;
+            margin: 10px 0;
+            font-size: 0.85rem;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4px 16px;
+        }
+
+        .product-popup .popup-info .popup-specs span {
+            padding: 2px 0;
+        }
+
+        .product-popup .popup-info .popup-specs .label {
+            color: var(--denim-navy);
+            opacity: 0.6;
+            font-weight: 500;
         }
 
         .product-popup .popup-info .popup-stock {
             font-size: 0.85rem;
             color: #1f7a4b;
+            margin-top: 4px;
         }
 
         .product-popup .popup-info .popup-stock.out {
@@ -1291,7 +1314,7 @@
             font-weight: 700;
             font-size: 1rem;
             transition: var(--transition);
-            margin-top: 16px;
+            margin-top: 14px;
             font-family: inherit;
         }
 
@@ -1300,6 +1323,9 @@
             transform: scale(0.98);
         }
 
+        /* ============================================================
+           FOOTER
+           ============================================================ */
         .footer {
             background: var(--denim-dark);
             color: var(--cream);
@@ -1312,7 +1338,7 @@
             display: grid;
             grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
             gap: 30px;
-            max-width: 1200px;
+            max-width: 1280px;
             margin: 0 auto 30px;
         }
 
@@ -1375,6 +1401,8 @@
             text-align: center;
             font-size: 0.75rem;
             color: rgba(255, 255, 255, 0.3);
+            max-width: 1280px;
+            margin: 0 auto;
         }
 
         /* ============================================================
@@ -1404,6 +1432,7 @@
             padding: 32px 34px 36px;
             box-shadow: var(--shadow-lg);
             position: relative;
+            animation: popupIn 0.3s ease;
         }
 
         .login-card .close-login {
@@ -1498,10 +1527,6 @@
             color: var(--gold-accent);
             font-weight: 600;
             cursor: pointer;
-        }
-
-        .login-card .login-footer a:hover {
-            text-decoration: underline;
         }
 
         .login-msg {
@@ -1729,11 +1754,62 @@
         }
 
         /* ============================================================
-           HP - SEMBUNYIKAN USER BADGE, LOGIN, DAFTAR DI NAVBAR
+           HP - NAVBAR
            ============================================================ */
+        .search-icon-hp {
+            display: none;
+            color: var(--cream);
+            font-size: 1.1rem;
+            padding: 8px 10px;
+            border-radius: 60px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .search-icon-hp:hover {
+            color: var(--gold-accent);
+            background: rgba(201, 168, 76, 0.08);
+        }
+
+        .cart-hp {
+            display: none;
+            color: var(--cream);
+            font-size: 1.1rem;
+            padding: 8px 10px;
+            border-radius: 60px;
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-hp:hover {
+            color: var(--gold-accent);
+            background: rgba(201, 168, 76, 0.08);
+        }
+
+        .cart-hp .badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-size: 0.55rem;
+            font-weight: 700;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
         @media (max-width: 768px) {
             body {
                 padding-top: 64px;
+            }
+
+            .app-container {
+                padding: 0 12px;
             }
 
             .navbar {
@@ -1757,8 +1833,6 @@
             .nav-actions {
                 display: none !important;
             }
-
-            /* Sembunyikan user badge dan tombol login/daftar di HP */
             .nav-right-desktop .user-badge {
                 display: none !important;
             }
@@ -1766,7 +1840,6 @@
                 display: none !important;
             }
 
-            /* Tampilkan burger, search icon, cart */
             .burger-btn {
                 display: flex !important;
             }
@@ -1787,6 +1860,7 @@
             .carousel-section {
                 height: 75vh;
                 min-height: 350px;
+                border-radius: var(--radius-sm);
             }
             .carousel-slide {
                 padding: 30px 24px;
@@ -1841,17 +1915,17 @@
             }
             .section-title {
                 font-size: 1.3rem;
-                padding: 24px 16px 12px;
+                padding: 24px 0 12px;
             }
             .features {
-                padding: 12px 16px 30px;
+                padding: 12px 0 30px;
                 gap: 12px;
             }
             .product-carousel-wrapper {
-                padding: 0 16px 10px;
+                padding: 0 0 10px;
             }
             .product-grid-wrapper {
-                padding: 0 16px 30px;
+                padding: 0 0 30px;
             }
             .carousel-scroll-btn {
                 width: 32px;
@@ -1866,14 +1940,12 @@
             }
 
             .about-section,
-            .faq-section,
-            .track-section {
-                margin: 0 16px 16px;
+            .faq-section {
                 padding: 24px 18px 30px;
+                margin: 0 0 16px;
             }
             .about-section h2,
-            .faq-section h2,
-            .track-section h2 {
+            .faq-section h2 {
                 font-size: 1.5rem;
             }
 
@@ -1920,9 +1992,9 @@
                 font-size: 0.6rem;
             }
 
-            /* Sidebar login/daftar/user muncul */
-            .sidebar .menu-item.user-item {
-                display: flex;
+            .popup-overlay .popup-box {
+                max-width: 95%;
+                padding: 20px 18px 24px;
             }
         }
 
@@ -2010,6 +2082,10 @@
             .product-popup .popup-content {
                 padding: 16px 12px 20px;
             }
+            .product-popup .popup-info .popup-specs {
+                grid-template-columns: 1fr;
+                gap: 2px;
+            }
 
             .register-wrapper {
                 padding: 12px 8px 20px;
@@ -2050,11 +2126,12 @@
             .login-card h2 {
                 font-size: 1.1rem;
             }
+
+            .popup-overlay .popup-box {
+                padding: 16px 14px 20px;
+            }
         }
 
-        /* ============================================================
-           DESKTOP - BURGER, SIDEBAR, SEARCH ICON HP, CART HP SEMBUNYI
-           ============================================================ */
         @media (min-width: 769px) {
             .burger-btn {
                 display: none !important;
@@ -2084,54 +2161,6 @@
                 display: flex !important;
             }
         }
-
-        /* Search icon di HP */
-        .search-icon-hp {
-            display: none;
-            color: var(--cream);
-            font-size: 1.1rem;
-            padding: 8px 10px;
-            border-radius: 60px;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .search-icon-hp:hover {
-            color: var(--gold-accent);
-            background: rgba(201, 168, 76, 0.08);
-        }
-
-        .cart-hp {
-            display: none;
-            color: var(--cream);
-            font-size: 1.1rem;
-            padding: 8px 10px;
-            border-radius: 60px;
-            transition: var(--transition);
-            position: relative;
-            cursor: pointer;
-        }
-
-        .cart-hp:hover {
-            color: var(--gold-accent);
-            background: rgba(201, 168, 76, 0.08);
-        }
-
-        .cart-hp .badge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            font-size: 0.55rem;
-            font-weight: 700;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
     </style>
 </head>
 <body>
@@ -2144,17 +2173,15 @@
             <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
         </div>
 
-        <!-- Desktop Menu -->
         <ul class="nav-menu" id="navMenu">
             <li><a href="#home" class="active"><i class="fas fa-home"></i> Beranda</a></li>
             <li><a href="#products"><i class="fas fa-tshirt"></i> Koleksi</a></li>
             <li><a href="#about"><i class="fas fa-info-circle"></i> Tentang</a></li>
             <li><a href="#faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
-            <li><a href="#track"><i class="fas fa-truck"></i> Lacak</a></li>
+            <li><a href="#" id="navTrackBtn"><i class="fas fa-truck"></i> Lacak</a></li>
         </ul>
 
         <div class="nav-right-desktop">
-            <!-- Search & Cart Desktop -->
             <div class="nav-actions">
                 <div class="search-box">
                     <input type="text" placeholder="Cari produk..." id="searchInputDesktop" />
@@ -2166,23 +2193,17 @@
                 </button>
             </div>
 
-            <!-- Search Icon HP (popup) -->
             <span class="search-icon-hp" id="searchIconHp"><i class="fas fa-search"></i></span>
-
-            <!-- Cart HP -->
             <span class="cart-hp" id="cartHp">
                 <i class="fas fa-shopping-bag"></i>
                 <span class="badge">0</span>
             </span>
 
-            <!-- User Badge & Login/Daftar (Desktop only) -->
             <div class="user-badge" id="navUserBadge">
                 <i class="fas fa-user-circle"></i> <span id="navUserName">Guest</span>
             </div>
             <button class="btn-nav btn-nav-outline" id="navLoginBtn">Login</button>
             <button class="btn-nav btn-nav-gold" id="navRegisterBtn">Daftar</button>
-
-            <!-- Burger (HP) -->
             <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
             </button>
@@ -2190,18 +2211,7 @@
     </header>
 
     <!-- ============================================================
-    SEARCH POPUP (HP)
-    ============================================================ -->
-    <div class="search-popup" id="searchPopup">
-        <div class="search-inner">
-            <input type="text" placeholder="Cari produk..." id="searchInputHp" />
-            <button id="searchBtnHp"><i class="fas fa-search"></i> Cari</button>
-            <span class="close-search" id="closeSearch">&times;</span>
-        </div>
-    </div>
-
-    <!-- ============================================================
-    SIDEBAR (HP) - SEMUA MENU + LOGIN/DAFTAR/USER
+    SIDEBAR (HP)
     ============================================================ -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <nav class="sidebar" id="sidebar">
@@ -2209,30 +2219,86 @@
             <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
             <span class="close-side" id="closeSidebar">&times;</span>
         </div>
-
-        <!-- Menu Utama -->
         <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
         <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
         <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang Kami</div>
         <div class="menu-item" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</div>
-        <div class="menu-item" data-page="track"><i class="fas fa-truck"></i> Lacak Pesanan</div>
-
+        <div class="menu-item" id="sideTrackBtn"><i class="fas fa-truck"></i> Lacak Pesanan</div>
         <div class="menu-divider"></div>
-
-        <!-- User Badge (HP) -->
-        <div class="menu-item" id="sideUserBadge">
-            <i class="fas fa-user-circle"></i> <span id="sideUserName">Guest</span>
-        </div>
-
-        <!-- Login & Daftar (HP) -->
+        <div class="menu-item" id="sideUserBadge"><i class="fas fa-user-circle"></i> <span id="sideUserName">Guest</span></div>
         <div class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</div>
         <div class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</div>
     </nav>
 
     <!-- ============================================================
-    LANDING PAGE CONTENT (sama seperti sebelumnya)
+    POPUP SEARCH
     ============================================================ -->
-    <div class="landing-content" id="landingContent">
+    <div class="popup-overlay" id="searchPopup">
+        <div class="popup-box">
+            <button class="close-popup" id="closeSearchPopup">&times;</button>
+            <h3><i class="fas fa-search" style="color:var(--gold-accent);"></i> Cari Produk</h3>
+            <p class="sub">Temukan produk denim favorit Anda</p>
+            <div class="popup-form">
+                <input type="text" id="searchInputPopup" placeholder="Ketik nama produk..." />
+                <button id="searchBtnPopup"><i class="fas fa-search"></i> Cari</button>
+            </div>
+            <div class="popup-result" id="searchResult"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    POPUP TRACK
+    ============================================================ -->
+    <div class="popup-overlay" id="trackPopup">
+        <div class="popup-box">
+            <button class="close-popup" id="closeTrackPopup">&times;</button>
+            <h3><i class="fas fa-truck" style="color:var(--gold-accent);"></i> Lacak Pesanan</h3>
+            <p class="sub">Masukkan nomor pesanan Anda</p>
+            <div class="popup-form">
+                <input type="text" id="trackInputPopup" placeholder="Contoh: HDT-2024-001" />
+                <button id="trackBtnPopup"><i class="fas fa-search"></i> Lacak</button>
+            </div>
+            <div class="popup-result" id="trackResultPopup"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    POPUP CART
+    ============================================================ -->
+    <div class="popup-overlay" id="cartPopup">
+        <div class="popup-box">
+            <button class="close-popup" id="closeCartPopup">&times;</button>
+            <h3><i class="fas fa-shopping-bag" style="color:var(--gold-accent);"></i> Keranjang Belanja</h3>
+            <p class="sub" id="cartCountLabel">0 item di keranjang</p>
+            <div id="cartItems" style="margin:12px 0; max-height:300px; overflow-y:auto;"></div>
+            <button id="cartCheckoutBtn" style="width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border-radius:60px; font-weight:700; font-size:1rem; font-family:inherit; transition:var(--transition);">Checkout</button>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    POPUP BUY (Beli Langsung)
+    ============================================================ -->
+    <div class="popup-overlay" id="buyPopup">
+        <div class="popup-box">
+            <button class="close-popup" id="closeBuyPopup">&times;</button>
+            <h3><i class="fas fa-shopping-bag" style="color:var(--gold-accent);"></i> Konfirmasi Pembelian</h3>
+            <p class="sub" id="buyProductName">Nama Produk</p>
+            <div style="background:var(--cream); border-radius:var(--radius-sm); padding:14px 18px; margin:10px 0;">
+                <p><strong>Harga:</strong> <span id="buyProductPrice">Rp 0</span></p>
+                <p><strong>Stok:</strong> <span id="buyProductStock">0</span></p>
+            </div>
+            <div style="display:flex; gap:10px; margin-top:10px;">
+                <button id="buyConfirmBtn" style="flex:1; padding:12px; background:var(--gold-accent); color:var(--denim-dark); border-radius:60px; font-weight:700; font-size:0.95rem; font-family:inherit; transition:var(--transition);">✅ Beli Sekarang</button>
+                <button id="buyCancelBtn" style="flex:1; padding:12px; background:var(--denim-light); color:var(--denim-navy); border-radius:60px; font-weight:600; font-size:0.95rem; font-family:inherit; transition:var(--transition);">Batal</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    MAIN CONTENT
+    ============================================================ -->
+    <div class="app-container">
+
         <!-- CAROUSEL -->
         <section class="carousel-section" id="carouselSection">
             <div class="carousel-track" id="carouselTrack">
@@ -2315,7 +2381,7 @@
                     <span>Bagaimana cara melacak pesanan saya?</span>
                     <i class="fas fa-chevron-down"></i>
                 </div>
-                <div class="faq-answer">Masukkan nomor pesanan Anda di form Lacak Pesanan di bawah ini. Status pengiriman akan ditampilkan secara real-time.</div>
+                <div class="faq-answer">Klik tombol Lacak di navbar, masukkan nomor pesanan Anda. Status pengiriman akan ditampilkan secara real-time.</div>
             </div>
             <div class="faq-item">
                 <div class="faq-question" onclick="toggleFaq(this)">
@@ -2326,17 +2392,6 @@
             </div>
         </div>
 
-        <!-- LACAK PESANAN -->
-        <div class="track-section" id="track">
-            <h2><i class="fas fa-truck"></i> Lacak Pesanan</h2>
-            <p style="color:var(--denim-navy); margin-bottom:16px;">Masukkan nomor pesanan Anda untuk melihat status pengiriman.</p>
-            <div class="track-form">
-                <input type="text" placeholder="Masukkan nomor pesanan..." id="trackInput" />
-                <button id="trackBtn"><i class="fas fa-search"></i> Lacak</button>
-            </div>
-            <div id="trackResult" style="margin-top:16px; color:var(--denim-navy); font-size:0.95rem;"></div>
-        </div>
-
         <!-- FEATURES -->
         <div class="features">
             <div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz bermutu tinggi</p></div>
@@ -2344,6 +2399,7 @@
             <div class="feature-item"><i class="fas fa-exchange-alt"></i><h4>GARANSI 30 HARI</h4><p>Penukaran size tanpa ribet</p></div>
             <div class="feature-item"><i class="fas fa-user-tie"></i><h4>HARGA MEMBER</h4><p>Potongan untuk pemilik lisensi</p></div>
         </div>
+
     </div>
 
     <!-- ============================================================
@@ -2355,7 +2411,6 @@
             <p>Lengkapi data diri untuk bergabung menjadi member HEDTRO JEANS</p>
         </div>
         <form id="registerForm" onsubmit="return false;">
-            <!-- (form sama seperti sebelumnya, saya singkat) -->
             <div class="form-section">
                 <div class="section-title"><i class="fas fa-lock"></i> Akun & Keamanan <span class="badge-step">1</span></div>
                 <div class="form-row">
@@ -2437,19 +2492,27 @@
     </div>
 
     <!-- ============================================================
-    PRODUCT DETAIL POPUP
+    PRODUCT DETAIL POPUP (LENGKAP + ZOOM)
     ============================================================ -->
     <div class="product-popup" id="productPopup">
         <div class="popup-content">
             <button class="close-popup" id="closePopup">&times;</button>
             <div class="popup-grid" id="popupGrid">
-                <div class="popup-image" id="popupImage"><i class="fas fa-tshirt" id="popupIcon"></i><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span></div>
+                <div class="popup-image" id="popupImage">
+                    <div class="popup-icon-wrap" id="popupIconWrap"><i class="fas fa-tshirt" id="popupIcon"></i></div>
+                    <span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>
+                </div>
                 <div class="popup-info">
                     <span class="popup-tag" id="popupTag">BEST SELLER</span>
                     <h2 id="popupName">Nama Produk</h2>
                     <div class="popup-price" id="popupPrice">Rp 250.000 <del>Rp 350.000</del></div>
-                    <div class="popup-desc" id="popupDesc">Deskripsi produk lengkap.</div>
-                    <div class="popup-stock" id="popupStock">Stok: 45</div>
+                    <div class="popup-desc" id="popupDesc">Deskripsi produk lengkap tentang celana jeans premium ini.</div>
+                    <div class="popup-specs" id="popupSpecs">
+                        <span><span class="label">Nomor Seri</span> <span id="popupSerial">HDT-001</span></span>
+                        <span><span class="label">Ukuran</span> <span id="popupSize">Size 30</span></span>
+                        <span><span class="label">Warna</span> <span id="popupColor">Indigo Blue</span></span>
+                        <span><span class="label">Stok</span> <span id="popupStock">45</span></span>
+                    </div>
                     <button class="btn-buy-large" id="popupBuyBtn"><i class="fas fa-shopping-bag"></i> Beli Sekarang</button>
                 </div>
             </div>
@@ -2457,7 +2520,7 @@
     </div>
 
     <!-- ============================================================
-    FOOTER 4 KOLOM
+    FOOTER
     ============================================================ -->
     <footer class="footer">
         <div class="footer-grid">
@@ -2510,42 +2573,63 @@
             'use strict';
 
             // ============================================================
-            // DATA PRODUK (sama)
+            // DATA PRODUK
             // ============================================================
             const allProducts = [
                 { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
-                    icon: 'fa-tshirt', favorite: true, stock: 45,
+                    icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', size: 'Size 30',
+                    color: 'Indigo Blue Raw Denim',
                     desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet.' },
                 { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
-                    icon: 'fa-tshirt', favorite: true, stock: 30,
+                    icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', size: 'Size 32',
+                    color: 'Raw Denim',
                     desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor.' },
                 { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM',
-                    icon: 'fa-tshirt', favorite: true, stock: 25,
+                    icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', size: 'Size 31',
+                    color: 'Black Stretch',
                     desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual. Sangat fleksibel (high stretch).' },
                 { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%',
-                    icon: 'fa-tshirt', favorite: true, stock: 18,
+                    icon: 'fa-tshirt', favorite: true, stock: 18, serial: 'HDT-SERI-004', size: 'Size 29',
+                    color: 'Light Wash',
                     desc: 'Tampilan retro klasik tahun 90-an dengan efek pencucian warna muda (light wash) yang kasual.' },
                 { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED',
-                    icon: 'fa-jacket', favorite: true, stock: 20,
+                    icon: 'fa-jacket', favorite: true, stock: 20, serial: 'HDT-SERI-005', size: 'Size L',
+                    color: 'Raw Denim',
                     desc: 'Jaket denim ikonik berbahan rigid denim 14.5oz dengan saku ganda di dada.' },
                 { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER',
-                    icon: 'fa-tshirt', favorite: false, stock: 35,
+                    icon: 'fa-tshirt', favorite: false, stock: 35, serial: 'HDT-SERI-006', size: 'Size 27',
+                    color: 'Indigo Blue',
                     desc: 'Celana jeans wanita potongan high-waist yang membentuk lekuk pinggang secara sempurna.' },
                 { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS',
-                    icon: 'fa-belt', favorite: false, stock: 50,
+                    icon: 'fa-belt', favorite: false, stock: 50, serial: 'HDT-SERI-007', size: 'M',
+                    color: 'Vintage Brown',
                     desc: 'Ikat pinggang kulit sapi asli 100% dengan kepala gesper kuningan antik.' },
                 { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT',
-                    icon: 'fa-tshirt', favorite: false, stock: 22,
+                    icon: 'fa-tshirt', favorite: false, stock: 22, serial: 'HDT-SERI-008', size: 'Size L',
+                    color: 'Vintage Wash',
                     desc: 'Kemeja denim kasual berbahan katun ringan 8oz yang lembut.' },
                 { id: 9, name: 'Slim Fit Black Raw Denim', price: 260000, original: 360000, tag: 'NEW', icon: 'fa-tshirt',
-                    favorite: false, stock: 28, desc: 'Hitam pekat raw denim, slim fit modern.' },
+                    favorite: false, stock: 28, serial: 'HDT-SERI-009', size: 'Size 30', color: 'Black Raw Denim',
+                    desc: 'Hitam pekat raw denim, slim fit modern.' },
                 { id: 10, name: 'Cropped Trucker Jacket', price: 390000, original: 500000, tag: 'TRENDY',
-                    icon: 'fa-jacket', favorite: false, stock: 15, desc: 'Jaket cropped pendek, gaya kekinian.' },
+                    icon: 'fa-jacket', favorite: false, stock: 15, serial: 'HDT-SERI-010', size: 'Size M',
+                    color: 'Blue Denim',
+                    desc: 'Jaket cropped pendek, gaya kekinian.' },
                 { id: 11, name: 'Denim Bucket Hat', price: 85000, original: 120000, tag: 'AKSESORIS',
-                    icon: 'fa-hat-cowboy', favorite: false, stock: 40, desc: 'Topi bucket denim, adjustable, nyaman.' },
+                    icon: 'fa-hat-cowboy', favorite: false, stock: 40, serial: 'HDT-SERI-011', size: 'One Size',
+                    color: 'Blue Denim',
+                    desc: 'Topi bucket denim, adjustable, nyaman.' },
                 { id: 12, name: 'Canvas Tote Bag Denim', price: 150000, original: 200000, tag: 'AKSESORIS',
-                    icon: 'fa-shopping-bag', favorite: false, stock: 25, desc: 'Tas kanvas denim, besar, cocok untuk daily.' }
+                    icon: 'fa-shopping-bag', favorite: false, stock: 25, serial: 'HDT-SERI-012', size: 'One Size',
+                    color: 'Denim Blue',
+                    desc: 'Tas kanvas denim, besar, cocok untuk daily.' }
             ];
+
+            // ============================================================
+            // STATE
+            // ============================================================
+            let cartItems = [];
+            let currentBuyProductId = null;
 
             // ============================================================
             // RENDER FAVORITE CAROUSEL
@@ -2649,21 +2733,18 @@
                 document.querySelectorAll('.btn-buy').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.dataset.id);
-                        const product = allProducts.find(p => p.id === id);
-                        if (product) {
-                            alert(`🛒 ${product.name} ditambahkan ke keranjang!`);
-                            updateCartBadge();
-                        }
+                        openBuyPopup(id);
                     });
                 });
             }
 
             // ============================================================
-            // PRODUCT POPUP
+            // PRODUCT POPUP (LENGKAP + ZOOM)
             // ============================================================
             const productPopup = document.getElementById('productPopup');
             const closePopup = document.getElementById('closePopup');
             const popupImage = document.getElementById('popupImage');
+            const popupIconWrap = document.getElementById('popupIconWrap');
             let isZoomed = false;
 
             function openProductPopup(id) {
@@ -2675,18 +2756,17 @@
                 document.getElementById('popupPrice').innerHTML =
                     `Rp ${product.price.toLocaleString()} <del>Rp ${product.original.toLocaleString()}</del>`;
                 document.getElementById('popupDesc').textContent = product.desc || 'Deskripsi produk tidak tersedia.';
+                document.getElementById('popupSerial').textContent = product.serial || '-';
+                document.getElementById('popupSize').textContent = product.size || '-';
+                document.getElementById('popupColor').textContent = product.color || '-';
                 const stockEl = document.getElementById('popupStock');
-                stockEl.textContent = `Stok: ${product.stock}`;
-                stockEl.className = `popup-stock${product.stock <= 0 ? ' out' : ''}`;
+                stockEl.textContent = product.stock;
+                stockEl.style.color = product.stock <= 0 ? '#b13e3e' : '#1f7a4b';
                 document.getElementById('popupIcon').className = `fas ${product.icon}`;
 
-                document.getElementById('popupBuyBtn').onclick = function() {
-                    alert(`🛒 ${product.name} ditambahkan ke keranjang!`);
-                    updateCartBadge();
-                    closePopupFn();
-                };
-
+                // Reset zoom
                 popupImage.classList.remove('zoomed');
+                popupIconWrap.style.transform = 'scale(1)';
                 isZoomed = false;
 
                 productPopup.classList.add('show');
@@ -2696,6 +2776,9 @@
             function closePopupFn() {
                 productPopup.classList.remove('show');
                 document.body.style.overflow = '';
+                popupImage.classList.remove('zoomed');
+                popupIconWrap.style.transform = 'scale(1)';
+                isZoomed = false;
             }
 
             closePopup.addEventListener('click', closePopupFn);
@@ -2703,9 +2786,253 @@
                 if (e.target === productPopup) closePopupFn();
             });
 
-            popupImage.addEventListener('click', function() {
+            // ZOOM FIX
+            popupImage.addEventListener('click', function(e) {
+                e.stopPropagation();
                 isZoomed = !isZoomed;
                 this.classList.toggle('zoomed', isZoomed);
+                popupIconWrap.style.transform = isZoomed ? 'scale(2)' : 'scale(1)';
+            });
+
+            // ============================================================
+            // BUY POPUP
+            // ============================================================
+            const buyPopup = document.getElementById('buyPopup');
+            const closeBuyPopup = document.getElementById('closeBuyPopup');
+            const buyConfirmBtn = document.getElementById('buyConfirmBtn');
+            const buyCancelBtn = document.getElementById('buyCancelBtn');
+
+            function openBuyPopup(id) {
+                const product = allProducts.find(p => p.id === id);
+                if (!product) return;
+                currentBuyProductId = id;
+                document.getElementById('buyProductName').textContent = product.name;
+                document.getElementById('buyProductPrice').textContent = `Rp ${product.price.toLocaleString()}`;
+                document.getElementById('buyProductStock').textContent = product.stock;
+                buyPopup.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeBuyPopupFn() {
+                buyPopup.classList.remove('show');
+                document.body.style.overflow = '';
+                currentBuyProductId = null;
+            }
+
+            closeBuyPopup.addEventListener('click', closeBuyPopupFn);
+            buyCancelBtn.addEventListener('click', closeBuyPopupFn);
+            buyPopup.addEventListener('click', function(e) {
+                if (e.target === buyPopup) closeBuyPopupFn();
+            });
+
+            buyConfirmBtn.addEventListener('click', function() {
+                if (currentBuyProductId === null) return;
+                const product = allProducts.find(p => p.id === currentBuyProductId);
+                if (!product) return;
+                if (product.stock <= 0) {
+                    alert('Stok habis!');
+                    return;
+                }
+                addToCart(product.id);
+                closeBuyPopupFn();
+                alert(`🛒 ${product.name} berhasil ditambahkan ke keranjang!`);
+            });
+
+            // ============================================================
+            // CART FUNCTIONS
+            // ============================================================
+            function addToCart(productId) {
+                const product = allProducts.find(p => p.id === productId);
+                if (!product) return;
+                const existing = cartItems.find(item => item.id === productId);
+                if (existing) {
+                    existing.qty += 1;
+                } else {
+                    cartItems.push({ ...product, qty: 1 });
+                }
+                updateCartUI();
+            }
+
+            function removeFromCart(productId) {
+                cartItems = cartItems.filter(item => item.id !== productId);
+                updateCartUI();
+            }
+
+            function updateCartUI() {
+                const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
+                document.querySelectorAll('.badge').forEach(el => el.textContent = totalItems);
+                document.getElementById('cartCountLabel').textContent = `${totalItems} item di keranjang`;
+
+                const container = document.getElementById('cartItems');
+                if (cartItems.length === 0) {
+                    container.innerHTML = '<p style="color:var(--denim-navy); opacity:0.6;">Keranjang kosong</p>';
+                    return;
+                }
+                let html = '';
+                cartItems.forEach(item => {
+                    html += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--denim-light);">
+                            <div>
+                                <strong>${item.name}</strong>
+                                <span style="display:block; font-size:0.8rem; color:var(--denim-navy);">Rp ${item.price.toLocaleString()} x ${item.qty}</span>
+                            </div>
+                            <button class="remove-cart-item" data-id="${item.id}" style="color:#b13e3e; font-size:0.9rem; padding:4px 10px;">✕</button>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+                container.querySelectorAll('.remove-cart-item').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        removeFromCart(id);
+                    });
+                });
+            }
+
+            // ============================================================
+            // CART POPUP
+            // ============================================================
+            const cartPopup = document.getElementById('cartPopup');
+            const closeCartPopup = document.getElementById('closeCartPopup');
+
+            function openCartPopup() {
+                updateCartUI();
+                cartPopup.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeCartPopupFn() {
+                cartPopup.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            closeCartPopup.addEventListener('click', closeCartPopupFn);
+            cartPopup.addEventListener('click', function(e) {
+                if (e.target === cartPopup) closeCartPopupFn();
+            });
+
+            document.getElementById('cartCheckoutBtn').addEventListener('click', function() {
+                if (cartItems.length === 0) {
+                    alert('Keranjang kosong!');
+                    return;
+                }
+                const total = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                alert(`🛒 Total belanja: Rp ${total.toLocaleString()}\nTerima kasih telah berbelanja!`);
+                cartItems = [];
+                updateCartUI();
+                closeCartPopupFn();
+            });
+
+            // ============================================================
+            // SEARCH POPUP
+            // ============================================================
+            const searchPopup = document.getElementById('searchPopup');
+            const closeSearchPopup = document.getElementById('closeSearchPopup');
+
+            function openSearchPopup() {
+                searchPopup.classList.add('show');
+                document.getElementById('searchInputPopup').focus();
+                document.getElementById('searchResult').innerHTML = '';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeSearchPopupFn() {
+                searchPopup.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            closeSearchPopup.addEventListener('click', closeSearchPopupFn);
+            searchPopup.addEventListener('click', function(e) {
+                if (e.target === searchPopup) closeSearchPopupFn();
+            });
+
+            document.getElementById('searchBtnPopup').addEventListener('click', function() {
+                const query = document.getElementById('searchInputPopup').value.trim().toLowerCase();
+                const resultEl = document.getElementById('searchResult');
+                if (!query) {
+                    resultEl.innerHTML = '⚠️ Masukkan kata kunci pencarian.';
+                    resultEl.style.color = '#b13e3e';
+                    return;
+                }
+                const results = allProducts.filter(p => p.name.toLowerCase().includes(query) || p.tag.toLowerCase()
+                    .includes(query));
+                if (results.length === 0) {
+                    resultEl.innerHTML = '❌ Tidak ada produk yang ditemukan.';
+                    resultEl.style.color = '#b13e3e';
+                    return;
+                }
+                let html = '<div style="margin-top:8px;">';
+                results.forEach(p => {
+                    html +=
+                        `<div style="padding:8px 0; border-bottom:1px solid var(--denim-light); display:flex; justify-content:space-between; align-items:center;">
+                            <span>${p.name}</span>
+                            <button class="search-result-buy" data-id="${p.id}" style="background:var(--gold-accent); color:var(--denim-dark); padding:4px 16px; border-radius:60px; font-weight:600; font-size:0.8rem;">Beli</button>
+                        </div>`;
+                });
+                html += '</div>';
+                resultEl.innerHTML = html;
+                resultEl.style.color = 'var(--denim-dark)';
+                resultEl.querySelectorAll('.search-result-buy').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        closeSearchPopupFn();
+                        openBuyPopup(id);
+                    });
+                });
+            });
+
+            document.getElementById('searchInputPopup').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('searchBtnPopup').click();
+            });
+
+            // ============================================================
+            // TRACK POPUP
+            // ============================================================
+            const trackPopup = document.getElementById('trackPopup');
+            const closeTrackPopup = document.getElementById('closeTrackPopup');
+
+            function openTrackPopup() {
+                trackPopup.classList.add('show');
+                document.getElementById('trackInputPopup').value = '';
+                document.getElementById('trackResultPopup').innerHTML = '';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeTrackPopupFn() {
+                trackPopup.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            closeTrackPopup.addEventListener('click', closeTrackPopupFn);
+            trackPopup.addEventListener('click', function(e) {
+                if (e.target === trackPopup) closeTrackPopupFn();
+            });
+
+            document.getElementById('trackBtnPopup').addEventListener('click', function() {
+                const input = document.getElementById('trackInputPopup').value.trim().toUpperCase();
+                const resultEl = document.getElementById('trackResultPopup');
+                if (!input) {
+                    resultEl.innerHTML = '⚠️ Masukkan nomor pesanan.';
+                    resultEl.style.color = '#b13e3e';
+                    return;
+                }
+                const orders = ['HDT-2024-001', 'HDT-2024-002', 'HDT-2024-003', 'HDT-2024-004', 'HDT-2024-005'];
+                if (orders.includes(input)) {
+                    const statuses = ['📦 Pesanan sedang diproses', '🚚 Pesanan dalam perjalanan',
+                        '✅ Pesanan telah sampai'
+                    ];
+                    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                    resultEl.innerHTML =
+                        `✅ <strong>${input}</strong> - ${randomStatus}<br><span style="font-size:0.8rem; opacity:0.6;">Update: ${new Date().toLocaleDateString()}</span>`;
+                    resultEl.style.color = '#1f7a4b';
+                } else {
+                    resultEl.innerHTML = '❌ Nomor pesanan tidak ditemukan. Periksa kembali.';
+                    resultEl.style.color = '#b13e3e';
+                }
+            });
+
+            document.getElementById('trackInputPopup').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('trackBtnPopup').click();
             });
 
             // ============================================================
@@ -2775,113 +3102,6 @@
             };
 
             // ============================================================
-            // TRACK ORDER
-            // ============================================================
-            document.getElementById('trackBtn').addEventListener('click', function() {
-                const input = document.getElementById('trackInput').value.trim();
-                const result = document.getElementById('trackResult');
-                if (!input) {
-                    result.innerHTML = '⚠️ Masukkan nomor pesanan terlebih dahulu.';
-                    result.style.color = '#b13e3e';
-                    return;
-                }
-                const orders = ['HDT-2024-001', 'HDT-2024-002', 'HDT-2024-003'];
-                if (orders.includes(input.toUpperCase())) {
-                    const statuses = ['📦 Pesanan sedang diproses', '🚚 Pesanan dalam perjalanan',
-                        '✅ Pesanan telah sampai'
-                    ];
-                    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-                    result.innerHTML =
-                        `✅ <strong>${input.toUpperCase()}</strong> - ${randomStatus}`;
-                    result.style.color = '#1f7a4b';
-                } else {
-                    result.innerHTML = '❌ Nomor pesanan tidak ditemukan.';
-                    result.style.color = '#b13e3e';
-                }
-            });
-
-            // ============================================================
-            // SEARCH
-            // ============================================================
-            function performSearch(query) {
-                if (!query) {
-                    document.querySelector('.section-title').scrollIntoView({ behavior: 'smooth' });
-                    renderProductGrid(1);
-                    return;
-                }
-                const results = allProducts.filter(p => p.name.toLowerCase().includes(query) || p.tag.toLowerCase()
-                    .includes(query));
-                const grid = document.getElementById('productGrid');
-                grid.innerHTML = '';
-                if (results.length === 0) {
-                    grid.innerHTML =
-                        '<p style="grid-column:1/-1; text-align:center; padding:40px; color:var(--denim-navy);">Tidak ada produk yang ditemukan.</p>';
-                    return;
-                }
-                results.forEach(p => {
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    card.innerHTML = `
-                        <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
-                        <div class="body">
-                            <span class="tag">${p.tag}</span>
-                            <h4>${p.name}</h4>
-                            <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
-                            <div class="btn-group">
-                                <button class="btn-detail" data-id="${p.id}">Detail</button>
-                                <button class="btn-buy" data-id="${p.id}">Beli</button>
-                            </div>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-                bindProductButtons();
-                document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                document.getElementById('searchPopup').classList.remove('show');
-            }
-
-            // Desktop search
-            document.getElementById('searchBtnDesktop').addEventListener('click', function() {
-                const query = document.getElementById('searchInputDesktop').value.trim().toLowerCase();
-                performSearch(query);
-            });
-            document.getElementById('searchInputDesktop').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') document.getElementById('searchBtnDesktop').click();
-            });
-
-            // HP search popup
-            document.getElementById('searchIconHp').addEventListener('click', function() {
-                document.getElementById('searchPopup').classList.toggle('show');
-                document.getElementById('searchInputHp').focus();
-            });
-            document.getElementById('closeSearch').addEventListener('click', function() {
-                document.getElementById('searchPopup').classList.remove('show');
-            });
-            document.getElementById('searchBtnHp').addEventListener('click', function() {
-                const query = document.getElementById('searchInputHp').value.trim().toLowerCase();
-                performSearch(query);
-            });
-            document.getElementById('searchInputHp').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') document.getElementById('searchBtnHp').click();
-            });
-
-            // ============================================================
-            // CART
-            // ============================================================
-            let cartCount = 0;
-
-            function updateCartBadge() {
-                cartCount++;
-                document.querySelectorAll('.cart-btn .badge, .cart-hp .badge').forEach(el => el.textContent = cartCount);
-            }
-
-            document.querySelectorAll('.cart-btn, .cart-hp').forEach(el => {
-                el.addEventListener('click', function() {
-                    alert(`🛒 Keranjang belanja (${cartCount} item)`);
-                });
-            });
-
-            // ============================================================
             // SIDEBAR & BURGER
             // ============================================================
             const burgerBtn = document.getElementById('burgerBtn');
@@ -2939,13 +3159,12 @@
             document.getElementById('navLoginBtn').addEventListener('click', openLogin);
             document.getElementById('navRegisterBtn').addEventListener('click', showRegister);
 
-            // Sidebar buttons (HP)
+            // Sidebar buttons
             document.getElementById('sideLoginBtn').addEventListener('click', () => { toggleSidebar(false);
                 openLogin(); });
             document.getElementById('sideRegisterBtn').addEventListener('click', () => { toggleSidebar(false);
                 showRegister(); });
 
-            // Sidebar user badge (HP)
             document.getElementById('sideUserBadge').addEventListener('click', function() {
                 const session = localStorage.getItem('mlm_session');
                 if (session) {
@@ -2962,7 +3181,6 @@
                 openLogin();
             });
 
-            // Back to login from register
             document.getElementById('backToLoginFromRegister').addEventListener('click', (e) => {
                 e.preventDefault();
                 openLogin();
@@ -2980,13 +3198,14 @@
                     showLanding();
                     if (page === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
                     if (page === 'products') document.querySelector('.section-title')?.scrollIntoView({ behavior: 'smooth' });
-                    if (page === 'about' || page === 'faq' || page === 'track') {
+                    if (page === 'about' || page === 'faq') {
                         const target = document.getElementById(page);
                         if (target) target.scrollIntoView({ behavior: 'smooth' });
                     }
                 });
             });
 
+            // Nav menu
             document.querySelectorAll('.nav-menu a').forEach(link => {
                 link.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
@@ -2997,6 +3216,62 @@
                     }
                 });
             });
+
+            // Track buttons (navbar & sidebar) - popup
+            document.getElementById('navTrackBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                openTrackPopup();
+            });
+            document.getElementById('sideTrackBtn').addEventListener('click', function() {
+                toggleSidebar(false);
+                openTrackPopup();
+            });
+
+            // Search buttons
+            document.getElementById('searchIconHp').addEventListener('click', openSearchPopup);
+            document.getElementById('searchBtnDesktop').addEventListener('click', function() {
+                const query = document.getElementById('searchInputDesktop').value.trim().toLowerCase();
+                if (!query) {
+                    document.querySelector('.section-title').scrollIntoView({ behavior: 'smooth' });
+                    renderProductGrid(1);
+                    return;
+                }
+                const results = allProducts.filter(p => p.name.toLowerCase().includes(query) || p.tag.toLowerCase()
+                    .includes(query));
+                const grid = document.getElementById('productGrid');
+                grid.innerHTML = '';
+                if (results.length === 0) {
+                    grid.innerHTML =
+                        '<p style="grid-column:1/-1; text-align:center; padding:40px; color:var(--denim-navy);">Tidak ada produk yang ditemukan.</p>';
+                    return;
+                }
+                results.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
+                        <div class="body">
+                            <span class="tag">${p.tag}</span>
+                            <h4>${p.name}</h4>
+                            <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
+                            <div class="btn-group">
+                                <button class="btn-detail" data-id="${p.id}">Detail</button>
+                                <button class="btn-buy" data-id="${p.id}">Beli</button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                bindProductButtons();
+                document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            });
+            document.getElementById('searchInputDesktop').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('searchBtnDesktop').click();
+            });
+
+            // Cart buttons
+            document.getElementById('cartBtnDesktop').addEventListener('click', openCartPopup);
+            document.getElementById('cartHp').addEventListener('click', openCartPopup);
 
             // ============================================================
             // LOGIN
@@ -3172,7 +3447,7 @@
             });
 
             // ============================================================
-            // USER BADGE (Desktop & Sidebar)
+            // USER BADGE
             // ============================================================
             function updateUI() {
                 const navUserName = document.getElementById('navUserName');
@@ -3222,9 +3497,10 @@
             // ============================================================
             renderFavoriteCarousel();
             renderProductGrid(1);
+            updateCartUI();
             updateUI();
 
-            console.log('🟦 HEDTRO JEANS · HP: logo, search popup, cart, burger | menu di sidebar');
+            console.log('🟦 HEDTRO JEANS · Popup search, track, cart, buy, detail lengkap + zoom fix');
         })();
     </script>
 
