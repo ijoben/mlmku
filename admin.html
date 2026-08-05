@@ -154,22 +154,6 @@
         }
         .page-title i { color:var(--gold-accent); }
 
-        .admin-tabs {
-            display:flex; gap:8px; flex-wrap:wrap;
-            margin-bottom:20px; border-bottom:2px solid var(--denim-light);
-            padding-bottom:12px;
-        }
-        .admin-tabs .tab-btn {
-            padding:10px 22px; border-radius:60px;
-            font-weight:600; font-size:0.85rem;
-            color:var(--denim-navy); transition:var(--transition);
-            cursor:pointer; background:transparent;
-        }
-        .admin-tabs .tab-btn.active {
-            background:var(--denim-blue); color:#fff;
-            box-shadow:0 4px 14px rgba(42,75,110,0.25);
-        }
-        .admin-tabs .tab-btn:hover:not(.active) { background:var(--denim-light); }
         .tab-content { display:none; }
         .tab-content.active { display:block; }
 
@@ -288,13 +272,47 @@
             margin-top:30px; font-size:0.8rem;
         }
 
-        @media (max-width:768px) {
-            .admin-tabs .tab-btn { padding:8px 16px; font-size:0.75rem; }
+        /* ===== DASHBOARD STATS ===== */
+        .stats-grid {
+            display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
+            gap:16px; margin-bottom:28px;
         }
-        @media (max-width:480px) {
-            .admin-tabs { gap:4px; }
-            .admin-tabs .tab-btn { padding:6px 12px; font-size:0.7rem; }
+        .stat-card {
+            background:var(--white); border-radius:var(--radius-sm);
+            padding:18px 20px; border-left:4px solid var(--gold-accent);
+            box-shadow:var(--shadow);
         }
+        .stat-card .label {
+            font-size:0.7rem; text-transform:uppercase;
+            color:var(--denim-blue); font-weight:600; letter-spacing:0.3px;
+        }
+        .stat-card .value {
+            font-size:1.8rem; font-weight:700; color:var(--denim-dark);
+            margin-top:4px;
+        }
+        .stat-card .sub {
+            font-size:0.7rem; color:#6a7e9a; margin-top:2px;
+        }
+
+        .history-card {
+            background:var(--white); border-radius:var(--radius-sm);
+            padding:18px 20px; box-shadow:var(--shadow);
+            margin-top:12px;
+        }
+        .history-card h3 {
+            font-size:1rem; font-weight:600; margin-bottom:12px;
+            display:flex; align-items:center; gap:8px;
+        }
+        .history-card h3 i { color:var(--gold-accent); }
+        .history-item {
+            display:flex; justify-content:space-between;
+            padding:10px 0; border-bottom:1px solid #eee;
+            font-size:0.9rem;
+        }
+        .history-item:last-child { border-bottom:none; }
+        .history-item .amount { font-weight:700; }
+        .history-item .amount.plus { color:#1f7a4b; }
+        .history-item .amount.minus { color:#b13e3e; }
 
         /* ===== LOGIN OVERLAY ===== */
         .login-overlay {
@@ -391,6 +409,16 @@
             text-decoration:underline;
         }
         .login-overlay.hidden { display:none; }
+
+        @media (max-width:768px) {
+            .stats-grid { grid-template-columns:1fr 1fr; gap:12px; }
+            .stat-card .value { font-size:1.4rem; }
+        }
+        @media (max-width:480px) {
+            .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
+            .stat-card { padding:12px 14px; }
+            .stat-card .value { font-size:1.2rem; }
+        }
     </style>
 </head>
 <body>
@@ -423,7 +451,7 @@
     <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ===== MAIN CONTENT (HANYA TERLIHAT SETELAH LOGIN) ===== -->
+    <!-- ===== MAIN CONTENT ===== -->
     <div id="mainApp" style="display:none;">
 
         <header class="navbar">
@@ -441,27 +469,39 @@
                 <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
                 <span class="close-side" id="closeSidebar">&times;</span>
             </div>
-            <div class="menu-item active" data-tab="members"><i class="fas fa-users"></i> Member</div>
+            <div class="menu-item active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
+            <div class="menu-item" data-tab="members"><i class="fas fa-users"></i> Member</div>
             <div class="menu-item" data-tab="products"><i class="fas fa-boxes"></i> Produk</div>
             <div class="menu-item" data-tab="verification"><i class="fas fa-check-double"></i> Verifikasi</div>
             <div class="menu-item" data-tab="orders"><i class="fas fa-shopping-cart"></i> Orders</div>
+            <div class="menu-divider"></div>
             <div class="menu-item" data-tab="settings"><i class="fas fa-sliders-h"></i> Pengaturan</div>
             <div class="menu-divider"></div>
             <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
         </nav>
 
         <div class="main-content">
-            <h1 class="page-title"><i class="fas fa-users-cog"></i> Admin Panel</h1>
 
-            <div class="admin-tabs" id="adminTabs">
-                <button class="tab-btn active" data-tab="members">Member</button>
-                <button class="tab-btn" data-tab="products">Produk</button>
-                <button class="tab-btn" data-tab="verification">Verifikasi</button>
-                <button class="tab-btn" data-tab="orders">Orders</button>
-                <button class="tab-btn" data-tab="settings">Pengaturan</button>
+            <!-- ===== DASHBOARD ===== -->
+            <div class="tab-content active" id="tabDashboard">
+                <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
+                <div class="stats-grid" id="dashboardStats">
+                    <div class="stat-card"><div class="label">Total Member</div><div class="value" id="statTotalMember">0</div><div class="sub">Terdaftar</div></div>
+                    <div class="stat-card"><div class="label">Verified Member</div><div class="value" id="statVerifiedMember">0</div><div class="sub">Aktif</div></div>
+                    <div class="stat-card"><div class="label">Total Pesanan</div><div class="value" id="statTotalOrders">0</div><div class="sub">Semua</div></div>
+                    <div class="stat-card"><div class="label">Pesanan Pending</div><div class="value" id="statPendingOrders">0</div><div class="sub">Menunggu</div></div>
+                    <div class="stat-card"><div class="label">Total Produk</div><div class="value" id="statTotalProducts">0</div><div class="sub">Di Toko</div></div>
+                    <div class="stat-card"><div class="label">Total Transaksi</div><div class="value" id="statTotalTransactions">0</div><div class="sub">Nominal</div></div>
+                </div>
+                <div class="history-card">
+                    <h3><i class="fas fa-history"></i> Riwayat Transaksi Terbaru</h3>
+                    <div id="adminTransactionHistory"><p class="text-muted">Belum ada transaksi.</p></div>
+                </div>
             </div>
 
-            <div class="tab-content active" id="tabMembers">
+            <!-- ===== MEMBERS ===== -->
+            <div class="tab-content" id="tabMembers">
+                <h1 class="page-title"><i class="fas fa-users"></i> Member</h1>
                 <div class="flex-row">
                     <button class="btn-sm btn-sm-primary" id="refreshBtn"><i class="fas fa-sync"></i> Refresh</button>
                     <button class="btn-sm btn-sm-success" id="seedDemoBtn"><i class="fas fa-database"></i> Seed Demo</button>
@@ -476,19 +516,23 @@
                 <div class="text-muted mt-16">Total member: <span id="totalMembers">0</span></div>
             </div>
 
+            <!-- ===== PRODUCTS ===== -->
             <div class="tab-content" id="tabProducts">
+                <h1 class="page-title"><i class="fas fa-boxes"></i> Produk</h1>
                 <div class="flex-row">
                     <button class="btn-sm btn-sm-success" id="addProductBtn"><i class="fas fa-plus"></i> Tambah Produk</button>
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>#</th><th>Nama</th><th>Harga Member</th><th>Harga Normal</th><th>Tag</th><th>Stok</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>#</th><th>Gambar</th><th>Nama</th><th>Harga Member</th><th>Harga Normal</th><th>Tag</th><th>Ukuran</th><th>Warna</th><th>Stok</th><th>Aksi</th></tr></thead>
                         <tbody id="adminProductTableBody"></tbody>
                     </table>
                 </div>
             </div>
 
+            <!-- ===== VERIFICATION ===== -->
             <div class="tab-content" id="tabVerification">
+                <h1 class="page-title"><i class="fas fa-check-double"></i> Verifikasi</h1>
                 <div class="flex-row">
                     <button class="btn-sm btn-sm-primary" id="refreshVerifBtn"><i class="fas fa-sync"></i> Refresh</button>
                 </div>
@@ -500,7 +544,9 @@
                 </div>
             </div>
 
+            <!-- ===== ORDERS ===== -->
             <div class="tab-content" id="tabOrders">
+                <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Orders</h1>
                 <div class="flex-row">
                     <button class="btn-sm btn-sm-primary" id="refreshOrdersBtn"><i class="fas fa-sync"></i> Refresh</button>
                 </div>
@@ -512,7 +558,9 @@
                 </div>
             </div>
 
+            <!-- ===== SETTINGS ===== -->
             <div class="tab-content" id="tabSettings">
+                <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan</h1>
                 <div class="settings-grid">
                     <div class="settings-card">
                         <h4><i class="fas fa-percent"></i> Komisi Bonus</h4>
@@ -543,6 +591,7 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
         <footer class="footer">
@@ -667,18 +716,18 @@
             if (sidebarOverlay) sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
             // ============================================================
-            // TAB NAVIGATION
+            // TAB NAVIGATION (HANYA SIDEBAR)
             // ============================================================
             function switchTab(tabId) {
-                document.querySelectorAll('.admin-tabs .tab-btn').forEach(b => b.classList.remove('active'));
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                const tabBtn = document.querySelector(`.admin-tabs .tab-btn[data-tab="${tabId}"]`);
-                if (tabBtn) tabBtn.classList.add('active');
                 const tabContent = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
                 if (tabContent) tabContent.classList.add('active');
+
                 document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(el => el.classList.remove('active'));
                 const activeMenuItem = document.querySelector(`.sidebar .menu-item[data-tab="${tabId}"]`);
                 if (activeMenuItem) activeMenuItem.classList.add('active');
+
+                if (tabId === 'dashboard') renderDashboard();
                 if (tabId === 'members') renderAdminMembers();
                 if (tabId === 'products') renderAdminProducts();
                 if (tabId === 'verification') renderVerification();
@@ -686,18 +735,59 @@
                 if (tabId === 'settings') loadSettingsToForm();
             }
 
-            document.querySelectorAll('.admin-tabs .tab-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    switchTab(this.dataset.tab);
-                });
-            });
-
             document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(item => {
                 item.addEventListener('click', function() {
                     toggleSidebar(false);
                     switchTab(this.dataset.tab);
                 });
             });
+
+            // ============================================================
+            // RENDER DASHBOARD
+            // ============================================================
+            function renderDashboard() {
+                const users = loadUsers();
+                const orders = loadOrders();
+                const products = loadProducts();
+                const transactions = loadTransactions();
+
+                const totalMember = users.length;
+                const verifiedMember = users.filter(u => u.status === 'verified').length;
+                const totalOrders = orders.length;
+                const pendingOrders = orders.filter(o => o.status === 'pending').length;
+                const totalProducts = products.length;
+                const totalTransactionAmount = transactions.reduce((sum, t) => sum + (t.amount || 0), 0);
+
+                document.getElementById('statTotalMember').textContent = totalMember;
+                document.getElementById('statVerifiedMember').textContent = verifiedMember;
+                document.getElementById('statTotalOrders').textContent = totalOrders;
+                document.getElementById('statPendingOrders').textContent = pendingOrders;
+                document.getElementById('statTotalProducts').textContent = totalProducts;
+                document.getElementById('statTotalTransactions').textContent = 'Rp ' + totalTransactionAmount.toLocaleString();
+
+                // Riwayat transaksi
+                const container = document.getElementById('adminTransactionHistory');
+                const sorted = [...transactions].reverse().slice(0, 10);
+                if (sorted.length === 0) {
+                    container.innerHTML = '<p class="text-muted">Belum ada transaksi.</p>';
+                    return;
+                }
+                let html = '';
+                sorted.forEach(t => {
+                    const user = users.find(u => u.id === t.user_id);
+                    const userName = user ? (user.name || user.username) : 'Unknown';
+                    const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'withdraw' ? 'Withdraw' : (t.type === 'order' ? 'Order' : 'RO'));
+                    const amountClass = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase') ? 'plus' : 'minus';
+                    const sign = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase') ? '+' : '-';
+                    const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' ? '✅ Selesai' : '❌ Gagal');
+                    const date = new Date(t.createdAt || t.date).toLocaleDateString();
+                    html += `<div class="history-item">
+                        <span><strong>${userName}</strong> · ${typeLabel} ${statusText} <span class="text-muted" style="font-size:0.7rem;">${date}</span></span>
+                        <span class="amount ${amountClass}">${sign} Rp ${(t.amount || 0).toLocaleString()}</span>
+                    </div>`;
+                });
+                container.innerHTML = html;
+            }
 
             // ============================================================
             // RENDER MEMBERS
@@ -739,6 +829,7 @@
                         renderAdminMembers();
                         renderVerification();
                         renderOrders();
+                        renderDashboard();
                         showToast(`Status ${user.name} diubah menjadi ${user.status.toUpperCase()}`, 'success');
                     });
                 });
@@ -783,6 +874,7 @@
                             renderVerification();
                             renderAdminMembers();
                             renderOrders();
+                            renderDashboard();
                             showToast(`✅ ${user.name} telah diverifikasi!`, 'success');
                         }
                     });
@@ -809,7 +901,7 @@
             }
 
             // ============================================================
-            // RENDER PRODUCTS
+            // RENDER PRODUCTS (LENGKAP DENGAN GAMBAR, UKURAN, WARNA, BADGE)
             // ============================================================
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
@@ -817,12 +909,18 @@
                 const products = loadProducts();
                 let html = '';
                 products.forEach((p, idx) => {
+                    const sizes = (p.sizes || []).join(', ') || '-';
+                    const colors = (p.colors || []).join(', ') || '-';
+                    const imgHtml = p.image ? `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />` : `<i class="fas fa-tshirt" style="font-size:1.5rem;color:var(--denim-blue);"></i>`;
                     html += `<tr>
                         <td>${idx+1}</td>
+                        <td>${imgHtml}</td>
                         <td>${p.name}</td>
                         <td>Rp ${p.price.toLocaleString()}</td>
                         <td>Rp ${p.original?.toLocaleString() || '-'}</td>
-                        <td>${p.tag || '-'}</td>
+                        <td><span class="badge-status" style="background:${p.badgeColor || '#c9a84c'};color:#fff;">${p.tag || 'PRODUK'}</span></td>
+                        <td>${sizes}</td>
+                        <td>${colors}</td>
                         <td>${p.stock}</td>
                         <td>
                             <button class="btn-sm btn-sm-warning edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button>
@@ -835,23 +933,7 @@
                 document.querySelectorAll('.edit-product').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.dataset.id);
-                        let products = loadProducts();
-                        const p = products.find(x => x.id === id);
-                        if (!p) return;
-                        const name = prompt('Nama produk:', p.name);
-                        if (name === null) return;
-                        const price = parseInt(prompt('Harga Member (Rp):', p.price));
-                        if (isNaN(price)) return;
-                        const original = parseInt(prompt('Harga Normal (Rp):', p.original));
-                        if (isNaN(original)) return;
-                        const tag = prompt('Tag:', p.tag);
-                        if (tag === null) return;
-                        const stock = parseInt(prompt('Stok:', p.stock));
-                        if (isNaN(stock)) return;
-                        p.name = name; p.price = price; p.original = original; p.tag = tag; p.stock = stock;
-                        saveProducts(products);
-                        renderAdminProducts();
-                        showToast('✅ Produk diupdate.', 'success');
+                        openEditProduct(id);
                     });
                 });
 
@@ -863,30 +945,117 @@
                         products = products.filter(x => x.id !== id);
                         saveProducts(products);
                         renderAdminProducts();
+                        renderDashboard();
                         showToast('✅ Produk dihapus.', 'info');
                     });
                 });
             }
 
+            // ============================================================
+            // EDIT PRODUCT POPUP
+            // ============================================================
+            function openEditProduct(id) {
+                const products = loadProducts();
+                const p = products.find(x => x.id === id);
+                if (!p) return;
+
+                const name = prompt('Nama produk:', p.name);
+                if (name === null) return;
+
+                const price = parseInt(prompt('Harga Member (Rp):', p.price));
+                if (isNaN(price)) return;
+
+                const original = parseInt(prompt('Harga Normal (Rp):', p.original || ''));
+                if (isNaN(original)) return;
+
+                const tag = prompt('Tag/Badge (contoh: BEST SELLER):', p.tag || 'PRODUK');
+                if (tag === null) return;
+
+                const badgeColor = prompt('Warna Badge (kode hex atau nama warna):', p.badgeColor || '#c9a84c');
+                if (badgeColor === null) return;
+
+                const stock = parseInt(prompt('Stok:', p.stock));
+                if (isNaN(stock)) return;
+
+                const sizesInput = prompt('Ukuran (pisah dengan koma, contoh: 28,29,30,31,32):', (p.sizes || ['28', '29', '30', '31', '32']).join(','));
+                if (sizesInput === null) return;
+                const sizes = sizesInput.split(',').map(s => s.trim()).filter(s => s);
+
+                const colorsInput = prompt('Warna (pisah dengan koma, contoh: Indigo Blue Raw Denim, Black Stretch):', (p.colors || ['Indigo Blue Raw Denim', 'Black Stretch']).join(','));
+                if (colorsInput === null) return;
+                const colors = colorsInput.split(',').map(c => c.trim()).filter(c => c);
+
+                const desc = prompt('Deskripsi produk:', p.desc || '');
+                if (desc === null) return;
+
+                const image = prompt('URL Gambar (kosongkan jika tidak ada):', p.image || '');
+                if (image === null) return;
+
+                p.name = name;
+                p.price = price;
+                p.original = original;
+                p.tag = tag;
+                p.badgeColor = badgeColor;
+                p.stock = stock;
+                p.sizes = sizes;
+                p.colors = colors;
+                p.desc = desc;
+                p.image = image || null;
+
+                saveProducts(products);
+                renderAdminProducts();
+                renderDashboard();
+                showToast('✅ Produk diupdate!', 'success');
+            }
+
+            // ============================================================
+            // ADD PRODUCT
+            // ============================================================
             document.getElementById('addProductBtn').addEventListener('click', function() {
                 const name = prompt('Nama produk:');
                 if (!name) return;
+
                 const price = parseInt(prompt('Harga Member (Rp):'));
                 if (isNaN(price)) return;
+
                 const original = parseInt(prompt('Harga Normal (Rp):'));
                 if (isNaN(original)) return;
-                const tag = prompt('Tag (contoh: BEST SELLER):') || 'PRODUK';
+
+                const tag = prompt('Tag/Badge (contoh: BEST SELLER):') || 'PRODUK';
+                const badgeColor = prompt('Warna Badge (kode hex):') || '#c9a84c';
+
                 const stock = parseInt(prompt('Stok:')) || 0;
+
+                const sizesInput = prompt('Ukuran (pisah dengan koma, contoh: 28,29,30,31,32):') || '28,29,30,31,32';
+                const sizes = sizesInput.split(',').map(s => s.trim()).filter(s => s);
+
+                const colorsInput = prompt('Warna (pisah dengan koma, contoh: Indigo Blue Raw Denim, Black Stretch):') || 'Indigo Blue Raw Denim, Black Stretch';
+                const colors = colorsInput.split(',').map(c => c.trim()).filter(c => c);
+
+                const desc = prompt('Deskripsi produk:') || 'Deskripsi produk ini akan diisi oleh admin.';
+                const image = prompt('URL Gambar (kosongkan jika tidak ada):') || null;
+
                 let products = loadProducts();
                 const newProd = {
-                    id: products.length ? Math.max(...products.map(p=>p.id)) + 1 : 1,
-                    name, price, original, tag, icon: 'fa-tshirt', stock,
-                    serial: 'HDT-SERI-' + String(products.length + 1).padStart(3, '0'),
-                    desc: 'Deskripsi produk ini akan diisi oleh admin.'
+                    id: products.length ? Math.max(...products.map(p => p.id)) + 1 : 1,
+                    name,
+                    price,
+                    original,
+                    tag,
+                    badgeColor,
+                    icon: 'fa-tshirt',
+                    stock,
+                    sizes,
+                    colors,
+                    desc,
+                    image: image || null,
+                    favorite: false,
+                    serial: 'HDT-SERI-' + String(products.length + 1).padStart(3, '0')
                 };
                 products.push(newProd);
                 saveProducts(products);
                 renderAdminProducts();
+                renderDashboard();
                 showToast('✅ Produk ditambahkan!', 'success');
             });
 
@@ -938,6 +1107,7 @@
                         order.status = 'processing';
                         saveOrders(orders);
                         renderOrders();
+                        renderDashboard();
                         showToast(`✅ Order ${order.order_number} diproses.`, 'success');
                     });
                 });
@@ -951,6 +1121,7 @@
                         order.status = 'shipped';
                         saveOrders(orders);
                         renderOrders();
+                        renderDashboard();
                         showToast(`🚚 Order ${order.order_number} dikirim.`, 'success');
                     });
                 });
@@ -1035,7 +1206,7 @@
                 const demoNames = ['Dewi Lestari', 'Eko Prasetyo', 'Rina Cahyani', 'Bambang S', 'Siti Rahayu'];
                 let added = 0;
                 demoNames.forEach((name, i) => {
-                    if (!users.find(u => u.email === name.toLowerCase().replace(/ /g,'') + '@mail.com')) {
+                    if (!users.find(u => u.email === name.toLowerCase().replace(/ /g, '') + '@mail.com')) {
                         const newUser = {
                             id: getNextId(users),
                             username: name.toLowerCase().replace(/ /g, ''),
@@ -1049,13 +1220,17 @@
                             bonus_binary: Math.floor(Math.random() * 100),
                             bonus_reward: Math.floor(Math.random() * 20),
                             bonus_ro: Math.floor(Math.random() * 10),
-                            left: null, right: null, sponsor_id: 1, upline_id: 1,
+                            left: null,
+                            right: null,
+                            sponsor_id: 1,
+                            upline_id: 1,
                             position: i % 2 === 0 ? 'left' : 'right',
-                            purchase_history: [], transactions: [], orders: [],
+                            purchase_history: [],
+                            transactions: [],
+                            orders: [],
                             proof_image: null,
                             registeredAt: new Date().toISOString()
                         };
-                        // Set tree
                         if (i === 0) { const admin = users.find(u => u.id === 1); if (admin) admin.left = newUser.id; }
                         if (i === 1) { const admin = users.find(u => u.id === 1); if (admin) admin.right = newUser.id; }
                         users.push(newUser);
@@ -1066,6 +1241,7 @@
                 renderAdminMembers();
                 renderVerification();
                 renderOrders();
+                renderDashboard();
                 showToast(`✅ ${added} member demo ditambahkan.`, 'success');
             });
 
@@ -1089,21 +1265,12 @@
                 saveUsers(users);
                 saveOrders([]);
                 saveTransactions([]);
-
-                // Reset products ke default
-                const defaultProducts = [
-                    { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', desc: 'Celana jeans premium dengan potongan slim-fit modern.' },
-                    { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', desc: 'Model straight cut klasik legendaris.' },
-                    { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', desc: 'Warna hitam legam pekat yang elegan.' },
-                    { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%', icon: 'fa-tshirt', favorite: true, stock: 18, serial: 'HDT-SERI-004', desc: 'Tampilan retro klasik tahun 90-an.' },
-                    { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED', icon: 'fa-jacket', favorite: true, stock: 20, serial: 'HDT-SERI-005', desc: 'Jaket denim ikonik berbahan rigid denim.' }
-                ];
-                saveProducts(defaultProducts);
-
+                saveProducts([]);
                 renderAdminMembers();
                 renderVerification();
                 renderOrders();
                 renderAdminProducts();
+                renderDashboard();
                 showToast('✅ Semua data direset (kecuali admin).', 'info');
             });
 
@@ -1112,6 +1279,7 @@
                 renderAdminProducts();
                 renderVerification();
                 renderOrders();
+                renderDashboard();
                 loadSettingsToForm();
                 showToast('🔄 Data direfresh.', 'info');
             });
@@ -1125,9 +1293,8 @@
             });
 
             document.getElementById('navUserBadge').addEventListener('click', function() {
-                renderAdminMembers();
-                renderVerification();
-                renderOrders();
+                renderDashboard();
+                switchTab('dashboard');
             });
 
             document.getElementById('sideLogoutBtn').addEventListener('click', function() {
@@ -1142,7 +1309,6 @@
             const mainApp = document.getElementById('mainApp');
 
             function showAdminLogin() {
-                // HAPUS SESSION LAMA AGAR TIDAK KONFLIK
                 clearSession();
                 if (loginOverlay) loginOverlay.classList.remove('hidden');
                 if (mainApp) mainApp.style.display = 'none';
@@ -1170,7 +1336,6 @@
                     return;
                 }
 
-                // HAPUS SESSION LAMA, BUAT SESSION BARU
                 clearSession();
                 saveSession({ id: user.id, role: user.role });
                 msgEl.className = 'msg success';
@@ -1178,6 +1343,7 @@
 
                 setTimeout(() => {
                     hideAdminLogin();
+                    renderDashboard();
                     renderAdminMembers();
                     renderAdminProducts();
                     renderVerification();
@@ -1214,7 +1380,7 @@
             });
 
             // ============================================================
-            // CHECK SESSION - PASTIKAN HANYA ADMIN YANG BISA AKSES
+            // CHECK SESSION
             // ============================================================
             function checkSession() {
                 const session = getSession();
@@ -1223,6 +1389,7 @@
                     const user = users.find(u => u.id === session.id);
                     if (user && user.role === 'admin') {
                         hideAdminLogin();
+                        renderDashboard();
                         renderAdminMembers();
                         renderAdminProducts();
                         renderVerification();
@@ -1231,7 +1398,6 @@
                         applySettings();
                         return true;
                     } else {
-                        // SESSION TIDAK VALID ATAU BUKAN ADMIN
                         clearSession();
                     }
                 }
@@ -1242,7 +1408,6 @@
             // ============================================================
             // INIT
             // ============================================================
-            // Initialize default users if empty
             let users = loadUsers();
             if (users.length === 0) {
                 users = [{
@@ -1272,26 +1437,63 @@
                 saveUsers(users);
             }
 
-            // Initialize products if empty
             let products = loadProducts();
             if (products.length === 0) {
-                const defaultProducts = [
-                    { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', desc: 'Celana jeans premium dengan potongan slim-fit modern.' },
-                    { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', desc: 'Model straight cut klasik legendaris.' },
-                    { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', desc: 'Warna hitam legam pekat yang elegan.' },
-                    { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%', icon: 'fa-tshirt', favorite: true, stock: 18, serial: 'HDT-SERI-004', desc: 'Tampilan retro klasik tahun 90-an.' },
-                    { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED', icon: 'fa-jacket', favorite: true, stock: 20, serial: 'HDT-SERI-005', desc: 'Jaket denim ikonik berbahan rigid denim.' }
-                ];
+                const defaultProducts = [{
+                    id: 1,
+                    name: 'Slim Fit Premium Indigo 501®',
+                    price: 250000,
+                    original: 350000,
+                    tag: 'BEST SELLER',
+                    badgeColor: '#c9a84c',
+                    icon: 'fa-tshirt',
+                    favorite: true,
+                    stock: 45,
+                    serial: 'HDT-SERI-001',
+                    desc: 'Celana jeans premium dengan potongan slim-fit modern.',
+                    sizes: ['28', '29', '30', '31', '32'],
+                    colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
+                    image: null
+                }, {
+                    id: 2,
+                    name: 'Classic Straight Cut Raw',
+                    price: 280000,
+                    original: 390000,
+                    tag: 'NEW ARRIVAL',
+                    badgeColor: '#2a4b6e',
+                    icon: 'fa-tshirt',
+                    favorite: true,
+                    stock: 30,
+                    serial: 'HDT-SERI-002',
+                    desc: 'Model straight cut klasik legendaris.',
+                    sizes: ['30', '32', '34'],
+                    colors: ['Raw Denim', 'Dark Navy'],
+                    image: null
+                }, {
+                    id: 3,
+                    name: 'Jet Black Stretch Comfort',
+                    price: 240000,
+                    original: 330000,
+                    tag: 'HOT ITEM',
+                    badgeColor: '#b13e3e',
+                    icon: 'fa-tshirt',
+                    favorite: true,
+                    stock: 25,
+                    serial: 'HDT-SERI-003',
+                    desc: 'Warna hitam legam pekat yang elegan.',
+                    sizes: ['29', '30', '31', '32'],
+                    colors: ['Black Stretch', 'Grey Stone'],
+                    image: null
+                }];
                 saveProducts(defaultProducts);
             }
 
-            // Check session
             const isLoggedIn = checkSession();
 
-            // Auto refresh if logged in
             if (isLoggedIn) {
                 setInterval(() => {
-                    const activeTab = document.querySelector('.admin-tabs .tab-btn.active')?.dataset.tab;
+                    const activeTab = document.querySelector('.sidebar .menu-item.active')?.dataset.tab;
+                    if (activeTab === 'dashboard') renderDashboard();
                     if (activeTab === 'members') renderAdminMembers();
                     if (activeTab === 'verification') renderVerification();
                     if (activeTab === 'orders') renderOrders();
@@ -1299,10 +1501,8 @@
                 }, 15000);
             }
 
-            console.log('🟦 HEDTRO · Admin Panel dengan login terpisah');
+            console.log('🟦 HEDTRO · Admin Panel lengkap dengan Dashboard & CRUD produk');
             console.log('🔑 Admin: admin@mlm.com / admin123');
-            console.log('📌 User login di login.html');
-            console.log('🔄 Session lama otomatis dihapus saat buka admin.html');
         })();
     </script>
 
