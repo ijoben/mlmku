@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Login · HEDTRO JEANS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --denim-dark: #0b1a2b;
+            --denim-navy: #1a2e44;
+            --denim-blue: #2a4b6e;
+            --denim-light: #e8edf2;
+            --gold-accent: #c9a84c;
+            --gold-light: #e8d5a3;
+            --cream: #f7f4ef;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --radius: 24px;
+            --radius-sm: 12px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--cream);
+            color: var(--denim-dark);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-wrapper {
+            max-width: 440px;
+            width: 100%;
+        }
+
+        .login-card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 36px 34px 40px;
+            box-shadow: var(--shadow-lg);
+            border: 1px solid var(--denim-light);
+        }
+
+        .login-card .logo {
+            text-align: center;
+            margin-bottom: 24px;
+        }
+
+        .login-card .logo h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--denim-dark);
+        }
+
+        .login-card .logo h1 i {
+            color: var(--gold-accent);
+        }
+
+        .login-card .logo p {
+            color: var(--denim-navy);
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-top: 2px;
+        }
+
+        .form-group {
+            margin-bottom: 16px;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--denim-navy);
+            font-size: 0.8rem;
+            margin-bottom: 4px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 12px 18px;
+            border: 1.5px solid var(--denim-light);
+            border-radius: 60px;
+            font-size: 0.95rem;
+            background: var(--cream);
+            color: var(--denim-dark);
+            font-family: inherit;
+            transition: var(--transition);
+            outline: none;
+        }
+
+        .form-group input:focus {
+            border-color: var(--gold-accent);
+            box-shadow: 0 0 0 4px rgba(201, 168, 76, 0.08);
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 14px;
+            border: none;
+            border-radius: 60px;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-weight: 700;
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+            margin-top: 4px;
+        }
+
+        .btn-login:hover {
+            background: #b8963a;
+            transform: scale(0.98);
+        }
+
+        .demo-section {
+            margin-top: 20px;
+            padding-top: 20px;
+            border-top: 1px solid var(--denim-light);
+        }
+
+        .demo-section .demo-label {
+            font-size: 0.75rem;
+            color: var(--denim-navy);
+            opacity: 0.6;
+            text-align: center;
+            margin-bottom: 12px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .demo-buttons {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .demo-btn {
+            padding: 12px 16px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.85rem;
+            transition: var(--transition);
+            font-family: inherit;
+            border: 2px solid var(--denim-light);
+            background: var(--cream);
+            color: var(--denim-navy);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .demo-btn:hover {
+            border-color: var(--gold-accent);
+            background: rgba(201, 168, 76, 0.05);
+        }
+
+        .demo-btn.admin {
+            border-color: var(--gold-accent);
+            background: rgba(201, 168, 76, 0.08);
+        }
+
+        .demo-btn.admin:hover {
+            background: rgba(201, 168, 76, 0.15);
+        }
+
+        .demo-btn i {
+            font-size: 1rem;
+            color: var(--gold-accent);
+        }
+
+        .login-footer {
+            text-align: center;
+            margin-top: 18px;
+            font-size: 0.85rem;
+            color: var(--denim-navy);
+        }
+
+        .login-footer a {
+            color: var(--gold-accent);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .msg {
+            margin-top: 12px;
+            text-align: center;
+            font-size: 0.85rem;
+            min-height: 24px;
+            padding: 8px;
+            border-radius: var(--radius-sm);
+        }
+
+        .msg.error {
+            background: #fde8e8;
+            color: #b13e3e;
+        }
+        .msg.success {
+            background: #e8f5ed;
+            color: #1f7a4b;
+        }
+
+        .back-link {
+            display: inline-block;
+            margin-top: 16px;
+            color: var(--denim-navy);
+            font-size: 0.8rem;
+            opacity: 0.6;
+            transition: var(--transition);
+        }
+
+        .back-link:hover {
+            opacity: 1;
+            color: var(--gold-accent);
+        }
+
+        @media (max-width: 480px) {
+            .login-card {
+                padding: 24px 18px 28px;
+            }
+            .login-card .logo h1 {
+                font-size: 1.4rem;
+            }
+            .demo-buttons {
+                grid-template-columns: 1fr;
+            }
+            .form-group input {
+                padding: 10px 14px;
+                font-size: 0.85rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="login-wrapper">
+        <div class="login-card">
+            <div class="logo">
+                <h1><i class="fas fa-tshirt"></i> HEDTRO JEANS</h1>
+                <p>Masuk ke akun member Anda</p>
+            </div>
+
+            <form id="loginForm" onsubmit="return false;">
+                <div class="form-group">
+                    <label>Email atau Username</label>
+                    <input type="text" id="loginEmail" placeholder="email@domain.com" />
+                </div>
+                <div class="form-group">
+                    <label>Kata Sandi</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" />
+                </div>
+                <button type="submit" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+                <div class="msg" id="loginMsg"></div>
+            </form>
+
+            <div class="demo-section">
+                <div class="demo-label"><i class="fas fa-bolt"></i> Login Demo 1 Klik</div>
+                <div class="demo-buttons">
+                    <button class="demo-btn" id="demoUserBtn">
+                        <i class="fas fa-user"></i> User Demo
+                    </button>
+                    <button class="demo-btn admin" id="demoAdminBtn">
+                        <i class="fas fa-user-cog"></i> Admin Demo
+                    </button>
+                </div>
+            </div>
+
+            <div class="login-footer">
+                Belum punya akun? <a href="register.html">Daftar di sini</a>
+            </div>
+
+            <div style="text-align:center; margin-top:12px;">
+                <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
+    <script>
+        (function() {
+            'use strict';
+
+            const DB_KEY = 'hedtro_mlm_users';
+
+            // ============================================================
+            // INIT DATA DEFAULT (jika belum ada)
+            // ============================================================
+            function initUsers() {
+                let users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+                if (users.length === 0) {
+                    users = [{
+                        id: 1,
+                        username: 'admin',
+                        name: 'Admin Utama',
+                        email: 'admin@mlm.com',
+                        password: 'admin123',
+                        role: 'admin',
+                        status: 'verified',
+                        wallet: 0,
+                        bonus_sponsor: 0,
+                        bonus_binary: 0,
+                        bonus_reward: 0,
+                        bonus_ro: 0,
+                        binary_tree: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        reward_levels: [0, 0, 0, 0, 0],
+                        purchase_history: [],
+                        transactions: [],
+                        registeredAt: new Date().toISOString()
+                    }, {
+                        id: 2,
+                        username: 'budi',
+                        name: 'Budi Santoso',
+                        email: 'budi@mail.com',
+                        password: 'budi123',
+                        role: 'user',
+                        status: 'verified',
+                        wallet: 120000,
+                        bonus_sponsor: 50,
+                        bonus_binary: 120,
+                        bonus_reward: 30,
+                        bonus_ro: 12,
+                        binary_tree: [2, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                        reward_levels: [4, 2, 1, 0, 0],
+                        purchase_history: [],
+                        transactions: [],
+                        registeredAt: new Date().toISOString()
+                    }, {
+                        id: 3,
+                        username: 'citra',
+                        name: 'Citra Dewi',
+                        email: 'citra@mail.com',
+                        password: 'citra123',
+                        role: 'user',
+                        status: 'verified',
+                        wallet: 80000,
+                        bonus_sponsor: 30,
+                        bonus_binary: 70,
+                        bonus_reward: 15,
+                        bonus_ro: 8,
+                        binary_tree: [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                        reward_levels: [3, 1, 0, 0, 0],
+                        purchase_history: [],
+                        transactions: [],
+                        registeredAt: new Date().toISOString()
+                    }];
+                    localStorage.setItem(DB_KEY, JSON.stringify(users));
+                }
+                return users;
+            }
+
+            // ============================================================
+            // LOGIN FUNCTION
+            // ============================================================
+            function loginUser(email, password) {
+                const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+                const user = users.find(u => (u.email === email || u.username === email) && u.password === password);
+
+                const msgEl = document.getElementById('loginMsg');
+
+                if (!user) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '❌ Email/Username atau password salah.';
+                    return;
+                }
+
+                localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
+                msgEl.className = 'msg success';
+                msgEl.innerText = '✅ Login berhasil! Mengarahkan...';
+
+                setTimeout(() => {
+                    if (user.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
+                }, 1000);
+            }
+
+            // ============================================================
+            // DEMO BUTTONS
+            // ============================================================
+            document.getElementById('demoUserBtn').addEventListener('click', function() {
+                document.getElementById('loginEmail').value = 'budi@mail.com';
+                document.getElementById('loginPassword').value = 'budi123';
+                loginUser('budi@mail.com', 'budi123');
+            });
+
+            document.getElementById('demoAdminBtn').addEventListener('click', function() {
+                document.getElementById('loginEmail').value = 'admin@mlm.com';
+                document.getElementById('loginPassword').value = 'admin123';
+                loginUser('admin@mlm.com', 'admin123');
+            });
+
+            // ============================================================
+            // LOGIN FORM
+            // ============================================================
+            document.getElementById('loginBtn').addEventListener('click', function() {
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value.trim();
+                if (!email || !password) {
+                    const msgEl = document.getElementById('loginMsg');
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ Isi email/username dan password.';
+                    return;
+                }
+                loginUser(email, password);
+            });
+
+            document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('loginBtn').click();
+            });
+
+            // ============================================================
+            // INIT
+            // ============================================================
+            initUsers();
+
+            // Cek session, jika sudah login redirect
+            const session = localStorage.getItem('mlm_session');
+            if (session) {
+                try {
+                    const { id } = JSON.parse(session);
+                    const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+                    const user = users.find(u => u.id === id);
+                    if (user) {
+                        if (user.role === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'dashboard.html';
+                        }
+                        return;
+                    } else {
+                        localStorage.removeItem('mlm_session');
+                    }
+                } catch (_) { localStorage.removeItem('mlm_session'); }
+            }
+
+            console.log('🟦 HEDTRO JEANS · Login siap dengan demo 1 klik');
+        })();
+    </script>
+
+</body>
+</html>
