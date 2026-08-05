@@ -1,876 +1,642 @@
 <!DOCTYPE html>
 <html lang="id">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>Dashboard · HEDTRO JEANS</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-  <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
-    :root {
-      --denim-dark: #0b1a2b;
-      --denim-navy: #1a2e44;
-      --denim-blue: #2a4b6e;
-      --denim-light: #e8edf2;
-      --gold-accent: #c9a84c;
-      --gold-light: #e8d5a3;
-      --cream: #f7f4ef;
-      --white: #ffffff;
-      --shadow: 0 4px 20px rgba(0,0,0,0.08);
-      --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
-      --radius: 28px;
-      --radius-sm: 14px;
-      --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
-      --sidebar-width: 280px;
-    }
-    body {
-      font-family: 'Inter', -apple-system, sans-serif;
-      background: var(--cream);
-      color: var(--denim-dark);
-      padding-top: 70px;
-      overflow-x: hidden;
-    }
-    a { text-decoration:none; color:inherit; }
-    button { cursor:pointer; font-family:inherit; border:none; background:none; }
-    ::-webkit-scrollbar { width:6px; }
-    ::-webkit-scrollbar-track { background:var(--cream); }
-    ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Dashboard · HEDTRO JEANS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
-    .navbar {
-      position: fixed; top:0; left:0; right:0; z-index:1100;
-      background: var(--denim-dark);
-      padding: 12px 20px;
-      display: flex; align-items:center; justify-content:space-between;
-      border-bottom:3px solid var(--gold-accent);
-      height:70px;
-    }
-    .navbar .logo {
-      display:flex; align-items:center; gap:8px;
-      color:var(--white); font-weight:800; font-size:1.4rem;
-    }
-    .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
-    .navbar .logo span { font-weight:300; color:var(--gold-light); font-size:0.75rem; margin-left:2px; }
-    .nav-right {
-      display:flex; align-items:center; gap:12px;
-    }
-    .nav-right .user-badge {
-      display:flex; align-items:center; gap:6px;
-      color:var(--cream); font-size:0.8rem;
-      background:rgba(255,255,255,0.08);
-      padding:6px 14px; border-radius:60px;
-      border:1px solid rgba(255,255,255,0.06);
-      cursor:pointer;
-    }
-    .nav-right .user-badge i { color:var(--gold-accent); }
+        :root {
+            --denim-dark: #0b1a2b;
+            --denim-navy: #1a2e44;
+            --denim-blue: #2a4b6e;
+            --denim-light: #e8edf2;
+            --gold-accent: #c9a84c;
+            --gold-light: #e8d5a3;
+            --cream: #f7f4ef;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --radius: 24px;
+            --radius-sm: 12px;
+            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
 
-    .burger-btn {
-      display:none;
-      flex-direction:column; gap:5px;
-      padding:6px; background:transparent; border:none; cursor:pointer;
-      z-index:1101;
-    }
-    .burger-btn span {
-      display:block; width:28px; height:3px;
-      background:var(--cream); border-radius:4px;
-      transition:var(--transition); transform-origin:center;
-    }
-    .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
-    .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
-    .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--cream);
+            color: var(--denim-dark);
+            min-height: 100vh;
+            padding-top: 80px;
+        }
 
-    .sidebar-overlay {
-      display:none;
-      position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(0,0,0,0.5); z-index:1050;
-      opacity:0; pointer-events:none;
-      transition:var(--transition);
-    }
-    .sidebar-overlay.active { opacity:1; pointer-events:all; }
-    .sidebar {
-      position:fixed; top:0; left:0; bottom:0;
-      width:var(--sidebar-width);
-      background:var(--denim-dark);
-      z-index:1060;
-      padding:24px 20px;
-      overflow-y:auto;
-      border-right:3px solid var(--gold-accent);
-      display:flex; flex-direction:column; gap:4px;
-      transition:left 0.3s ease;
-      left:0;
-    }
-    @media (max-width: 768px) {
-      .sidebar { left:-320px; }
-      .sidebar.open { left:0; }
-      .burger-btn { display:flex; }
-      .sidebar-overlay { display:block; }
-    }
-    .sidebar .sidebar-header {
-      display:flex; align-items:center; justify-content:space-between;
-      padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);
-      margin-bottom:12px;
-    }
-    .sidebar .sidebar-header .logo-side {
-      color:var(--white); font-weight:800; font-size:1.3rem;
-    }
-    .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
-    .sidebar .sidebar-header .close-side {
-      display:none;
-      color:var(--cream); font-size:1.6rem; cursor:pointer;
-    }
-    @media (max-width: 768px) {
-      .sidebar .sidebar-header .close-side { display:block; }
-    }
-    .sidebar .menu-item {
-      display:flex; align-items:center; gap:14px;
-      padding:12px 16px; border-radius:12px;
-      color:var(--cream); font-weight:500; font-size:0.95rem;
-      transition:var(--transition); cursor:pointer;
-    }
-    .sidebar .menu-item:hover { background:rgba(255,255,255,0.08); }
-    .sidebar .menu-item i { width:24px; color:var(--gold-accent); }
-    .sidebar .menu-item.active { background:rgba(201,168,76,0.15); color:var(--gold-accent); }
-    .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:6px 0; }
-    .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
-    .sidebar .menu-item.logout i { color:#e74c3c; }
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 24px 40px;
+        }
 
-    .main-content {
-      margin-left: var(--sidebar-width);
-      padding: 20px 24px 40px;
-      transition: margin-left 0.3s ease;
-      max-width: calc(100% - var(--sidebar-width));
-    }
-    @media (max-width: 768px) {
-      .main-content {
-        margin-left: 0;
-        max-width: 100%;
-        padding: 16px 16px 30px;
-      }
-    }
-    .page-title {
-      font-size:1.6rem; font-weight:700; color:var(--denim-dark);
-      margin-bottom:20px; display:flex; align-items:center; gap:12px;
-    }
-    .page-title i { color:var(--gold-accent); }
+        .navbar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background: var(--denim-dark);
+            padding: 10px 28px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--gold-accent);
+            height: 80px;
+            width: 100%;
+        }
 
-    #statusBanner {
-      padding:14px 20px; border-radius:var(--radius-sm);
-      margin-bottom:20px;
-      display:flex; align-items:center; flex-wrap:wrap; gap:10px;
-      font-weight:500;
-    }
-    .status-free { background:#f8d7da; color:#721c24; }
-    .status-pending { background:#fff3cd; color:#856404; }
-    .status-verified { background:#d4edda; color:#155724; }
+        .navbar .logo {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: var(--white);
+            font-weight: 800;
+            font-size: 1.4rem;
+        }
 
-    .btn-sm {
-      padding:8px 18px; border-radius:60px; font-weight:600; font-size:0.8rem;
-      transition:var(--transition); font-family:inherit;
-    }
-    .btn-sm-success { background:#1f7a4b; color:#fff; }
-    .btn-sm-success:hover { background:#155d38; }
-    .btn-sm-primary { background:var(--denim-blue); color:#fff; }
-    .btn-sm-primary:hover { background:var(--denim-dark); }
-    .btn-sm-gold { background:var(--gold-accent); color:var(--denim-dark); }
-    .btn-sm-gold:hover { background:#b8963a; }
-    .btn-sm-danger { background:#b13e3e; color:#fff; }
-    .btn-sm-danger:hover { background:#8f2f2f; }
+        .navbar .logo i {
+            color: var(--gold-accent);
+            font-size: 1.6rem;
+        }
 
-    .wallet-card {
-      background:var(--denim-dark); color:var(--cream);
-      border-radius:var(--radius-sm); padding:20px 24px;
-      margin-bottom:20px;
-      display:flex; justify-content:space-between; align-items:center;
-      flex-wrap:wrap; gap:12px;
-    }
-    .wallet-card .wallet-label { font-size:0.85rem; opacity:0.7; }
-    .wallet-card .wallet-amount { font-size:2rem; font-weight:700; color:var(--gold-accent); }
+        .navbar .logo span {
+            font-weight: 300;
+            color: var(--gold-light);
+            font-size: 0.75rem;
+            margin-left: 2px;
+        }
 
-    .stats-grid {
-      display:grid; grid-template-columns:repeat(auto-fit, minmax(170px,1fr));
-      gap:16px; margin-bottom:28px;
-    }
-    .stat-card {
-      background:var(--white); border-radius:var(--radius-sm);
-      padding:18px 20px; border-left:4px solid var(--gold-accent);
-      box-shadow:var(--shadow);
-    }
-    .stat-card .label {
-      font-size:0.7rem; text-transform:uppercase;
-      color:var(--denim-blue); font-weight:600; letter-spacing:0.3px;
-    }
-    .stat-card .value {
-      font-size:1.8rem; font-weight:700; color:var(--denim-dark);
-      margin-top:4px;
-    }
+        .nav-right {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-    .history-card {
-      background:var(--white); border-radius:var(--radius-sm);
-      padding:18px 20px; box-shadow:var(--shadow);
-      margin-top:12px;
-    }
-    .history-card h3 {
-      font-size:1rem; font-weight:600; margin-bottom:12px;
-      display:flex; align-items:center; gap:8px;
-    }
-    .history-card h3 i { color:var(--gold-accent); }
-    .history-item {
-      display:flex; justify-content:space-between;
-      padding:10px 0; border-bottom:1px solid #eee;
-      font-size:0.9rem;
-    }
-    .history-item:last-child { border-bottom:none; }
-    .history-item .amount { font-weight:700; }
-    .history-item .amount.plus { color:#1f7a4b; }
-    .history-item .amount.minus { color:#b13e3e; }
+        .nav-right .user-badge {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            color: var(--cream);
+            font-size: 0.8rem;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 14px;
+            border-radius: 60px;
+            border: 1px solid rgba(255, 255, 255, 0.06);
+            cursor: pointer;
+        }
 
-    .tree-wrapper {
-      overflow-x:auto;
-      padding:20px 0;
-    }
-    .tree {
-      display:flex;
-      flex-direction:column;
-      align-items:center;
-      min-width:600px;
-    }
-    .tree-level {
-      display:flex;
-      justify-content:center;
-      gap:40px;
-      margin:6px 0;
-      position:relative;
-    }
-    .tree-node {
-      background:var(--denim-light);
-      padding:6px 16px;
-      border-radius:20px;
-      font-weight:600;
-      font-size:0.85rem;
-      border:2px solid var(--denim-blue);
-      position:relative;
-      min-width:80px;
-      text-align:center;
-    }
-    .tree-node.empty {
-      opacity:0.4;
-      border-style:dashed;
-    }
-    .tree-node .pos-label {
-      font-size:0.6rem;
-      color:var(--gold-accent);
-      font-weight:700;
-      display:block;
-      margin-top:2px;
-    }
-    .tree-connector {
-      position:relative;
-      width:100%;
-      height:20px;
-      display:flex;
-      justify-content:center;
-    }
-    .tree-connector::before {
-      content:'';
-      position:absolute;
-      top:0;
-      left:50%;
-      width:2px;
-      height:100%;
-      background:var(--denim-blue);
-    }
-    .tree-connector .branch {
-      position:absolute;
-      top:0;
-      width:50%;
-      height:100%;
-      border-top:2px solid var(--denim-blue);
-    }
-    .tree-connector .branch.left { left:0; border-right:2px solid var(--denim-blue); }
-    .tree-connector .branch.right { right:0; border-left:2px solid var(--denim-blue); }
+        .nav-right .user-badge i {
+            color: var(--gold-accent);
+        }
 
-    .form-card {
-      background:var(--white); border-radius:var(--radius-sm);
-      padding:20px; box-shadow:var(--shadow);
-      max-width:500px;
-    }
-    .form-group { margin-bottom:16px; }
-    .form-group label {
-      display:block; font-weight:500; color:var(--denim-navy);
-      font-size:0.85rem; margin-bottom:4px;
-    }
-    .form-group input, .form-group select {
-      width:100%; padding:12px 16px;
-      border:1.5px solid #dde3ea; border-radius:60px;
-      font-size:0.95rem; background:#fafcff;
-      font-family:inherit; transition:var(--transition);
-    }
-    .form-group input:focus, .form-group select:focus {
-      border-color:var(--denim-blue); outline:none;
-      box-shadow:0 0 0 4px rgba(42,75,110,0.1);
-    }
+        .btn-nav-outline {
+            background: transparent;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            color: var(--cream);
+            padding: 8px 18px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
 
-    .product-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill, minmax(200px,1fr));
-      gap:20px;
-      margin:12px 0;
-    }
-    .product-card {
-      background:var(--white);
-      border-radius:var(--radius-sm);
-      overflow:hidden;
-      box-shadow:var(--shadow);
-      border:1px solid #e8edf2;
-      transition:var(--transition);
-    }
-    .product-card:hover { transform:translateY(-4px); box-shadow:var(--shadow-lg); }
-    .product-card .img-placeholder {
-      height:150px;
-      background:var(--denim-light);
-      display:flex;
-      align-items:center;
-      justify-content:center;
-      color:var(--denim-blue);
-      font-size:2.5rem;
-    }
-    .product-card .body { padding:14px; }
-    .product-card .body .tag {
-      display:inline-block;
-      background:var(--gold-accent);
-      color:var(--denim-dark);
-      font-size:0.55rem;
-      font-weight:700;
-      padding:2px 12px;
-      border-radius:40px;
-      text-transform:uppercase;
-      letter-spacing:0.5px;
-      margin-bottom:4px;
-    }
-    .product-card .body h4 { font-size:0.9rem; font-weight:600; margin-bottom:4px; }
-    .product-card .body .price {
-      font-weight:700;
-      color:var(--denim-blue);
-      font-size:1rem;
-    }
-    .product-card .body .btn-sm {
-      margin-top:6px;
-      padding:6px 16px;
-      border-radius:60px;
-      font-weight:600;
-      font-size:0.75rem;
-      background:var(--denim-blue);
-      color:#fff;
-      transition:var(--transition);
-    }
-    .product-card .body .btn-sm:hover { background:var(--denim-dark); }
-    .product-card .body .btn-sm:disabled { opacity:0.5; cursor:not-allowed; }
+        .btn-nav-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
 
-    .badge-status {
-      padding:2px 12px;
-      border-radius:40px;
-      font-size:0.7rem;
-      font-weight:600;
-    }
-    .badge-pending { background:#fff3cd; color:#856404; }
-    .badge-success { background:#d4edda; color:#155724; }
-    .badge-failed { background:#f8d7da; color:#721c24; }
+        .btn-nav-gold {
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            padding: 8px 18px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            cursor: pointer;
+        }
 
-    .text-muted { color:#6a7e9a; font-size:0.85rem; }
-    .mt-16 { margin-top:16px; }
-    .mb-8 { margin-bottom:8px; }
+        .btn-nav-gold:hover {
+            background: #b8963a;
+            transform: scale(0.97);
+        }
 
-    .section-content { display:none; }
-    .section-content.active { display:block; }
+        .page-title {
+            font-size: 1.6rem;
+            font-weight: 700;
+            color: var(--denim-dark);
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
 
-    @media (max-width: 768px) {
-      .stats-grid { grid-template-columns:1fr 1fr; gap:12px; }
-      .stat-card .value { font-size:1.4rem; }
-      .wallet-card { flex-direction:column; align-items:stretch; }
-      .wallet-card .wallet-amount { font-size:1.6rem; }
-      .product-grid { grid-template-columns:1fr 1fr; gap:12px; }
-      .tree { min-width:400px; }
-      .tree-level { gap:20px; }
-      .tree-node { min-width:60px; font-size:0.7rem; padding:4px 10px; }
-    }
-    @media (max-width: 480px) {
-      .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
-      .stat-card { padding:12px 14px; }
-      .stat-card .value { font-size:1.2rem; }
-      .product-grid { grid-template-columns:1fr 1fr; gap:8px; }
-    }
-  </style>
+        .page-title i {
+            color: var(--gold-accent);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+            gap: 16px;
+            margin-bottom: 28px;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 18px 20px;
+            border-left: 4px solid var(--gold-accent);
+            box-shadow: var(--shadow);
+        }
+
+        .stat-card .label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            color: var(--denim-blue);
+            font-weight: 600;
+            letter-spacing: 0.3px;
+        }
+
+        .stat-card .value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--denim-dark);
+            margin-top: 4px;
+        }
+
+        .dual-panel {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 20px;
+            margin-top: 8px;
+        }
+
+        @media (max-width: 640px) {
+            .dual-panel {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .panel-box {
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 18px 20px;
+            box-shadow: var(--shadow);
+        }
+
+        .panel-box h3 {
+            font-size: 0.95rem;
+            font-weight: 600;
+            color: var(--denim-navy);
+            margin-bottom: 14px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .panel-box h3 i {
+            color: var(--gold-accent);
+        }
+
+        .tree-chips {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(55px, 1fr));
+            gap: 8px;
+        }
+
+        .chip {
+            background: var(--cream);
+            border-radius: 40px;
+            padding: 6px 8px;
+            text-align: center;
+            font-weight: 600;
+            font-size: 0.75rem;
+            border: 1px solid #dce3ec;
+        }
+
+        .chip span {
+            display: block;
+            font-size: 0.55rem;
+            color: var(--denim-blue);
+            font-weight: 400;
+        }
+
+        .reward-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 14px;
+            background: var(--cream);
+            border-radius: 10px;
+            border-left: 3px solid var(--gold-accent);
+            font-size: 0.85rem;
+            margin-bottom: 6px;
+        }
+
+        .ro-detail {
+            background: var(--cream);
+            border-radius: 12px;
+            padding: 12px 16px;
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+            border: 1px solid #e2e8f0;
+        }
+
+        .ro-detail .ro-label {
+            font-weight: 500;
+        }
+
+        .ro-detail .ro-value {
+            font-weight: 700;
+            color: var(--denim-blue);
+        }
+
+        .text-muted {
+            color: #6a7e9a;
+            font-size: 0.8rem;
+            margin-top: 8px;
+        }
+
+        .wallet-card {
+            background: var(--denim-dark);
+            color: var(--cream);
+            border-radius: var(--radius-sm);
+            padding: 20px 24px;
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+
+        .wallet-card .wallet-label {
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        .wallet-card .wallet-amount {
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--gold-accent);
+        }
+
+        .btn-sm {
+            padding: 8px 18px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .btn-sm-primary {
+            background: var(--denim-blue);
+            color: #fff;
+        }
+
+        .btn-sm-primary:hover {
+            background: var(--denim-dark);
+        }
+
+        .btn-sm-gold {
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+        }
+
+        .btn-sm-gold:hover {
+            background: #b8963a;
+        }
+
+        .btn-sm-danger {
+            background: #b13e3e;
+            color: #fff;
+        }
+
+        .btn-sm-danger:hover {
+            background: #8f2f2f;
+        }
+
+        .footer {
+            background: var(--denim-dark);
+            color: var(--cream);
+            padding: 24px 24px 16px;
+            text-align: center;
+            border-top: 3px solid var(--gold-accent);
+            margin-top: 20px;
+        }
+
+        .footer p {
+            font-size: 0.85rem;
+        }
+        .footer p:last-child {
+            font-size: 0.7rem;
+            opacity: 0.6;
+            margin-top: 2px;
+        }
+
+        @media (max-width: 768px) {
+            body {
+                padding-top: 64px;
+            }
+            .navbar {
+                padding: 10px 16px;
+                height: 64px;
+            }
+            .navbar .logo {
+                font-size: 1.1rem;
+            }
+            .navbar .logo i {
+                font-size: 1.2rem;
+            }
+            .navbar .logo span {
+                font-size: 0.6rem;
+            }
+            .nav-right .user-badge span {
+                display: none;
+            }
+            .container {
+                padding: 16px 16px 30px;
+            }
+            .page-title {
+                font-size: 1.3rem;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 12px;
+            }
+            .stat-card .value {
+                font-size: 1.4rem;
+            }
+            .wallet-card {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .wallet-card .wallet-amount {
+                font-size: 1.6rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 8px;
+            }
+            .stat-card {
+                padding: 12px 14px;
+            }
+            .stat-card .value {
+                font-size: 1.2rem;
+            }
+            .tree-chips {
+                grid-template-columns: repeat(auto-fill, minmax(45px, 1fr));
+                gap: 4px;
+            }
+            .chip {
+                font-size: 0.65rem;
+                padding: 4px 4px;
+            }
+        }
+    </style>
 </head>
 <body>
 
-  <header class="navbar">
-    <div class="logo"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></div>
-    <div class="nav-right">
-      <div class="user-badge" id="navUserBadge"><i class="fas fa-user-circle"></i> <span id="navUserName">Member</span></div>
-      <button class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></button>
-    </div>
-  </header>
-
-  <div class="sidebar-overlay" id="sidebarOverlay"></div>
-  <nav class="sidebar" id="sidebar">
-    <div class="sidebar-header">
-      <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
-      <span class="close-side" id="closeSidebar">&times;</span>
-    </div>
-    <div class="menu-item active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
-    <div class="menu-item" data-section="network"><i class="fas fa-sitemap"></i> Jaringan</div>
-    <div class="menu-item" data-section="deposit"><i class="fas fa-plus-circle"></i> Deposit</div>
-    <div class="menu-item" data-section="withdraw"><i class="fas fa-minus-circle"></i> Withdraw</div>
-    <div class="menu-divider"></div>
-    <div class="menu-item" data-section="history"><i class="fas fa-history"></i> Riwayat</div>
-    <div class="menu-item" data-section="products"><i class="fas fa-tshirt"></i> Koleksi</div>
-    <div class="menu-divider"></div>
-    <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
-  </nav>
-
-  <div class="main-content" id="mainContent">
-
-    <div class="section-content active" id="sec-dashboard">
-      <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
-      <div id="statusBanner">Memuat status...</div>
-      <div class="wallet-card">
-        <div><div class="wallet-label"><i class="fas fa-wallet"></i> Saldo Dompet</div><div class="wallet-amount" id="walletAmount">Rp 0</div></div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap;">
-          <button class="btn-sm btn-sm-gold" id="depositBtn"><i class="fas fa-plus-circle"></i> Deposit</button>
-          <button class="btn-sm btn-sm-primary" id="withdrawBtn"><i class="fas fa-minus-circle"></i> Withdraw</button>
-        </div>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-card"><div class="label">Sponsor Bonus</div><div class="value" id="sponsorBonus">0</div></div>
-        <div class="stat-card"><div class="label">Binary Bonus</div><div class="value" id="binaryBonus">0</div></div>
-        <div class="stat-card"><div class="label">Reward 5L</div><div class="value" id="rewardBonus">0</div></div>
-        <div class="stat-card"><div class="label">RO Produk</div><div class="value" id="roBonus">0</div></div>
-      </div>
-      <div class="history-card">
-        <h3><i class="fas fa-history"></i> Riwayat Transaksi Terbaru</h3>
-        <div id="transactionHistory"><p class="text-muted">Belum ada transaksi.</p></div>
-      </div>
-    </div>
-
-    <div class="section-content" id="sec-network">
-      <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary</h1>
-      <div class="tree-wrapper" id="treeContainer"></div>
-    </div>
-
-    <div class="section-content" id="sec-deposit">
-      <h1 class="page-title"><i class="fas fa-plus-circle"></i> Deposit</h1>
-      <div class="form-card">
-        <div class="form-group"><label>Nominal Deposit (Rp)</label><input type="number" id="depositAmount" placeholder="Masukkan nominal" min="10000" /></div>
-        <div class="form-group"><label>Metode Pembayaran</label>
-          <select id="depositMethod">
-            <option value="bank">Transfer Bank</option>
-            <option value="ewallet">E-Wallet</option>
-            <option value="qris">QRIS</option>
-          </select>
-        </div>
-        <button class="btn-sm btn-sm-success" id="submitDeposit" style="width:100%; padding:12px;">Kirim Deposit</button>
-        <p class="text-muted mt-16">Minimal deposit Rp 10.000</p>
-      </div>
-    </div>
-
-    <div class="section-content" id="sec-withdraw">
-      <h1 class="page-title"><i class="fas fa-minus-circle"></i> Withdraw</h1>
-      <div class="form-card">
-        <div class="form-group"><label>Nominal Withdraw (Rp)</label><input type="number" id="withdrawAmount" placeholder="Masukkan nominal" min="50000" /></div>
-        <div class="form-group"><label>Rekening Tujuan</label><input type="text" id="withdrawAccount" placeholder="Nomor rekening / e-wallet" /></div>
-        <button class="btn-sm btn-sm-primary" id="submitWithdraw" style="width:100%; padding:12px;">Ajukan Withdraw</button>
-        <p class="text-muted mt-16">Minimal withdraw Rp 50.000 · Proses 1x24 jam</p>
-      </div>
-    </div>
-
-    <div class="section-content" id="sec-history">
-      <h1 class="page-title"><i class="fas fa-history"></i> Riwayat Transaksi</h1>
-      <div class="history-card"><div id="fullHistory"></div></div>
-    </div>
-
-    <div class="section-content" id="sec-products">
-      <h1 class="page-title"><i class="fas fa-tshirt"></i> Koleksi Produk</h1>
-      <div id="bankInfo" style="background:var(--denim-light); padding:12px 18px; border-radius:var(--radius-sm); margin-bottom:16px;">
-        <p><strong>💳 Transfer ke Rekening Admin:</strong></p>
-        <p id="bankDetail">Bank: BCA · No. Rek: 1234567890 · a.n. HEDTRO JEANS</p>
-        <p class="text-muted" style="font-size:0.8rem;">Setelah transfer, admin akan memproses pesanan Anda.</p>
-      </div>
-      <div class="product-grid" id="productGridDashboard"></div>
-    </div>
-
-  </div>
-
-  <script>
-    (function() {
-      'use strict';
-
-      const DB_KEY = 'hedtro_mlm_users';
-      const PRODUCT_KEY = 'hedtro_products';
-      const SETTINGS_KEY = 'hedtro_settings';
-      const BANK_KEY = 'hedtro_bank_info';
-
-      function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
-      function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-      function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
-      function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-      function loadSettings() { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"sponsorBonus":10,"binaryBonus":8,"rewardBonus":5,"roBonus":3,"memberPrice":550000}'); }
-      function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
-      function loadBankInfo() { return JSON.parse(localStorage.getItem(BANK_KEY) || '{"bank":"BCA","account":"1234567890","name":"HEDTRO JEANS"}'); }
-
-      let bankInfo = loadBankInfo();
-
-      const session = localStorage.getItem('mlm_session');
-      let currentUser = null;
-      if (session) {
-        try {
-          const { id } = JSON.parse(session);
-          let users = loadUsers();
-          currentUser = users.find(u => u.id === id);
-          if (!currentUser || currentUser.email === 'admin@mlm.com') {
-            window.location.href = 'index.html';
-            return;
-          }
-        } catch (_) { window.location.href = 'index.html'; return; }
-      } else {
-        window.location.href = 'index.html';
-        return;
-      }
-
-      // ===== BURGER TOGGLE =====
-      const burgerBtn = document.getElementById('burgerBtn');
-      const sidebar = document.getElementById('sidebar');
-      const sidebarOverlay = document.getElementById('sidebarOverlay');
-      const closeSidebar = document.getElementById('closeSidebar');
-
-      function toggleSidebar(open) {
-        const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
-        if (window.innerWidth <= 768) {
-          sidebar.classList.toggle('open', isOpen);
-          sidebarOverlay.classList.toggle('active', isOpen);
-          burgerBtn.classList.toggle('active', isOpen);
-          document.body.style.overflow = isOpen ? 'hidden' : '';
-        }
-      }
-      burgerBtn.addEventListener('click', () => toggleSidebar());
-      closeSidebar.addEventListener('click', () => toggleSidebar(false));
-      sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
-
-      // ===== NAVIGASI =====
-      function showSection(sectionId) {
-        document.querySelectorAll('.section-content').forEach(el => el.classList.remove('active'));
-        const el = document.getElementById('sec-' + sectionId);
-        if (el) el.classList.add('active');
-        document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(m => m.classList.remove('active'));
-        const menu = document.querySelector(`.sidebar .menu-item[data-section="${sectionId}"]`);
-        if (menu) menu.classList.add('active');
-
-        if (sectionId === 'products') renderProductsDashboard();
-        if (sectionId === 'dashboard') renderDashboard();
-        if (sectionId === 'network') renderNetwork();
-        if (sectionId === 'history') renderFullHistory();
-      }
-
-      document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(item => {
-        item.addEventListener('click', function() {
-          showSection(this.dataset.section);
-        });
-      });
-
-      document.getElementById('sideLogoutBtn').addEventListener('click', function() {
-        localStorage.removeItem('mlm_session');
-        window.location.href = 'index.html';
-      });
-
-      // ===== FUNGSI BUY RO (DIPERBAIKI) =====
-      function buyRO(productId, price) {
-        if (currentUser.status !== 'verified') {
-          alert('❌ Anda harus terverifikasi (verified) untuk melakukan repeat order.');
-          return;
-        }
-
-        // 1. Ambil data produk terbaru dari localStorage
-        let freshProducts = loadProducts();
-        const product = freshProducts.find(p => p.id === productId);
-        if (!product) { alert('Produk tidak ditemukan'); return; }
-        if (product.stock <= 0) { alert('Stok habis'); return; }
-
-        if (!confirm(`Beli ${product.name} seharga Rp ${price.toLocaleString()}? Anda akan transfer ke rekening admin.`)) return;
-
-        // 2. Kurangi stok
-        product.stock--;
-        saveProducts(freshProducts);
-
-        // 3. Ambil data user terbaru dari localStorage
-        let freshUsers = loadUsers();
-        const user = freshUsers.find(u => u.id === currentUser.id);
-        if (!user) { alert('User tidak ditemukan'); return; }
-
-        // 4. Tambahkan transaksi ke user
-        if (!user.transactions) user.transactions = [];
-        user.transactions.push({
-          type: 'ro_purchase',
-          productId: productId,
-          productName: product.name,
-          amount: price,
-          date: new Date().toISOString(),
-          status: 'pending',
-          note: `Menunggu pembayaran transfer ke ${bankInfo.bank} - ${bankInfo.account}`
-        });
-
-        if (!user.purchase_history) user.purchase_history = [];
-        user.purchase_history.push({
-          productId: productId,
-          productName: product.name,
-          price: price,
-          date: new Date().toISOString(),
-          status: 'pending'
-        });
-
-        // 5. SIMPAN KE LOCALSTORAGE
-        saveUsers(freshUsers);
-
-        // 6. Update currentUser
-        currentUser = user;
-        localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
-
-        // 7. Notifikasi dan refresh UI
-        alert('✅ Pesanan RO berhasil! Silakan transfer ke rekening admin dan tunggu konfirmasi. Cek menu Riwayat.');
-        renderDashboard();
-        renderProductsDashboard();
-        showSection('history');
-      }
-
-      // ===== RENDER PRODUK =====
-      function renderProductsDashboard() {
-        const grid = document.getElementById('productGridDashboard');
-        if (!grid) return;
-        const products = loadProducts();
-        grid.innerHTML = '';
-        if (products.length === 0) {
-          grid.innerHTML = '<p class="text-muted">Belum ada produk.</p>';
-          return;
-        }
-        products.forEach(p => {
-          const card = document.createElement('div');
-          card.className = 'product-card';
-          card.innerHTML = `
-            <div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>
-            <div class="body">
-              <span class="tag">${p.tag || 'PRODUK'}</span>
-              <h4>${p.name}</h4>
-              <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original?.toLocaleString() || ''}</del></div>
-              <div style="font-size:0.7rem;color:#6a7e9a;">Stok: ${p.stock}</div>
-              <button class="btn-sm btn-sm-gold buy-ro-btn" data-id="${p.id}" data-price="${p.price}">Beli (RO)</button>
+    <!-- NAVBAR -->
+    <header class="navbar">
+        <a href="index.html" class="logo" style="text-decoration:none;">
+            <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
+        </a>
+        <div class="nav-right">
+            <div class="user-badge" id="navUserBadge">
+                <i class="fas fa-user-circle"></i> <span id="navUserName">Member</span>
             </div>
-          `;
-          grid.appendChild(card);
-        });
+            <button class="btn-nav-outline" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</button>
+        </div>
+    </header>
 
-        document.querySelectorAll('.buy-ro-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
-            const productId = parseInt(this.dataset.id);
-            const price = parseInt(this.dataset.price);
-            buyRO(productId, price);
-          });
-        });
-      }
+    <!-- CONTENT -->
+    <div class="container">
+        <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard Member</h1>
 
-      // ===== RENDER DASHBOARD =====
-      function renderDashboard() {
-        let freshUsers = loadUsers();
-        const user = freshUsers.find(u => u.id === currentUser.id);
-        if (user) {
-          currentUser = user;
-          localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
-        }
+        <div class="wallet-card">
+            <div>
+                <div class="wallet-label"><i class="fas fa-wallet"></i> Saldo Dompet</div>
+                <div class="wallet-amount" id="walletAmount">Rp 0</div>
+            </div>
+            <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                <button class="btn-sm btn-sm-gold" id="depositBtn"><i class="fas fa-plus-circle"></i> Deposit</button>
+                <button class="btn-sm btn-sm-primary" id="withdrawBtn"><i class="fas fa-minus-circle"></i> Withdraw</button>
+            </div>
+        </div>
 
-        document.getElementById('navUserName').textContent = currentUser.name;
-        document.getElementById('walletAmount').textContent = 'Rp ' + (currentUser.wallet || 0).toLocaleString();
-        document.getElementById('sponsorBonus').textContent = currentUser.bonus_sponsor || 0;
-        document.getElementById('binaryBonus').textContent = currentUser.bonus_binary || 0;
-        document.getElementById('rewardBonus').textContent = currentUser.bonus_reward || 0;
-        document.getElementById('roBonus').textContent = currentUser.bonus_ro || 0;
+        <div class="stats-grid">
+            <div class="stat-card"><div class="label">Sponsor Bonus</div><div class="value" id="sponsorBonus">0</div></div>
+            <div class="stat-card"><div class="label">Binary Bonus</div><div class="value" id="binaryBonus">0</div></div>
+            <div class="stat-card"><div class="label">Reward 5L</div><div class="value" id="rewardBonus">0</div></div>
+            <div class="stat-card"><div class="label">RO Produk</div><div class="value" id="roBonus">0</div></div>
+        </div>
 
-        const statusMap = {
-          'free': { class: 'status-free', text: '❌ Free Member — Kirim bukti transfer ke admin untuk verifikasi' },
-          'pending': { class: 'status-pending', text: '⏳ Menunggu Verifikasi — Admin akan memproses' },
-          'verified': { class: 'status-verified', text: '✅ Verified Member — Selamat bergabung!' }
-        };
-        const status = statusMap[currentUser.status] || statusMap['free'];
-        const banner = document.getElementById('statusBanner');
-        banner.className = status.class;
-        banner.innerHTML = status.text;
+        <div class="dual-panel">
+            <div class="panel-box">
+                <h3><i class="fas fa-sitemap"></i> Jaringan Binary (10 Level)</h3>
+                <div class="tree-chips" id="binaryTreeContainer"></div>
+                <div class="text-muted">Total downline: <span id="totalDownline">0</span></div>
+            </div>
+            <div class="panel-box">
+                <h3><i class="fas fa-gift"></i> Reward 5 Level</h3>
+                <div id="rewardList"></div>
+                <div class="ro-detail"><span class="ro-label">Produk terjual (RO)</span><span class="ro-value" id="roProductCount">0</span></div>
+                <div class="ro-detail" style="background:#f0f4fa;"><span class="ro-label">Komisi RO</span><span class="ro-value" id="roProductBonus">0</span></div>
+            </div>
+        </div>
+    </div>
 
-        renderTransactionHistory();
-      }
+    <!-- FOOTER -->
+    <footer class="footer">
+        <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Afiliasi & Reseller</p>
+        <p>Bonus Sponsor · Binary 10L · Reward 5L · RO Produk</p>
+    </footer>
 
-      function renderTransactionHistory() {
-        const container = document.getElementById('transactionHistory');
-        const transactions = currentUser.transactions || [];
-        if (transactions.length === 0) {
-          container.innerHTML = '<p class="text-muted">Belum ada transaksi.</p>';
-          return;
-        }
-        let html = '';
-        const sorted = [...transactions].reverse().slice(0, 5);
-        sorted.forEach(t => {
-          const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'ro_purchase' ? 'RO Purchase' : 'Withdraw');
-          const amountClass = (t.type === 'deposit' || t.type === 'ro_purchase') ? 'plus' : 'minus';
-          const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' ? '✅ Selesai' : '❌ Gagal');
-          html += `<div class="history-item"><span>${typeLabel} ${statusText}</span><span class="amount ${amountClass}">${(t.type === 'deposit' || t.type === 'ro_purchase') ? '+' : '-'} Rp ${t.amount.toLocaleString()}</span></div>`;
-        });
-        container.innerHTML = html;
-      }
+    <script>
+        (function() {
+            'use strict';
 
-      function renderFullHistory() {
-        const container = document.getElementById('fullHistory');
-        const transactions = currentUser.transactions || [];
-        if (transactions.length === 0) {
-          container.innerHTML = '<p class="text-muted">Belum ada transaksi.</p>';
-          return;
-        }
-        let html = '';
-        const sorted = [...transactions].reverse();
-        sorted.forEach(t => {
-          const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'ro_purchase' ? 'RO Purchase' : 'Withdraw');
-          const amountClass = (t.type === 'deposit' || t.type === 'ro_purchase') ? 'plus' : 'minus';
-          const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' ? '✅ Selesai' : '❌ Gagal');
-          const date = new Date(t.date).toLocaleDateString() + ' ' + new Date(t.date).toLocaleTimeString();
-          html += `<div class="history-item"><span>${typeLabel} ${statusText} <span class="text-muted" style="font-size:0.7rem;">${date}</span></span><span class="amount ${amountClass}">${(t.type === 'deposit' || t.type === 'ro_purchase') ? '+' : '-'} Rp ${t.amount.toLocaleString()}</span></div>`;
-        });
-        container.innerHTML = html;
-      }
+            const DB_KEY = 'hedtro_mlm_users';
 
-      // ===== RENDER NETWORK =====
-      function renderNetwork() {
-        const container = document.getElementById('treeContainer');
-        const treeData = buildTree(currentUser.id, 0, 4);
-        container.innerHTML = renderTreeHTML(treeData);
-      }
+            // ============================================================
+            // LOAD DATA
+            // ============================================================
+            function loadUsers() {
+                return JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+            }
 
-      function buildTree(userId, level, maxDepth) {
-        if (level > maxDepth) return null;
-        const users = loadUsers();
-        const user = users.find(u => u.id === userId);
-        if (!user) return null;
-        const node = {
-          id: user.id,
-          name: user.name,
-          left: user.left ? buildTree(user.left, level+1, maxDepth) : null,
-          right: user.right ? buildTree(user.right, level+1, maxDepth) : null
-        };
-        return node;
-      }
+            function saveUsers(users) {
+                localStorage.setItem(DB_KEY, JSON.stringify(users));
+            }
 
-      function renderTreeHTML(node) {
-        if (!node) return `<div class="tree-node empty">Kosong</div>`;
-        let html = `<div class="tree-node">
-          <div>${node.name}</div>
-          <span class="pos-label">ID:${node.id}</span>
-        </div>`;
-        if (node.left || node.right) {
-          html += `<div class="tree-connector">
-            <div class="branch left"></div>
-            <div class="branch right"></div>
-          </div>`;
-          html += `<div class="tree-level">`;
-          html += `<div class="tree-node-wrapper">${node.left ? renderTreeHTML(node.left) : '<div class="tree-node empty">Kosong</div>'}</div>`;
-          html += `<div class="tree-node-wrapper">${node.right ? renderTreeHTML(node.right) : '<div class="tree-node empty">Kosong</div>'}</div>`;
-          html += `</div>`;
-        }
-        return html;
-      }
+            // ============================================================
+            // CHECK SESSION
+            // ============================================================
+            const session = localStorage.getItem('mlm_session');
+            let currentUser = null;
 
-      // ===== DEPOSIT & WITHDRAW =====
-      function deposit(amount) {
-        if (amount <= 0 || isNaN(amount)) { alert('Masukkan nominal yang valid.'); return; }
-        if (amount < 10000) { alert('Minimal deposit Rp 10.000'); return; }
-        let freshUsers = loadUsers();
-        const user = freshUsers.find(u => u.id === currentUser.id);
-        if (!user) return;
-        user.wallet = (user.wallet || 0) + amount;
-        if (!user.transactions) user.transactions = [];
-        user.transactions.push({
-          type: 'deposit',
-          amount: amount,
-          date: new Date().toISOString(),
-          status: 'success',
-          method: document.getElementById('depositMethod')?.value || 'bank'
-        });
-        saveUsers(freshUsers);
-        currentUser = user;
-        localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
-        renderDashboard();
-        alert('✅ Deposit Rp ' + amount.toLocaleString() + ' berhasil!');
-        showSection('dashboard');
-      }
+            if (session) {
+                try {
+                    const { id } = JSON.parse(session);
+                    const users = loadUsers();
+                    currentUser = users.find(u => u.id === id);
+                    if (!currentUser || currentUser.role === 'admin') {
+                        window.location.href = 'index.html';
+                        return;
+                    }
+                } catch (_) {
+                    window.location.href = 'index.html';
+                    return;
+                }
+            } else {
+                window.location.href = 'index.html';
+                return;
+            }
 
-      function withdraw(amount, account) {
-        if (amount <= 0 || isNaN(amount)) { alert('Masukkan nominal yang valid.'); return; }
-        if (amount < 50000) { alert('Minimal withdraw Rp 50.000'); return; }
-        let freshUsers = loadUsers();
-        const user = freshUsers.find(u => u.id === currentUser.id);
-        if (!user) return;
-        if ((user.wallet || 0) < amount) {
-          alert('❌ Saldo tidak mencukupi!');
-          return;
-        }
-        if (!account || account.trim() === '') {
-          alert('Masukkan nomor rekening / e-wallet tujuan.');
-          return;
-        }
-        user.wallet = (user.wallet || 0) - amount;
-        if (!user.transactions) user.transactions = [];
-        user.transactions.push({
-          type: 'withdraw',
-          amount: amount,
-          date: new Date().toISOString(),
-          status: 'pending',
-          account: account.trim()
-        });
-        saveUsers(freshUsers);
-        currentUser = user;
-        localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
-        renderDashboard();
-        alert('✅ Permintaan withdraw Rp ' + amount.toLocaleString() + ' sedang diproses.');
-        showSection('dashboard');
-      }
+            // ============================================================
+            // RENDER DASHBOARD
+            // ============================================================
+            function renderDashboard() {
+                document.getElementById('navUserName').textContent = currentUser.username || currentUser.name;
+                document.getElementById('walletAmount').textContent = 'Rp ' + (currentUser.wallet || 0).toLocaleString();
+                document.getElementById('sponsorBonus').textContent = currentUser.bonus_sponsor || 0;
+                document.getElementById('binaryBonus').textContent = currentUser.bonus_binary || 0;
+                document.getElementById('rewardBonus').textContent = currentUser.bonus_reward || 0;
+                document.getElementById('roBonus').textContent = currentUser.bonus_ro || 0;
 
-      document.getElementById('depositBtn').addEventListener('click', () => showSection('deposit'));
-      document.getElementById('withdrawBtn').addEventListener('click', () => showSection('withdraw'));
+                // Binary Tree
+                const tree = currentUser.binary_tree || [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+                const container = document.getElementById('binaryTreeContainer');
+                container.innerHTML = '';
+                for (let i = 0; i < 10; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'chip';
+                    div.innerHTML = `<span>L${i+1}</span> ${tree[i] || 0}`;
+                    container.appendChild(div);
+                }
+                document.getElementById('totalDownline').textContent = tree.reduce((a, b) => a + b, 0);
 
-      document.getElementById('submitDeposit').addEventListener('click', function() {
-        const amount = parseInt(document.getElementById('depositAmount').value);
-        deposit(amount);
-      });
+                // Reward
+                const rewards = currentUser.reward_levels || [0, 0, 0, 0, 0];
+                const rewardList = document.getElementById('rewardList');
+                rewardList.innerHTML = '';
+                const labels = ['Level 1', 'Level 2', 'Level 3', 'Level 4', 'Level 5'];
+                for (let i = 0; i < 5; i++) {
+                    const div = document.createElement('div');
+                    div.className = 'reward-item';
+                    div.innerHTML = `<span>${labels[i]}</span><span>${rewards[i] || 0}</span>`;
+                    rewardList.appendChild(div);
+                }
 
-      document.getElementById('submitWithdraw').addEventListener('click', function() {
-        const amount = parseInt(document.getElementById('withdrawAmount').value);
-        const account = document.getElementById('withdrawAccount').value.trim();
-        withdraw(amount, account);
-      });
+                // RO
+                const totalRO = currentUser.purchase_history ? currentUser.purchase_history.filter(h => !h.isPackage)
+                    .length : 0;
+                document.getElementById('roProductCount').textContent = totalRO;
+                document.getElementById('roProductBonus').textContent = currentUser.bonus_ro || 0;
+            }
 
-      // ===== REFRESH =====
-      document.getElementById('navUserBadge').addEventListener('click', function() {
-        renderDashboard();
-        renderProductsDashboard();
-      });
+            // ============================================================
+            // LOGOUT
+            // ============================================================
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                localStorage.removeItem('mlm_session');
+                window.location.href = 'index.html';
+            });
 
-      // ===== INIT =====
-      renderDashboard();
-      renderProductsDashboard();
+            // ============================================================
+            // DEPOSIT & WITHDRAW
+            // ============================================================
+            document.getElementById('depositBtn').addEventListener('click', function() {
+                const amount = prompt('Masukkan nominal deposit (Rp):');
+                if (amount && !isNaN(amount) && parseInt(amount) > 0) {
+                    const nominal = parseInt(amount);
+                    let users = loadUsers();
+                    const user = users.find(u => u.id === currentUser.id);
+                    if (user) {
+                        user.wallet = (user.wallet || 0) + nominal;
+                        if (!user.transactions) user.transactions = [];
+                        user.transactions.push({
+                            type: 'deposit',
+                            amount: nominal,
+                            date: new Date().toISOString(),
+                            status: 'success'
+                        });
+                        saveUsers(users);
+                        currentUser = user;
+                        renderDashboard();
+                        alert('✅ Deposit Rp ' + nominal.toLocaleString() + ' berhasil!');
+                    }
+                }
+            });
 
-      // Auto-refresh setiap 10 detik
-      setInterval(() => {
-        const activeSection = document.querySelector('.sidebar .menu-item.active')?.dataset.section || 'dashboard';
-        if (activeSection === 'dashboard') renderDashboard();
-        if (activeSection === 'products') renderProductsDashboard();
-        if (activeSection === 'network') renderNetwork();
-        if (activeSection === 'history') renderFullHistory();
-      }, 10000);
+            document.getElementById('withdrawBtn').addEventListener('click', function() {
+                const amount = prompt('Masukkan nominal withdraw (Rp):');
+                if (amount && !isNaN(amount) && parseInt(amount) > 0) {
+                    const nominal = parseInt(amount);
+                    let users = loadUsers();
+                    const user = users.find(u => u.id === currentUser.id);
+                    if (user) {
+                        if ((user.wallet || 0) < nominal) {
+                            alert('❌ Saldo tidak mencukupi!');
+                            return;
+                        }
+                        user.wallet = (user.wallet || 0) - nominal;
+                        if (!user.transactions) user.transactions = [];
+                        user.transactions.push({
+                            type: 'withdraw',
+                            amount: nominal,
+                            date: new Date().toISOString(),
+                            status: 'pending'
+                        });
+                        saveUsers(users);
+                        currentUser = user;
+                        renderDashboard();
+                        alert('✅ Permintaan withdraw Rp ' + nominal.toLocaleString() + ' sedang diproses.');
+                    }
+                }
+            });
 
-      console.log('🟦 HEDTRO · Dashboard dengan RO fix (auto-save ke localStorage)');
-    })();
-  </script>
+            // ============================================================
+            // NAV USER BADGE
+            // ============================================================
+            document.getElementById('navUserBadge').addEventListener('click', function() {
+                // Refresh data
+                const users = loadUsers();
+                const updated = users.find(u => u.id === currentUser.id);
+                if (updated) {
+                    currentUser = updated;
+                    renderDashboard();
+                }
+            });
+
+            // ============================================================
+            // INIT
+            // ============================================================
+            renderDashboard();
+
+            console.log('🟦 HEDTRO JEANS · Dashboard member siap');
+        })();
+    </script>
+
 </body>
 </html>
