@@ -67,7 +67,7 @@
         }
 
         /* ============================================================
-           NAVBAR - DESKTOP MENU
+           NAVBAR - DESKTOP
            ============================================================ */
         .navbar {
             position: fixed;
@@ -112,17 +112,13 @@
         .nav-menu {
             display: flex;
             align-items: center;
-            gap: 6px;
+            gap: 4px;
             list-style: none;
-        }
-
-        .nav-menu li {
-            position: relative;
         }
 
         .nav-menu li a {
             color: var(--cream);
-            font-size: 0.8rem;
+            font-size: 0.78rem;
             font-weight: 500;
             padding: 8px 14px;
             border-radius: 60px;
@@ -130,7 +126,6 @@
             display: flex;
             align-items: center;
             gap: 6px;
-            letter-spacing: 0.3px;
         }
 
         .nav-menu li a:hover,
@@ -140,14 +135,14 @@
         }
 
         .nav-menu li a i {
-            font-size: 0.9rem;
+            font-size: 0.85rem;
         }
 
         /* Search & Cart di desktop */
         .nav-actions {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             flex-shrink: 0;
         }
 
@@ -172,7 +167,7 @@
             color: var(--cream);
             font-size: 0.8rem;
             padding: 6px 0;
-            width: 140px;
+            width: 130px;
             outline: none;
         }
 
@@ -224,7 +219,7 @@
         .nav-right-desktop {
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
         }
 
         .nav-right-desktop .user-badge {
@@ -249,13 +244,42 @@
             color: var(--gold-accent);
         }
 
+        .btn-nav {
+            padding: 8px 18px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.8rem;
+            transition: var(--transition);
+            flex-shrink: 0;
+        }
+
+        .btn-nav-outline {
+            background: transparent;
+            border: 1.5px solid rgba(255, 255, 255, 0.2);
+            color: var(--cream);
+        }
+
+        .btn-nav-outline:hover {
+            background: rgba(255, 255, 255, 0.1);
+        }
+
+        .btn-nav-gold {
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+        }
+
+        .btn-nav-gold:hover {
+            background: #b8963a;
+            transform: scale(0.97);
+        }
+
         /* ============================================================
            BURGER - HANYA UNTUK HP
            ============================================================ */
         .burger-btn {
             display: none !important;
             flex-direction: column;
-            gap: 5px;
+            gap: 4px;
             padding: 6px;
             background: transparent;
             border: none;
@@ -265,7 +289,7 @@
 
         .burger-btn span {
             display: block;
-            width: 26px;
+            width: 24px;
             height: 2.5px;
             background: var(--cream);
             border-radius: 4px;
@@ -274,14 +298,14 @@
         }
 
         .burger-btn.active span:nth-child(1) {
-            transform: translateY(7px) rotate(45deg);
+            transform: translateY(6.5px) rotate(45deg);
         }
         .burger-btn.active span:nth-child(2) {
             opacity: 0;
             transform: scaleX(0);
         }
         .burger-btn.active span:nth-child(3) {
-            transform: translateY(-7px) rotate(-45deg);
+            transform: translateY(-6.5px) rotate(-45deg);
         }
 
         /* ============================================================
@@ -331,15 +355,15 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding-bottom: 20px;
+            padding-bottom: 16px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            margin-bottom: 12px;
+            margin-bottom: 10px;
         }
 
         .sidebar .sidebar-header .logo-side {
             color: var(--white);
             font-weight: 800;
-            font-size: 1.3rem;
+            font-size: 1.2rem;
         }
 
         .sidebar .sidebar-header .logo-side i {
@@ -360,7 +384,7 @@
             border-radius: 12px;
             color: var(--cream);
             font-weight: 500;
-            font-size: 0.95rem;
+            font-size: 0.9rem;
             transition: var(--transition);
             cursor: pointer;
         }
@@ -370,7 +394,7 @@
         }
 
         .sidebar .menu-item i {
-            width: 24px;
+            width: 22px;
             color: var(--gold-accent);
         }
 
@@ -383,6 +407,86 @@
             height: 1px;
             background: rgba(255, 255, 255, 0.06);
             margin: 6px 0;
+        }
+
+        /* ============================================================
+           SEARCH POPUP (HP)
+           ============================================================ */
+        .search-popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 2000;
+            background: var(--denim-dark);
+            padding: 20px 24px;
+            border-bottom: 3px solid var(--gold-accent);
+            box-shadow: var(--shadow-lg);
+        }
+
+        .search-popup.show {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                transform: translateY(-100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .search-popup .search-inner {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .search-popup .search-inner input {
+            flex: 1;
+            padding: 12px 18px;
+            border: 1.5px solid rgba(255, 255, 255, 0.1);
+            border-radius: 60px;
+            font-size: 0.95rem;
+            background: rgba(255, 255, 255, 0.05);
+            color: var(--cream);
+            font-family: inherit;
+            outline: none;
+        }
+
+        .search-popup .search-inner input::placeholder {
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        .search-popup .search-inner input:focus {
+            border-color: var(--gold-accent);
+        }
+
+        .search-popup .search-inner button {
+            padding: 12px 24px;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.9rem;
+            transition: var(--transition);
+        }
+
+        .search-popup .search-inner button:hover {
+            background: #b8963a;
+        }
+
+        .search-popup .search-inner .close-search {
+            color: var(--cream);
+            font-size: 1.6rem;
+            cursor: pointer;
         }
 
         /* ============================================================
@@ -568,7 +672,7 @@
         }
 
         /* ============================================================
-           PRODUCT CAROUSEL HORIZONTAL
+           PRODUCT CAROUSEL
            ============================================================ */
         .product-carousel-wrapper {
             position: relative;
@@ -910,7 +1014,7 @@
         }
 
         /* ============================================================
-           TENTANG KAMI SECTION
+           TENTANG KAMI
            ============================================================ */
         .about-section {
             padding: 40px 24px 50px;
@@ -942,7 +1046,7 @@
         }
 
         /* ============================================================
-           FAQ SECTION
+           FAQ
            ============================================================ */
         .faq-section {
             padding: 40px 24px 50px;
@@ -1006,7 +1110,7 @@
         }
 
         /* ============================================================
-           TRACK ORDER SECTION
+           TRACK ORDER
            ============================================================ */
         .track-section {
             padding: 40px 24px 50px;
@@ -1066,86 +1170,6 @@
         .track-section .track-form button:hover {
             background: #b8963a;
             transform: scale(0.97);
-        }
-
-        /* ============================================================
-           FOOTER 4 KOLOM
-           ============================================================ */
-        .footer {
-            background: var(--denim-dark);
-            color: var(--cream);
-            padding: 40px 28px 20px;
-            border-top: 3px solid var(--gold-accent);
-            margin-top: 20px;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
-            gap: 30px;
-            max-width: 1200px;
-            margin: 0 auto 30px;
-        }
-
-        .footer-col h4 {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--gold-light);
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        .footer-col p,
-        .footer-col li {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.6);
-            line-height: 1.8;
-        }
-
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col ul li {
-            padding: 2px 0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .footer-col ul li:hover {
-            color: var(--gold-light);
-        }
-
-        .footer-col .social-icons {
-            display: flex;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .footer-col .social-icons a {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.5);
-            transition: var(--transition);
-            font-size: 0.9rem;
-        }
-
-        .footer-col .social-icons a:hover {
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 16px;
-            text-align: center;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.3);
         }
 
         /* ============================================================
@@ -1213,13 +1237,6 @@
             position: relative;
             overflow: hidden;
             cursor: zoom-in;
-        }
-
-        .product-popup .popup-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: transform 0.3s ease;
         }
 
         .product-popup .popup-image.zoomed img {
@@ -1307,16 +1324,447 @@
         }
 
         /* ============================================================
+           FOOTER 4 KOLOM
+           ============================================================ */
+        .footer {
+            background: var(--denim-dark);
+            color: var(--cream);
+            padding: 40px 28px 20px;
+            border-top: 3px solid var(--gold-accent);
+            margin-top: 20px;
+        }
+
+        .footer-grid {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
+            gap: 30px;
+            max-width: 1200px;
+            margin: 0 auto 30px;
+        }
+
+        .footer-col h4 {
+            font-size: 0.9rem;
+            font-weight: 700;
+            color: var(--gold-light);
+            margin-bottom: 12px;
+            letter-spacing: 0.5px;
+        }
+
+        .footer-col p,
+        .footer-col li {
+            font-size: 0.8rem;
+            color: rgba(255, 255, 255, 0.6);
+            line-height: 1.8;
+        }
+
+        .footer-col ul {
+            list-style: none;
+        }
+
+        .footer-col ul li {
+            padding: 2px 0;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .footer-col ul li:hover {
+            color: var(--gold-light);
+        }
+
+        .footer-col .social-icons {
+            display: flex;
+            gap: 10px;
+            margin-top: 8px;
+        }
+
+        .footer-col .social-icons a {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.06);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: rgba(255, 255, 255, 0.5);
+            transition: var(--transition);
+            font-size: 0.9rem;
+        }
+
+        .footer-col .social-icons a:hover {
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+        }
+
+        .footer-bottom {
+            border-top: 1px solid rgba(255, 255, 255, 0.06);
+            padding-top: 16px;
+            text-align: center;
+            font-size: 0.75rem;
+            color: rgba(255, 255, 255, 0.3);
+        }
+
+        /* ============================================================
+           LOGIN OVERLAY
+           ============================================================ */
+        .login-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .login-overlay.show {
+            display: flex;
+        }
+
+        .login-card {
+            background: var(--white);
+            max-width: 420px;
+            width: 100%;
+            border-radius: var(--radius);
+            padding: 32px 34px 36px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+        }
+
+        .login-card .close-login {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            font-size: 1.6rem;
+            color: var(--denim-navy);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .login-card .close-login:hover {
+            color: var(--denim-dark);
+        }
+
+        .login-card h2 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.6rem;
+            font-weight: 800;
+            color: var(--denim-dark);
+            margin-bottom: 4px;
+            text-align: center;
+        }
+
+        .login-card h2 i {
+            color: var(--gold-accent);
+        }
+
+        .login-card p {
+            text-align: center;
+            color: var(--denim-navy);
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-bottom: 20px;
+        }
+
+        .login-card .form-group {
+            margin-bottom: 14px;
+        }
+
+        .login-card .form-group label {
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--denim-navy);
+            display: block;
+            margin-bottom: 2px;
+        }
+
+        .login-card .form-group input {
+            width: 100%;
+            padding: 10px 16px;
+            border: 1.5px solid var(--denim-light);
+            border-radius: 12px;
+            font-size: 0.9rem;
+            background: var(--cream);
+            color: var(--denim-dark);
+        }
+
+        .login-card .form-group input:focus {
+            border-color: var(--gold-accent);
+            outline: none;
+        }
+
+        .login-card .btn-login {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 60px;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-weight: 700;
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+            margin-top: 4px;
+        }
+
+        .login-card .btn-login:hover {
+            background: #b8963a;
+            transform: scale(0.98);
+        }
+
+        .login-card .login-footer {
+            text-align: center;
+            margin-top: 14px;
+            font-size: 0.85rem;
+            color: var(--denim-navy);
+        }
+
+        .login-card .login-footer a {
+            color: var(--gold-accent);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .login-card .login-footer a:hover {
+            text-decoration: underline;
+        }
+
+        .login-msg {
+            margin-top: 10px;
+            text-align: center;
+            font-size: 0.85rem;
+            min-height: 24px;
+        }
+
+        .login-msg.error {
+            color: #b13e3e;
+        }
+        .login-msg.success {
+            color: #1f7a4b;
+        }
+
+        /* ============================================================
+           REGISTER WRAPPER
+           ============================================================ */
+        .register-wrapper {
+            display: none;
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 24px 20px 50px;
+        }
+
+        .register-wrapper.active {
+            display: block;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .register-header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            font-weight: 800;
+            color: var(--denim-dark);
+        }
+
+        .register-header h1 i {
+            color: var(--gold-accent);
+        }
+
+        .register-header p {
+            color: var(--denim-navy);
+            font-size: 0.85rem;
+            opacity: 0.7;
+        }
+
+        .form-section {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 16px 20px;
+            margin-bottom: 12px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--denim-light);
+        }
+
+        .form-section .section-title {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--denim-dark);
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 0;
+            border-bottom: 1px solid var(--denim-light);
+            padding-bottom: 6px;
+        }
+
+        .form-section .section-title i {
+            color: var(--gold-accent);
+        }
+
+        .form-section .section-title .badge-step {
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-size: 0.55rem;
+            padding: 1px 10px;
+            border-radius: 40px;
+            font-weight: 700;
+            margin-left: auto;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px 14px;
+        }
+
+        .form-group {
+            margin-bottom: 4px;
+        }
+
+        .form-group.full-width {
+            grid-column: 1 / -1;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--denim-navy);
+            font-size: 0.7rem;
+            margin-bottom: 2px;
+        }
+
+        .form-group label .required {
+            color: #e74c3c;
+        }
+
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 7px 12px;
+            border: 1.5px solid var(--denim-light);
+            border-radius: var(--radius-sm);
+            font-size: 0.8rem;
+            background: var(--cream);
+            color: var(--denim-dark);
+            font-family: inherit;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group select:focus,
+        .form-group textarea:focus {
+            border-color: var(--gold-accent);
+            outline: none;
+        }
+
+        .form-group textarea {
+            min-height: 40px;
+            resize: vertical;
+        }
+
+        .position-selector {
+            display: flex;
+            gap: 8px;
+            margin-top: 2px;
+        }
+
+        .position-option {
+            flex: 1;
+            padding: 6px 10px;
+            border: 2px solid var(--denim-light);
+            border-radius: var(--radius-sm);
+            text-align: center;
+            cursor: pointer;
+            transition: var(--transition);
+            background: var(--cream);
+            font-weight: 600;
+            font-size: 0.7rem;
+            color: var(--denim-navy);
+        }
+
+        .position-option.active {
+            border-color: var(--gold-accent);
+            background: rgba(201, 168, 76, 0.08);
+            color: var(--denim-dark);
+        }
+
+        .position-option i {
+            display: block;
+            font-size: 1rem;
+            margin-bottom: 2px;
+            color: var(--gold-accent);
+        }
+
+        .btn-submit {
+            width: 100%;
+            padding: 12px;
+            border: none;
+            border-radius: 60px;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-weight: 700;
+            font-size: 0.95rem;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-family: inherit;
+        }
+
+        .btn-submit:hover {
+            background: #b8963a;
+            transform: scale(0.98);
+        }
+
+        .msg {
+            margin-top: 8px;
+            text-align: center;
+            font-size: 0.8rem;
+            min-height: 22px;
+            padding: 6px 12px;
+            border-radius: 12px;
+        }
+
+        .msg.error {
+            background: #fde8e8;
+            color: #b13e3e;
+        }
+        .msg.success {
+            background: #e8f5ed;
+            color: #1f7a4b;
+        }
+
+        .form-footer {
+            text-align: center;
+            margin-top: 10px;
+            color: var(--denim-navy);
+            font-size: 0.8rem;
+        }
+
+        .form-footer a {
+            color: var(--gold-accent);
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        /* ============================================================
            RESPONSIVE - HP
            ============================================================ */
         @media (max-width: 768px) {
             body {
-                padding-top: 60px;
+                padding-top: 64px;
             }
 
             .navbar {
                 padding: 10px 16px;
-                height: 60px;
+                height: 64px;
             }
 
             .navbar .logo {
@@ -1343,16 +1791,24 @@
                 padding: 4px 10px;
                 font-size: 0.7rem;
             }
+            .btn-nav {
+                display: none !important;
+            }
 
+            /* Tampilkan burger di HP */
             .burger-btn {
                 display: flex !important;
             }
-
             .sidebar {
                 display: flex;
             }
             .sidebar-overlay {
                 display: block;
+            }
+
+            /* Search icon di HP */
+            .search-icon-hp {
+                display: flex !important;
             }
 
             .carousel-section {
@@ -1464,8 +1920,31 @@
             .product-popup .popup-content {
                 padding: 20px 16px 24px;
             }
-            .product-popup .popup-info h2 {
-                font-size: 1.1rem;
+
+            .register-wrapper {
+                padding: 16px 12px 30px;
+            }
+            .register-header h1 {
+                font-size: 1.4rem;
+            }
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 6px 10px;
+            }
+            .form-section {
+                padding: 12px 14px;
+            }
+            .form-section .section-title {
+                font-size: 0.75rem;
+            }
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 5px 10px;
+                font-size: 0.7rem;
+            }
+            .form-group label {
+                font-size: 0.6rem;
             }
         }
 
@@ -1537,15 +2016,6 @@
                 height: 120px;
                 font-size: 1.8rem;
             }
-            .product-carousel .product-card .body {
-                padding: 10px;
-            }
-            .product-carousel .product-card .body h4 {
-                font-size: 0.7rem;
-            }
-            .product-carousel .product-card .body .price {
-                font-size: 0.75rem;
-            }
 
             .footer-grid {
                 grid-template-columns: 1fr 1fr;
@@ -1561,6 +2031,46 @@
             }
             .product-popup .popup-content {
                 padding: 16px 12px 20px;
+            }
+
+            .register-wrapper {
+                padding: 12px 8px 20px;
+            }
+            .register-header h1 {
+                font-size: 1.1rem;
+            }
+            .form-row {
+                grid-template-columns: 1fr 1fr;
+                gap: 4px 6px;
+            }
+            .form-group input,
+            .form-group select,
+            .form-group textarea {
+                padding: 4px 8px;
+                font-size: 0.65rem;
+            }
+            .form-group label {
+                font-size: 0.55rem;
+            }
+            .form-group textarea {
+                min-height: 28px;
+            }
+            .position-option {
+                padding: 4px 6px;
+                font-size: 0.55rem;
+            }
+            .position-option i {
+                font-size: 0.7rem;
+            }
+            .btn-submit {
+                padding: 8px;
+                font-size: 0.75rem;
+            }
+            .login-card {
+                padding: 20px 16px 24px;
+            }
+            .login-card h2 {
+                font-size: 1.1rem;
             }
         }
 
@@ -1581,6 +2091,67 @@
                 display: flex !important;
             }
             .nav-actions {
+                display: flex !important;
+            }
+            .search-icon-hp {
+                display: none !important;
+            }
+        }
+
+        /* Search icon di HP - tombol search popup */
+        .search-icon-hp {
+            display: none;
+            color: var(--cream);
+            font-size: 1.1rem;
+            padding: 8px 10px;
+            border-radius: 60px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .search-icon-hp:hover {
+            color: var(--gold-accent);
+            background: rgba(201, 168, 76, 0.08);
+        }
+
+        /* Cart di HP */
+        .cart-hp {
+            display: none;
+            color: var(--cream);
+            font-size: 1.1rem;
+            padding: 8px 10px;
+            border-radius: 60px;
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-hp:hover {
+            color: var(--gold-accent);
+            background: rgba(201, 168, 76, 0.08);
+        }
+
+        .cart-hp .badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-size: 0.55rem;
+            font-weight: 700;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @media (max-width: 768px) {
+            .search-icon-hp {
+                display: flex !important;
+            }
+            .cart-hp {
                 display: flex !important;
             }
         }
@@ -1609,20 +2180,29 @@
             <!-- Search & Cart Desktop -->
             <div class="nav-actions">
                 <div class="search-box">
-                    <input type="text" placeholder="Cari produk..." id="searchInput" />
-                    <button id="searchBtn"><i class="fas fa-search"></i></button>
+                    <input type="text" placeholder="Cari produk..." id="searchInputDesktop" />
+                    <button id="searchBtnDesktop"><i class="fas fa-search"></i></button>
                 </div>
-                <button class="cart-btn" id="cartBtn">
+                <button class="cart-btn" id="cartBtnDesktop">
                     <i class="fas fa-shopping-bag"></i>
                     <span class="badge">0</span>
                 </button>
             </div>
 
+            <!-- Search Icon HP (popup) -->
+            <span class="search-icon-hp" id="searchIconHp"><i class="fas fa-search"></i></span>
+
+            <!-- Cart HP -->
+            <span class="cart-hp" id="cartHp">
+                <i class="fas fa-shopping-bag"></i>
+                <span class="badge">0</span>
+            </span>
+
             <div class="user-badge" id="navUserBadge">
                 <i class="fas fa-user-circle"></i> <span id="navUserName">Guest</span>
             </div>
-            <button class="btn-nav btn-nav-outline" id="navLoginBtn" style="color:var(--cream); padding:8px 18px; border-radius:60px; border:1.5px solid rgba(255,255,255,0.2); font-size:0.8rem;">Login</button>
-            <button class="btn-nav btn-nav-gold" id="navRegisterBtn" style="background:var(--gold-accent); color:var(--denim-dark); padding:8px 18px; border-radius:60px; font-weight:600; font-size:0.8rem;">Daftar</button>
+            <button class="btn-nav btn-nav-outline" id="navLoginBtn">Login</button>
+            <button class="btn-nav btn-nav-gold" id="navRegisterBtn">Daftar</button>
 
             <!-- Burger (hanya di HP) -->
             <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
@@ -1632,7 +2212,18 @@
     </header>
 
     <!-- ============================================================
-    SIDEBAR (HP ONLY)
+    SEARCH POPUP (HP)
+    ============================================================ -->
+    <div class="search-popup" id="searchPopup">
+        <div class="search-inner">
+            <input type="text" placeholder="Cari produk..." id="searchInputHp" />
+            <button id="searchBtnHp"><i class="fas fa-search"></i> Cari</button>
+            <span class="close-search" id="closeSearch">&times;</span>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    SIDEBAR (HP ONLY) - SEMUA MENU DI SINI
     ============================================================ -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <nav class="sidebar" id="sidebar">
@@ -1642,7 +2233,7 @@
         </div>
         <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
         <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
-        <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang</div>
+        <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang Kami</div>
         <div class="menu-item" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</div>
         <div class="menu-item" data-page="track"><i class="fas fa-truck"></i> Lacak Pesanan</div>
         <div class="menu-divider"></div>
@@ -1772,127 +2363,211 @@
     <!-- ============================================================
     REGISTER FORM
     ============================================================ -->
-    <div class="register-wrapper" id="registerWrapper" style="display:none; max-width:1000px; margin:0 auto; padding:24px 20px 50px;">
-        <div class="register-header" style="text-align:center; margin-bottom:20px;">
-            <h1 style="font-family:'Playfair Display',serif; font-size:1.8rem; font-weight:800; color:var(--denim-dark);"><i class="fas fa-user-plus" style="color:var(--gold-accent);"></i> Daftar Member</h1>
-            <p style="color:var(--denim-navy); font-size:0.85rem; opacity:0.7;">Lengkapi data diri untuk bergabung menjadi member HEDTRO JEANS</p>
+    <div class="register-wrapper" id="registerWrapper">
+        <div class="register-header">
+            <h1><i class="fas fa-user-plus"></i> Daftar Member</h1>
+            <p>Lengkapi data diri untuk bergabung menjadi member HEDTRO JEANS</p>
         </div>
         <form id="registerForm" onsubmit="return false;">
-            <!-- Form sama seperti sebelumnya, saya singkat -->
-            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
-                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
-                    <i class="fas fa-lock" style="color:var(--gold-accent);"></i> Akun & Keamanan <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">1</span>
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-lock"></i> Akun & Keamanan
+                    <span class="badge-step">1</span>
                 </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;">
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Username <span style="color:#e74c3c;">*</span></label><input type="text" id="username" placeholder="Username" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Email <span style="color:#e74c3c;">*</span></label><input type="email" id="email" placeholder="Email aktif" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Kata Sandi <span style="color:#e74c3c;">*</span></label><input type="password" id="password" placeholder="Min 6 karakter" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Konfirmasi Sandi <span style="color:#e74c3c;">*</span></label><input type="password" id="confirmPassword" placeholder="Ulangi sandi" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                </div>
-            </div>
-            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
-                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
-                    <i class="fas fa-id-card" style="color:var(--gold-accent);"></i> Identitas & Kontak <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">2</span>
-                </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;">
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Nama Lengkap <span style="color:#e74c3c;">*</span></label><input type="text" id="fullname" placeholder="Nama lengkap" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">NIK (16 Digit) <span style="color:#e74c3c;">*</span></label><input type="text" id="nik" placeholder="16 digit NIK" maxlength="16" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">No. HP <span style="color:#e74c3c;">*</span></label><input type="text" id="phone" placeholder="No. HP" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">No. WhatsApp <span style="color:#e74c3c;">*</span></label><input type="text" id="whatsapp" placeholder="No. WhatsApp" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                </div>
-            </div>
-            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
-                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
-                    <i class="fas fa-university" style="color:var(--gold-accent);"></i> Rekening Bank <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">3</span>
-                </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;">
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Nama Bank <span style="color:#e74c3c;">*</span></label>
-                        <select id="bankName" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);">
-                            <option value="BCA">BCA</option><option value="BNI">BNI</option><option value="BRI">BRI</option><option value="Mandiri">Mandiri</option><option value="CIMB Niaga">CIMB Niaga</option><option value="Danamon">Danamon</option><option value="BSI">BSI</option><option value="Lainnya">Lainnya</option>
-                        </select>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Username <span class="required">*</span></label>
+                        <input type="text" id="username" placeholder="Username" />
                     </div>
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">No. Rekening <span style="color:#e74c3c;">*</span></label><input type="text" id="bankAccount" placeholder="No. rekening" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                    <div style="grid-column:1/-1;"><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Atas Nama <span style="color:#e74c3c;">*</span></label><input type="text" id="bankHolder" placeholder="Atas nama..." style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                </div>
-            </div>
-            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
-                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
-                    <i class="fas fa-map-pin" style="color:var(--gold-accent);"></i> Alamat Pengiriman <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">4</span>
-                </div>
-                <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Alamat Lengkap <span style="color:#e74c3c;">*</span></label><textarea id="address" placeholder="Jalan, RT/RW, No. Rumah, Kel/Kec" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream); min-height:44px; resize:vertical;"></textarea></div>
-                <div style="margin-top:8px;"><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Kota & Provinsi <span style="color:#e74c3c;">*</span></label><input type="text" id="city" placeholder="Kota & provinsi" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-            </div>
-            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
-                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
-                    <i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> Spesifikasi Jeans <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">5</span>
-                </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;">
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Nomor Seri <span style="color:#e74c3c;">*</span></label><input type="text" id="serialNumber" placeholder="Nomor seri" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Ukuran <span style="color:#e74c3c;">*</span></label>
-                        <select id="jeansSize" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);">
-                            <option value="28">Size 28</option><option value="29">Size 29</option><option value="30" selected>Size 30</option>
-                            <option value="31">Size 31</option><option value="32">Size 32</option><option value="33">Size 33</option>
-                            <option value="34">Size 34</option><option value="36">Size 36</option><option value="38">Size 38</option><option value="40">Size 40</option>
-                        </select>
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" id="email" placeholder="Email aktif" />
                     </div>
-                    <div style="grid-column:1/-1;"><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Warna <span style="color:#e74c3c;">*</span></label>
-                        <select id="jeansColor" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);">
-                            <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option><option value="Black Stretch">Black Stretch</option>
-                            <option value="Light Wash">Light Wash</option><option value="Dark Navy">Dark Navy</option>
-                            <option value="Grey Stone">Grey Stone</option><option value="White">White</option>
-                        </select>
+                    <div class="form-group">
+                        <label>Kata Sandi <span class="required">*</span></label>
+                        <input type="password" id="password" placeholder="Min 6 karakter" />
+                    </div>
+                    <div class="form-group">
+                        <label>Konfirmasi Sandi <span class="required">*</span></label>
+                        <input type="password" id="confirmPassword" placeholder="Ulangi sandi" />
                     </div>
                 </div>
             </div>
-            <div style="background:var(--white); border-radius:var(--radius); padding:16px 20px; margin-bottom:12px; box-shadow:var(--shadow); border:1px solid var(--denim-light);">
-                <div style="font-size:0.85rem; font-weight:700; color:var(--denim-dark); margin-bottom:10px; display:flex; align-items:center; gap:8px; border-bottom:1px solid var(--denim-light); padding-bottom:6px;">
-                    <i class="fas fa-sitemap" style="color:var(--gold-accent);"></i> Penempatan Tim <span style="background:var(--gold-accent); color:var(--denim-dark); font-size:0.55rem; padding:1px 10px; border-radius:40px; font-weight:700; margin-left:auto;">6</span>
+
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-id-card"></i> Identitas & Kontak
+                    <span class="badge-step">2</span>
                 </div>
-                <div style="display:grid; grid-template-columns:1fr 1fr; gap:8px 14px;">
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Username Sponsor</label><input type="text" id="sponsor" placeholder="Username sponsor" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                    <div><label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Username Upline</label><input type="text" id="upline" placeholder="Username upline" style="width:100%; padding:7px 12px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.8rem; background:var(--cream);" /></div>
-                    <div style="grid-column:1/-1;">
-                        <label style="font-weight:600; color:var(--denim-navy); font-size:0.7rem;">Posisi Tim <span style="color:#e74c3c;">*</span></label>
-                        <div style="display:flex; gap:8px; margin-top:2px;">
-                            <div class="position-option active" data-value="left" style="flex:1; padding:6px 10px; border:2px solid var(--denim-light); border-radius:12px; text-align:center; cursor:pointer; background:var(--cream); font-weight:600; font-size:0.7rem; color:var(--denim-navy);">
-                                <i class="fas fa-arrow-left" style="display:block; font-size:1rem; margin-bottom:2px; color:var(--gold-accent);"></i> KIRI (L)
-                                <span style="font-size:0.45rem; font-weight:400; opacity:0.5; display:block;">Kiri</span>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nama Lengkap <span class="required">*</span></label>
+                        <input type="text" id="fullname" placeholder="Nama lengkap" />
+                    </div>
+                    <div class="form-group">
+                        <label>NIK (16 Digit) <span class="required">*</span></label>
+                        <input type="text" id="nik" placeholder="16 digit NIK" maxlength="16" />
+                    </div>
+                    <div class="form-group">
+                        <label>No. HP <span class="required">*</span></label>
+                        <input type="text" id="phone" placeholder="No. HP" />
+                    </div>
+                    <div class="form-group">
+                        <label>No. WhatsApp <span class="required">*</span></label>
+                        <input type="text" id="whatsapp" placeholder="No. WhatsApp aktif" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-university"></i> Rekening Bank
+                    <span class="badge-step">3</span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nama Bank <span class="required">*</span></label>
+                        <select id="bankName">
+                            <option value="BCA">BCA</option>
+                            <option value="BNI">BNI</option>
+                            <option value="BRI">BRI</option>
+                            <option value="Mandiri">Mandiri</option>
+                            <option value="CIMB Niaga">CIMB Niaga</option>
+                            <option value="Danamon">Danamon</option>
+                            <option value="BSI">BSI</option>
+                            <option value="Lainnya">Lainnya</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>No. Rekening <span class="required">*</span></label>
+                        <input type="text" id="bankAccount" placeholder="No. rekening" />
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Atas Nama <span class="required">*</span></label>
+                        <input type="text" id="bankHolder" placeholder="Atas nama..." />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-map-pin"></i> Alamat Pengiriman
+                    <span class="badge-step">4</span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group full-width">
+                        <label>Alamat Lengkap <span class="required">*</span></label>
+                        <textarea id="address" placeholder="Jalan, RT/RW, No. Rumah, Kel/Kec"></textarea>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Kota & Provinsi <span class="required">*</span></label>
+                        <input type="text" id="city" placeholder="Kota & provinsi" />
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-tshirt"></i> Spesifikasi Jeans
+                    <span class="badge-step">5</span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nomor Seri <span class="required">*</span></label>
+                        <input type="text" id="serialNumber" placeholder="Nomor seri" />
+                    </div>
+                    <div class="form-group">
+                        <label>Ukuran <span class="required">*</span></label>
+                        <select id="jeansSize">
+                            <option value="28">Size 28</option>
+                            <option value="29">Size 29</option>
+                            <option value="30" selected>Size 30</option>
+                            <option value="31">Size 31</option>
+                            <option value="32">Size 32</option>
+                            <option value="33">Size 33</option>
+                            <option value="34">Size 34</option>
+                            <option value="36">Size 36</option>
+                            <option value="38">Size 38</option>
+                            <option value="40">Size 40</option>
+                        </select>
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Warna <span class="required">*</span></label>
+                        <select id="jeansColor">
+                            <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option>
+                            <option value="Black Stretch">Black Stretch</option>
+                            <option value="Light Wash">Light Wash</option>
+                            <option value="Dark Navy">Dark Navy</option>
+                            <option value="Grey Stone">Grey Stone</option>
+                            <option value="White">White</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="form-section">
+                <div class="section-title">
+                    <i class="fas fa-sitemap"></i> Penempatan Tim
+                    <span class="badge-step">6</span>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Username Sponsor</label>
+                        <input type="text" id="sponsor" placeholder="Username sponsor" />
+                    </div>
+                    <div class="form-group">
+                        <label>Username Upline</label>
+                        <input type="text" id="upline" placeholder="Username upline" />
+                    </div>
+                    <div class="form-group full-width">
+                        <label>Posisi Tim <span class="required">*</span></label>
+                        <div class="position-selector" id="positionSelector">
+                            <div class="position-option active" data-value="left">
+                                <i class="fas fa-arrow-left"></i>
+                                KIRI (L)
                             </div>
-                            <div class="position-option" data-value="right" style="flex:1; padding:6px 10px; border:2px solid var(--denim-light); border-radius:12px; text-align:center; cursor:pointer; background:var(--cream); font-weight:600; font-size:0.7rem; color:var(--denim-navy);">
-                                <i class="fas fa-arrow-right" style="display:block; font-size:1rem; margin-bottom:2px; color:var(--gold-accent);"></i> KANAN (R)
-                                <span style="font-size:0.45rem; font-weight:400; opacity:0.5; display:block;">Kanan</span>
+                            <div class="position-option" data-value="right">
+                                <i class="fas fa-arrow-right"></i>
+                                KANAN (R)
                             </div>
                         </div>
                         <input type="hidden" id="position" value="left" />
                     </div>
                 </div>
             </div>
-            <button type="submit" class="btn-submit" id="registerBtn" style="width:100%; padding:12px; border:none; border-radius:60px; background:var(--gold-accent); color:var(--denim-dark); font-weight:700; font-size:0.95rem; display:flex; align-items:center; justify-content:center; gap:10px; font-family:inherit;"><i class="fas fa-user-plus"></i> Daftar Member</button>
-            <div class="msg" id="regMsg" style="margin-top:8px; text-align:center; font-size:0.8rem; min-height:22px; padding:6px 12px; border-radius:12px;"></div>
-            <div style="text-align:center; margin-top:10px; color:var(--denim-navy); font-size:0.8rem;">Sudah punya akun? <a id="backToLoginFromRegister" style="color:var(--gold-accent); font-weight:600; cursor:pointer;">Login di sini</a></div>
+
+            <button type="submit" class="btn-submit" id="registerBtn">
+                <i class="fas fa-user-plus"></i> Daftar Member
+            </button>
+            <div class="msg" id="regMsg"></div>
+            <div class="form-footer">
+                Sudah punya akun? <a id="backToLoginFromRegister">Login di sini</a>
+            </div>
         </form>
     </div>
 
     <!-- ============================================================
     LOGIN OVERLAY
     ============================================================ -->
-    <div class="login-overlay" id="loginOverlay" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); z-index:2000; align-items:center; justify-content:center; padding:20px;">
-        <div class="login-card" style="background:var(--white); max-width:420px; width:100%; border-radius:var(--radius); padding:32px 34px 36px; box-shadow:var(--shadow-lg); position:relative;">
-            <button class="close-login" id="closeLogin" style="position:absolute; top:14px; right:18px; font-size:1.6rem; color:var(--denim-navy); cursor:pointer; background:none; border:none;">&times;</button>
-            <h2 style="font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:800; color:var(--denim-dark); margin-bottom:4px; text-align:center;"><i class="fas fa-sign-in-alt" style="color:var(--gold-accent);"></i> Login</h2>
-            <p style="text-align:center; color:var(--denim-navy); font-size:0.85rem; opacity:0.7; margin-bottom:20px;">Masuk ke akun member Anda</p>
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-card">
+            <button class="close-login" id="closeLogin">&times;</button>
+            <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+            <p>Masuk ke akun member Anda</p>
             <form id="loginForm" onsubmit="return false;">
-                <div class="form-group" style="margin-bottom:14px;">
-                    <label style="font-size:0.8rem; font-weight:600; color:var(--denim-navy); display:block; margin-bottom:2px;">Email atau Username</label>
-                    <input type="text" id="loginEmail" placeholder="email@domain.com" style="width:100%; padding:10px 16px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.9rem; background:var(--cream);" />
+                <div class="form-group">
+                    <label>Email atau Username</label>
+                    <input type="text" id="loginEmail" placeholder="email@domain.com" />
                 </div>
-                <div class="form-group" style="margin-bottom:14px;">
-                    <label style="font-size:0.8rem; font-weight:600; color:var(--denim-navy); display:block; margin-bottom:2px;">Kata Sandi</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" style="width:100%; padding:10px 16px; border:1.5px solid var(--denim-light); border-radius:12px; font-size:0.9rem; background:var(--cream);" />
+                <div class="form-group">
+                    <label>Kata Sandi</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" />
                 </div>
-                <button type="submit" class="btn-login" id="loginBtn" style="width:100%; padding:12px; border:none; border-radius:60px; background:var(--gold-accent); color:var(--denim-dark); font-weight:700; font-size:1rem; font-family:inherit;"><i class="fas fa-sign-in-alt"></i> Masuk</button>
-                <div class="login-msg" id="loginMsg" style="margin-top:10px; text-align:center; font-size:0.85rem; min-height:24px;"></div>
-                <div style="text-align:center; margin-top:14px; font-size:0.85rem; color:var(--denim-navy);">Belum punya akun? <a id="goToRegister" style="color:var(--gold-accent); font-weight:600; cursor:pointer;">Daftar di sini</a></div>
+                <button type="submit" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+                <div class="login-msg" id="loginMsg"></div>
+                <div class="login-footer">
+                    Belum punya akun? <a id="goToRegister">Daftar di sini</a>
+                </div>
             </form>
         </div>
     </div>
@@ -1981,28 +2656,28 @@
             const allProducts = [
                 { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
                     icon: 'fa-tshirt', favorite: true, stock: 45,
-                    desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet. Cocok untuk gaya casual hingga semi-formal.' },
+                    desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet.' },
                 { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
                     icon: 'fa-tshirt', favorite: true, stock: 30,
-                    desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor yang akan membentuk fading alami seiring pemakaian.' },
+                    desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor.' },
                 { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM',
                     icon: 'fa-tshirt', favorite: true, stock: 25,
-                    desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual. Sangat fleksibel (high stretch), pas di paha dan kaki.' },
+                    desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual. Sangat fleksibel (high stretch).' },
                 { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%',
                     icon: 'fa-tshirt', favorite: true, stock: 18,
-                    desc: 'Tampilan retro klasik tahun 90-an dengan efek pencucian warna muda (light wash) yang kasual dan santai.' },
+                    desc: 'Tampilan retro klasik tahun 90-an dengan efek pencucian warna muda (light wash) yang kasual.' },
                 { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED',
                     icon: 'fa-jacket', favorite: true, stock: 20,
-                    desc: 'Jaket denim ikonik berbahan rigid denim 14.5oz dengan saku ganda di dada dan jahitan kontras emas klasik.' },
+                    desc: 'Jaket denim ikonik berbahan rigid denim 14.5oz dengan saku ganda di dada.' },
                 { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER',
                     icon: 'fa-tshirt', favorite: false, stock: 35,
-                    desc: 'Celana jeans wanita potongan high-waist yang membentuk lekuk pinggang secara sempurna, sangat elastis dan nyaman.' },
+                    desc: 'Celana jeans wanita potongan high-waist yang membentuk lekuk pinggang secara sempurna.' },
                 { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS',
                     icon: 'fa-belt', favorite: false, stock: 50,
-                    desc: 'Ikat pinggang kulit sapi asli 100% berkualitas tinggi dengan kepala gesper kuningan antik yang tahan karat.' },
+                    desc: 'Ikat pinggang kulit sapi asli 100% dengan kepala gesper kuningan antik.' },
                 { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT',
                     icon: 'fa-tshirt', favorite: false, stock: 22,
-                    desc: 'Kemeja denim kasual pria/wanita berbahan katun ringan 8oz yang lembut, cocok sebagai luaran maupun kemeja utama.' },
+                    desc: 'Kemeja denim kasual berbahan katun ringan 8oz yang lembut.' },
                 { id: 9, name: 'Slim Fit Black Raw Denim', price: 260000, original: 360000, tag: 'NEW', icon: 'fa-tshirt',
                     favorite: false, stock: 28, desc: 'Hitam pekat raw denim, slim fit modern.' },
                 { id: 10, name: 'Cropped Trucker Jacket', price: 390000, original: 500000, tag: 'TRENDY',
@@ -2103,7 +2778,7 @@
             }
 
             // ============================================================
-            // PRODUCT BUTTONS (Detail & Beli)
+            // PRODUCT BUTTONS
             // ============================================================
             function bindProductButtons() {
                 document.querySelectorAll('.btn-detail').forEach(btn => {
@@ -2117,7 +2792,7 @@
                         const id = parseInt(this.dataset.id);
                         const product = allProducts.find(p => p.id === id);
                         if (product) {
-                            alert(`🛒 ${product.name} ditambahkan ke keranjang!\nHarga: Rp ${product.price.toLocaleString()}`);
+                            alert(`🛒 ${product.name} ditambahkan ke keranjang!`);
                             updateCartBadge();
                         }
                     });
@@ -2146,14 +2821,12 @@
                 stockEl.className = `popup-stock${product.stock <= 0 ? ' out' : ''}`;
                 document.getElementById('popupIcon').className = `fas ${product.icon}`;
 
-                // Set buy button
                 document.getElementById('popupBuyBtn').onclick = function() {
                     alert(`🛒 ${product.name} ditambahkan ke keranjang!`);
                     updateCartBadge();
                     closePopupFn();
                 };
 
-                // Reset zoom
                 popupImage.classList.remove('zoomed');
                 isZoomed = false;
 
@@ -2171,7 +2844,6 @@
                 if (e.target === productPopup) closePopupFn();
             });
 
-            // Zoom image
             popupImage.addEventListener('click', function() {
                 isZoomed = !isZoomed;
                 this.classList.toggle('zoomed', isZoomed);
@@ -2229,13 +2901,12 @@
             resetInterval();
 
             // ============================================================
-            // FAQ TOGGLE
+            // FAQ
             // ============================================================
             window.toggleFaq = function(el) {
                 const answer = el.parentElement.querySelector('.faq-answer');
                 const icon = el.querySelector('i');
                 const isOpen = answer.classList.contains('open');
-                // Close all
                 document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
                 document.querySelectorAll('.faq-question i').forEach(i => i.classList.remove('active'));
                 if (!isOpen) {
@@ -2262,10 +2933,10 @@
                     ];
                     const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
                     result.innerHTML =
-                        `✅ <strong>${input.toUpperCase()}</strong> - ${randomStatus} <br /><span style="font-size:0.8rem; opacity:0.6;">Update terakhir: ${new Date().toLocaleDateString()}</span>`;
+                        `✅ <strong>${input.toUpperCase()}</strong> - ${randomStatus}`;
                     result.style.color = '#1f7a4b';
                 } else {
-                    result.innerHTML = '❌ Nomor pesanan tidak ditemukan. Periksa kembali.';
+                    result.innerHTML = '❌ Nomor pesanan tidak ditemukan.';
                     result.style.color = '#b13e3e';
                 }
             });
@@ -2273,15 +2944,14 @@
             // ============================================================
             // SEARCH
             // ============================================================
-            document.getElementById('searchBtn').addEventListener('click', function() {
-                const query = document.getElementById('searchInput').value.trim().toLowerCase();
+            function performSearch(query) {
                 if (!query) {
                     document.querySelector('.section-title').scrollIntoView({ behavior: 'smooth' });
                     renderProductGrid(1);
                     return;
                 }
                 const results = allProducts.filter(p => p.name.toLowerCase().includes(query) || p.tag.toLowerCase()
-                .includes(query));
+                    .includes(query));
                 const grid = document.getElementById('productGrid');
                 grid.innerHTML = '';
                 if (results.length === 0) {
@@ -2308,28 +2978,53 @@
                 });
                 bindProductButtons();
                 document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                // Tutup search popup jika di HP
+                document.getElementById('searchPopup').classList.remove('show');
+            }
+
+            // Desktop search
+            document.getElementById('searchBtnDesktop').addEventListener('click', function() {
+                const query = document.getElementById('searchInputDesktop').value.trim().toLowerCase();
+                performSearch(query);
+            });
+            document.getElementById('searchInputDesktop').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('searchBtnDesktop').click();
             });
 
-            document.getElementById('searchInput').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') document.getElementById('searchBtn').click();
+            // HP search popup
+            document.getElementById('searchIconHp').addEventListener('click', function() {
+                document.getElementById('searchPopup').classList.toggle('show');
+                document.getElementById('searchInputHp').focus();
+            });
+            document.getElementById('closeSearch').addEventListener('click', function() {
+                document.getElementById('searchPopup').classList.remove('show');
+            });
+            document.getElementById('searchBtnHp').addEventListener('click', function() {
+                const query = document.getElementById('searchInputHp').value.trim().toLowerCase();
+                performSearch(query);
+            });
+            document.getElementById('searchInputHp').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('searchBtnHp').click();
             });
 
             // ============================================================
-            // CART BADGE
+            // CART
             // ============================================================
             let cartCount = 0;
 
             function updateCartBadge() {
                 cartCount++;
-                document.querySelector('.cart-btn .badge').textContent = cartCount;
+                document.querySelectorAll('.cart-btn .badge, .cart-hp .badge').forEach(el => el.textContent = cartCount);
             }
 
-            document.getElementById('cartBtn').addEventListener('click', function() {
-                alert(`🛒 Keranjang belanja (${cartCount} item)`);
+            document.querySelectorAll('.cart-btn, .cart-hp').forEach(el => {
+                el.addEventListener('click', function() {
+                    alert(`🛒 Keranjang belanja (${cartCount} item)`);
+                });
             });
 
             // ============================================================
-            // SIDEBAR & BURGER (HP ONLY)
+            // SIDEBAR & BURGER
             // ============================================================
             const burgerBtn = document.getElementById('burgerBtn');
             const sidebar = document.getElementById('sidebar');
@@ -2357,67 +3052,62 @@
 
             function showLanding() {
                 landingContent.style.display = 'block';
-                registerWrapper.style.display = 'none';
-                loginOverlay.style.display = 'none';
+                registerWrapper.classList.remove('active');
+                loginOverlay.classList.remove('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
             function showRegister() {
                 landingContent.style.display = 'none';
-                registerWrapper.style.display = 'block';
-                loginOverlay.style.display = 'none';
+                registerWrapper.classList.add('active');
+                loginOverlay.classList.remove('show');
                 window.scrollTo({ top: 0, behavior: 'smooth' });
             }
 
             function openLogin() {
-                loginOverlay.style.display = 'flex';
+                loginOverlay.classList.add('show');
                 document.body.style.overflow = 'hidden';
             }
 
             function closeLoginFn() {
-                loginOverlay.style.display = 'none';
+                loginOverlay.classList.remove('show');
                 document.body.style.overflow = '';
             }
 
             document.getElementById('closeLogin').addEventListener('click', closeLoginFn);
             loginOverlay.addEventListener('click', function(e) { if (e.target === loginOverlay) closeLoginFn(); });
 
-            // Navbar buttons
             document.getElementById('navLoginBtn').addEventListener('click', openLogin);
             document.getElementById('navRegisterBtn').addEventListener('click', showRegister);
 
-            // Sidebar login/register
             document.getElementById('sideLoginBtn').addEventListener('click', () => { toggleSidebar(false);
                 openLogin(); });
             document.getElementById('sideRegisterBtn').addEventListener('click', () => { toggleSidebar(false);
                 showRegister(); });
 
-            // Back to login from register
             document.getElementById('backToLoginFromRegister').addEventListener('click', (e) => {
                 e.preventDefault();
                 openLogin();
             });
-
-            // Go to register from login
             document.getElementById('goToRegister').addEventListener('click', (e) => {
                 e.preventDefault();
                 showRegister();
             });
 
-            // Sidebar menu navigation
             document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
                 item.addEventListener('click', function() {
                     const page = this.dataset.page;
                     toggleSidebar(false);
                     showLanding();
-                    const target = document.getElementById(page);
-                    if (target) target.scrollIntoView({ behavior: 'smooth' });
                     if (page === 'home') window.scrollTo({ top: 0, behavior: 'smooth' });
                     if (page === 'products') document.querySelector('.section-title')?.scrollIntoView({ behavior: 'smooth' });
+                    if (page === 'about' || page === 'faq' || page === 'track') {
+                        const target = document.getElementById(page);
+                        if (target) target.scrollIntoView({ behavior: 'smooth' });
+                    }
                 });
             });
 
-            // Desktop menu navigation
             document.querySelectorAll('.nav-menu a').forEach(link => {
                 link.addEventListener('click', function(e) {
                     const href = this.getAttribute('href');
@@ -2430,7 +3120,7 @@
             });
 
             // ============================================================
-            // LOGIN FUNCTION
+            // LOGIN
             // ============================================================
             document.getElementById('loginBtn').addEventListener('click', function() {
                 const email = document.getElementById('loginEmail').value.trim();
@@ -2461,7 +3151,7 @@
             });
 
             // ============================================================
-            // REGISTER FUNCTION
+            // REGISTER
             // ============================================================
             const positionOptions = document.querySelectorAll('.position-option');
             const positionInput = document.getElementById('position');
@@ -2499,7 +3189,7 @@
                 if (!username || !email || !password || !confirmPassword || !fullname || !nik || !phone || !whatsapp ||
                     !bankAccount || !bankHolder || !address || !city || !serialNumber) {
                     msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Semua field wajib diisi (kecuali sponsor & upline).';
+                    msgEl.innerText = '⚠️ Semua field wajib diisi.';
                     return;
                 }
                 if (password.length < 6) {
@@ -2509,7 +3199,7 @@
                 }
                 if (password !== confirmPassword) {
                     msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Kata sandi dan konfirmasi tidak sama.';
+                    msgEl.innerText = '⚠️ Kata sandi tidak sama.';
                     return;
                 }
                 if (nik.length !== 16 || isNaN(nik)) {
@@ -2594,7 +3284,6 @@
                     if (position === 'left') sponsorUser.left = newUser.id;
                     else sponsorUser.right = newUser.id;
                     localStorage.setItem('hedtro_mlm_users', JSON.stringify(users));
-                    updateBinaryTree(sponsorId, 1);
                 }
 
                 msgEl.className = 'msg success';
@@ -2602,21 +3291,6 @@
                 document.getElementById('registerForm').reset();
                 setTimeout(() => showLanding(), 2000);
             });
-
-            function updateBinaryTree(userId, level) {
-                if (level > 10) return;
-                let users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
-                const user = users.find(u => u.id === userId);
-                if (!user) return;
-                if (!user.binary_tree) user.binary_tree = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                user.binary_tree[level - 1] = (user.binary_tree[level - 1] || 0) + 1;
-                if (level <= 5) {
-                    if (!user.reward_levels) user.reward_levels = [0, 0, 0, 0, 0];
-                    user.reward_levels[level - 1] = (user.reward_levels[level - 1] || 0) + 1;
-                }
-                localStorage.setItem('hedtro_mlm_users', JSON.stringify(users));
-                if (user.sponsor_id) updateBinaryTree(user.sponsor_id, level + 1);
-            }
 
             // ============================================================
             // USER BADGE
@@ -2667,7 +3341,7 @@
             renderProductGrid(1);
             updateUI();
 
-            console.log('🟦 HEDTRO JEANS · Desktop menu + semua fitur siap');
+            console.log('🟦 HEDTRO JEANS · HP: logo, search popup, cart, burger | menu di sidebar');
         })();
     </script>
 
