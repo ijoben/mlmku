@@ -797,7 +797,18 @@
     }
 
     /* ============================================================
-       REGISTER FORM SECTION (muncul saat klik Daftar)
+       LANDING PAGE CONTENT
+       ============================================================ */
+    .landing-content {
+      display: block;
+    }
+
+    .landing-content.hidden {
+      display: none;
+    }
+
+    /* ============================================================
+       REGISTER FORM - 2 KOLOM COMPACT
        ============================================================ */
     .register-wrapper {
       max-width: 1000px;
@@ -812,12 +823,12 @@
 
     .register-header {
       text-align: center;
-      margin-bottom: 24px;
+      margin-bottom: 20px;
     }
 
     .register-header h1 {
       font-family: 'Playfair Display', serif;
-      font-size: 2rem;
+      font-size: 1.8rem;
       font-weight: 800;
       color: var(--denim-dark);
     }
@@ -828,7 +839,7 @@
 
     .register-header p {
       color: var(--denim-navy);
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       margin-top: 2px;
       opacity: 0.7;
     }
@@ -836,34 +847,34 @@
     .form-section {
       background: var(--white);
       border-radius: var(--radius);
-      padding: 18px 22px;
-      margin-bottom: 14px;
+      padding: 16px 20px;
+      margin-bottom: 12px;
       box-shadow: var(--shadow);
       border: 1px solid var(--denim-light);
     }
 
     .form-section .section-title {
-      font-size: 0.9rem;
+      font-size: 0.85rem;
       font-weight: 700;
       color: var(--denim-dark);
-      margin-bottom: 12px;
+      margin-bottom: 10px;
       display: flex;
       align-items: center;
       gap: 8px;
       padding: 0;
       border-bottom: 1px solid var(--denim-light);
-      padding-bottom: 8px;
+      padding-bottom: 6px;
     }
 
     .form-section .section-title i {
       color: var(--gold-accent);
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     .form-section .section-title .badge-step {
       background: var(--gold-accent);
       color: var(--denim-dark);
-      font-size: 0.6rem;
+      font-size: 0.55rem;
       padding: 1px 10px;
       border-radius: 40px;
       font-weight: 700;
@@ -873,11 +884,11 @@
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 10px 16px;
+      gap: 8px 14px;
     }
 
     .form-group {
-      margin-bottom: 6px;
+      margin-bottom: 4px;
     }
 
     .form-group.full-width {
@@ -888,7 +899,7 @@
       display: block;
       font-weight: 600;
       color: var(--denim-navy);
-      font-size: 0.73rem;
+      font-size: 0.7rem;
       margin-bottom: 2px;
     }
 
@@ -900,7 +911,7 @@
     .form-group label .helper {
       font-weight: 400;
       color: var(--denim-blue);
-      font-size: 0.6rem;
+      font-size: 0.55rem;
       opacity: 0.6;
       display: inline-block;
       margin-left: 4px;
@@ -910,10 +921,10 @@
     .form-group select,
     .form-group textarea {
       width: 100%;
-      padding: 8px 12px;
+      padding: 7px 12px;
       border: 1.5px solid var(--denim-light);
       border-radius: var(--radius-sm);
-      font-size: 0.82rem;
+      font-size: 0.8rem;
       background: var(--cream);
       color: var(--denim-dark);
       font-family: inherit;
@@ -932,24 +943,24 @@
     .form-group input::placeholder,
     .form-group textarea::placeholder {
       color: #b0b8c4;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
     }
 
     .form-group textarea {
       resize: vertical;
-      min-height: 44px;
+      min-height: 40px;
       border-radius: var(--radius-sm);
     }
 
     .position-selector {
       display: flex;
-      gap: 10px;
+      gap: 8px;
       margin-top: 2px;
     }
 
     .position-option {
       flex: 1;
-      padding: 8px 12px;
+      padding: 6px 10px;
       border: 2px solid var(--denim-light);
       border-radius: var(--radius-sm);
       text-align: center;
@@ -957,7 +968,7 @@
       transition: var(--transition);
       background: var(--cream);
       font-weight: 600;
-      font-size: 0.75rem;
+      font-size: 0.7rem;
       color: var(--denim-navy);
     }
 
@@ -973,13 +984,13 @@
 
     .position-option i {
       display: block;
-      font-size: 1.1rem;
+      font-size: 1rem;
       margin-bottom: 2px;
       color: var(--gold-accent);
     }
 
     .position-option .pos-label {
-      font-size: 0.5rem;
+      font-size: 0.45rem;
       font-weight: 400;
       opacity: 0.5;
       display: block;
@@ -987,13 +998,13 @@
 
     .btn-submit {
       width: 100%;
-      padding: 14px;
+      padding: 12px;
       border: none;
       border-radius: 60px;
       background: var(--gold-accent);
       color: var(--denim-dark);
       font-weight: 700;
-      font-size: 1rem;
+      font-size: 0.95rem;
       transition: var(--transition);
       display: flex;
       align-items: center;
@@ -1009,19 +1020,20 @@
     }
 
     .btn-submit i {
-      font-size: 1rem;
+      font-size: 0.95rem;
     }
 
     .form-footer {
       text-align: center;
-      margin-top: 12px;
+      margin-top: 10px;
       color: var(--denim-navy);
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
 
     .form-footer a {
       color: var(--gold-accent);
       font-weight: 600;
+      cursor: pointer;
     }
 
     .form-footer a:hover {
@@ -1029,11 +1041,11 @@
     }
 
     .msg {
-      margin-top: 10px;
+      margin-top: 8px;
       text-align: center;
-      font-size: 0.85rem;
-      min-height: 24px;
-      padding: 8px 14px;
+      font-size: 0.8rem;
+      min-height: 22px;
+      padding: 6px 12px;
       border-radius: var(--radius-sm);
     }
 
@@ -1043,6 +1055,133 @@
     }
     .msg.success {
       background: #e8f5ed;
+      color: #1f7a4b;
+    }
+
+    /* ============================================================
+       LOGIN OVERLAY
+       ============================================================ */
+    .login-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(8px);
+      z-index: 2000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .login-overlay.show {
+      display: flex;
+    }
+
+    .login-card {
+      background: var(--white);
+      max-width: 420px;
+      width: 100%;
+      border-radius: var(--radius);
+      padding: 32px 34px 36px;
+      box-shadow: var(--shadow-lg);
+      position: relative;
+    }
+
+    .login-card .close-login {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      font-size: 1.6rem;
+      color: var(--denim-navy);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .login-card .close-login:hover {
+      color: var(--denim-dark);
+    }
+
+    .login-card h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--denim-dark);
+      margin-bottom: 4px;
+      text-align: center;
+    }
+
+    .login-card h2 i {
+      color: var(--gold-accent);
+    }
+
+    .login-card p {
+      text-align: center;
+      color: var(--denim-navy);
+      font-size: 0.85rem;
+      opacity: 0.7;
+      margin-bottom: 20px;
+    }
+
+    .login-card .form-group {
+      margin-bottom: 14px;
+    }
+
+    .login-card .form-group label {
+      font-size: 0.8rem;
+    }
+
+    .login-card .form-group input {
+      padding: 10px 16px;
+      font-size: 0.9rem;
+    }
+
+    .login-card .btn-login {
+      width: 100%;
+      padding: 12px;
+      border: none;
+      border-radius: 60px;
+      background: var(--gold-accent);
+      color: var(--denim-dark);
+      font-weight: 700;
+      font-size: 1rem;
+      transition: var(--transition);
+      font-family: inherit;
+      margin-top: 4px;
+    }
+
+    .login-card .btn-login:hover {
+      background: #b8963a;
+      transform: scale(0.98);
+    }
+
+    .login-card .login-footer {
+      text-align: center;
+      margin-top: 14px;
+      font-size: 0.85rem;
+      color: var(--denim-navy);
+    }
+
+    .login-card .login-footer a {
+      color: var(--gold-accent);
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    .login-card .login-footer a:hover {
+      text-decoration: underline;
+    }
+
+    .login-msg {
+      margin-top: 10px;
+      text-align: center;
+      font-size: 0.85rem;
+      min-height: 24px;
+    }
+
+    .login-msg.error {
+      color: #b13e3e;
+    }
+    .login-msg.success {
       color: #1f7a4b;
     }
 
@@ -1065,17 +1204,6 @@
       font-size: 0.7rem;
       opacity: 0.6;
       margin-top: 2px;
-    }
-
-    /* ============================================================
-       LANDING PAGE CONTENT (default tampil)
-       ============================================================ */
-    .landing-content {
-      display: block;
-    }
-
-    .landing-content.hidden {
-      display: none;
     }
 
     /* ============================================================
@@ -1255,16 +1383,15 @@
         right: 4px;
       }
 
-      /* Register form di HP tetap 2 kolom */
       .register-wrapper {
         padding: 16px 12px 30px;
       }
 
       .register-header h1 {
-        font-size: 1.5rem;
+        font-size: 1.4rem;
       }
       .register-header p {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
       }
 
       .form-section {
@@ -1273,14 +1400,14 @@
       }
 
       .form-section .section-title {
-        font-size: 0.8rem;
+        font-size: 0.75rem;
         margin-bottom: 8px;
         padding-bottom: 6px;
       }
 
       .form-row {
         grid-template-columns: 1fr 1fr;
-        gap: 8px 10px;
+        gap: 6px 10px;
       }
 
       .form-group {
@@ -1291,23 +1418,23 @@
       }
 
       .form-group label {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
       }
 
       .form-group input,
       .form-group select,
       .form-group textarea {
-        padding: 6px 10px;
-        font-size: 0.75rem;
+        padding: 5px 10px;
+        font-size: 0.7rem;
       }
 
       .form-group input::placeholder,
       .form-group textarea::placeholder {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
       }
 
       .form-group textarea {
-        min-height: 38px;
+        min-height: 34px;
       }
 
       .position-selector {
@@ -1316,16 +1443,24 @@
       }
 
       .position-option {
-        padding: 6px 10px;
-        font-size: 0.7rem;
+        padding: 5px 8px;
+        font-size: 0.65rem;
       }
       .position-option i {
-        font-size: 1rem;
+        font-size: 0.9rem;
       }
 
       .btn-submit {
-        padding: 12px;
-        font-size: 0.9rem;
+        padding: 10px;
+        font-size: 0.85rem;
+      }
+
+      .login-card {
+        padding: 24px 20px 28px;
+      }
+
+      .login-card h2 {
+        font-size: 1.3rem;
       }
     }
 
@@ -1473,61 +1608,75 @@
         font-size: 0.7rem;
       }
 
-      /* Register form HP kecil */
       .register-wrapper {
         padding: 12px 8px 20px;
       }
 
       .register-header h1 {
-        font-size: 1.2rem;
+        font-size: 1.1rem;
       }
       .register-header p {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
       }
 
       .form-section {
-        padding: 10px 10px;
+        padding: 8px 10px;
       }
 
       .form-section .section-title {
-        font-size: 0.7rem;
+        font-size: 0.65rem;
       }
 
       .form-row {
         grid-template-columns: 1fr 1fr;
-        gap: 6px 6px;
+        gap: 4px 6px;
       }
 
       .form-group input,
       .form-group select,
       .form-group textarea {
-        padding: 5px 8px;
-        font-size: 0.7rem;
+        padding: 4px 8px;
+        font-size: 0.65rem;
       }
 
       .form-group input::placeholder,
       .form-group textarea::placeholder {
-        font-size: 0.65rem;
+        font-size: 0.6rem;
       }
 
       .form-group textarea {
-        min-height: 32px;
+        min-height: 28px;
       }
 
       .form-group label {
-        font-size: 0.6rem;
+        font-size: 0.55rem;
       }
 
       .position-option {
-        padding: 4px 8px;
-        font-size: 0.6rem;
+        padding: 4px 6px;
+        font-size: 0.55rem;
       }
       .position-option i {
-        font-size: 0.8rem;
+        font-size: 0.7rem;
       }
 
       .btn-submit {
-        padding: 10px;
+        padding: 8px;
+        font-size: 0.75rem;
+      }
+
+      .login-card {
+        padding: 20px 16px 24px;
+      }
+
+      .login-card h2 {
+        font-size: 1.1rem;
+      }
+      .login-card p {
+        font-size: 0.75rem;
+      }
+      .login-card .form-group input {
+        padding: 8px 12px;
         font-size: 0.8rem;
       }
 
@@ -1646,7 +1795,7 @@
 
   </div>
 
-  <!-- ===== REGISTER FORM (hidden default) ===== -->
+  <!-- ===== REGISTER FORM ===== -->
   <div class="register-wrapper" id="registerWrapper">
     <div class="register-header">
       <h1><i class="fas fa-user-plus"></i> Daftar Member</h1>
@@ -1680,14 +1829,15 @@
         </div>
       </div>
 
+      <!-- SECTION 2: IDENTITAS & KONTAK - NAMA & NIK 1 BARIS, HP & WA 1 BARIS -->
       <div class="form-section">
         <div class="section-title">
           <i class="fas fa-id-card"></i> Identitas & Kontak
           <span class="badge-step">2</span>
         </div>
         <div class="form-row">
-          <div class="form-group full-width">
-            <label>Nama Lengkap (Sesuai KTP) <span class="required">*</span></label>
+          <div class="form-group">
+            <label>Nama Lengkap <span class="required">*</span></label>
             <input type="text" id="fullname" placeholder="Nama lengkap" required />
           </div>
           <div class="form-group">
@@ -1698,13 +1848,14 @@
             <label>No. HP <span class="required">*</span> <span class="helper">0812345678</span></label>
             <input type="text" id="phone" placeholder="No. HP" required />
           </div>
-          <div class="form-group full-width">
+          <div class="form-group">
             <label>No. WhatsApp <span class="required">*</span> <span class="helper">0812345678</span></label>
             <input type="text" id="whatsapp" placeholder="No. WhatsApp aktif" required />
           </div>
         </div>
       </div>
 
+      <!-- SECTION 3: REKENING BANK -->
       <div class="form-section">
         <div class="section-title">
           <i class="fas fa-university"></i> Rekening Bank
@@ -1735,6 +1886,7 @@
         </div>
       </div>
 
+      <!-- SECTION 4: ALAMAT PENGIRIMAN -->
       <div class="form-section">
         <div class="section-title">
           <i class="fas fa-map-pin"></i> Alamat Pengiriman
@@ -1752,6 +1904,7 @@
         </div>
       </div>
 
+      <!-- SECTION 5: SPESIFIKASI JEANS -->
       <div class="form-section">
         <div class="section-title">
           <i class="fas fa-tshirt"></i> Spesifikasi Jeans
@@ -1791,6 +1944,7 @@
         </div>
       </div>
 
+      <!-- SECTION 6: PENEMPATAN TIM -->
       <div class="form-section">
         <div class="section-title">
           <i class="fas fa-sitemap"></i> Penempatan Tim
@@ -1831,9 +1985,33 @@
       <div class="msg" id="regMsg"></div>
 
       <div class="form-footer">
-        Sudah punya akun? <a href="#" id="backToLogin">Login di sini</a>
+        Sudah punya akun? <a id="backToLoginFromRegister">Login di sini</a>
       </div>
     </form>
+  </div>
+
+  <!-- ===== LOGIN OVERLAY ===== -->
+  <div class="login-overlay" id="loginOverlay">
+    <div class="login-card">
+      <button class="close-login" id="closeLogin">&times;</button>
+      <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
+      <p>Masuk ke akun member Anda</p>
+      <form id="loginForm" onsubmit="return false;">
+        <div class="form-group">
+          <label>Email atau Username</label>
+          <input type="text" id="loginEmail" placeholder="email@domain.com" />
+        </div>
+        <div class="form-group">
+          <label>Kata Sandi</label>
+          <input type="password" id="loginPassword" placeholder="••••••••" />
+        </div>
+        <button type="submit" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+        <div class="login-msg" id="loginMsg"></div>
+        <div class="login-footer">
+          Belum punya akun? <a id="goToRegister">Daftar di sini</a>
+        </div>
+      </form>
+    </div>
   </div>
 
   <!-- ===== FOOTER ===== -->
@@ -2043,7 +2221,30 @@
       sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
       // ============================================================
-      // NAVIGASI LANDING vs REGISTER
+      // LOGIN OVERLAY
+      // ============================================================
+      const loginOverlay = document.getElementById('loginOverlay');
+      const closeLogin = document.getElementById('closeLogin');
+      const loginMsg = document.getElementById('loginMsg');
+
+      function openLogin() {
+        loginOverlay.classList.add('show');
+        document.body.style.overflow = 'hidden';
+        loginMsg.innerText = '';
+        document.getElementById('loginEmail').value = '';
+        document.getElementById('loginPassword').value = '';
+      }
+
+      function closeLoginFn() {
+        loginOverlay.classList.remove('show');
+        document.body.style.overflow = '';
+      }
+
+      closeLogin.addEventListener('click', closeLoginFn);
+      loginOverlay.addEventListener('click', (e) => { if (e.target === loginOverlay) closeLoginFn(); });
+
+      // ============================================================
+      // NAVIGASI LANDING vs REGISTER vs LOGIN
       // ============================================================
       const landingContent = document.getElementById('landingContent');
       const registerWrapper = document.getElementById('registerWrapper');
@@ -2051,14 +2252,25 @@
       function showLanding() {
         landingContent.classList.remove('hidden');
         registerWrapper.classList.remove('active');
+        closeLoginFn();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
 
       function showRegister() {
         landingContent.classList.add('hidden');
         registerWrapper.classList.add('active');
+        closeLoginFn();
         window.scrollTo({ top: 0, behavior: 'smooth' });
       }
+
+      // Tombol login di navbar
+      document.getElementById('navLoginBtn').addEventListener('click', openLogin);
+
+      // Tombol login di sidebar
+      document.getElementById('sideLoginBtn').addEventListener('click', () => {
+        toggleSidebar(false);
+        openLogin();
+      });
 
       // Tombol daftar di navbar
       document.getElementById('navRegisterBtn').addEventListener('click', showRegister);
@@ -2069,19 +2281,16 @@
         showRegister();
       });
 
-      // Tombol login di navbar
-      document.getElementById('navLoginBtn').addEventListener('click', showLanding);
-
-      // Tombol login di sidebar
-      document.getElementById('sideLoginBtn').addEventListener('click', () => {
-        toggleSidebar(false);
-        showLanding();
+      // Back to login dari register
+      document.getElementById('backToLoginFromRegister').addEventListener('click', (e) => {
+        e.preventDefault();
+        openLogin();
       });
 
-      // Back to login di form
-      document.getElementById('backToLogin').addEventListener('click', (e) => {
+      // Go to register dari login
+      document.getElementById('goToRegister').addEventListener('click', (e) => {
         e.preventDefault();
-        showLanding();
+        showRegister();
       });
 
       // User badge
@@ -2099,7 +2308,7 @@
             }
           } catch (_) {}
         }
-        showLanding();
+        openLogin();
       });
 
       // Sidebar menu
@@ -2114,6 +2323,47 @@
           if (page === 'about') { showLanding();
             document.querySelector('.features')?.scrollIntoView({ behavior: 'smooth' }); }
         });
+      });
+
+      // ============================================================
+      // LOGIN FUNCTION
+      // ============================================================
+      document.getElementById('loginBtn').addEventListener('click', function() {
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value.trim();
+        const msgEl = document.getElementById('loginMsg');
+
+        if (!email || !password) {
+          msgEl.className = 'login-msg error';
+          msgEl.innerText = '⚠️ Isi email/username dan password.';
+          return;
+        }
+
+        const users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
+        const user = users.find(u => (u.email === email || u.username === email) && u.password === password);
+
+        if (!user) {
+          msgEl.className = 'login-msg error';
+          msgEl.innerText = '❌ Email/Username atau password salah.';
+          return;
+        }
+
+        localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
+        msgEl.className = 'login-msg success';
+        msgEl.innerText = '✅ Login berhasil!';
+
+        setTimeout(() => {
+          if (user.email === 'admin@mlm.com') {
+            window.location.href = 'admin.html';
+          } else {
+            window.location.href = 'dashboard.html';
+          }
+        }, 1000);
+      });
+
+      // Enter key on login
+      document.getElementById('loginPassword').addEventListener('keydown', function(e) {
+        if (e.key === 'Enter') document.getElementById('loginBtn').click();
       });
 
       // ============================================================
@@ -2353,7 +2603,7 @@
       renderProductGrid(1);
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Landing Page + Register siap');
+      console.log('🟦 HEDTRO JEANS · Landing + Login + Register siap');
     })();
   </script>
 
