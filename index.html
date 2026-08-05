@@ -73,7 +73,7 @@
         }
 
         /* ============================================================
-           NAVBAR
+           NAVBAR - DESKTOP (semua menu horizontal)
            ============================================================ */
         .navbar {
             position: fixed;
@@ -114,6 +114,7 @@
             margin-left: 2px;
         }
 
+        /* DESKTOP MENU - horizontal */
         .nav-menu {
             display: flex;
             align-items: center;
@@ -215,32 +216,11 @@
             justify-content: center;
         }
 
-        .nav-right-desktop {
+        .nav-right {
             display: flex;
             align-items: center;
-            gap: 10px;
-        }
-
-        .nav-right-desktop .user-badge {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            color: var(--cream);
-            font-size: 0.75rem;
-            background: rgba(255, 255, 255, 0.08);
-            padding: 6px 14px;
-            border-radius: 60px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .nav-right-desktop .user-badge:hover {
-            background: rgba(255, 255, 255, 0.15);
-        }
-
-        .nav-right-desktop .user-badge i {
-            color: var(--gold-accent);
+            gap: 8px;
+            flex-shrink: 0;
         }
 
         .btn-nav {
@@ -272,6 +252,9 @@
             transform: scale(0.97);
         }
 
+        /* ============================================================
+           BURGER & SIDEBAR - HANYA UNTUK HP
+           ============================================================ */
         .burger-btn {
             display: none !important;
             flex-direction: column;
@@ -304,9 +287,6 @@
             transform: translateY(-6.5px) rotate(-45deg);
         }
 
-        /* ============================================================
-           SIDEBAR (HP)
-           ============================================================ */
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -406,7 +386,257 @@
         }
 
         /* ============================================================
-           CAROUSEL
+           HP - SEARCH & CART ICON (tampil di HP)
+           ============================================================ */
+        .search-icon-hp {
+            display: none;
+            color: var(--cream);
+            font-size: 1.1rem;
+            padding: 8px 10px;
+            border-radius: 60px;
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .search-icon-hp:hover {
+            color: var(--gold-accent);
+            background: rgba(201, 168, 76, 0.08);
+        }
+
+        .cart-hp {
+            display: none;
+            color: var(--cream);
+            font-size: 1.1rem;
+            padding: 8px 10px;
+            border-radius: 60px;
+            transition: var(--transition);
+            position: relative;
+            cursor: pointer;
+        }
+
+        .cart-hp:hover {
+            color: var(--gold-accent);
+            background: rgba(201, 168, 76, 0.08);
+        }
+
+        .cart-hp .badge {
+            position: absolute;
+            top: 0;
+            right: 0;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            font-size: 0.55rem;
+            font-weight: 700;
+            width: 16px;
+            height: 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ============================================================
+           POPUP OVERLAY (Search, Track, Cart)
+           ============================================================ */
+        .popup-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(8px);
+            z-index: 2000;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .popup-overlay.show {
+            display: flex;
+        }
+
+        .popup-overlay .popup-box {
+            background: var(--white);
+            max-width: 500px;
+            width: 100%;
+            max-height: 80vh;
+            overflow-y: auto;
+            border-radius: var(--radius);
+            padding: 28px 30px 32px;
+            box-shadow: var(--shadow-lg);
+            position: relative;
+            animation: popupIn 0.3s ease;
+        }
+
+        @keyframes popupIn {
+            from {
+                transform: scale(0.9) translateY(20px);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1) translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .popup-overlay .popup-box .close-popup {
+            position: absolute;
+            top: 14px;
+            right: 18px;
+            font-size: 1.6rem;
+            color: var(--denim-navy);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .popup-overlay .popup-box .close-popup:hover {
+            color: var(--denim-dark);
+            transform: rotate(90deg);
+        }
+
+        .popup-overlay .popup-box h3 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.4rem;
+            font-weight: 800;
+            color: var(--denim-dark);
+            margin-bottom: 4px;
+        }
+
+        .popup-overlay .popup-box p.sub {
+            color: var(--denim-navy);
+            font-size: 0.85rem;
+            opacity: 0.7;
+            margin-bottom: 16px;
+        }
+
+        .popup-overlay .popup-box .popup-form {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .popup-overlay .popup-box .popup-form input {
+            padding: 12px 18px;
+            border: 1.5px solid var(--denim-light);
+            border-radius: 60px;
+            font-size: 0.95rem;
+            background: var(--cream);
+            color: var(--denim-dark);
+            font-family: inherit;
+            outline: none;
+            transition: var(--transition);
+        }
+
+        .popup-overlay .popup-box .popup-form input:focus {
+            border-color: var(--gold-accent);
+        }
+
+        .popup-overlay .popup-box .popup-form button {
+            padding: 14px;
+            background: var(--gold-accent);
+            color: var(--denim-dark);
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 1rem;
+            transition: var(--transition);
+            font-family: inherit;
+        }
+
+        .popup-overlay .popup-box .popup-form button:hover {
+            background: #b8963a;
+            transform: scale(0.98);
+        }
+
+        .popup-overlay .popup-box .popup-result {
+            margin-top: 14px;
+            font-size: 0.9rem;
+            color: var(--denim-navy);
+        }
+
+        /* ============================================================
+           TOAST NOTIFICATION
+           ============================================================ */
+        .toast-container {
+            position: fixed;
+            top: 100px;
+            right: 20px;
+            z-index: 9999;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-width: 360px;
+            width: 100%;
+            pointer-events: none;
+        }
+
+        .toast-item {
+            background: var(--denim-dark);
+            color: var(--cream);
+            padding: 16px 20px;
+            border-radius: var(--radius-sm);
+            border-left: 4px solid var(--gold-accent);
+            box-shadow: var(--shadow-lg);
+            animation: slideInRight 0.4s ease;
+            pointer-events: all;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .toast-item.success {
+            border-left-color: #2ecc71;
+        }
+        .toast-item.error {
+            border-left-color: #e74c3c;
+        }
+        .toast-item.info {
+            border-left-color: var(--gold-accent);
+        }
+
+        .toast-item .toast-icon {
+            font-size: 1.2rem;
+            flex-shrink: 0;
+        }
+
+        .toast-item .toast-msg {
+            font-size: 0.9rem;
+            flex: 1;
+        }
+
+        .toast-item .toast-close {
+            color: rgba(255, 255, 255, 0.4);
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(60px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+        }
+
+        @keyframes slideOutRight {
+            from {
+                opacity: 1;
+                transform: translateX(0) scale(1);
+            }
+            to {
+                opacity: 0;
+                transform: translateX(60px) scale(0.9);
+            }
+        }
+
+        .toast-item.removing {
+            animation: slideOutRight 0.3s ease forwards;
+        }
+
+        /* ============================================================
+           CAROUSEL - HP FULL (tanpa rounded), DESKTOP rounded
            ============================================================ */
         .carousel-section {
             position: relative;
@@ -420,6 +650,12 @@
             touch-action: pan-y;
             user-select: none;
             -webkit-user-select: none;
+        }
+
+        @media (max-width: 768px) {
+            .carousel-section {
+                border-radius: 0 !important;
+            }
         }
 
         .carousel-track {
@@ -1103,138 +1339,8 @@
         }
 
         /* ============================================================
-           HP - NAVBAR
+           RESPONSIVE - HP (burger muncul, desktop menu horizontal)
            ============================================================ */
-        .search-icon-hp {
-            display: none;
-            color: var(--cream);
-            font-size: 1.1rem;
-            padding: 8px 10px;
-            border-radius: 60px;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .search-icon-hp:hover {
-            color: var(--gold-accent);
-            background: rgba(201, 168, 76, 0.08);
-        }
-
-        .cart-hp {
-            display: none;
-            color: var(--cream);
-            font-size: 1.1rem;
-            padding: 8px 10px;
-            border-radius: 60px;
-            transition: var(--transition);
-            position: relative;
-            cursor: pointer;
-        }
-
-        .cart-hp:hover {
-            color: var(--gold-accent);
-            background: rgba(201, 168, 76, 0.08);
-        }
-
-        .cart-hp .badge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            font-size: 0.55rem;
-            font-weight: 700;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ============================================================
-           TOAST NOTIFICATION
-           ============================================================ */
-        .toast-container {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 360px;
-            width: 100%;
-            pointer-events: none;
-        }
-
-        .toast-item {
-            background: var(--denim-dark);
-            color: var(--cream);
-            padding: 16px 20px;
-            border-radius: var(--radius-sm);
-            border-left: 4px solid var(--gold-accent);
-            box-shadow: var(--shadow-lg);
-            animation: slideInRight 0.4s ease;
-            pointer-events: all;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .toast-item.success {
-            border-left-color: #2ecc71;
-        }
-        .toast-item.error {
-            border-left-color: #e74c3c;
-        }
-        .toast-item.info {
-            border-left-color: var(--gold-accent);
-        }
-
-        .toast-item .toast-icon {
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .toast-item .toast-msg {
-            font-size: 0.9rem;
-            flex: 1;
-        }
-
-        .toast-item .toast-close {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(60px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
-        }
-
-        @keyframes slideOutRight {
-            from {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(60px) scale(0.9);
-            }
-        }
-
-        .toast-item.removing {
-            animation: slideOutRight 0.3s ease forwards;
-        }
-
         @media (max-width: 768px) {
             body {
                 padding-top: 64px;
@@ -1259,16 +1365,14 @@
                 font-size: 0.6rem;
             }
 
+            /* HP: sembunyikan menu horizontal, tampilkan burger */
             .nav-menu {
                 display: none !important;
             }
             .nav-actions {
                 display: none !important;
             }
-            .nav-right-desktop .user-badge {
-                display: none !important;
-            }
-            .nav-right-desktop .btn-nav {
+            .btn-nav {
                 display: none !important;
             }
 
@@ -1292,7 +1396,7 @@
             .carousel-section {
                 height: 75vh;
                 min-height: 350px;
-                border-radius: var(--radius-sm);
+                border-radius: 0 !important;
             }
             .carousel-slide {
                 padding: 30px 24px;
@@ -1384,6 +1488,11 @@
             .footer-grid {
                 grid-template-columns: 1fr 1fr;
                 gap: 20px;
+            }
+
+            .popup-overlay .popup-box {
+                max-width: 95%;
+                padding: 20px 18px 24px;
             }
 
             .toast-container {
@@ -1482,6 +1591,7 @@
         }
 
         @media (min-width: 769px) {
+            /* DESKTOP: menu horizontal, burger & sidebar disembunyikan */
             .burger-btn {
                 display: none !important;
             }
@@ -1503,10 +1613,7 @@
             .cart-hp {
                 display: none !important;
             }
-            .nav-right-desktop .user-badge {
-                display: flex !important;
-            }
-            .nav-right-desktop .btn-nav {
+            .btn-nav {
                 display: flex !important;
             }
         }
@@ -1527,6 +1634,7 @@
             <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
         </div>
 
+        <!-- DESKTOP MENU (horizontal) -->
         <ul class="nav-menu" id="navMenu">
             <li><a href="#" class="active" data-page="home"><i class="fas fa-home"></i> Beranda</a></li>
             <li><a href="#" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</a></li>
@@ -1535,7 +1643,8 @@
             <li><a href="#" id="navTrackBtn"><i class="fas fa-truck"></i> Lacak</a></li>
         </ul>
 
-        <div class="nav-right-desktop">
+        <div class="nav-right">
+            <!-- DESKTOP SEARCH & CART -->
             <div class="nav-actions">
                 <div class="search-box">
                     <input type="text" placeholder="Cari produk..." id="searchInputDesktop" />
@@ -1547,17 +1656,18 @@
                 </button>
             </div>
 
+            <!-- HP SEARCH & CART -->
             <span class="search-icon-hp" id="searchIconHp"><i class="fas fa-search"></i></span>
             <span class="cart-hp" id="cartHp">
                 <i class="fas fa-shopping-bag"></i>
                 <span class="badge">0</span>
             </span>
 
-            <div class="user-badge" id="navUserBadge">
-                <i class="fas fa-user-circle"></i> <span id="navUserName">Guest</span>
-            </div>
+            <!-- DESKTOP LOGIN/DAFTAR -->
             <a href="login.html" class="btn-nav btn-nav-outline">Login</a>
             <a href="register.html" class="btn-nav btn-nav-gold">Daftar</a>
+
+            <!-- BURGER (HP) -->
             <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
             </button>
@@ -1565,7 +1675,7 @@
     </header>
 
     <!-- ============================================================
-    SIDEBAR (HP)
+    SIDEBAR (HP ONLY)
     ============================================================ -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <nav class="sidebar" id="sidebar">
@@ -1573,16 +1683,63 @@
             <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
             <span class="close-side" id="closeSidebar">&times;</span>
         </div>
+
         <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
         <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
         <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang Kami</div>
         <div class="menu-item" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</div>
         <div class="menu-item" id="sideTrackBtn"><i class="fas fa-truck"></i> Lacak Pesanan</div>
+
         <div class="menu-divider"></div>
-        <div class="menu-item" id="sideUserBadge"><i class="fas fa-user-circle"></i> <span id="sideUserName">Guest</span></div>
+
         <a href="login.html" class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
         <a href="register.html" class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</a>
     </nav>
+
+    <!-- ============================================================
+    POPUP SEARCH
+    ============================================================ -->
+    <div class="popup-overlay" id="searchPopup">
+        <div class="popup-box">
+            <button class="close-popup" id="closeSearchPopup">&times;</button>
+            <h3><i class="fas fa-search" style="color:var(--gold-accent);"></i> Cari Produk</h3>
+            <p class="sub">Temukan produk denim favorit Anda</p>
+            <div class="popup-form">
+                <input type="text" id="searchInputPopup" placeholder="Ketik nama produk..." />
+                <button id="searchBtnPopup"><i class="fas fa-search"></i> Cari</button>
+            </div>
+            <div class="popup-result" id="searchResult"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    POPUP TRACK
+    ============================================================ -->
+    <div class="popup-overlay" id="trackPopup">
+        <div class="popup-box">
+            <button class="close-popup" id="closeTrackPopup">&times;</button>
+            <h3><i class="fas fa-truck" style="color:var(--gold-accent);"></i> Lacak Pesanan</h3>
+            <p class="sub">Masukkan nomor pesanan Anda</p>
+            <div class="popup-form">
+                <input type="text" id="trackInputPopup" placeholder="Contoh: HDT-2024-001" />
+                <button id="trackBtnPopup"><i class="fas fa-search"></i> Lacak</button>
+            </div>
+            <div class="popup-result" id="trackResultPopup"></div>
+        </div>
+    </div>
+
+    <!-- ============================================================
+    POPUP CART
+    ============================================================ -->
+    <div class="popup-overlay" id="cartPopup">
+        <div class="popup-box">
+            <button class="close-popup" id="closeCartPopup">&times;</button>
+            <h3><i class="fas fa-shopping-bag" style="color:var(--gold-accent);"></i> Keranjang Belanja</h3>
+            <p class="sub" id="cartCountLabel">0 item di keranjang</p>
+            <div id="cartItems" style="margin:12px 0; max-height:300px; overflow-y:auto;"></div>
+            <button id="cartCheckoutBtn" style="width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border-radius:60px; font-weight:700; font-size:1rem; font-family:inherit; transition:var(--transition);">Checkout</button>
+        </div>
+    </div>
 
     <!-- ============================================================
     MAIN CONTENT
@@ -1807,6 +1964,52 @@
             ];
 
             // ============================================================
+            // CART STATE
+            // ============================================================
+            let cartItems = [];
+
+            function updateCartUI() {
+                const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
+                document.querySelectorAll('.badge').forEach(el => el.textContent = totalItems);
+                document.getElementById('cartCountLabel').textContent = `${totalItems} item di keranjang`;
+
+                const container = document.getElementById('cartItems');
+                if (cartItems.length === 0) {
+                    container.innerHTML = '<p style="color:var(--denim-navy); opacity:0.6;">Keranjang kosong</p>';
+                    return;
+                }
+                let html = '';
+                cartItems.forEach(item => {
+                    html += `
+                        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--denim-light);">
+                            <div>
+                                <strong>${item.name}</strong>
+                                <span style="display:block; font-size:0.8rem; color:var(--denim-navy);">Rp ${item.price.toLocaleString()} x ${item.qty}</span>
+                            </div>
+                            <button class="remove-cart-item" data-id="${item.id}" style="color:#b13e3e; font-size:0.9rem; padding:4px 10px;">✕</button>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+                container.querySelectorAll('.remove-cart-item').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        cartItems = cartItems.filter(item => item.id !== id);
+                        updateCartUI();
+                    });
+                });
+            }
+
+            function addToCart(productId) {
+                const product = allProducts.find(p => p.id === productId);
+                if (!product) return;
+                const existing = cartItems.find(item => item.id === productId);
+                if (existing) { existing.qty += 1; } else { cartItems.push({ ...product, qty: 1 }); }
+                updateCartUI();
+                showToast(`🛒 ${product.name} ditambahkan ke keranjang!`, 'success');
+            }
+
+            // ============================================================
             // RENDER FAVORITE CAROUSEL
             // ============================================================
             function renderFavoriteCarousel() {
@@ -1902,36 +2105,19 @@
                 document.querySelectorAll('.btn-detail').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.dataset.id);
-                        showToast(`📦 Detail produk ID: ${id}`, 'info');
+                        const product = allProducts.find(p => p.id === id);
+                        if (product) {
+                            showToast(`📦 ${product.name}\nTag: ${product.tag}\nStok: ${product.stock}`, 'info');
+                        }
                     });
                 });
                 document.querySelectorAll('.btn-buy').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.dataset.id);
-                        const product = allProducts.find(p => p.id === id);
-                        if (product) {
-                            showToast(`🛒 ${product.name} ditambahkan ke keranjang!`, 'success');
-                            updateCartBadge();
-                        }
+                        addToCart(id);
                     });
                 });
             }
-
-            // ============================================================
-            // CART
-            // ============================================================
-            let cartCount = 0;
-
-            function updateCartBadge() {
-                cartCount++;
-                document.querySelectorAll('.badge').forEach(el => el.textContent = cartCount);
-            }
-
-            document.querySelectorAll('.cart-btn, .cart-hp').forEach(el => {
-                el.addEventListener('click', function() {
-                    showToast(`🛒 Keranjang (${cartCount} item)`, 'info');
-                });
-            });
 
             // ============================================================
             // CAROUSEL
@@ -2014,7 +2200,7 @@
             };
 
             // ============================================================
-            // SIDEBAR & BURGER
+            // SIDEBAR & BURGER (HP ONLY)
             // ============================================================
             const burgerBtn = document.getElementById('burgerBtn');
             const sidebar = document.getElementById('sidebar');
@@ -2022,6 +2208,7 @@
             const closeSidebar = document.getElementById('closeSidebar');
 
             function toggleSidebar(open) {
+                if (window.innerWidth >= 769) return;
                 const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
                 sidebar.classList.toggle('open', isOpen);
                 sidebarOverlay.classList.toggle('active', isOpen);
@@ -2034,63 +2221,110 @@
             sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
             // ============================================================
-            // NAVIGASI
+            // NAVIGASI - DESKTOP & SIDEBAR
             // ============================================================
-            document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const page = this.dataset.page;
-                    toggleSidebar(false);
-                    if (page === 'home') {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else if (page === 'products') {
-                        document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-                    } else if (page === 'about') {
-                        document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
-                    } else if (page === 'faq') {
-                        document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
-                    }
-                });
-            });
+            function navigateTo(page) {
+                if (page === 'home') {
+                    window.scrollTo({ top: 0, behavior: 'smooth' });
+                } else if (page === 'products') {
+                    document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
+                } else if (page === 'about') {
+                    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
+                } else if (page === 'faq') {
+                    document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
+                }
+            }
 
+            // Desktop menu
             document.querySelectorAll('.nav-menu a[data-page]').forEach(link => {
                 link.addEventListener('click', function(e) {
                     e.preventDefault();
                     const page = this.dataset.page;
-                    if (page === 'home') {
-                        window.scrollTo({ top: 0, behavior: 'smooth' });
-                    } else if (page === 'products') {
-                        document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-                    } else if (page === 'about') {
-                        document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
-                    } else if (page === 'faq') {
-                        document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
-                    }
+                    document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                    navigateTo(page);
                 });
             });
 
-            document.getElementById('sideTrackBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                toggleSidebar(false);
-                showToast('🔍 Masukkan nomor pesanan di form Lacak', 'info');
+            // Sidebar menu (HP)
+            document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.dataset.page;
+                    if (window.innerWidth < 769) toggleSidebar(false);
+                    document.querySelectorAll('.sidebar .menu-item').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                    navigateTo(page);
+                });
             });
 
-            document.getElementById('navTrackBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                showToast('🔍 Masukkan nomor pesanan di form Lacak', 'info');
+            // ============================================================
+            // POPUP FUNCTIONS
+            // ============================================================
+
+            // --- SEARCH POPUP ---
+            const searchPopup = document.getElementById('searchPopup');
+            const closeSearchPopup = document.getElementById('closeSearchPopup');
+
+            function openSearchPopup() {
+                searchPopup.classList.add('show');
+                document.getElementById('searchInputPopup').value = '';
+                document.getElementById('searchResult').innerHTML = '';
+                document.body.style.overflow = 'hidden';
+                setTimeout(() => document.getElementById('searchInputPopup').focus(), 100);
+            }
+
+            function closeSearchPopupFn() {
+                searchPopup.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            closeSearchPopup.addEventListener('click', closeSearchPopupFn);
+            searchPopup.addEventListener('click', function(e) { if (e.target === searchPopup) closeSearchPopupFn(); });
+
+            document.getElementById('searchIconHp').addEventListener('click', openSearchPopup);
+
+            document.getElementById('searchBtnPopup').addEventListener('click', function() {
+                const query = document.getElementById('searchInputPopup').value.trim().toLowerCase();
+                const resultEl = document.getElementById('searchResult');
+                if (!query) {
+                    resultEl.innerHTML = '⚠️ Masukkan kata kunci pencarian.';
+                    resultEl.style.color = '#b13e3e';
+                    return;
+                }
+                const results = allProducts.filter(p => p.name.toLowerCase().includes(query) || p.tag.toLowerCase()
+                    .includes(query));
+                if (results.length === 0) {
+                    resultEl.innerHTML = '❌ Tidak ada produk yang ditemukan.';
+                    resultEl.style.color = '#b13e3e';
+                    return;
+                }
+                let html = '<div style="margin-top:8px;">';
+                results.forEach(p => {
+                    html +=
+                        `<div style="padding:8px 0; border-bottom:1px solid var(--denim-light); display:flex; justify-content:space-between; align-items:center;">
+                            <span>${p.name}</span>
+                            <button class="search-result-buy" data-id="${p.id}" style="background:var(--gold-accent); color:var(--denim-dark); padding:4px 16px; border-radius:60px; font-weight:600; font-size:0.8rem;">Beli</button>
+                        </div>`;
+                });
+                html += '</div>';
+                resultEl.innerHTML = html;
+                resultEl.style.color = 'var(--denim-dark)';
+                resultEl.querySelectorAll('.search-result-buy').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        closeSearchPopupFn();
+                        addToCart(id);
+                        showToast('🛒 Produk ditambahkan ke keranjang!', 'success');
+                    });
+                });
             });
 
-            document.getElementById('sideUserBadge').addEventListener('click', function(e) {
-                e.preventDefault();
-                toggleSidebar(false);
-                window.location.href = 'login.html';
+            document.getElementById('searchInputPopup').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('searchBtnPopup').click();
             });
 
-            // Search
-            document.getElementById('searchIconHp').addEventListener('click', function() {
-                showToast('🔍 Ketik nama produk untuk mencari', 'info');
-            });
-
+            // Desktop search
             document.getElementById('searchBtnDesktop').addEventListener('click', function() {
                 const query = document.getElementById('searchInputDesktop').value.trim().toLowerCase();
                 if (!query) {
@@ -2103,41 +2337,135 @@
                     showToast('❌ Tidak ada produk yang ditemukan', 'error');
                     return;
                 }
+                const grid = document.getElementById('productGrid');
+                grid.innerHTML = '';
+                results.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    card.innerHTML = `
+                        <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
+                        <div class="body">
+                            <span class="tag">${p.tag}</span>
+                            <h4>${p.name}</h4>
+                            <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
+                            <div class="btn-group">
+                                <button class="btn-detail" data-id="${p.id}">Detail</button>
+                                <button class="btn-buy" data-id="${p.id}">Beli</button>
+                            </div>
+                        </div>
+                    `;
+                    grid.appendChild(card);
+                });
+                bindProductButtons();
+                document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 showToast(`✅ ${results.length} produk ditemukan`, 'success');
+            });
+            document.getElementById('searchInputDesktop').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('searchBtnDesktop').click();
+            });
+
+            // --- TRACK POPUP ---
+            const trackPopup = document.getElementById('trackPopup');
+            const closeTrackPopup = document.getElementById('closeTrackPopup');
+
+            function openTrackPopup() {
+                trackPopup.classList.add('show');
+                document.getElementById('trackInputPopup').value = '';
+                document.getElementById('trackResultPopup').innerHTML = '';
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeTrackPopupFn() {
+                trackPopup.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            closeTrackPopup.addEventListener('click', closeTrackPopupFn);
+            trackPopup.addEventListener('click', function(e) { if (e.target === trackPopup) closeTrackPopupFn(); });
+
+            document.getElementById('navTrackBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                openTrackPopup();
+            });
+            document.getElementById('sideTrackBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                if (window.innerWidth < 769) toggleSidebar(false);
+                openTrackPopup();
+            });
+
+            document.getElementById('trackBtnPopup').addEventListener('click', function() {
+                const input = document.getElementById('trackInputPopup').value.trim().toUpperCase();
+                const resultEl = document.getElementById('trackResultPopup');
+                if (!input) {
+                    resultEl.innerHTML = '⚠️ Masukkan nomor pesanan.';
+                    resultEl.style.color = '#b13e3e';
+                    return;
+                }
+                const orders = ['HDT-2024-001', 'HDT-2024-002', 'HDT-2024-003', 'HDT-2024-004', 'HDT-2024-005'];
+                if (orders.includes(input)) {
+                    const statuses = ['📦 Pesanan sedang diproses', '🚚 Pesanan dalam perjalanan',
+                        '✅ Pesanan telah sampai'
+                    ];
+                    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
+                    resultEl.innerHTML =
+                        `✅ <strong>${input}</strong> - ${randomStatus}<br><span style="font-size:0.8rem; opacity:0.6;">Update: ${new Date().toLocaleDateString()}</span>`;
+                    resultEl.style.color = '#1f7a4b';
+                } else {
+                    resultEl.innerHTML = '❌ Nomor pesanan tidak ditemukan. Periksa kembali.';
+                    resultEl.style.color = '#b13e3e';
+                }
+            });
+
+            document.getElementById('trackInputPopup').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('trackBtnPopup').click();
+            });
+
+            // --- CART POPUP ---
+            const cartPopup = document.getElementById('cartPopup');
+            const closeCartPopup = document.getElementById('closeCartPopup');
+
+            function openCartPopup() {
+                updateCartUI();
+                cartPopup.classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            function closeCartPopupFn() {
+                cartPopup.classList.remove('show');
+                document.body.style.overflow = '';
+            }
+
+            closeCartPopup.addEventListener('click', closeCartPopupFn);
+            cartPopup.addEventListener('click', function(e) { if (e.target === cartPopup) closeCartPopupFn(); });
+
+            document.getElementById('cartBtnDesktop').addEventListener('click', openCartPopup);
+            document.getElementById('cartHp').addEventListener('click', openCartPopup);
+
+            document.getElementById('cartCheckoutBtn').addEventListener('click', function() {
+                if (cartItems.length === 0) {
+                    showToast('Keranjang kosong!', 'error');
+                    return;
+                }
+                const total = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                showToast(`🛒 Total: Rp ${total.toLocaleString()}\nTerima kasih!`, 'success', 4000);
+                cartItems = [];
+                updateCartUI();
+                closeCartPopupFn();
             });
 
             // ============================================================
-            // UPDATE UI
+            // SIDEBAR LOGIN/DAFTAR
             // ============================================================
-            function updateUI() {
-                const navUserName = document.getElementById('navUserName');
-                const sideUserName = document.getElementById('sideUserName');
-                const session = localStorage.getItem('mlm_session');
-                if (session) {
-                    try {
-                        const { id } = JSON.parse(session);
-                        const users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
-                        const user = users.find(u => u.id === id);
-                        if (user) {
-                            const name = user.username || user.name;
-                            navUserName.innerText = name;
-                            sideUserName.innerText = name;
-                            return;
-                        }
-                    } catch (_) {}
-                }
-                navUserName.innerText = 'Guest';
-                sideUserName.innerText = 'Guest';
-            }
+            // Sudah pakai <a href> langsung
 
             // ============================================================
             // INIT
             // ============================================================
             renderFavoriteCarousel();
             renderProductGrid(1);
-            updateUI();
+            updateCartUI();
 
-            console.log('🟦 HEDTRO JEANS · Landing page siap');
+            console.log('🟦 HEDTRO JEANS · HP: logo, search, cart, burger | PC: menu horizontal');
         })();
     </script>
 
