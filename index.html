@@ -3,10 +3,13 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-  <title>HEDTRO JEANS · Daftar Member</title>
+  <title>HEDTRO JEANS · Afiliasi & Reseller</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
   <style>
+    /* ============================================================
+       RESET & ROOT
+       ============================================================ */
     * {
       margin: 0;
       padding: 0;
@@ -304,12 +307,507 @@
     }
 
     /* ============================================================
-       REGISTER FORM - 2 KOLOM COMPACT
+       CAROUSEL - SLIDER 75%
+       ============================================================ */
+    .carousel-section {
+      position: relative;
+      width: 100%;
+      height: 75vh;
+      min-height: 400px;
+      overflow: hidden;
+      background: var(--denim-dark);
+    }
+
+    .carousel-track {
+      display: flex;
+      height: 100%;
+      transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    }
+
+    .carousel-slide {
+      min-width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 60px 60px;
+      background-size: cover;
+      background-position: center;
+      position: relative;
+      flex-direction: column;
+    }
+
+    .carousel-slide .overlay-dark {
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(135deg, rgba(11, 26, 43, 0.6) 0%, rgba(11, 26, 43, 0.2) 100%);
+      z-index: 1;
+    }
+
+    .slide-image {
+      font-size: 10rem;
+      color: var(--white);
+      opacity: 0.2;
+      position: absolute;
+      right: -20px;
+      bottom: -30px;
+      z-index: 1;
+      transform: rotate(-10deg);
+      text-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .slide-image-left {
+      font-size: 8rem;
+      color: var(--white);
+      opacity: 0.15;
+      position: absolute;
+      left: -20px;
+      top: -10px;
+      z-index: 1;
+      transform: rotate(15deg);
+      text-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+    }
+
+    .carousel-slide .slide-content {
+      text-align: center;
+      color: var(--white);
+      z-index: 2;
+      max-width: 700px;
+      position: relative;
+    }
+
+    .carousel-slide .slide-content h2 {
+      font-family: 'Playfair Display', serif;
+      font-size: 3.5rem;
+      font-weight: 800;
+      letter-spacing: -1px;
+      margin-bottom: 12px;
+      text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .carousel-slide .slide-content h2 i {
+      color: var(--gold-accent);
+    }
+
+    .carousel-slide .slide-content p {
+      font-size: 1.2rem;
+      opacity: 0.9;
+      color: var(--gold-light);
+      text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .carousel-slide .slide-content .btn-slide {
+      display: inline-block;
+      margin-top: 20px;
+      background: var(--gold-accent);
+      color: var(--denim-dark);
+      padding: 14px 44px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 1rem;
+      transition: var(--transition);
+      text-shadow: none;
+    }
+
+    .carousel-slide .slide-content .btn-slide:hover {
+      transform: scale(1.05);
+      background: #b8963a;
+    }
+
+    .carousel-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(12px);
+      color: #fff;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      width: 50px;
+      height: 50px;
+      border-radius: 50%;
+      font-size: 1.3rem;
+      cursor: pointer;
+      z-index: 10;
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-btn:hover {
+      background: var(--gold-accent);
+      border-color: var(--gold-accent);
+      color: var(--denim-dark);
+      transform: translateY(-50%) scale(1.05);
+    }
+
+    .carousel-btn.prev {
+      left: 20px;
+    }
+
+    .carousel-btn.next {
+      right: 20px;
+    }
+
+    .carousel-dots {
+      position: absolute;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%);
+      display: flex;
+      gap: 12px;
+      z-index: 10;
+    }
+
+    .carousel-dots .dot {
+      width: 12px;
+      height: 12px;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.2);
+      cursor: pointer;
+      transition: var(--transition);
+      border: 2px solid transparent;
+    }
+
+    .carousel-dots .dot.active {
+      background: var(--gold-accent);
+      border-color: var(--gold-light);
+      box-shadow: 0 0 30px rgba(201, 168, 76, 0.3);
+      transform: scale(1.15);
+    }
+
+    /* ============================================================
+       SECTION TITLE
+       ============================================================ */
+    .section-title {
+      font-size: 1.6rem;
+      font-weight: 700;
+      color: var(--denim-dark);
+      padding: 32px 24px 16px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .section-title i {
+      color: var(--gold-accent);
+    }
+
+    /* ============================================================
+       PRODUCT CAROUSEL HORIZONTAL (FAVORIT)
+       ============================================================ */
+    .product-carousel-wrapper {
+      position: relative;
+      padding: 0 24px 20px;
+      overflow: hidden;
+    }
+
+    .product-carousel {
+      display: flex;
+      gap: 20px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      padding: 8px 4px 20px;
+      scrollbar-width: none;
+      -webkit-overflow-scrolling: touch;
+    }
+
+    .product-carousel::-webkit-scrollbar {
+      display: none;
+    }
+
+    .product-carousel .product-card {
+      flex: 0 0 220px;
+      min-width: 200px;
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid #e8edf2;
+    }
+
+    .product-carousel .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .product-carousel .product-card .img-placeholder {
+      height: 180px;
+      background: var(--denim-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--denim-blue);
+      font-size: 3rem;
+    }
+
+    .product-carousel .product-card .body {
+      padding: 16px;
+    }
+
+    .product-carousel .product-card .body .tag {
+      display: inline-block;
+      background: var(--gold-accent);
+      color: var(--denim-dark);
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 14px;
+      border-radius: 40px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .product-carousel .product-card .body h4 {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .product-carousel .product-card .body .price {
+      font-weight: 700;
+      color: var(--denim-blue);
+      font-size: 1rem;
+    }
+
+    .product-carousel .product-card .body .price del {
+      color: #8a9aa8;
+      font-weight: 400;
+      font-size: 0.75rem;
+      margin-left: 8px;
+    }
+
+    .product-carousel .product-card .body .btn-detail {
+      margin-top: 10px;
+      display: inline-block;
+      background: var(--denim-dark);
+      color: #fff;
+      padding: 5px 18px;
+      border-radius: 60px;
+      font-size: 0.7rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .product-carousel .product-card .body .btn-detail:hover {
+      background: var(--denim-blue);
+    }
+
+    .carousel-scroll-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      background: var(--white);
+      color: var(--denim-dark);
+      border: 1px solid var(--denim-light);
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      font-size: 1.2rem;
+      cursor: pointer;
+      z-index: 5;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .carousel-scroll-btn:hover {
+      background: var(--gold-accent);
+      color: var(--white);
+      border-color: var(--gold-accent);
+    }
+
+    .carousel-scroll-btn.left {
+      left: 8px;
+    }
+
+    .carousel-scroll-btn.right {
+      right: 8px;
+    }
+
+    /* ============================================================
+       PRODUCT GRID DENGAN PAGINATION
+       ============================================================ */
+    .product-grid-wrapper {
+      padding: 0 24px 40px;
+    }
+
+    .product-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: 20px;
+    }
+
+    .product-grid .product-card {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: var(--transition);
+      border: 1px solid #e8edf2;
+    }
+
+    .product-grid .product-card:hover {
+      transform: translateY(-6px);
+      box-shadow: var(--shadow-lg);
+    }
+
+    .product-grid .product-card .img-placeholder {
+      height: 180px;
+      background: var(--denim-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--denim-blue);
+      font-size: 3rem;
+    }
+
+    .product-grid .product-card .body {
+      padding: 16px;
+    }
+
+    .product-grid .product-card .body .tag {
+      display: inline-block;
+      background: var(--gold-accent);
+      color: var(--denim-dark);
+      font-size: 0.6rem;
+      font-weight: 700;
+      padding: 2px 14px;
+      border-radius: 40px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .product-grid .product-card .body h4 {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 4px;
+    }
+
+    .product-grid .product-card .body .price {
+      font-weight: 700;
+      color: var(--denim-blue);
+      font-size: 1.05rem;
+    }
+
+    .product-grid .product-card .body .price del {
+      color: #8a9aa8;
+      font-weight: 400;
+      font-size: 0.8rem;
+      margin-left: 8px;
+    }
+
+    .product-grid .product-card .body .btn-detail {
+      margin-top: 10px;
+      display: inline-block;
+      background: var(--denim-dark);
+      color: #fff;
+      padding: 5px 18px;
+      border-radius: 60px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      transition: var(--transition);
+    }
+
+    .product-grid .product-card .body .btn-detail:hover {
+      background: var(--denim-blue);
+    }
+
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 8px;
+      margin-top: 24px;
+      flex-wrap: wrap;
+    }
+
+    .pagination button {
+      padding: 8px 16px;
+      border-radius: 60px;
+      font-weight: 600;
+      font-size: 0.85rem;
+      background: var(--white);
+      color: var(--denim-dark);
+      border: 1px solid var(--denim-light);
+      transition: var(--transition);
+      cursor: pointer;
+    }
+
+    .pagination button:hover {
+      background: var(--denim-blue);
+      color: var(--white);
+      border-color: var(--denim-blue);
+    }
+
+    .pagination button.active {
+      background: var(--gold-accent);
+      color: var(--denim-dark);
+      border-color: var(--gold-accent);
+    }
+
+    .pagination button:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .pagination .page-info {
+      font-size: 0.85rem;
+      color: var(--denim-navy);
+      padding: 0 12px;
+    }
+
+    /* ============================================================
+       FEATURES
+       ============================================================ */
+    .features {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      gap: 16px;
+      padding: 20px 24px 40px;
+    }
+
+    .feature-item {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 20px 16px;
+      text-align: center;
+      box-shadow: var(--shadow);
+      border: 1px solid #e8edf2;
+    }
+
+    .feature-item i {
+      font-size: 2rem;
+      color: var(--gold-accent);
+      margin-bottom: 8px;
+    }
+
+    .feature-item h4 {
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .feature-item p {
+      font-size: 0.8rem;
+      color: #5a7a8a;
+    }
+
+    /* ============================================================
+       REGISTER FORM SECTION (muncul saat klik Daftar)
        ============================================================ */
     .register-wrapper {
       max-width: 1000px;
       margin: 0 auto;
       padding: 24px 20px 50px;
+      display: none;
+    }
+
+    .register-wrapper.active {
+      display: block;
     }
 
     .register-header {
@@ -372,7 +870,6 @@
       margin-left: auto;
     }
 
-    /* ===== GRID 2 KOLOM ===== */
     .form-row {
       display: grid;
       grid-template-columns: 1fr 1fr;
@@ -444,7 +941,6 @@
       border-radius: var(--radius-sm);
     }
 
-    /* Position selector */
     .position-selector {
       display: flex;
       gap: 10px;
@@ -572,7 +1068,18 @@
     }
 
     /* ============================================================
-       RESPONSIVE - TETAP 2 KOLOM DI HP
+       LANDING PAGE CONTENT (default tampil)
+       ============================================================ */
+    .landing-content {
+      display: block;
+    }
+
+    .landing-content.hidden {
+      display: none;
+    }
+
+    /* ============================================================
+       RESPONSIVE
        ============================================================ */
     @media (max-width: 768px) {
       body {
@@ -614,6 +1121,141 @@
         height: 2.5px;
       }
 
+      .carousel-section {
+        height: 75vh;
+        min-height: 350px;
+      }
+
+      .carousel-slide {
+        padding: 30px 24px;
+      }
+
+      .carousel-slide .slide-content h2 {
+        font-size: 2rem;
+      }
+
+      .carousel-slide .slide-content p {
+        font-size: 0.95rem;
+      }
+
+      .carousel-slide .slide-content .btn-slide {
+        padding: 10px 28px;
+        font-size: 0.85rem;
+      }
+
+      .slide-image {
+        font-size: 6rem;
+        right: -20px;
+        bottom: -10px;
+      }
+
+      .slide-image-left {
+        font-size: 5rem;
+        left: -20px;
+        top: -5px;
+      }
+
+      .carousel-btn {
+        width: 36px;
+        height: 36px;
+        font-size: 0.9rem;
+      }
+
+      .carousel-btn.prev {
+        left: 8px;
+      }
+
+      .carousel-btn.next {
+        right: 8px;
+      }
+
+      .carousel-dots .dot {
+        width: 10px;
+        height: 10px;
+      }
+
+      .sidebar {
+        width: 280px;
+        left: -300px;
+      }
+
+      .product-carousel .product-card {
+        flex: 0 0 170px;
+        min-width: 150px;
+      }
+
+      .product-carousel .product-card .img-placeholder {
+        height: 140px;
+        font-size: 2.2rem;
+      }
+
+      .product-carousel .product-card .body {
+        padding: 12px;
+      }
+
+      .product-carousel .product-card .body h4 {
+        font-size: 0.8rem;
+      }
+
+      .product-carousel .product-card .body .price {
+        font-size: 0.85rem;
+      }
+
+      .product-grid {
+        grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+        gap: 14px;
+      }
+
+      .product-grid .product-card .img-placeholder {
+        height: 140px;
+        font-size: 2.2rem;
+      }
+
+      .product-grid .product-card .body {
+        padding: 12px;
+      }
+
+      .product-grid .product-card .body h4 {
+        font-size: 0.8rem;
+      }
+
+      .product-grid .product-card .body .price {
+        font-size: 0.85rem;
+      }
+
+      .section-title {
+        font-size: 1.3rem;
+        padding: 24px 16px 12px;
+      }
+
+      .features {
+        padding: 12px 16px 30px;
+        gap: 12px;
+      }
+
+      .product-carousel-wrapper {
+        padding: 0 16px 10px;
+      }
+
+      .product-grid-wrapper {
+        padding: 0 16px 30px;
+      }
+
+      .carousel-scroll-btn {
+        width: 32px;
+        height: 32px;
+        font-size: 0.9rem;
+      }
+
+      .carousel-scroll-btn.left {
+        left: 4px;
+      }
+
+      .carousel-scroll-btn.right {
+        right: 4px;
+      }
+
+      /* Register form di HP tetap 2 kolom */
       .register-wrapper {
         padding: 16px 12px 30px;
       }
@@ -636,7 +1278,6 @@
         padding-bottom: 6px;
       }
 
-      /* ===== TETAP 2 KOLOM DI HP ===== */
       .form-row {
         grid-template-columns: 1fr 1fr;
         gap: 8px 10px;
@@ -686,11 +1327,6 @@
         padding: 12px;
         font-size: 0.9rem;
       }
-
-      .sidebar {
-        width: 280px;
-        left: -300px;
-      }
     }
 
     @media (max-width: 480px) {
@@ -722,6 +1358,122 @@
         font-size: 0.6rem;
       }
 
+      .carousel-section {
+        height: 75vh;
+        min-height: 300px;
+      }
+
+      .carousel-slide .slide-content h2 {
+        font-size: 1.6rem;
+      }
+
+      .carousel-slide .slide-content p {
+        font-size: 0.8rem;
+      }
+
+      .carousel-slide .slide-content .btn-slide {
+        padding: 8px 20px;
+        font-size: 0.75rem;
+      }
+
+      .slide-image {
+        font-size: 4.5rem;
+        right: -15px;
+        bottom: -5px;
+      }
+
+      .slide-image-left {
+        font-size: 3.5rem;
+        left: -15px;
+        top: -5px;
+      }
+
+      .carousel-btn {
+        width: 30px;
+        height: 30px;
+        font-size: 0.7rem;
+      }
+
+      .carousel-btn.prev {
+        left: 4px;
+      }
+
+      .carousel-btn.next {
+        right: 4px;
+      }
+
+      .carousel-dots .dot {
+        width: 8px;
+        height: 8px;
+        gap: 6px;
+      }
+
+      .product-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .product-grid .product-card .img-placeholder {
+        height: 120px;
+        font-size: 1.8rem;
+      }
+
+      .product-grid .product-card .body {
+        padding: 10px;
+      }
+
+      .product-grid .product-card .body h4 {
+        font-size: 0.75rem;
+      }
+
+      .product-grid .product-card .body .price {
+        font-size: 0.8rem;
+      }
+
+      .product-grid .product-card .body .btn-detail {
+        font-size: 0.6rem;
+        padding: 4px 12px;
+      }
+
+      .product-carousel .product-card {
+        flex: 0 0 150px;
+        min-width: 130px;
+      }
+
+      .product-carousel .product-card .img-placeholder {
+        height: 120px;
+        font-size: 1.8rem;
+      }
+
+      .product-carousel .product-card .body {
+        padding: 10px;
+      }
+
+      .product-carousel .product-card .body h4 {
+        font-size: 0.7rem;
+      }
+
+      .product-carousel .product-card .body .price {
+        font-size: 0.75rem;
+      }
+
+      .product-carousel .product-card .body .btn-detail {
+        font-size: 0.6rem;
+        padding: 4px 10px;
+      }
+
+      .pagination button {
+        padding: 6px 12px;
+        font-size: 0.75rem;
+      }
+
+      .carousel-scroll-btn {
+        width: 28px;
+        height: 28px;
+        font-size: 0.7rem;
+      }
+
+      /* Register form HP kecil */
       .register-wrapper {
         padding: 12px 8px 20px;
       }
@@ -741,7 +1493,6 @@
         font-size: 0.7rem;
       }
 
-      /* ===== TETAP 2 KOLOM DI HP KECIL ===== */
       .form-row {
         grid-template-columns: 1fr 1fr;
         gap: 6px 6px;
@@ -830,8 +1581,73 @@
     <div class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</div>
   </nav>
 
-  <!-- ===== REGISTER FORM ===== -->
-  <div class="register-wrapper">
+  <!-- ===== LANDING PAGE CONTENT ===== -->
+  <div class="landing-content" id="landingContent">
+
+    <!-- CAROUSEL -->
+    <section class="carousel-section" id="carouselSection">
+      <div class="carousel-track" id="carouselTrack">
+        <div class="carousel-slide" style="background: linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%);">
+          <div class="overlay-dark"></div>
+          <div class="slide-image"><i class="fas fa-tshirt"></i></div>
+          <div class="slide-image-left"><i class="fas fa-tshirt"></i></div>
+          <div class="slide-content">
+            <h2><i class="fas fa-star"></i> 501® ORIGINAL DENIM</h2>
+            <p>Ikonik sejak 1873 · Potongan lurus dengan raw denim 14oz premium</p>
+            <a href="#" class="btn-slide">Lihat Koleksi</a>
+          </div>
+        </div>
+        <div class="carousel-slide" style="background: linear-gradient(135deg, #1a2e44 0%, #2a4b6e 50%, #3a5f7e 100%);">
+          <div class="overlay-dark"></div>
+          <div class="slide-image"><i class="fas fa-jacket"></i></div>
+          <div class="slide-content">
+            <h2><i class="fas fa-jacket"></i> TRUCKER JACKET & OUTER</h2>
+            <p>Gaya ikonik denim modern untuk penampilan casual harian Anda</p>
+            <a href="#" class="btn-slide">Lihat Koleksi</a>
+          </div>
+        </div>
+        <div class="carousel-slide" style="background: linear-gradient(135deg, #2a4b6e 0%, #1a2e44 50%, #0b1a2b 100%);">
+          <div class="overlay-dark"></div>
+          <div class="slide-image"><i class="fas fa-tags"></i></div>
+          <div class="slide-content">
+            <h2><i class="fas fa-tags"></i> SEASONAL SALE UP TO 40%</h2>
+            <p>Diskon spesial koleksi denim elegan dengan harga khusus eksklusif</p>
+            <a href="#" class="btn-slide">Lihat Promo</a>
+          </div>
+        </div>
+      </div>
+      <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
+      <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
+      <div class="carousel-dots" id="carouselDots"></div>
+    </section>
+
+    <!-- PRODUK FAVORIT -->
+    <h2 class="section-title"><i class="fas fa-heart" style="color:var(--gold-accent);"></i> PRODUK FAVORIT</h2>
+    <div class="product-carousel-wrapper">
+      <button class="carousel-scroll-btn left" id="favScrollLeft"><i class="fas fa-chevron-left"></i></button>
+      <button class="carousel-scroll-btn right" id="favScrollRight"><i class="fas fa-chevron-right"></i></button>
+      <div class="product-carousel" id="favoriteCarousel"></div>
+    </div>
+
+    <!-- PRODUK POPULER -->
+    <h2 class="section-title"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
+    <div class="product-grid-wrapper">
+      <div class="product-grid" id="productGrid"></div>
+      <div class="pagination" id="pagination"></div>
+    </div>
+
+    <!-- FEATURES -->
+    <div class="features">
+      <div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz bermutu tinggi</p></div>
+      <div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Pengiriman cepat seluruh Indonesia</p></div>
+      <div class="feature-item"><i class="fas fa-exchange-alt"></i><h4>GARANSI 30 HARI</h4><p>Penukaran size tanpa ribet</p></div>
+      <div class="feature-item"><i class="fas fa-user-tie"></i><h4>HARGA MEMBER</h4><p>Potongan untuk pemilik lisensi</p></div>
+    </div>
+
+  </div>
+
+  <!-- ===== REGISTER FORM (hidden default) ===== -->
+  <div class="register-wrapper" id="registerWrapper">
     <div class="register-header">
       <h1><i class="fas fa-user-plus"></i> Daftar Member</h1>
       <p>Lengkapi data diri untuk bergabung menjadi member HEDTRO JEANS</p>
@@ -839,7 +1655,6 @@
 
     <form id="registerForm" onsubmit="return false;">
 
-      <!-- SECTION 1: AKUN & KEAMANAN -->
       <div class="form-section">
         <div class="section-title">
           <i class="fas fa-lock"></i> Akun & Keamanan
@@ -865,7 +1680,6 @@
         </div>
       </div>
 
-      <!-- SECTION 2: IDENTITAS & KONTAK -->
       <div class="form-section">
         <div class="section-title">
           <i class="fas fa-id-card"></i> Identitas & Kontak
@@ -891,7 +1705,6 @@
         </div>
       </div>
 
-      <!-- SECTION 3: REKENING BANK -->
       <div class="form-section">
         <div class="section-title">
           <i class="fas fa-university"></i> Rekening Bank
@@ -922,7 +1735,6 @@
         </div>
       </div>
 
-      <!-- SECTION 4: ALAMAT PENGIRIMAN -->
       <div class="form-section">
         <div class="section-title">
           <i class="fas fa-map-pin"></i> Alamat Pengiriman
@@ -940,7 +1752,6 @@
         </div>
       </div>
 
-      <!-- SECTION 5: SPESIFIKASI JEANS -->
       <div class="form-section">
         <div class="section-title">
           <i class="fas fa-tshirt"></i> Spesifikasi Jeans
@@ -980,7 +1791,6 @@
         </div>
       </div>
 
-      <!-- SECTION 6: PENEMPATAN TIM -->
       <div class="form-section">
         <div class="section-title">
           <i class="fas fa-sitemap"></i> Penempatan Tim
@@ -1014,7 +1824,6 @@
         </div>
       </div>
 
-      <!-- SUBMIT -->
       <button type="submit" class="btn-submit" id="registerBtn">
         <i class="fas fa-user-plus"></i> Daftar Member
       </button>
@@ -1022,7 +1831,7 @@
       <div class="msg" id="regMsg"></div>
 
       <div class="form-footer">
-        Sudah punya akun? <a href="index.html">Login di sini</a>
+        Sudah punya akun? <a href="#" id="backToLogin">Login di sini</a>
       </div>
     </form>
   </div>
@@ -1041,21 +1850,180 @@
       'use strict';
 
       // ============================================================
-      // 1. POSITION SELECTOR
+      // DATA PRODUK
       // ============================================================
-      const positionOptions = document.querySelectorAll('.position-option');
-      const positionInput = document.getElementById('position');
+      const allProducts = [
+        { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
+          icon: 'fa-tshirt', favorite: true },
+        { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
+          icon: 'fa-tshirt', favorite: true },
+        { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt',
+          favorite: true },
+        { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%', icon: 'fa-tshirt',
+          favorite: true },
+        { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED', icon: 'fa-jacket',
+          favorite: true },
+        { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER', icon: 'fa-tshirt',
+          favorite: false },
+        { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS', icon: 'fa-belt',
+          favorite: false },
+        { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT', icon: 'fa-tshirt',
+          favorite: false },
+        { id: 9, name: 'Slim Fit Black Raw Denim', price: 260000, original: 360000, tag: 'NEW', icon: 'fa-tshirt',
+          favorite: false },
+        { id: 10, name: 'Cropped Trucker Jacket', price: 390000, original: 500000, tag: 'TRENDY', icon: 'fa-jacket',
+          favorite: false },
+        { id: 11, name: 'Denim Bucket Hat', price: 85000, original: 120000, tag: 'AKSESORIS', icon: 'fa-hat-cowboy',
+          favorite: false },
+        { id: 12, name: 'Canvas Tote Bag Denim', price: 150000, original: 200000, tag: 'AKSESORIS', icon: 'fa-shopping-bag',
+          favorite: false }
+      ];
 
-      positionOptions.forEach(opt => {
-        opt.addEventListener('click', function() {
-          positionOptions.forEach(o => o.classList.remove('active'));
-          this.classList.add('active');
-          positionInput.value = this.dataset.value;
+      // ============================================================
+      // RENDER FAVORITE CAROUSEL
+      // ============================================================
+      function renderFavoriteCarousel() {
+        const container = document.getElementById('favoriteCarousel');
+        const favorites = allProducts.filter(p => p.favorite === true);
+        container.innerHTML = '';
+        favorites.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = `
+            <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
+            <div class="body">
+              <span class="tag">${p.tag}</span>
+              <h4>${p.name}</h4>
+              <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
+              <button class="btn-detail" data-id="${p.id}">lihat Detail</button>
+            </div>
+          `;
+          container.appendChild(card);
         });
+      }
+
+      // ============================================================
+      // CAROUSEL SCROLL
+      // ============================================================
+      document.getElementById('favScrollLeft').addEventListener('click', function() {
+        const carousel = document.getElementById('favoriteCarousel');
+        carousel.scrollBy({ left: -240, behavior: 'smooth' });
+      });
+
+      document.getElementById('favScrollRight').addEventListener('click', function() {
+        const carousel = document.getElementById('favoriteCarousel');
+        carousel.scrollBy({ left: 240, behavior: 'smooth' });
       });
 
       // ============================================================
-      // 2. SIDEBAR & BURGER
+      // PRODUCT GRID WITH PAGINATION
+      // ============================================================
+      const itemsPerPage = 6;
+      let currentPage = 1;
+      const nonFavoriteProducts = allProducts.filter(p => p.favorite !== true);
+
+      function renderProductGrid(page) {
+        const grid = document.getElementById('productGrid');
+        const start = (page - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+        const pageItems = nonFavoriteProducts.slice(start, end);
+
+        grid.innerHTML = '';
+        pageItems.forEach(p => {
+          const card = document.createElement('div');
+          card.className = 'product-card';
+          card.innerHTML = `
+            <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
+            <div class="body">
+              <span class="tag">${p.tag}</span>
+              <h4>${p.name}</h4>
+              <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
+              <button class="btn-detail" data-id="${p.id}">lihat Detail</button>
+            </div>
+          `;
+          grid.appendChild(card);
+        });
+        renderPagination();
+      }
+
+      function renderPagination() {
+        const container = document.getElementById('pagination');
+        const totalPages = Math.ceil(nonFavoriteProducts.length / itemsPerPage);
+        let html = '';
+
+        html +=
+          `<button class="page-btn" data-page="prev" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+
+        for (let i = 1; i <= totalPages; i++) {
+          html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+        }
+
+        html +=
+          `<button class="page-btn" data-page="next" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+
+        container.innerHTML = html;
+
+        container.querySelectorAll('.page-btn').forEach(btn => {
+          btn.addEventListener('click', function() {
+            const page = this.dataset.page;
+            const totalPages = Math.ceil(nonFavoriteProducts.length / itemsPerPage);
+
+            if (page === 'prev' && currentPage > 1) {
+              currentPage--;
+            } else if (page === 'next' && currentPage < totalPages) {
+              currentPage++;
+            } else if (page !== 'prev' && page !== 'next') {
+              currentPage = parseInt(page);
+            }
+            renderProductGrid(currentPage);
+            document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
+          });
+        });
+      }
+
+      // ============================================================
+      // CAROUSEL HERO
+      // ============================================================
+      const track = document.getElementById('carouselTrack');
+      const dots = document.getElementById('carouselDots');
+      const slides = track.querySelectorAll('.carousel-slide');
+      const totalSlides = slides.length;
+      let currentSlide = 0;
+      let slideInterval = null;
+
+      function createDots() {
+        dots.innerHTML = '';
+        for (let i = 0; i < totalSlides; i++) {
+          const dot = document.createElement('span');
+          dot.className = 'dot' + (i === 0 ? ' active' : '');
+          dot.dataset.index = i;
+          dot.addEventListener('click', () => goToSlide(i));
+          dots.appendChild(dot);
+        }
+      }
+      createDots();
+
+      function goToSlide(index) {
+        currentSlide = (index + totalSlides) % totalSlides;
+        track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+        document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+      }
+
+      function nextSlide() { goToSlide(currentSlide + 1); }
+
+      function prevSlide() { goToSlide(currentSlide - 1); }
+
+      document.getElementById('carouselNext').addEventListener('click', () => { nextSlide();
+        resetInterval(); });
+      document.getElementById('carouselPrev').addEventListener('click', () => { prevSlide();
+        resetInterval(); });
+
+      function resetInterval() { if (slideInterval) clearInterval(slideInterval);
+        slideInterval = setInterval(nextSlide, 5000); }
+      resetInterval();
+
+      // ============================================================
+      // SIDEBAR & BURGER
       // ============================================================
       const burgerBtn = document.getElementById('burgerBtn');
       const sidebar = document.getElementById('sidebar');
@@ -1074,28 +2042,49 @@
       closeSidebar.addEventListener('click', () => toggleSidebar(false));
       sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
-      document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
-        item.addEventListener('click', function() {
-          const page = this.dataset.page;
-          toggleSidebar(false);
-          if (page === 'home') window.location.href = 'index.html';
-          if (page === 'products') window.location.href = 'index.html#products';
-          if (page === 'about') window.location.href = 'index.html#about';
-        });
+      // ============================================================
+      // NAVIGASI LANDING vs REGISTER
+      // ============================================================
+      const landingContent = document.getElementById('landingContent');
+      const registerWrapper = document.getElementById('registerWrapper');
+
+      function showLanding() {
+        landingContent.classList.remove('hidden');
+        registerWrapper.classList.remove('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      function showRegister() {
+        landingContent.classList.add('hidden');
+        registerWrapper.classList.add('active');
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Tombol daftar di navbar
+      document.getElementById('navRegisterBtn').addEventListener('click', showRegister);
+
+      // Tombol daftar di sidebar
+      document.getElementById('sideRegisterBtn').addEventListener('click', () => {
+        toggleSidebar(false);
+        showRegister();
       });
 
+      // Tombol login di navbar
+      document.getElementById('navLoginBtn').addEventListener('click', showLanding);
+
+      // Tombol login di sidebar
       document.getElementById('sideLoginBtn').addEventListener('click', () => {
         toggleSidebar(false);
-        window.location.href = 'index.html';
+        showLanding();
       });
 
-      // ============================================================
-      // 3. NAV BUTTONS
-      // ============================================================
-      document.getElementById('navLoginBtn').addEventListener('click', () => {
-        window.location.href = 'index.html';
+      // Back to login di form
+      document.getElementById('backToLogin').addEventListener('click', (e) => {
+        e.preventDefault();
+        showLanding();
       });
 
+      // User badge
       document.getElementById('navUserBadge').addEventListener('click', function() {
         const session = localStorage.getItem('mlm_session');
         if (session) {
@@ -1110,17 +2099,43 @@
             }
           } catch (_) {}
         }
-        window.location.href = 'index.html';
+        showLanding();
+      });
+
+      // Sidebar menu
+      document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
+        item.addEventListener('click', function() {
+          const page = this.dataset.page;
+          toggleSidebar(false);
+          if (page === 'home') { showLanding();
+            window.scrollTo({ top: 0, behavior: 'smooth' }); }
+          if (page === 'products') { showLanding();
+            document.querySelector('.section-title')?.scrollIntoView({ behavior: 'smooth' }); }
+          if (page === 'about') { showLanding();
+            document.querySelector('.features')?.scrollIntoView({ behavior: 'smooth' }); }
+        });
       });
 
       // ============================================================
-      // 4. REGISTER FUNCTION
+      // REGISTER FUNCTION
       // ============================================================
       const DB_KEY = 'hedtro_mlm_users';
 
       function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
 
       function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
+
+      // Position selector
+      const positionOptions = document.querySelectorAll('.position-option');
+      const positionInput = document.getElementById('position');
+
+      positionOptions.forEach(opt => {
+        opt.addEventListener('click', function() {
+          positionOptions.forEach(o => o.classList.remove('active'));
+          this.classList.add('active');
+          positionInput.value = this.dataset.value;
+        });
+      });
 
       function registerUser() {
         const username = document.getElementById('username').value.trim();
@@ -1144,7 +2159,6 @@
         const position = document.getElementById('position').value;
         const msgEl = document.getElementById('regMsg');
 
-        // Validasi
         if (!username || !email || !password || !confirmPassword || !fullname || !nik || !phone || !whatsapp ||
           !bankAccount || !bankHolder || !address || !city || !serialNumber) {
           msgEl.className = 'msg error';
@@ -1274,7 +2288,7 @@
         document.getElementById('registerForm').reset();
 
         setTimeout(() => {
-          window.location.href = 'index.html';
+          showLanding();
         }, 2000);
       }
 
@@ -1307,7 +2321,7 @@
       });
 
       // ============================================================
-      // 5. UPDATE UI
+      // UPDATE UI
       // ============================================================
       function updateUI() {
         const navUserName = document.getElementById('navUserName');
@@ -1332,9 +2346,14 @@
         navRegisterBtn.style.display = 'flex';
       }
 
+      // ============================================================
+      // INIT
+      // ============================================================
+      renderFavoriteCarousel();
+      renderProductGrid(1);
       updateUI();
 
-      console.log('🟦 HEDTRO JEANS · Form 2 kolom tetap di HP');
+      console.log('🟦 HEDTRO JEANS · Landing Page + Register siap');
     })();
   </script>
 
