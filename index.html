@@ -441,7 +441,7 @@
         }
 
         /* ============================================================
-           POPUP OVERLAY (Search, Track, Cart, Product Detail)
+           POPUP OVERLAY
            ============================================================ */
         .popup-overlay {
             display: none;
@@ -519,9 +519,7 @@
             gap: 12px;
         }
 
-        .popup-overlay .popup-box .popup-form input,
-        .popup-overlay .popup-box .popup-form textarea,
-        .popup-overlay .popup-box .popup-form select {
+        .popup-overlay .popup-box .popup-form input {
             padding: 12px 18px;
             border: 1.5px solid var(--denim-light);
             border-radius: 60px;
@@ -533,16 +531,8 @@
             transition: var(--transition);
         }
 
-        .popup-overlay .popup-box .popup-form input:focus,
-        .popup-overlay .popup-box .popup-form textarea:focus,
-        .popup-overlay .popup-box .popup-form select:focus {
+        .popup-overlay .popup-box .popup-form input:focus {
             border-color: var(--gold-accent);
-        }
-
-        .popup-overlay .popup-box .popup-form textarea {
-            border-radius: var(--radius-sm);
-            resize: vertical;
-            min-height: 60px;
         }
 
         .popup-overlay .popup-box .popup-form button {
@@ -568,7 +558,7 @@
         }
 
         /* ============================================================
-           PRODUCT DETAIL POPUP (FULL)
+           PRODUCT DETAIL POPUP
            ============================================================ */
         .product-detail-popup .popup-box {
             max-width: 700px;
@@ -813,7 +803,7 @@
         }
 
         /* ============================================================
-           CAROUSEL - FULL WIDTH (tanpa putih)
+           CAROUSEL
            ============================================================ */
         .carousel-section {
             position: relative;
@@ -1519,6 +1509,98 @@
         }
 
         /* ============================================================
+           MEMBER STATUS CARD
+           ============================================================ */
+        .member-status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            padding: 4px 14px;
+            border-radius: 40px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.3px;
+        }
+
+        .member-status-badge.free {
+            background: #f8d7da;
+            color: #721c24;
+        }
+
+        .member-status-badge.pending {
+            background: #fff3cd;
+            color: #856404;
+        }
+
+        .member-status-badge.verified {
+            background: #d4edda;
+            color: #155724;
+        }
+
+        .member-status-badge i {
+            font-size: 0.6rem;
+        }
+
+        .member-card {
+            background: var(--white);
+            border-radius: var(--radius-sm);
+            padding: 14px 18px;
+            box-shadow: var(--shadow);
+            border: 1px solid var(--denim-light);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 16px;
+        }
+
+        .member-card .member-info {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .member-card .member-info .avatar {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: var(--denim-light);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--denim-blue);
+            font-size: 1.4rem;
+        }
+
+        .member-card .member-info .name {
+            font-weight: 700;
+            font-size: 0.95rem;
+        }
+
+        .member-card .member-info .email {
+            font-size: 0.8rem;
+            color: var(--denim-navy);
+            opacity: 0.6;
+        }
+
+        .member-card .member-info .order-badge {
+            font-size: 0.7rem;
+            background: var(--denim-light);
+            padding: 2px 12px;
+            border-radius: 40px;
+            color: var(--denim-navy);
+        }
+
+        .member-card .member-actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        /* ============================================================
            RESPONSIVE
            ============================================================ */
         @media (max-width: 768px) {
@@ -1787,9 +1869,6 @@
                 min-height: 140px;
                 font-size: 2.5rem;
             }
-            .product-detail-popup .popup-content {
-                padding: 16px 12px 20px;
-            }
             .product-detail-popup .popup-info h2 {
                 font-size: 1rem;
             }
@@ -1824,98 +1903,6 @@
             .btn-nav {
                 display: flex !important;
             }
-        }
-
-        /* ============================================================
-           BADGE STATUS MEMBER DI CARD
-           ============================================================ */
-        .member-status-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 6px;
-            padding: 4px 14px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            text-transform: uppercase;
-            letter-spacing: 0.3px;
-        }
-
-        .member-status-badge.free {
-            background: #f8d7da;
-            color: #721c24;
-        }
-
-        .member-status-badge.pending {
-            background: #fff3cd;
-            color: #856404;
-        }
-
-        .member-status-badge.verified {
-            background: #d4edda;
-            color: #155724;
-        }
-
-        .member-status-badge i {
-            font-size: 0.6rem;
-        }
-
-        .member-card {
-            background: var(--white);
-            border-radius: var(--radius-sm);
-            padding: 14px 18px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--denim-light);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            flex-wrap: wrap;
-            gap: 10px;
-            margin-bottom: 16px;
-        }
-
-        .member-card .member-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            flex-wrap: wrap;
-        }
-
-        .member-card .member-info .avatar {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
-            background: var(--denim-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--denim-blue);
-            font-size: 1.4rem;
-        }
-
-        .member-card .member-info .name {
-            font-weight: 700;
-            font-size: 0.95rem;
-        }
-
-        .member-card .member-info .email {
-            font-size: 0.8rem;
-            color: var(--denim-navy);
-            opacity: 0.6;
-        }
-
-        .member-card .member-info .order-badge {
-            font-size: 0.7rem;
-            background: var(--denim-light);
-            padding: 2px 12px;
-            border-radius: 40px;
-            color: var(--denim-navy);
-        }
-
-        .member-card .member-actions {
-            display: flex;
-            gap: 8px;
-            flex-wrap: wrap;
         }
     </style>
 </head>
@@ -2034,7 +2021,7 @@
     </div>
 
     <!-- ============================================================
-    PRODUCT DETAIL POPUP (LENGKAP + ZOOM + PILIHAN WARNA & SIZE)
+    PRODUCT DETAIL POPUP
     ============================================================ -->
     <div class="popup-overlay product-detail-popup" id="productDetailPopup">
         <div class="popup-box">
@@ -2086,7 +2073,7 @@
     ============================================================ -->
     <div class="app-container" id="home">
 
-        <!-- MEMBER STATUS CARD (akan muncul jika user login) -->
+        <!-- MEMBER STATUS CARD -->
         <div id="memberStatusCard" style="display:none;"></div>
 
         <!-- CAROUSEL -->
@@ -2246,7 +2233,7 @@
             'use strict';
 
             // ============================================================
-            // CONSTANTS & KEYS
+            // DATABASE KEYS
             // ============================================================
             const DB_KEY = 'hedtro_mlm_users';
             const PRODUCT_KEY = 'hedtro_products';
@@ -2254,58 +2241,47 @@
             const ORDER_KEY = 'hedtro_orders';
             const TRANSACTION_KEY = 'hedtro_transactions';
             const BANK_KEY = 'hedtro_bank_info';
+            const CART_KEY = 'hedtro_cart';
+            const SESSION_KEY = 'mlm_session';
 
             // ============================================================
-            // HELPERS
+            // DATABASE FUNCTIONS
             // ============================================================
             function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
-
             function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-
             function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
-
             function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-
             function loadSettings() {
                 return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"sponsorBonus":10,"binaryBonus":8,"rewardBonus":5,"roBonus":3,"memberPrice":550000,"brandName":"HEDTRO JEANS","brandLogo":"fa-tshirt","heroTitle":"HEDTRO JEANS · Premium Denim"}');
             }
-
             function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
-
             function loadOrders() { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); }
-
             function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
-
             function loadTransactions() { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); }
-
             function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
-
             function loadBankInfo() {
                 return JSON.parse(localStorage.getItem(BANK_KEY) || '{"bank":"BCA","account":"1234567890","name":"HEDTRO JEANS"}');
             }
-
             function saveBankInfo(b) { localStorage.setItem(BANK_KEY, JSON.stringify(b)); }
-
-            function getCurrentUser() {
-                const session = localStorage.getItem('mlm_session');
+            function loadCart() { return JSON.parse(localStorage.getItem(CART_KEY) || '[]'); }
+            function saveCart(c) { localStorage.setItem(CART_KEY, JSON.stringify(c)); }
+            function getSession() {
+                const session = localStorage.getItem(SESSION_KEY);
                 if (!session) return null;
-                try {
-                    const { id } = JSON.parse(session);
-                    const users = loadUsers();
-                    return users.find(u => u.id === id) || null;
-                } catch (_) { return null; }
+                try { return JSON.parse(session); } catch (_) { return null; }
             }
-
-            function getCart() {
-                return JSON.parse(localStorage.getItem('hedtro_cart') || '[]');
-            }
-
-            function saveCart(c) {
-                localStorage.setItem('hedtro_cart', JSON.stringify(c));
-            }
+            function saveSession(s) { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
+            function clearSession() { localStorage.removeItem(SESSION_KEY); }
 
             function getNextId(arr) {
                 return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1;
+            }
+
+            function getCurrentUser() {
+                const session = getSession();
+                if (!session) return null;
+                const users = loadUsers();
+                return users.find(u => u.id === session.id) || null;
             }
 
             // ============================================================
@@ -2340,7 +2316,7 @@
             }
 
             // ============================================================
-            // DATA PRODUK DEFAULT
+            // DEFAULT DATA
             // ============================================================
             function getDefaultProducts() {
                 return [
@@ -2370,19 +2346,7 @@
                 ];
             }
 
-            function initProducts() {
-                let products = loadProducts();
-                if (products.length === 0) {
-                    products = getDefaultProducts();
-                    saveProducts(products);
-                }
-                return products;
-            }
-
-            // ============================================================
-            // INIT USERS
-            // ============================================================
-            function initUsers() {
+            function initDatabase() {
                 let users = loadUsers();
                 if (users.length === 0) {
                     users = [{
@@ -2411,7 +2375,20 @@
                     }];
                     saveUsers(users);
                 }
-                return users;
+
+                let products = loadProducts();
+                if (products.length === 0) {
+                    products = getDefaultProducts();
+                    saveProducts(products);
+                }
+
+                let settings = loadSettings();
+                if (!settings.brandName) {
+                    settings.brandName = 'HEDTRO JEANS';
+                    settings.brandLogo = 'fa-tshirt';
+                    settings.heroTitle = 'HEDTRO JEANS · Premium Denim';
+                    saveSettings(settings);
+                }
             }
 
             // ============================================================
@@ -2433,7 +2410,6 @@
                 };
                 const status = statusMap[user.status] || statusMap['free'];
 
-                // Hitung total pesanan
                 const orders = loadOrders().filter(o => o.user_id === user.id);
                 const totalOrders = orders.length;
                 const pendingOrders = orders.filter(o => o.status === 'pending').length;
@@ -2465,7 +2441,7 @@
             // CART
             // ============================================================
             function updateCartUI() {
-                const cart = getCart();
+                const cart = loadCart();
                 const totalItems = cart.reduce((sum, item) => sum + item.qty, 0);
                 document.querySelectorAll('.badge').forEach(el => el.textContent = totalItems);
                 document.getElementById('cartCountLabel').textContent = `${totalItems} item di keranjang`;
@@ -2491,7 +2467,7 @@
                 container.querySelectorAll('.remove-cart-item').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.dataset.id);
-                        let cart = getCart();
+                        let cart = loadCart();
                         cart = cart.filter(item => item.id !== id);
                         saveCart(cart);
                         updateCartUI();
@@ -2500,7 +2476,7 @@
             }
 
             function addToCart(product, size, color) {
-                let cart = getCart();
+                let cart = loadCart();
                 const existing = cart.find(item => item.id === product.id && item.size === size && item.color === color);
                 if (existing) {
                     existing.qty += 1;
@@ -2513,7 +2489,7 @@
             }
 
             // ============================================================
-            // RENDER FAVORITE CAROUSEL
+            // RENDER PRODUCTS
             // ============================================================
             function renderFavoriteCarousel() {
                 const container = document.getElementById('favoriteCarousel');
@@ -2540,11 +2516,8 @@
                 bindProductButtons();
             }
 
-            // ============================================================
-            // PRODUCT GRID
-            // ============================================================
-            const itemsPerPage = 6;
             let currentPage = 1;
+            const itemsPerPage = 6;
 
             function renderProductGrid(page) {
                 const grid = document.getElementById('productGrid');
@@ -2606,7 +2579,7 @@
             }
 
             // ============================================================
-            // PRODUCT BUTTONS
+            // PRODUCT DETAIL POPUP
             // ============================================================
             function bindProductButtons() {
                 document.querySelectorAll('.btn-detail').forEach(btn => {
@@ -2623,21 +2596,16 @@
                 });
             }
 
-            // ============================================================
-            // PRODUCT DETAIL POPUP
-            // ============================================================
             const detailPopup = document.getElementById('productDetailPopup');
             const closeDetailPopup = document.getElementById('closeDetailPopup');
             const detailImage = document.getElementById('detailImage');
             const detailIconWrap = document.getElementById('detailIconWrap');
-            let currentDetailProduct = null;
             let isZoomed = false;
 
             function openProductDetail(id) {
                 const products = loadProducts();
                 const product = products.find(p => p.id === id);
                 if (!product) return;
-                currentDetailProduct = product;
 
                 document.getElementById('detailTag').textContent = product.tag || 'PRODUK';
                 document.getElementById('detailName').textContent = product.name;
@@ -2650,12 +2618,10 @@
                 stockEl.style.color = (product.stock || 0) <= 0 ? '#b13e3e' : '#1f7a4b';
                 document.getElementById('detailIcon').className = `fas ${product.icon || 'fa-tshirt'}`;
 
-                // Reset zoom
                 detailImage.classList.remove('zoomed');
                 detailIconWrap.style.transform = 'scale(1)';
                 isZoomed = false;
 
-                // Tombol beli
                 document.getElementById('detailBuyBtn').onclick = function() {
                     const size = document.getElementById('detailSize').value;
                     const color = document.getElementById('detailColor').value;
@@ -2684,7 +2650,6 @@
                 if (e.target === detailPopup) closeDetailPopupFn();
             });
 
-            // Zoom
             detailImage.addEventListener('click', function(e) {
                 e.stopPropagation();
                 isZoomed = !isZoomed;
@@ -2709,8 +2674,6 @@
             const totalSlides = slides.length;
             let currentSlide = 0;
             let slideInterval = null;
-            let touchStartX = 0;
-            let isDragging = false;
 
             function createDots() {
                 dots.innerHTML = '';
@@ -2743,20 +2706,6 @@
                 slideInterval = setInterval(nextSlide, 5000); }
             resetInterval();
 
-            carouselSection.addEventListener('touchstart', function(e) {
-                touchStartX = e.changedTouches[0].screenX;
-                isDragging = true;
-            }, { passive: true });
-            carouselSection.addEventListener('touchend', function(e) {
-                if (!isDragging) return;
-                isDragging = false;
-                const diff = touchStartX - e.changedTouches[0].screenX;
-                if (Math.abs(diff) > 50) {
-                    if (diff > 0) { nextSlide(); } else { prevSlide(); }
-                    resetInterval();
-                }
-            }, { passive: true });
-
             // ============================================================
             // FAQ
             // ============================================================
@@ -2773,7 +2722,7 @@
             };
 
             // ============================================================
-            // SIDEBAR & BURGER
+            // SIDEBAR
             // ============================================================
             const burgerBtn = document.getElementById('burgerBtn');
             const sidebar = document.getElementById('sidebar');
@@ -2833,7 +2782,7 @@
             // POPUP FUNCTIONS
             // ============================================================
 
-            // --- SEARCH POPUP ---
+            // SEARCH
             const searchPopup = document.getElementById('searchPopup');
             const closeSearchPopup = document.getElementById('closeSearchPopup');
 
@@ -2895,7 +2844,6 @@
                 if (e.key === 'Enter') document.getElementById('searchBtnPopup').click();
             });
 
-            // Desktop search
             document.getElementById('searchBtnDesktop').addEventListener('click', function() {
                 const query = document.getElementById('searchInputDesktop').value.trim().toLowerCase();
                 if (!query) {
@@ -2932,11 +2880,12 @@
                 document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
                 showToast(`✅ ${results.length} produk ditemukan`, 'success');
             });
+
             document.getElementById('searchInputDesktop').addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') document.getElementById('searchBtnDesktop').click();
             });
 
-            // --- TRACK POPUP ---
+            // TRACK
             const trackPopup = document.getElementById('trackPopup');
             const closeTrackPopup = document.getElementById('closeTrackPopup');
 
@@ -2959,6 +2908,7 @@
                 e.preventDefault();
                 openTrackPopup();
             });
+
             document.getElementById('sideTrackBtn').addEventListener('click', function(e) {
                 e.preventDefault();
                 if (window.innerWidth < 769) toggleSidebar(false);
@@ -2974,8 +2924,7 @@
                     return;
                 }
                 const orders = loadOrders();
-                const found = orders.filter(o => o.order_number && o.order_number.toUpperCase().includes(input) || o
-                    .id == input);
+                const found = orders.filter(o => (o.order_number || '').toUpperCase().includes(input) || o.id == input);
                 if (found.length > 0) {
                     let html = '';
                     found.forEach(o => {
@@ -3005,7 +2954,7 @@
                 if (e.key === 'Enter') document.getElementById('trackBtnPopup').click();
             });
 
-            // --- CART POPUP ---
+            // CART
             const cartPopup = document.getElementById('cartPopup');
             const closeCartPopup = document.getElementById('closeCartPopup');
 
@@ -3027,7 +2976,7 @@
             document.getElementById('cartHp').addEventListener('click', openCartPopup);
 
             document.getElementById('cartCheckoutBtn').addEventListener('click', function() {
-                const cart = getCart();
+                const cart = loadCart();
                 if (cart.length === 0) {
                     showToast('Keranjang kosong!', 'error');
                     return;
@@ -3047,7 +2996,6 @@
                 const total = cart.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const orderNumber = 'HDT-' + Date.now().toString().slice(-6);
 
-                // Buat order
                 const orders = loadOrders();
                 const newOrder = {
                     id: getNextId(orders),
@@ -3071,7 +3019,6 @@
                 orders.push(newOrder);
                 saveOrders(orders);
 
-                // Kurangi stok
                 const products = loadProducts();
                 cart.forEach(item => {
                     const prod = products.find(p => p.id === item.id);
@@ -3081,7 +3028,6 @@
                 });
                 saveProducts(products);
 
-                // Catat transaksi
                 const transactions = loadTransactions();
                 transactions.push({
                     id: getNextId(transactions),
@@ -3094,7 +3040,6 @@
                 });
                 saveTransactions(transactions);
 
-                // Kosongkan cart
                 saveCart([]);
                 updateCartUI();
                 closeCartPopupFn();
@@ -3104,55 +3049,50 @@
             });
 
             // ============================================================
-            // APPLY SETTINGS (Brand Logo, Title, dll)
+            // APPLY SETTINGS
             // ============================================================
             function applySettings() {
                 const settings = loadSettings();
-                // Brand logo
                 const logoEl = document.getElementById('brandLogo');
                 const brandText = logoEl.querySelector('.brand-text');
                 if (settings.brandLogo && settings.brandLogo.startsWith('http')) {
-                    logoEl.innerHTML = `<img src="${settings.brandLogo}" alt="Logo" style="height:40px;width:auto;object-fit:contain;" /> <span class="brand-text">${settings.brandName || 'HEDTRO JEANS'}</span>`;
+                    logoEl.innerHTML =
+                        `<img src="${settings.brandLogo}" alt="Logo" style="height:40px;width:auto;object-fit:contain;" /> <span class="brand-text">${settings.brandName || 'HEDTRO JEANS'}</span>`;
                 } else if (settings.brandLogo) {
                     logoEl.innerHTML =
                         `<i class="fas ${settings.brandLogo}"></i> <span class="brand-text">${settings.brandName || 'HEDTRO JEANS'}</span>`;
-                } else {
-                    logoEl.innerHTML =
-                        `<i class="fas fa-tshirt"></i> <span class="brand-text">HEDTRO<span>JEANS</span></span>`;
                 }
-
-                // Title
                 if (settings.heroTitle) {
                     document.title = settings.heroTitle;
                 }
             }
 
             // ============================================================
-            // REFRESH DATA (auto)
+            // REFRESH
             // ============================================================
-            function refreshData() {
+            function refreshAll() {
                 applySettings();
                 renderMemberStatusCard();
-                // Re-render produk jika ada perubahan
-                // Tapi kita tidak perlu render ulang semua, cukup update cart
                 updateCartUI();
+                renderFavoriteCarousel();
+                renderProductGrid(currentPage);
             }
 
             // ============================================================
             // INIT
             // ============================================================
-            initUsers();
-            initProducts();
+            initDatabase();
             applySettings();
             renderFavoriteCarousel();
             renderProductGrid(1);
             renderMemberStatusCard();
             updateCartUI();
 
-            // Auto refresh setiap 10 detik
-            setInterval(refreshData, 10000);
+            setInterval(refreshAll, 10000);
 
-            console.log('🟦 HEDTRO JEANS · Sistem terintegrasi penuh dengan database lokal');
+            console.log('🟦 HEDTRO JEANS · Sistem terintegrasi penuh dengan localStorage');
+            console.log('🔑 Admin: admin@mlm.com / admin123');
+            console.log('🔑 User Demo: budi@mail.com / budi123');
         })();
     </script>
 
