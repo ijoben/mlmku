@@ -67,7 +67,7 @@
         }
 
         /* ============================================================
-           NAVBAR - DESKTOP
+           NAVBAR
            ============================================================ */
         .navbar {
             position: fixed;
@@ -138,7 +138,7 @@
             font-size: 0.85rem;
         }
 
-        /* Search & Cart di desktop */
+        /* Search & Cart Desktop */
         .nav-actions {
             display: flex;
             align-items: center;
@@ -222,6 +222,7 @@
             gap: 10px;
         }
 
+        /* User badge & login/daftar hanya untuk desktop */
         .nav-right-desktop .user-badge {
             display: flex;
             align-items: center;
@@ -309,7 +310,7 @@
         }
 
         /* ============================================================
-           SIDEBAR - HANYA UNTUK HP
+           SIDEBAR (HP) - SEMUA MENU + LOGIN/DAFTAR/USER
            ============================================================ */
         .sidebar-overlay {
             display: none;
@@ -490,7 +491,7 @@
         }
 
         /* ============================================================
-           CAROUSEL - SLIDER 75%
+           CAROUSEL, PRODUCTS, FEATURES, etc. (sama seperti sebelumnya)
            ============================================================ */
         .carousel-section {
             position: relative;
@@ -654,9 +655,6 @@
             transform: scale(1.15);
         }
 
-        /* ============================================================
-           SECTION TITLE
-           ============================================================ */
         .section-title {
             font-size: 1.6rem;
             font-weight: 700;
@@ -671,9 +669,6 @@
             color: var(--gold-accent);
         }
 
-        /* ============================================================
-           PRODUCT CAROUSEL
-           ============================================================ */
         .product-carousel-wrapper {
             position: relative;
             padding: 0 24px 20px;
@@ -828,9 +823,6 @@
             right: 8px;
         }
 
-        /* ============================================================
-           PRODUCT GRID DENGAN PAGINATION
-           ============================================================ */
         .product-grid-wrapper {
             padding: 0 24px 40px;
         }
@@ -978,9 +970,6 @@
             cursor: not-allowed;
         }
 
-        /* ============================================================
-           FEATURES
-           ============================================================ */
         .features {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
@@ -1013,9 +1002,6 @@
             color: #5a7a8a;
         }
 
-        /* ============================================================
-           TENTANG KAMI
-           ============================================================ */
         .about-section {
             padding: 40px 24px 50px;
             background: var(--white);
@@ -1045,9 +1031,6 @@
             margin-bottom: 10px;
         }
 
-        /* ============================================================
-           FAQ
-           ============================================================ */
         .faq-section {
             padding: 40px 24px 50px;
             background: var(--white);
@@ -1109,9 +1092,6 @@
             display: block;
         }
 
-        /* ============================================================
-           TRACK ORDER
-           ============================================================ */
         .track-section {
             padding: 40px 24px 50px;
             background: var(--white);
@@ -1172,9 +1152,6 @@
             transform: scale(0.97);
         }
 
-        /* ============================================================
-           PRODUCT DETAIL POPUP
-           ============================================================ */
         .product-popup {
             display: none;
             position: fixed;
@@ -1323,9 +1300,6 @@
             transform: scale(0.98);
         }
 
-        /* ============================================================
-           FOOTER 4 KOLOM
-           ============================================================ */
         .footer {
             background: var(--denim-dark);
             color: var(--cream);
@@ -1755,7 +1729,7 @@
         }
 
         /* ============================================================
-           RESPONSIVE - HP
+           HP - SEMBUNYIKAN USER BADGE, LOGIN, DAFTAR DI NAVBAR
            ============================================================ */
         @media (max-width: 768px) {
             body {
@@ -1777,38 +1751,37 @@
                 font-size: 0.6rem;
             }
 
-            /* Sembunyikan menu desktop, tampilkan burger */
             .nav-menu {
                 display: none !important;
             }
             .nav-actions {
                 display: none !important;
             }
-            .nav-right-desktop .user-badge span {
-                display: none;
-            }
+
+            /* Sembunyikan user badge dan tombol login/daftar di HP */
             .nav-right-desktop .user-badge {
-                padding: 4px 10px;
-                font-size: 0.7rem;
+                display: none !important;
             }
-            .btn-nav {
+            .nav-right-desktop .btn-nav {
                 display: none !important;
             }
 
-            /* Tampilkan burger di HP */
+            /* Tampilkan burger, search icon, cart */
             .burger-btn {
                 display: flex !important;
             }
+            .search-icon-hp {
+                display: flex !important;
+            }
+            .cart-hp {
+                display: flex !important;
+            }
+
             .sidebar {
                 display: flex;
             }
             .sidebar-overlay {
                 display: block;
-            }
-
-            /* Search icon di HP */
-            .search-icon-hp {
-                display: flex !important;
             }
 
             .carousel-section {
@@ -1946,6 +1919,11 @@
             .form-group label {
                 font-size: 0.6rem;
             }
+
+            /* Sidebar login/daftar/user muncul */
+            .sidebar .menu-item.user-item {
+                display: flex;
+            }
         }
 
         @media (max-width: 480px) {
@@ -2075,7 +2053,7 @@
         }
 
         /* ============================================================
-           DESKTOP - BURGER & SIDEBAR SEMBUNYI
+           DESKTOP - BURGER, SIDEBAR, SEARCH ICON HP, CART HP SEMBUNYI
            ============================================================ */
         @media (min-width: 769px) {
             .burger-btn {
@@ -2096,9 +2074,18 @@
             .search-icon-hp {
                 display: none !important;
             }
+            .cart-hp {
+                display: none !important;
+            }
+            .nav-right-desktop .user-badge {
+                display: flex !important;
+            }
+            .nav-right-desktop .btn-nav {
+                display: flex !important;
+            }
         }
 
-        /* Search icon di HP - tombol search popup */
+        /* Search icon di HP */
         .search-icon-hp {
             display: none;
             color: var(--cream);
@@ -2114,7 +2101,6 @@
             background: rgba(201, 168, 76, 0.08);
         }
 
-        /* Cart di HP */
         .cart-hp {
             display: none;
             color: var(--cream);
@@ -2145,15 +2131,6 @@
             display: flex;
             align-items: center;
             justify-content: center;
-        }
-
-        @media (max-width: 768px) {
-            .search-icon-hp {
-                display: flex !important;
-            }
-            .cart-hp {
-                display: flex !important;
-            }
         }
     </style>
 </head>
@@ -2198,13 +2175,14 @@
                 <span class="badge">0</span>
             </span>
 
+            <!-- User Badge & Login/Daftar (Desktop only) -->
             <div class="user-badge" id="navUserBadge">
                 <i class="fas fa-user-circle"></i> <span id="navUserName">Guest</span>
             </div>
             <button class="btn-nav btn-nav-outline" id="navLoginBtn">Login</button>
             <button class="btn-nav btn-nav-gold" id="navRegisterBtn">Daftar</button>
 
-            <!-- Burger (hanya di HP) -->
+            <!-- Burger (HP) -->
             <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
             </button>
@@ -2223,7 +2201,7 @@
     </div>
 
     <!-- ============================================================
-    SIDEBAR (HP ONLY) - SEMUA MENU DI SINI
+    SIDEBAR (HP) - SEMUA MENU + LOGIN/DAFTAR/USER
     ============================================================ -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <nav class="sidebar" id="sidebar">
@@ -2231,21 +2209,30 @@
             <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
             <span class="close-side" id="closeSidebar">&times;</span>
         </div>
+
+        <!-- Menu Utama -->
         <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
         <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
         <div class="menu-item" data-page="about"><i class="fas fa-info-circle"></i> Tentang Kami</div>
         <div class="menu-item" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</div>
         <div class="menu-item" data-page="track"><i class="fas fa-truck"></i> Lacak Pesanan</div>
+
         <div class="menu-divider"></div>
+
+        <!-- User Badge (HP) -->
+        <div class="menu-item" id="sideUserBadge">
+            <i class="fas fa-user-circle"></i> <span id="sideUserName">Guest</span>
+        </div>
+
+        <!-- Login & Daftar (HP) -->
         <div class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</div>
         <div class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</div>
     </nav>
 
     <!-- ============================================================
-    LANDING PAGE CONTENT
+    LANDING PAGE CONTENT (sama seperti sebelumnya)
     ============================================================ -->
     <div class="landing-content" id="landingContent">
-
         <!-- CAROUSEL -->
         <section class="carousel-section" id="carouselSection">
             <div class="carousel-track" id="carouselTrack">
@@ -2357,7 +2344,6 @@
             <div class="feature-item"><i class="fas fa-exchange-alt"></i><h4>GARANSI 30 HARI</h4><p>Penukaran size tanpa ribet</p></div>
             <div class="feature-item"><i class="fas fa-user-tie"></i><h4>HARGA MEMBER</h4><p>Potongan untuk pemilik lisensi</p></div>
         </div>
-
     </div>
 
     <!-- ============================================================
@@ -2369,180 +2355,66 @@
             <p>Lengkapi data diri untuk bergabung menjadi member HEDTRO JEANS</p>
         </div>
         <form id="registerForm" onsubmit="return false;">
+            <!-- (form sama seperti sebelumnya, saya singkat) -->
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-lock"></i> Akun & Keamanan
-                    <span class="badge-step">1</span>
-                </div>
+                <div class="section-title"><i class="fas fa-lock"></i> Akun & Keamanan <span class="badge-step">1</span></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Username <span class="required">*</span></label>
-                        <input type="text" id="username" placeholder="Username" />
-                    </div>
-                    <div class="form-group">
-                        <label>Email <span class="required">*</span></label>
-                        <input type="email" id="email" placeholder="Email aktif" />
-                    </div>
-                    <div class="form-group">
-                        <label>Kata Sandi <span class="required">*</span></label>
-                        <input type="password" id="password" placeholder="Min 6 karakter" />
-                    </div>
-                    <div class="form-group">
-                        <label>Konfirmasi Sandi <span class="required">*</span></label>
-                        <input type="password" id="confirmPassword" placeholder="Ulangi sandi" />
-                    </div>
+                    <div class="form-group"><label>Username <span class="required">*</span></label><input type="text" id="username" placeholder="Username" /></div>
+                    <div class="form-group"><label>Email <span class="required">*</span></label><input type="email" id="email" placeholder="Email aktif" /></div>
+                    <div class="form-group"><label>Kata Sandi <span class="required">*</span></label><input type="password" id="password" placeholder="Min 6 karakter" /></div>
+                    <div class="form-group"><label>Konfirmasi Sandi <span class="required">*</span></label><input type="password" id="confirmPassword" placeholder="Ulangi sandi" /></div>
                 </div>
             </div>
-
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-id-card"></i> Identitas & Kontak
-                    <span class="badge-step">2</span>
-                </div>
+                <div class="section-title"><i class="fas fa-id-card"></i> Identitas & Kontak <span class="badge-step">2</span></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Nama Lengkap <span class="required">*</span></label>
-                        <input type="text" id="fullname" placeholder="Nama lengkap" />
-                    </div>
-                    <div class="form-group">
-                        <label>NIK (16 Digit) <span class="required">*</span></label>
-                        <input type="text" id="nik" placeholder="16 digit NIK" maxlength="16" />
-                    </div>
-                    <div class="form-group">
-                        <label>No. HP <span class="required">*</span></label>
-                        <input type="text" id="phone" placeholder="No. HP" />
-                    </div>
-                    <div class="form-group">
-                        <label>No. WhatsApp <span class="required">*</span></label>
-                        <input type="text" id="whatsapp" placeholder="No. WhatsApp aktif" />
-                    </div>
+                    <div class="form-group"><label>Nama Lengkap <span class="required">*</span></label><input type="text" id="fullname" placeholder="Nama lengkap" /></div>
+                    <div class="form-group"><label>NIK (16 Digit) <span class="required">*</span></label><input type="text" id="nik" placeholder="16 digit NIK" maxlength="16" /></div>
+                    <div class="form-group"><label>No. HP <span class="required">*</span></label><input type="text" id="phone" placeholder="No. HP" /></div>
+                    <div class="form-group"><label>No. WhatsApp <span class="required">*</span></label><input type="text" id="whatsapp" placeholder="No. WhatsApp aktif" /></div>
                 </div>
             </div>
-
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-university"></i> Rekening Bank
-                    <span class="badge-step">3</span>
-                </div>
+                <div class="section-title"><i class="fas fa-university"></i> Rekening Bank <span class="badge-step">3</span></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Nama Bank <span class="required">*</span></label>
-                        <select id="bankName">
-                            <option value="BCA">BCA</option>
-                            <option value="BNI">BNI</option>
-                            <option value="BRI">BRI</option>
-                            <option value="Mandiri">Mandiri</option>
-                            <option value="CIMB Niaga">CIMB Niaga</option>
-                            <option value="Danamon">Danamon</option>
-                            <option value="BSI">BSI</option>
-                            <option value="Lainnya">Lainnya</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>No. Rekening <span class="required">*</span></label>
-                        <input type="text" id="bankAccount" placeholder="No. rekening" />
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Atas Nama <span class="required">*</span></label>
-                        <input type="text" id="bankHolder" placeholder="Atas nama..." />
-                    </div>
+                    <div class="form-group"><label>Nama Bank <span class="required">*</span></label><select id="bankName"><option value="BCA">BCA</option><option value="BNI">BNI</option><option value="BRI">BRI</option><option value="Mandiri">Mandiri</option><option value="CIMB Niaga">CIMB Niaga</option><option value="Danamon">Danamon</option><option value="BSI">BSI</option><option value="Lainnya">Lainnya</option></select></div>
+                    <div class="form-group"><label>No. Rekening <span class="required">*</span></label><input type="text" id="bankAccount" placeholder="No. rekening" /></div>
+                    <div class="form-group full-width"><label>Atas Nama <span class="required">*</span></label><input type="text" id="bankHolder" placeholder="Atas nama..." /></div>
                 </div>
             </div>
-
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-map-pin"></i> Alamat Pengiriman
-                    <span class="badge-step">4</span>
-                </div>
+                <div class="section-title"><i class="fas fa-map-pin"></i> Alamat Pengiriman <span class="badge-step">4</span></div>
                 <div class="form-row">
-                    <div class="form-group full-width">
-                        <label>Alamat Lengkap <span class="required">*</span></label>
-                        <textarea id="address" placeholder="Jalan, RT/RW, No. Rumah, Kel/Kec"></textarea>
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Kota & Provinsi <span class="required">*</span></label>
-                        <input type="text" id="city" placeholder="Kota & provinsi" />
-                    </div>
+                    <div class="form-group full-width"><label>Alamat Lengkap <span class="required">*</span></label><textarea id="address" placeholder="Jalan, RT/RW, No. Rumah, Kel/Kec"></textarea></div>
+                    <div class="form-group full-width"><label>Kota & Provinsi <span class="required">*</span></label><input type="text" id="city" placeholder="Kota & provinsi" /></div>
                 </div>
             </div>
-
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-tshirt"></i> Spesifikasi Jeans
-                    <span class="badge-step">5</span>
-                </div>
+                <div class="section-title"><i class="fas fa-tshirt"></i> Spesifikasi Jeans <span class="badge-step">5</span></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Nomor Seri <span class="required">*</span></label>
-                        <input type="text" id="serialNumber" placeholder="Nomor seri" />
-                    </div>
-                    <div class="form-group">
-                        <label>Ukuran <span class="required">*</span></label>
-                        <select id="jeansSize">
-                            <option value="28">Size 28</option>
-                            <option value="29">Size 29</option>
-                            <option value="30" selected>Size 30</option>
-                            <option value="31">Size 31</option>
-                            <option value="32">Size 32</option>
-                            <option value="33">Size 33</option>
-                            <option value="34">Size 34</option>
-                            <option value="36">Size 36</option>
-                            <option value="38">Size 38</option>
-                            <option value="40">Size 40</option>
-                        </select>
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Warna <span class="required">*</span></label>
-                        <select id="jeansColor">
-                            <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option>
-                            <option value="Black Stretch">Black Stretch</option>
-                            <option value="Light Wash">Light Wash</option>
-                            <option value="Dark Navy">Dark Navy</option>
-                            <option value="Grey Stone">Grey Stone</option>
-                            <option value="White">White</option>
-                        </select>
-                    </div>
+                    <div class="form-group"><label>Nomor Seri <span class="required">*</span></label><input type="text" id="serialNumber" placeholder="Nomor seri" /></div>
+                    <div class="form-group"><label>Ukuran <span class="required">*</span></label><select id="jeansSize"><option value="28">Size 28</option><option value="29">Size 29</option><option value="30" selected>Size 30</option><option value="31">Size 31</option><option value="32">Size 32</option><option value="33">Size 33</option><option value="34">Size 34</option><option value="36">Size 36</option><option value="38">Size 38</option><option value="40">Size 40</option></select></div>
+                    <div class="form-group full-width"><label>Warna <span class="required">*</span></label><select id="jeansColor"><option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option><option value="Black Stretch">Black Stretch</option><option value="Light Wash">Light Wash</option><option value="Dark Navy">Dark Navy</option><option value="Grey Stone">Grey Stone</option><option value="White">White</option></select></div>
                 </div>
             </div>
-
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-sitemap"></i> Penempatan Tim
-                    <span class="badge-step">6</span>
-                </div>
+                <div class="section-title"><i class="fas fa-sitemap"></i> Penempatan Tim <span class="badge-step">6</span></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Username Sponsor</label>
-                        <input type="text" id="sponsor" placeholder="Username sponsor" />
-                    </div>
-                    <div class="form-group">
-                        <label>Username Upline</label>
-                        <input type="text" id="upline" placeholder="Username upline" />
-                    </div>
+                    <div class="form-group"><label>Username Sponsor</label><input type="text" id="sponsor" placeholder="Username sponsor" /></div>
+                    <div class="form-group"><label>Username Upline</label><input type="text" id="upline" placeholder="Username upline" /></div>
                     <div class="form-group full-width">
                         <label>Posisi Tim <span class="required">*</span></label>
                         <div class="position-selector" id="positionSelector">
-                            <div class="position-option active" data-value="left">
-                                <i class="fas fa-arrow-left"></i>
-                                KIRI (L)
-                            </div>
-                            <div class="position-option" data-value="right">
-                                <i class="fas fa-arrow-right"></i>
-                                KANAN (R)
-                            </div>
+                            <div class="position-option active" data-value="left"><i class="fas fa-arrow-left"></i> KIRI (L)</div>
+                            <div class="position-option" data-value="right"><i class="fas fa-arrow-right"></i> KANAN (R)</div>
                         </div>
                         <input type="hidden" id="position" value="left" />
                     </div>
                 </div>
             </div>
-
-            <button type="submit" class="btn-submit" id="registerBtn">
-                <i class="fas fa-user-plus"></i> Daftar Member
-            </button>
+            <button type="submit" class="btn-submit" id="registerBtn"><i class="fas fa-user-plus"></i> Daftar Member</button>
             <div class="msg" id="regMsg"></div>
-            <div class="form-footer">
-                Sudah punya akun? <a id="backToLoginFromRegister">Login di sini</a>
-            </div>
+            <div class="form-footer">Sudah punya akun? <a id="backToLoginFromRegister">Login di sini</a></div>
         </form>
     </div>
 
@@ -2555,19 +2427,11 @@
             <h2><i class="fas fa-sign-in-alt"></i> Login</h2>
             <p>Masuk ke akun member Anda</p>
             <form id="loginForm" onsubmit="return false;">
-                <div class="form-group">
-                    <label>Email atau Username</label>
-                    <input type="text" id="loginEmail" placeholder="email@domain.com" />
-                </div>
-                <div class="form-group">
-                    <label>Kata Sandi</label>
-                    <input type="password" id="loginPassword" placeholder="••••••••" />
-                </div>
+                <div class="form-group"><label>Email atau Username</label><input type="text" id="loginEmail" placeholder="email@domain.com" /></div>
+                <div class="form-group"><label>Kata Sandi</label><input type="password" id="loginPassword" placeholder="••••••••" /></div>
                 <button type="submit" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
                 <div class="login-msg" id="loginMsg"></div>
-                <div class="login-footer">
-                    Belum punya akun? <a id="goToRegister">Daftar di sini</a>
-                </div>
+                <div class="login-footer">Belum punya akun? <a id="goToRegister">Daftar di sini</a></div>
             </form>
         </div>
     </div>
@@ -2579,15 +2443,12 @@
         <div class="popup-content">
             <button class="close-popup" id="closePopup">&times;</button>
             <div class="popup-grid" id="popupGrid">
-                <div class="popup-image" id="popupImage">
-                    <i class="fas fa-tshirt" id="popupIcon"></i>
-                    <span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>
-                </div>
+                <div class="popup-image" id="popupImage"><i class="fas fa-tshirt" id="popupIcon"></i><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span></div>
                 <div class="popup-info">
                     <span class="popup-tag" id="popupTag">BEST SELLER</span>
                     <h2 id="popupName">Nama Produk</h2>
                     <div class="popup-price" id="popupPrice">Rp 250.000 <del>Rp 350.000</del></div>
-                    <div class="popup-desc" id="popupDesc">Deskripsi produk lengkap tentang celana jeans premium ini.</div>
+                    <div class="popup-desc" id="popupDesc">Deskripsi produk lengkap.</div>
                     <div class="popup-stock" id="popupStock">Stok: 45</div>
                     <button class="btn-buy-large" id="popupBuyBtn"><i class="fas fa-shopping-bag"></i> Beli Sekarang</button>
                 </div>
@@ -2638,9 +2499,7 @@
                 <p style="margin-top:6px;"><strong>Jam Operasional:</strong><br />Senin - Jumat 09:00 - 21:00</p>
             </div>
         </div>
-        <div class="footer-bottom">
-            &copy; 2026 HEDTRO JEANS · All Rights Reserved
-        </div>
+        <div class="footer-bottom">&copy; 2026 HEDTRO JEANS · All Rights Reserved</div>
     </footer>
 
     <!-- ============================================================
@@ -2651,7 +2510,7 @@
             'use strict';
 
             // ============================================================
-            // DATA PRODUK
+            // DATA PRODUK (sama)
             // ============================================================
             const allProducts = [
                 { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
@@ -2978,7 +2837,6 @@
                 });
                 bindProductButtons();
                 document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                // Tutup search popup jika di HP
                 document.getElementById('searchPopup').classList.remove('show');
             }
 
@@ -3077,14 +2935,34 @@
             document.getElementById('closeLogin').addEventListener('click', closeLoginFn);
             loginOverlay.addEventListener('click', function(e) { if (e.target === loginOverlay) closeLoginFn(); });
 
+            // Desktop buttons
             document.getElementById('navLoginBtn').addEventListener('click', openLogin);
             document.getElementById('navRegisterBtn').addEventListener('click', showRegister);
 
+            // Sidebar buttons (HP)
             document.getElementById('sideLoginBtn').addEventListener('click', () => { toggleSidebar(false);
                 openLogin(); });
             document.getElementById('sideRegisterBtn').addEventListener('click', () => { toggleSidebar(false);
                 showRegister(); });
 
+            // Sidebar user badge (HP)
+            document.getElementById('sideUserBadge').addEventListener('click', function() {
+                const session = localStorage.getItem('mlm_session');
+                if (session) {
+                    try {
+                        const { id } = JSON.parse(session);
+                        const users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
+                        const user = users.find(u => u.id === id);
+                        if (user) {
+                            window.location.href = user.email === 'admin@mlm.com' ? 'admin.html' : 'dashboard.html';
+                            return;
+                        }
+                    } catch (_) {}
+                }
+                openLogin();
+            });
+
+            // Back to login from register
             document.getElementById('backToLoginFromRegister').addEventListener('click', (e) => {
                 e.preventDefault();
                 openLogin();
@@ -3094,6 +2972,7 @@
                 showRegister();
             });
 
+            // Sidebar menu navigation
             document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
                 item.addEventListener('click', function() {
                     const page = this.dataset.page;
@@ -3293,10 +3172,11 @@
             });
 
             // ============================================================
-            // USER BADGE
+            // USER BADGE (Desktop & Sidebar)
             // ============================================================
             function updateUI() {
                 const navUserName = document.getElementById('navUserName');
+                const sideUserName = document.getElementById('sideUserName');
                 const navLoginBtn = document.getElementById('navLoginBtn');
                 const navRegisterBtn = document.getElementById('navRegisterBtn');
                 const session = localStorage.getItem('mlm_session');
@@ -3306,7 +3186,9 @@
                         const users = JSON.parse(localStorage.getItem('hedtro_mlm_users') || '[]');
                         const user = users.find(u => u.id === id);
                         if (user) {
-                            navUserName.innerText = user.username || user.name;
+                            const name = user.username || user.name;
+                            navUserName.innerText = name;
+                            sideUserName.innerText = name;
                             navLoginBtn.style.display = 'none';
                             navRegisterBtn.style.display = 'none';
                             return;
@@ -3314,6 +3196,7 @@
                     } catch (_) {}
                 }
                 navUserName.innerText = 'Guest';
+                sideUserName.innerText = 'Guest';
                 navLoginBtn.style.display = 'flex';
                 navRegisterBtn.style.display = 'flex';
             }
