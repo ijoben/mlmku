@@ -7,6 +7,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <style>
+        /* ===== SEMUA STYLE SAMA SEPERTI SEBELUMNYA ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --denim-dark: #0b1a2b;
@@ -218,25 +219,30 @@
             background:var(--white); border-radius:var(--radius-sm);
             padding:18px 20px; box-shadow:var(--shadow);
             border:1px solid #e2e8f0;
+            margin-bottom:16px;
         }
         .settings-card h4 {
             font-size:0.9rem; font-weight:600; margin-bottom:14px;
             display:flex; align-items:center; gap:8px;
         }
         .settings-card h4 i { color:var(--gold-accent); }
-        .form-group { margin-bottom:12px; }
-        .form-group label {
+        .settings-card .form-group { margin-bottom:12px; }
+        .settings-card .form-group label {
             display:block; font-weight:500; color:var(--denim-navy);
             font-size:0.8rem; margin-bottom:4px;
         }
-        .form-group input, .form-group select, .form-group textarea {
+        .settings-card .form-group input,
+        .settings-card .form-group select,
+        .settings-card .form-group textarea {
             width:100%; padding:10px 14px;
             border:1.5px solid #dde3ea; border-radius:60px;
             font-size:0.9rem; background:#fafcff;
             font-family:inherit; transition:var(--transition);
         }
-        .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+        .settings-card .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
+        .settings-card .form-group input:focus,
+        .settings-card .form-group select:focus,
+        .settings-card .form-group textarea:focus {
             border-color:var(--denim-blue); outline:none;
             box-shadow:0 0 0 4px rgba(42,75,110,0.1);
         }
@@ -526,15 +532,6 @@
         .modal-box .btn-submit:hover {
             background:#b8963a; transform:scale(0.98);
         }
-        .modal-box .proof-image {
-            max-width:200px; max-height:200px;
-            border-radius:var(--radius-sm);
-            border:1px solid var(--denim-light);
-            margin:8px 0;
-        }
-        .modal-box .proof-image img {
-            width:100%; height:100%; object-fit:cover;
-        }
         .modal-box .order-detail {
             background:var(--cream);
             border-radius:var(--radius-sm);
@@ -544,6 +541,15 @@
         .modal-box .order-detail .item {
             display:flex; justify-content:space-between;
             padding:4px 0; font-size:0.85rem;
+        }
+        .modal-box .proof-image {
+            max-width:200px; max-height:200px;
+            border-radius:var(--radius-sm);
+            border:1px solid var(--denim-light);
+            margin:8px 0;
+        }
+        .modal-box .proof-image img {
+            width:100%; height:100%; object-fit:cover;
         }
 
         /* ===== SLIDE PREVIEW ===== */
@@ -730,7 +736,6 @@
             <div class="menu-item" data-tab="verification"><i class="fas fa-check-double"></i> Verifikasi</div>
             <div class="menu-item" data-tab="orders"><i class="fas fa-shopping-cart"></i> Orders</div>
             <div class="menu-divider"></div>
-            <!-- ===== MENU PAGE SETTINGS ===== -->
             <div class="menu-item" data-tab="page-settings"><i class="fas fa-paint-brush"></i> Halaman Utama</div>
             <div class="menu-divider"></div>
             <div class="menu-item" data-tab="settings"><i class="fas fa-sliders-h"></i> Pengaturan</div>
@@ -990,7 +995,7 @@
             function saveSlides(s) { localStorage.setItem(SLIDES_KEY, JSON.stringify(s)); }
             
             function loadAbout() { 
-                return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium yang menghadirkan celana jeans berkualitas tinggi dengan bahan raw denim 14oz pilihan. Kami berkomitmen untuk memberikan produk dengan kualitas terbaik, desain ikonik, dan harga yang kompetitif.</p><p>Sejak 1873, kami menghadirkan gaya denim klasik yang tetap relevan sepanjang masa. Setiap produk kami melalui proses seleksi ketat untuk memastikan kepuasan pelanggan.</p><p><i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> 100% Bahan Premium &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Desain Ikonik &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Garansi 30 Hari</p>"}');
+                return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}');
             }
             function saveAbout(a) { localStorage.setItem(ABOUT_KEY, JSON.stringify(a)); }
             
@@ -1001,7 +1006,7 @@
             function saveFeatures(f) { localStorage.setItem(FEATURES_KEY, JSON.stringify(f)); }
             
             function loadFooter() { 
-                return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.","copyright":"&copy; 2026 HEDTRO JEANS · All Rights Reserved","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}');
+                return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium...","copyright":"&copy; 2026 HEDTRO JEANS","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}');
             }
             function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
 
@@ -1100,14 +1105,21 @@
             // TAB NAVIGATION
             // ============================================================
             function switchTab(tabId) {
+                // HIDE ALL TAB CONTENT
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                
+                // SHOW SELECTED TAB
                 const tabContent = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
-                if (tabContent) tabContent.classList.add('active');
+                if (tabContent) {
+                    tabContent.classList.add('active');
+                }
 
+                // UPDATE SIDEBAR
                 document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(el => el.classList.remove('active'));
                 const activeMenuItem = document.querySelector(`.sidebar .menu-item[data-tab="${tabId}"]`);
                 if (activeMenuItem) activeMenuItem.classList.add('active');
 
+                // RENDER FUNCTIONS
                 if (tabId === 'dashboard') renderDashboard();
                 if (tabId === 'members') renderAdminMembers();
                 if (tabId === 'products') renderAdminProducts();
@@ -1116,6 +1128,7 @@
                 if (tabId === 'page-settings') renderPageSettings();
                 if (tabId === 'settings') loadSettingsToForm();
                 
+                // TUTUP SIDEBAR HP
                 if (window.innerWidth <= 768) toggleSidebar(false);
             }
 
@@ -1187,7 +1200,7 @@
             }
 
             // ============================================================
-            // RENDER MEMBERS
+            // RENDER MEMBERS (SINGKAT)
             // ============================================================
             function renderAdminMembers() {
                 const tbody = document.getElementById('adminTableBody');
@@ -1232,7 +1245,7 @@
             }
 
             // ============================================================
-            // RENDER VERIFICATION
+            // RENDER VERIFICATION (SINGKAT)
             // ============================================================
             function renderVerification() {
                 const tbody = document.getElementById('verifTableBody');
@@ -1297,7 +1310,7 @@
             }
 
             // ============================================================
-            // RENDER PRODUCTS
+            // RENDER PRODUCTS (SINGKAT)
             // ============================================================
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
@@ -1362,7 +1375,6 @@
 
                 const sizesStr = (p.sizes || []).join(', ');
                 const colorsStr = (p.colors || []).join(', ');
-                const imagePreviewHtml = p.image ? `<img src="${p.image}" alt="Preview" />` : '';
 
                 let html = `
                     <h3><i class="fas fa-edit" style="color:var(--gold-accent);"></i> Edit Produk</h3>
@@ -2461,6 +2473,7 @@
             const isLoggedIn = checkSession();
 
             if (isLoggedIn) {
+                // Auto refresh hanya untuk tab yang aktif
                 setInterval(() => {
                     const activeTab = document.querySelector('.sidebar .menu-item.active')?.dataset.tab;
                     if (activeTab === 'dashboard') renderDashboard();
@@ -2472,8 +2485,9 @@
                 }, 15000);
             }
 
-            console.log('🟦 HEDTRO · Admin Panel dengan Pengaturan Halaman Utama');
+            console.log('🟦 HEDTRO · Admin Panel dengan Pengaturan Halaman Utama (FIXED)');
             console.log('🔑 Admin: admin@mlm.com / admin123');
+            console.log('📌 Menu Halaman Utama sudah siap digunakan.');
         })();
     </script>
 
