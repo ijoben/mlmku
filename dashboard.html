@@ -341,21 +341,45 @@
       background: #cbd5e0;
     }
 
-    /* ===== FORM ===== */
-    .form-card {
-      background: var(--white); border-radius: var(--radius-sm);
-      padding: 24px; box-shadow: var(--shadow-sm);
-      max-width: 540px; border: 1px solid rgba(0,0,0,0.04);
+    /* ===== FORM STYLES ===== */
+    .form-section-card {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 20px 24px;
+      margin-bottom: 18px;
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0,0,0,0.05);
     }
-    .form-group { margin-bottom: 18px; }
+    .form-section-card .section-title {
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: var(--denim-dark);
+      margin-bottom: 16px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 10px;
+    }
+    .form-section-card .section-title i { color: var(--gold-accent); }
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 12px 18px;
+    }
+    .form-group { margin-bottom: 12px; }
+    .form-group.full-width { grid-column: 1 / -1; }
     .form-group label {
       display: block; font-weight: 600; color: var(--denim-navy);
-      font-size: 0.85rem; margin-bottom: 6px;
+      font-size: 0.8rem; margin-bottom: 4px;
+    }
+    .form-group label .helper {
+      font-weight: 400; color: #718096; font-size: 0.7rem; margin-left: 4px;
     }
     .form-group input, .form-group select, .form-group textarea {
-      width: 100%; padding: 12px 18px;
+      width: 100%; padding: 10px 16px;
       border: 1.5px solid #e2e8f0; border-radius: 10px;
-      font-size: 0.95rem; background: #f8fafc;
+      font-size: 0.9rem; background: #f8fafc;
       font-family: inherit; transition: var(--transition);
       color: var(--denim-dark);
     }
@@ -460,10 +484,7 @@
       .wallet-card { padding: 20px; flex-direction: column; align-items: stretch; }
       .wallet-card .wallet-amount { font-size: 1.8rem; }
       .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-    }
-    @media (max-width: 480px) {
-      .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-      .product-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .form-row { grid-template-columns: 1fr; gap: 0; }
     }
   </style>
 </head>
@@ -559,20 +580,157 @@
       </div>
     </div>
 
-    <!-- PROFIL MEMBER -->
+    <!-- PROFIL MEMBER (DISAMAKAN DENGAN REGISTER.HTML) -->
     <div class="section-content" id="sec-profile">
       <h1 class="page-title"><i class="fas fa-id-card"></i> Profil Saya</h1>
-      <div class="form-card" style="max-width: 600px;">
-        <div class="form-group"><label>Nama Lengkap</label><input type="text" id="profName" placeholder="Nama Anda" /></div>
-        <div class="form-group"><label>Alamat Email (Akun)</label><input type="email" id="profEmail" disabled style="opacity:0.7;" /></div>
-        <div class="form-group"><label>Nomor WhatsApp / HP</label><input type="text" id="profPhone" placeholder="08xxx" /></div>
-        <div class="form-group"><label>Alamat Pengiriman Produk</label><textarea id="profAddress" rows="3" placeholder="Alamat lengkap..."></textarea></div>
-        <div class="menu-divider" style="margin: 20px 0;"></div>
-        <h4 style="margin-bottom: 14px; font-weight:700;"><i class="fas fa-university" style="color:var(--gold-accent);"></i> Data Rekening Bank / E-Wallet</h4>
-        <div class="form-group"><label>Nama Bank / E-Wallet</label><input type="text" id="profBankName" placeholder="Contoh: BCA / Mandiri / OVO" /></div>
-        <div class="form-group"><label>Nomor Rekening / Account ID</label><input type="text" id="profBankAcc" placeholder="1234xxxx" /></div>
-        <div class="form-group"><label>Atas Nama Rekening</label><input type="text" id="profBankHolder" placeholder="Sesuai buku tabungan" /></div>
-        <button class="btn-sm btn-sm-gold" id="btnSaveProfile" style="width:100%; padding:14px; justify-content:center; margin-top:10px;"><i class="fas fa-save"></i> Simpan Perubahan Profil</button>
+      <div style="max-width: 850px;">
+
+        <!-- SECTION 1: AKUN & KEAMANAN -->
+        <div class="form-section-card">
+          <div class="section-title"><i class="fas fa-lock"></i> Akun & Keamanan</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Username</label>
+              <input type="text" id="profUsername" disabled style="opacity:0.75;" />
+            </div>
+            <div class="form-group">
+              <label>Email</label>
+              <input type="email" id="profEmail" disabled style="opacity:0.75;" />
+            </div>
+            <div class="form-group">
+              <label>Kata Sandi Baru <span class="helper">(Kosongkan jika tidak diubah)</span></label>
+              <input type="password" id="profPassword" placeholder="Kata sandi baru" />
+            </div>
+            <div class="form-group">
+              <label>Konfirmasi Sandi Baru</label>
+              <input type="password" id="profConfirmPassword" placeholder="Ulangi sandi baru" />
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 2: IDENTITAS & KONTAK -->
+        <div class="form-section-card">
+          <div class="section-title"><i class="fas fa-id-card"></i> Identitas & Kontak</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nama Lengkap</label>
+              <input type="text" id="profFullname" placeholder="Nama lengkap" />
+            </div>
+            <div class="form-group">
+              <label>NIK (16 Digit)</label>
+              <input type="text" id="profNik" placeholder="16 digit NIK" maxlength="16" />
+            </div>
+            <div class="form-group">
+              <label>No. HP</label>
+              <input type="text" id="profPhone" placeholder="No. HP" />
+            </div>
+            <div class="form-group">
+              <label>No. WhatsApp</label>
+              <input type="text" id="profWhatsapp" placeholder="No. WhatsApp aktif" />
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 3: REKENING BANK -->
+        <div class="form-section-card">
+          <div class="section-title"><i class="fas fa-university"></i> Rekening Bank</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nama Bank</label>
+              <select id="profBankName">
+                <option value="BCA">BCA</option>
+                <option value="BNI">BNI</option>
+                <option value="BRI">BRI</option>
+                <option value="Mandiri">Mandiri</option>
+                <option value="CIMB Niaga">CIMB Niaga</option>
+                <option value="Danamon">Danamon</option>
+                <option value="BSI">BSI</option>
+                <option value="Lainnya">Lainnya</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>No. Rekening</label>
+              <input type="text" id="profBankAccount" placeholder="No. rekening" />
+            </div>
+            <div class="form-group full-width">
+              <label>Atas Nama</label>
+              <input type="text" id="profBankHolder" placeholder="Atas nama..." />
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 4: ALAMAT PENGIRIMAN -->
+        <div class="form-section-card">
+          <div class="section-title"><i class="fas fa-map-pin"></i> Alamat Pengiriman</div>
+          <div class="form-row">
+            <div class="form-group full-width">
+              <label>Alamat Lengkap</label>
+              <textarea id="profAddress" rows="2" placeholder="Jalan, RT/RW, No. Rumah, Kel/Kec"></textarea>
+            </div>
+            <div class="form-group full-width">
+              <label>Kota & Provinsi</label>
+              <input type="text" id="profCity" placeholder="Kota & provinsi" />
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 5: SPESIFIKASI JEANS -->
+        <div class="form-section-card">
+          <div class="section-title"><i class="fas fa-tshirt"></i> Spesifikasi Jeans Perdana</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nomor Seri</label>
+              <input type="text" id="profSerial" placeholder="Nomor seri" />
+            </div>
+            <div class="form-group">
+              <label>Ukuran</label>
+              <select id="profJeansSize">
+                <option value="28">Size 28</option>
+                <option value="29">Size 29</option>
+                <option value="30">Size 30</option>
+                <option value="31">Size 31</option>
+                <option value="32">Size 32</option>
+                <option value="33">Size 33</option>
+                <option value="34">Size 34</option>
+                <option value="36">Size 36</option>
+                <option value="38">Size 38</option>
+                <option value="40">Size 40</option>
+              </select>
+            </div>
+            <div class="form-group full-width">
+              <label>Warna</label>
+              <select id="profJeansColor">
+                <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option>
+                <option value="Black Stretch">Black Stretch</option>
+                <option value="Light Wash">Light Wash</option>
+                <option value="Dark Navy">Dark Navy</option>
+                <option value="Grey Stone">Grey Stone</option>
+                <option value="White">White</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- SECTION 6: PENEMPATAN TIM (READ-ONLY) -->
+        <div class="form-section-card">
+          <div class="section-title"><i class="fas fa-sitemap"></i> Informasi Jaringan & Penempatan</div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Username Sponsor</label>
+              <input type="text" id="profSponsor" disabled style="opacity:0.75;" />
+            </div>
+            <div class="form-group">
+              <label>Username Upline</label>
+              <input type="text" id="profUpline" disabled style="opacity:0.75;" />
+            </div>
+            <div class="form-group full-width">
+              <label>Posisi Tim</label>
+              <input type="text" id="profPosition" disabled style="opacity:0.75;" />
+            </div>
+          </div>
+        </div>
+
+        <button class="btn-sm btn-sm-gold" id="btnSaveProfile" style="width:100%; padding:14px; justify-content:center; margin-top:10px; font-size:1rem;"><i class="fas fa-save"></i> Simpan Perubahan Profil</button>
       </div>
     </div>
 
@@ -585,7 +743,7 @@
     <!-- DEPOSIT -->
     <div class="section-content" id="sec-deposit">
       <h1 class="page-title"><i class="fas fa-plus-circle"></i> Deposit</h1>
-      <div class="form-card">
+      <div class="form-section-card" style="max-width:500px;">
         <div class="form-group"><label>Nominal Deposit (Rp)</label><input type="number" id="depositAmount" placeholder="Masukkan nominal" min="10000" /></div>
         <div class="form-group"><label>Metode Pembayaran</label>
           <select id="depositMethod">
@@ -602,7 +760,7 @@
     <!-- WITHDRAW -->
     <div class="section-content" id="sec-withdraw">
       <h1 class="page-title"><i class="fas fa-minus-circle"></i> Withdraw</h1>
-      <div class="form-card">
+      <div class="form-section-card" style="max-width:500px;">
         <div class="form-group"><label>Nominal Withdraw (Rp)</label><input type="number" id="withdrawAmount" placeholder="Masukkan nominal" min="50000" /></div>
         <div class="form-group"><label>Rekening Tujuan</label><input type="text" id="withdrawAccount" placeholder="Nomor rekening / e-wallet" /></div>
         <button class="btn-sm btn-sm-primary" id="submitWithdraw" style="width:100%; padding:14px; justify-content:center;">Ajukan Withdraw</button>
@@ -655,20 +813,27 @@
         <div class="form-group">
           <label>Pilih Ukuran (Size)</label>
           <select id="roSizeSelect">
-            <option value="S">S (Small)</option>
-            <option value="M" selected>M (Medium)</option>
-            <option value="L">L (Large)</option>
-            <option value="XL">XL (Extra Large)</option>
-            <option value="XXL">XXL (Double XL)</option>
+            <option value="28">Size 28</option>
+            <option value="29">Size 29</option>
+            <option value="30" selected>Size 30</option>
+            <option value="31">Size 31</option>
+            <option value="32">Size 32</option>
+            <option value="33">Size 33</option>
+            <option value="34">Size 34</option>
+            <option value="36">Size 36</option>
+            <option value="38">Size 38</option>
+            <option value="40">Size 40</option>
           </select>
         </div>
         <div class="form-group">
           <label>Pilih Warna (Color)</label>
           <select id="roColorSelect">
-            <option value="Classic Blue">Classic Blue Denim</option>
-            <option value="Dark Denim">Dark Navy Denim</option>
-            <option value="Black Indigo">Black Indigo</option>
-            <option value="Light Blue">Light Blue Wash</option>
+            <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option>
+            <option value="Black Stretch">Black Stretch</option>
+            <option value="Light Wash">Light Wash</option>
+            <option value="Dark Navy">Dark Navy</option>
+            <option value="Grey Stone">Grey Stone</option>
+            <option value="White">White</option>
           </select>
         </div>
       </div>
@@ -815,38 +980,104 @@
 
       // ===== PROFIL MEMBER =====
       function renderProfileForm() {
-        document.getElementById('profName').value = currentUser.name || '';
+        users = loadUsers();
+        currentUser = users.find(u => u.id === currentUser.id) || currentUser;
+
+        // Akun & Keamanan
+        document.getElementById('profUsername').value = currentUser.username || '';
         document.getElementById('profEmail').value = currentUser.email || '';
+        document.getElementById('profPassword').value = '';
+        document.getElementById('profConfirmPassword').value = '';
+
+        // Identitas & Kontak
+        document.getElementById('profFullname').value = currentUser.fullname || currentUser.name || '';
+        document.getElementById('profNik').value = currentUser.nik || '';
         document.getElementById('profPhone').value = currentUser.phone || '';
-        document.getElementById('profAddress').value = currentUser.address || '';
-        document.getElementById('profBankName').value = currentUser.bankName || '';
-        document.getElementById('profBankAcc').value = currentUser.bankAccount || '';
+        document.getElementById('profWhatsapp').value = currentUser.whatsapp || '';
+
+        // Rekening Bank
+        document.getElementById('profBankName').value = currentUser.bankName || 'BCA';
+        document.getElementById('profBankAccount').value = currentUser.bankAccount || '';
         document.getElementById('profBankHolder').value = currentUser.bankHolder || '';
+
+        // Alamat Pengiriman
+        document.getElementById('profAddress').value = currentUser.address || '';
+        document.getElementById('profCity').value = currentUser.city || '';
+
+        // Spesifikasi Jeans
+        document.getElementById('profSerial').value = currentUser.serialNumber || '';
+        document.getElementById('profJeansSize').value = currentUser.jeansSize || '30';
+        document.getElementById('profJeansColor').value = currentUser.jeansColor || 'Indigo Blue Raw Denim';
+
+        // Penempatan Tim (Read Only)
+        let sponsorUser = users.find(u => u.id === currentUser.sponsor_id);
+        let uplineUser = users.find(u => u.id === currentUser.upline_id);
+
+        document.getElementById('profSponsor').value = sponsorUser ? sponsorUser.username : (currentUser.sponsor || 'Admin');
+        document.getElementById('profUpline').value = uplineUser ? uplineUser.username : (currentUser.upline || 'Admin');
+        document.getElementById('profPosition').value = currentUser.position === 'left' ? 'KIRI (L)' : (currentUser.position === 'right' ? 'KANAN (R)' : 'KIRI (L)');
       }
 
       document.getElementById('btnSaveProfile').addEventListener('click', function() {
-        const name = document.getElementById('profName').value.trim();
+        const password = document.getElementById('profPassword').value.trim();
+        const confirmPassword = document.getElementById('profConfirmPassword').value.trim();
+        const fullname = document.getElementById('profFullname').value.trim();
+        const nik = document.getElementById('profNik').value.trim();
         const phone = document.getElementById('profPhone').value.trim();
-        const address = document.getElementById('profAddress').value.trim();
-        const bankName = document.getElementById('profBankName').value.trim();
-        const bankAccount = document.getElementById('profBankAcc').value.trim();
+        const whatsapp = document.getElementById('profWhatsapp').value.trim();
+        const bankName = document.getElementById('profBankName').value;
+        const bankAccount = document.getElementById('profBankAccount').value.trim();
         const bankHolder = document.getElementById('profBankHolder').value.trim();
+        const address = document.getElementById('profAddress').value.trim();
+        const city = document.getElementById('profCity').value.trim();
+        const serialNumber = document.getElementById('profSerial').value.trim();
+        const jeansSize = document.getElementById('profJeansSize').value;
+        const jeansColor = document.getElementById('profJeansColor').value;
 
-        if (!name || !phone) {
-          showModalAlert('Peringatan', 'Nama lengkap dan nomor handphone wajib diisi.');
+        if (!fullname || !nik || !phone || !whatsapp || !bankAccount || !bankHolder || !address || !city || !serialNumber) {
+          showModalAlert('Peringatan', '⚠️ Semua field profil wajib diisi.');
           return;
         }
 
-        currentUser.name = name;
+        if (password !== '') {
+          if (password.length < 6) {
+            showModalAlert('Peringatan', '⚠️ Kata sandi minimal 6 karakter.');
+            return;
+          }
+          if (password !== confirmPassword) {
+            showModalAlert('Peringatan', '⚠️ Konfirmasi kata sandi baru tidak cocok.');
+            return;
+          }
+          currentUser.password = password;
+        }
+
+        if (nik.length !== 16 || isNaN(nik)) {
+          showModalAlert('Peringatan', '⚠️ NIK harus 16 digit angka.');
+          return;
+        }
+
+        currentUser.fullname = fullname;
+        currentUser.name = fullname;
+        currentUser.nik = nik;
         currentUser.phone = phone;
-        currentUser.address = address;
+        currentUser.whatsapp = whatsapp;
         currentUser.bankName = bankName;
         currentUser.bankAccount = bankAccount;
         currentUser.bankHolder = bankHolder;
+        currentUser.address = address;
+        currentUser.city = city;
+        currentUser.serialNumber = serialNumber;
+        currentUser.jeansSize = jeansSize;
+        currentUser.jeansColor = jeansColor;
 
-        saveUsers(users);
+        const userIndex = users.findIndex(u => u.id === currentUser.id);
+        if (userIndex !== -1) {
+          users[userIndex] = currentUser;
+          saveUsers(users);
+        }
+
         renderDashboard();
-        showModalAlert('Berhasil', '✅ Data profil berhasil diperbarui.');
+        showModalAlert('Berhasil', '✅ Profil Anda telah diperbarui dan terhubung dengan data registrasi & admin.');
       });
 
       // ===== BANK INFO =====
@@ -920,7 +1151,7 @@
 
       // ===== RENDER DASHBOARD =====
       function renderDashboard() {
-        navUserName.textContent = currentUser.name;
+        navUserName.textContent = currentUser.fullname || currentUser.name || currentUser.username;
         
         // Status & Tagihan Rp 550.000 untuk Free Member
         const memberPrice = settings.memberPrice || 550000;
@@ -1016,7 +1247,7 @@
 
         return {
           id: user.id,
-          name: user.name,
+          name: user.fullname || user.name || user.username,
           status: user.status || 'free',
           left: user.left ? buildBinaryTree(user.left, level + 1, maxDepth) : null,
           right: user.right ? buildBinaryTree(user.right, level + 1, maxDepth) : null
@@ -1184,7 +1415,7 @@
       showSection('dashboard');
       setInterval(refreshUserData, 30000);
 
-      console.log('🟦 HEDTRO · Dashboard dengan Custom Modal & Profil Member');
+      console.log('🟦 HEDTRO · Dashboard Sinkron dengan Form Register & Admin');
     })();
   </script>
 </body>
