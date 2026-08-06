@@ -37,7 +37,6 @@
         ::-webkit-scrollbar-track { background:var(--cream); }
         ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
-        /* ===== NAVBAR ===== */
         .navbar {
             position: fixed; top:0; left:0; right:0; z-index:1100;
             background: var(--denim-dark);
@@ -588,16 +587,12 @@
             padding:12px 14px;
         }
         .slide-preview .slide-item .slide-body h4 {
-            font-size:0.9rem;
-            font-weight:600;
-            margin-bottom:4px;
+            font-size:0.9rem; font-weight:600; margin-bottom:4px;
         }
         .slide-preview .slide-item .slide-body p {
-            font-size:0.8rem;
-            color:#6a7e9a;
+            font-size:0.8rem; color:#6a7e9a;
             display:-webkit-box;
-            -webkit-line-clamp:2;
-            -webkit-box-orient:vertical;
+            -webkit-line-clamp:2; -webkit-box-orient:vertical;
             overflow:hidden;
         }
         .slide-preview .slide-item .slide-actions {
@@ -822,7 +817,9 @@
                 </div>
             </div>
 
-            <!-- ===== PAGE SETTINGS ===== -->
+            <!-- ============================================================
+            HALAMAN UTAMA - TAB YANG SEBELUMNYA HILANG
+            ============================================================ -->
             <div class="tab-content" id="tabPageSettings">
                 <h1 class="page-title"><i class="fas fa-paint-brush"></i> Pengaturan Halaman Utama</h1>
                 
@@ -957,7 +954,6 @@
             const BANK_KEY = 'hedtro_bank_info';
             const SESSION_KEY = 'mlm_session';
             
-            // ===== KEYS UNTUK KONTEN HALAMAN =====
             const SLIDES_KEY = 'hedtro_slides';
             const ABOUT_KEY = 'hedtro_about';
             const FAQ_KEY = 'hedtro_faq';
@@ -1001,7 +997,7 @@
             }
 
             // ============================================================
-            // FUNGSI UNTUK KONTEN HALAMAN
+            // KONTEN FUNCTIONS
             // ============================================================
             function loadSlides() { 
                 try { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); } catch(e) { return []; }
@@ -1010,7 +1006,7 @@
             
             function loadAbout() { 
                 try { 
-                    return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium yang menghadirkan celana jeans berkualitas tinggi dengan bahan raw denim 14oz pilihan. Kami berkomitmen untuk memberikan produk dengan kualitas terbaik, desain ikonik, dan harga yang kompetitif.</p><p>Sejak 1873, kami menghadirkan gaya denim klasik yang tetap relevan sepanjang masa. Setiap produk kami melalui proses seleksi ketat untuk memastikan kepuasan pelanggan.</p><p><i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> 100% Bahan Premium &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Desain Ikonik &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Garansi 30 Hari</p>"}');
+                    return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}');
                 } catch(e) { return {title:"Tentang Kami", content:""}; }
             }
             function saveAbout(a) { localStorage.setItem(ABOUT_KEY, JSON.stringify(a)); }
@@ -1027,7 +1023,7 @@
             
             function loadFooter() { 
                 try { 
-                    return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.","copyright":"&copy; 2026 HEDTRO JEANS · All Rights Reserved","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}');
+                    return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium...","copyright":"&copy; 2026 HEDTRO JEANS","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}');
                 } catch(e) { return {brand:"HEDTRO JEANS", desc:"", copyright:"", social:{}}; }
             }
             function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
@@ -1060,7 +1056,7 @@
             }
 
             // ============================================================
-            // MODAL FUNCTIONS
+            // MODAL
             // ============================================================
             const modalOverlay = document.getElementById('modalOverlay');
             const modalBox = document.getElementById('modalBox');
@@ -1084,7 +1080,7 @@
             });
 
             // ============================================================
-            // SIDEBAR TOGGLE (HP)
+            // SIDEBAR TOGGLE
             // ============================================================
             const burgerBtn = document.getElementById('burgerBtn');
             const sidebar = document.getElementById('sidebar');
@@ -1118,23 +1114,16 @@
             // TAB NAVIGATION
             // ============================================================
             function switchTab(tabId) {
-                // HIDE ALL
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                
-                // SHOW SELECTED
                 const tabContent = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
                 if (tabContent) {
                     tabContent.classList.add('active');
-                } else {
-                    console.warn('Tab content not found:', tabId);
                 }
 
-                // UPDATE SIDEBAR
                 document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(el => el.classList.remove('active'));
                 const activeMenuItem = document.querySelector(`.sidebar .menu-item[data-tab="${tabId}"]`);
                 if (activeMenuItem) activeMenuItem.classList.add('active');
 
-                // RENDER FUNCTIONS
                 if (tabId === 'dashboard') renderDashboard();
                 if (tabId === 'members') renderAdminMembers();
                 if (tabId === 'products') renderAdminProducts();
@@ -1380,7 +1369,7 @@
             }
 
             // ============================================================
-            // EDIT PRODUCT - MODAL CUSTOM (SINGKAT)
+            // EDIT PRODUCT
             // ============================================================
             function openEditProduct(id) {
                 const products = loadProducts();
@@ -2356,9 +2345,8 @@
                 }, 15000);
             }
 
-            console.log('🟦 HEDTRO · Admin Panel dengan Pengaturan Halaman Utama (REBUILD)');
+            console.log('🟦 HEDTRO · Admin Panel LENGKAP dengan Halaman Utama');
             console.log('🔑 Admin: admin@mlm.com / admin123');
-            console.log('📌 Menu Halaman Utama sudah siap digunakan.');
         })();
     </script>
 
