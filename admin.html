@@ -37,6 +37,7 @@
         ::-webkit-scrollbar-track { background:var(--cream); }
         ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
+        /* ===== NAVBAR ===== */
         .navbar {
             position: fixed; top:0; left:0; right:0; z-index:1100;
             background: var(--denim-dark);
@@ -1002,22 +1003,32 @@
             // ============================================================
             // FUNGSI UNTUK KONTEN HALAMAN
             // ============================================================
-            function loadSlides() { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); }
+            function loadSlides() { 
+                try { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); } catch(e) { return []; }
+            }
             function saveSlides(s) { localStorage.setItem(SLIDES_KEY, JSON.stringify(s)); }
             
             function loadAbout() { 
-                return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium yang menghadirkan celana jeans berkualitas tinggi dengan bahan raw denim 14oz pilihan. Kami berkomitmen untuk memberikan produk dengan kualitas terbaik, desain ikonik, dan harga yang kompetitif.</p><p>Sejak 1873, kami menghadirkan gaya denim klasik yang tetap relevan sepanjang masa. Setiap produk kami melalui proses seleksi ketat untuk memastikan kepuasan pelanggan.</p><p><i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> 100% Bahan Premium &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Desain Ikonik &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Garansi 30 Hari</p>"}');
+                try { 
+                    return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium yang menghadirkan celana jeans berkualitas tinggi dengan bahan raw denim 14oz pilihan. Kami berkomitmen untuk memberikan produk dengan kualitas terbaik, desain ikonik, dan harga yang kompetitif.</p><p>Sejak 1873, kami menghadirkan gaya denim klasik yang tetap relevan sepanjang masa. Setiap produk kami melalui proses seleksi ketat untuk memastikan kepuasan pelanggan.</p><p><i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> 100% Bahan Premium &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Desain Ikonik &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Garansi 30 Hari</p>"}');
+                } catch(e) { return {title:"Tentang Kami", content:""}; }
             }
             function saveAbout(a) { localStorage.setItem(ABOUT_KEY, JSON.stringify(a)); }
             
-            function loadFaq() { return JSON.parse(localStorage.getItem(FAQ_KEY) || '[]'); }
+            function loadFaq() { 
+                try { return JSON.parse(localStorage.getItem(FAQ_KEY) || '[]'); } catch(e) { return []; }
+            }
             function saveFaq(f) { localStorage.setItem(FAQ_KEY, JSON.stringify(f)); }
             
-            function loadFeatures() { return JSON.parse(localStorage.getItem(FEATURES_KEY) || '[]'); }
+            function loadFeatures() { 
+                try { return JSON.parse(localStorage.getItem(FEATURES_KEY) || '[]'); } catch(e) { return []; }
+            }
             function saveFeatures(f) { localStorage.setItem(FEATURES_KEY, JSON.stringify(f)); }
             
             function loadFooter() { 
-                return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.","copyright":"&copy; 2026 HEDTRO JEANS · All Rights Reserved","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}');
+                try { 
+                    return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.","copyright":"&copy; 2026 HEDTRO JEANS · All Rights Reserved","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}');
+                } catch(e) { return {brand:"HEDTRO JEANS", desc:"", copyright:"", social:{}}; }
             }
             function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
 
@@ -1114,6 +1125,8 @@
                 const tabContent = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
                 if (tabContent) {
                     tabContent.classList.add('active');
+                } else {
+                    console.warn('Tab content not found:', tabId);
                 }
 
                 // UPDATE SIDEBAR
@@ -1201,7 +1214,7 @@
             }
 
             // ============================================================
-            // RENDER MEMBERS
+            // RENDER MEMBERS (SINGKAT)
             // ============================================================
             function renderAdminMembers() {
                 const tbody = document.getElementById('adminTableBody');
@@ -1246,7 +1259,7 @@
             }
 
             // ============================================================
-            // RENDER VERIFICATION
+            // RENDER VERIFICATION (SINGKAT)
             // ============================================================
             function renderVerification() {
                 const tbody = document.getElementById('verifTableBody');
@@ -1311,7 +1324,7 @@
             }
 
             // ============================================================
-            // RENDER PRODUCTS
+            // RENDER PRODUCTS (SINGKAT)
             // ============================================================
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
@@ -1367,7 +1380,7 @@
             }
 
             // ============================================================
-            // EDIT PRODUCT - MODAL CUSTOM
+            // EDIT PRODUCT - MODAL CUSTOM (SINGKAT)
             // ============================================================
             function openEditProduct(id) {
                 const products = loadProducts();
@@ -1535,7 +1548,7 @@
             });
 
             // ============================================================
-            // RENDER ORDERS
+            // RENDER ORDERS (SINGKAT)
             // ============================================================
             function renderOrders() {
                 const tbody = document.getElementById('ordersTableBody');
@@ -2343,7 +2356,7 @@
                 }, 15000);
             }
 
-            console.log('🟦 HEDTRO · Admin Panel dengan Pengaturan Halaman Utama (FIXED)');
+            console.log('🟦 HEDTRO · Admin Panel dengan Pengaturan Halaman Utama (REBUILD)');
             console.log('🔑 Admin: admin@mlm.com / admin123');
             console.log('📌 Menu Halaman Utama sudah siap digunakan.');
         })();
