@@ -129,23 +129,6 @@
         .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
         .sidebar .menu-item.logout i { color:#e74c3c; }
 
-        @media (max-width: 768px) {
-            .sidebar { left:-320px; }
-            .sidebar.open { left:0; }
-            .sidebar .sidebar-header .close-side { display:block; }
-            .burger-btn { display:flex; }
-            .sidebar-overlay { display:block; }
-            .main-content { margin-left:0; max-width:100%; padding:16px 16px 30px; }
-            .nav-right .user-badge { display:none; }
-        }
-        @media (min-width: 769px) {
-            .burger-btn { display:none !important; }
-            .sidebar { left:0 !important; }
-            .sidebar-overlay { display:none !important; }
-            .sidebar .sidebar-header .close-side { display:none !important; }
-            .main-content { margin-left:var(--sidebar-width); }
-        }
-
         .main-content {
             margin-left: var(--sidebar-width);
             padding: 20px 24px 40px;
@@ -165,6 +148,7 @@
             padding:8px 18px; border-radius:60px;
             font-weight:600; font-size:0.8rem;
             transition:var(--transition); font-family:inherit;
+            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
         }
         .btn-sm-primary { background:var(--denim-blue); color:#fff; }
         .btn-sm-primary:hover { background:var(--denim-dark); }
@@ -185,6 +169,8 @@
         .table-wrap {
             overflow-x:auto; border-radius:var(--radius-sm);
             border:1px solid #e2e8f0; background:var(--white);
+            width: 100%;
+            -webkit-overflow-scrolling: touch;
         }
         table {
             width:100%; border-collapse:collapse; font-size:0.82rem;
@@ -201,6 +187,7 @@
         }
         .badge-status {
             padding:2px 12px; border-radius:40px; font-size:0.7rem; font-weight:600;
+            display: inline-block; white-space: nowrap;
         }
         .badge-pending { background:#fff3cd; color:#856404; }
         .badge-success { background:#d4edda; color:#155724; }
@@ -214,7 +201,6 @@
         .settings-grid {
             display:grid; grid-template-columns:1fr 1fr; gap:20px;
         }
-        @media (max-width:700px) { .settings-grid { grid-template-columns:1fr; } }
         .settings-card {
             background:var(--white); border-radius:var(--radius-sm);
             padding:18px 20px; box-shadow:var(--shadow);
@@ -250,7 +236,7 @@
         .toast-container {
             position:fixed; top:100px; right:20px; z-index:9999;
             display:flex; flex-direction:column; gap:10px;
-            max-width:360px; width:100%; pointer-events:none;
+            max-width:360px; width:calc(100% - 40px); pointer-events:none;
         }
         .toast-item {
             background:var(--denim-dark); color:var(--cream);
@@ -631,30 +617,69 @@
             flex-shrink:0;
         }
 
-        @media (max-width:768px) {
-            .stats-grid { grid-template-columns:1fr 1fr; gap:12px; }
-            .stat-card .value { font-size:1.4rem; }
-            .modal-box { padding:20px 16px 24px; }
-            .slide-preview { grid-template-columns:1fr !important; }
-            .slide-item .slide-img { height:120px !important; }
-            .slide-item .slide-body h4 { font-size:0.8rem !important; }
-            .slide-item .slide-body p { font-size:0.7rem !important; }
-            .settings-card { padding:12px !important; }
-            .settings-card .form-group input,
-            .settings-card .form-group textarea { font-size:0.85rem !important; padding:8px 12px !important; }
-            .flex-row { gap:6px !important; }
-            .btn-sm { padding:6px 12px !important; font-size:0.7rem !important; }
-            .faq-item-admin, .feature-item-admin { flex-direction:column; align-items:stretch; }
+        /* ===== OPTIMASI LAYAR HP (RESPONSIVE FIXES) ===== */
+        @media (max-width: 768px) {
+            .navbar { padding: 10px 14px; }
+            .navbar .logo { font-size: 1.1rem; }
+            .navbar .logo i { font-size: 1.3rem; }
+            .nav-right .user-badge { display:none; }
+            .burger-btn { display:flex; }
+
+            .sidebar { left:-320px; }
+            .sidebar.open { left:0; }
+            .sidebar .sidebar-header .close-side { display:block; }
+            .sidebar-overlay { display:block; }
+
+            .main-content { 
+                margin-left:0; 
+                max-width:100%; 
+                padding:16px 12px 30px; 
+            }
+            .page-title { font-size: 1.3rem; margin-bottom: 14px; }
+
+            .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+            .stat-card { padding: 12px 14px; }
+            .stat-card .value { font-size: 1.3rem; }
+
+            .settings-grid { grid-template-columns: 1fr; gap: 12px; }
+            .settings-card { padding: 14px; }
+            
+            .slide-preview { grid-template-columns: 1fr !important; }
+            .slide-preview .slide-item .slide-img { height: 120px !important; }
+            
+            .modal-box { padding: 20px 16px 24px; border-radius: 20px; }
+            
+            .faq-item-admin, .feature-item-admin { 
+                flex-direction: column; 
+                align-items: stretch; 
+            }
             .faq-item-admin .faq-actions,
-            .feature-item-admin .feature-actions { justify-content:flex-end; }
-            .settings-grid { grid-template-columns:1fr; }
+            .feature-item-admin .feature-actions { 
+                justify-content: flex-end; 
+                margin-top: 4px;
+            }
+
+            .flex-row { gap: 8px !important; }
+            .btn-sm { padding: 8px 14px !important; font-size: 0.75rem !important; }
+            
+            /* Form Grid Sosmed di HP */
+            .settings-card div[style*="grid-template-columns"] {
+                grid-template-columns: 1fr !important;
+            }
         }
-        @media (max-width:480px) {
-            .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
-            .stat-card { padding:12px 14px; }
-            .stat-card .value { font-size:1.2rem; }
-            .modal-box { padding:16px 12px 20px; }
-            .navbar .logo { font-size:1.1rem; }
+
+        @media (min-width: 769px) {
+            .burger-btn { display:none !important; }
+            .sidebar { left:0 !important; }
+            .sidebar-overlay { display:none !important; }
+            .sidebar .sidebar-header .close-side { display:none !important; }
+            .main-content { margin-left:var(--sidebar-width); }
+        }
+
+        @media (max-width: 480px) {
+            .stats-grid { grid-template-columns: 1fr; }
+            .history-item { font-size: 0.8rem; flex-direction: column; gap: 4px; }
+            .history-item .amount { align-self: flex-start; }
         }
     </style>
 </head>
@@ -941,9 +966,7 @@
         (function() {
             'use strict';
 
-            // ============================================================
             // DATABASE KEYS
-            // ============================================================
             const DB_KEY = 'hedtro_mlm_users';
             const PRODUCT_KEY = 'hedtro_products';
             const SETTINGS_KEY = 'hedtro_settings';
@@ -958,9 +981,7 @@
             const FEATURES_KEY = 'hedtro_features';
             const FOOTER_KEY = 'hedtro_footer';
 
-            // ============================================================
             // DATABASE FUNCTIONS
-            // ============================================================
             function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
             function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
             function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
@@ -987,16 +1008,7 @@
 
             function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
-            function getCurrentUser() {
-                const session = getSession();
-                if (!session) return null;
-                const users = loadUsers();
-                return users.find(u => u.id === session.id) || null;
-            }
-
-            // ============================================================
             // KONTEN FUNCTIONS
-            // ============================================================
             function loadSlides() { 
                 try { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); } catch(e) { return []; }
             }
@@ -1026,9 +1038,7 @@
             }
             function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
 
-            // ============================================================
             // TOAST
-            // ============================================================
             function showToast(message, type = 'info', duration = 3000) {
                 const container = document.getElementById('toastContainer');
                 if (!container) return;
@@ -1054,9 +1064,7 @@
                 }, duration);
             }
 
-            // ============================================================
             // MODAL
-            // ============================================================
             const modalOverlay = document.getElementById('modalOverlay');
             const modalBox = document.getElementById('modalBox');
             const modalClose = document.getElementById('modalClose');
@@ -1082,9 +1090,7 @@
                 });
             }
 
-            // ============================================================
             // SIDEBAR TOGGLE
-            // ============================================================
             const burgerBtn = document.getElementById('burgerBtn');
             const sidebar = document.getElementById('sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -1093,12 +1099,10 @@
             function toggleSidebar(open) {
                 if (!sidebar) return;
                 const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.toggle('open', isOpen);
-                    if (sidebarOverlay) sidebarOverlay.classList.toggle('active', isOpen);
-                    if (burgerBtn) burgerBtn.classList.toggle('active', isOpen);
-                    document.body.style.overflow = isOpen ? 'hidden' : '';
-                }
+                sidebar.classList.toggle('open', isOpen);
+                if (sidebarOverlay) sidebarOverlay.classList.toggle('active', isOpen);
+                if (burgerBtn) burgerBtn.classList.toggle('active', isOpen);
+                document.body.style.overflow = isOpen ? 'hidden' : '';
             }
 
             if (burgerBtn) {
@@ -1108,21 +1112,10 @@
                 });
             }
 
-            if (closeSidebar) {
-                closeSidebar.addEventListener('click', function() {
-                    toggleSidebar(false);
-                });
-            }
+            if (closeSidebar) closeSidebar.addEventListener('click', function() { toggleSidebar(false); });
+            if (sidebarOverlay) sidebarOverlay.addEventListener('click', function() { toggleSidebar(false); });
 
-            if (sidebarOverlay) {
-                sidebarOverlay.addEventListener('click', function() {
-                    toggleSidebar(false);
-                });
-            }
-
-            // ============================================================
             // TAB NAVIGATION
-            // ============================================================
             function switchTab(tabId) {
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 
@@ -1145,7 +1138,7 @@
                 if (tabId === 'page-settings') renderPageSettings();
                 if (tabId === 'settings') loadSettingsToForm();
                 
-                if (window.innerWidth <= 768) toggleSidebar(false);
+                toggleSidebar(false);
             }
 
             document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(item => {
@@ -1154,9 +1147,7 @@
                 });
             });
 
-            // ============================================================
             // APPLY SETTINGS
-            // ============================================================
             function applySettings() {
                 const settings = loadSettings();
                 const logoEl = document.getElementById('brandLogo');
@@ -1176,9 +1167,7 @@
                 if (nameEl) nameEl.textContent = 'Admin';
             }
 
-            // ============================================================
             // RENDER DASHBOARD
-            // ============================================================
             function renderDashboard() {
                 const users = loadUsers();
                 const orders = loadOrders();
@@ -1227,9 +1216,7 @@
                 container.innerHTML = html;
             }
 
-            // ============================================================
             // RENDER MEMBERS
-            // ============================================================
             function renderAdminMembers() {
                 const tbody = document.getElementById('adminTableBody');
                 if (!tbody) return;
@@ -1273,9 +1260,7 @@
                 });
             }
 
-            // ============================================================
             // RENDER VERIFICATION
-            // ============================================================
             function renderVerification() {
                 const tbody = document.getElementById('verifTableBody');
                 if (!tbody) return;
@@ -1338,9 +1323,7 @@
                 });
             }
 
-            // ============================================================
             // RENDER PRODUCTS
-            // ============================================================
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
                 if (!tbody) return;
@@ -1350,9 +1333,7 @@
                     const sizes = (p.sizes || []).join(', ') || '-';
                     const colors = (p.colors || []).join(', ') || '-';
                     let imgHtml = `<i class="fas fa-tshirt" style="font-size:1.5rem;color:var(--denim-blue);"></i>`;
-                    if (p.image && p.image.startsWith('data:image')) {
-                        imgHtml = `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />`;
-                    } else if (p.image && p.image.startsWith('http')) {
+                    if (p.image && (p.image.startsWith('data:image') || p.image.startsWith('http'))) {
                         imgHtml = `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />`;
                     }
                     html += `<tr>
@@ -1375,8 +1356,7 @@
 
                 document.querySelectorAll('.edit-product').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        openEditProduct(id);
+                        openEditProduct(parseInt(this.dataset.id));
                     });
                 });
 
@@ -1394,9 +1374,7 @@
                 });
             }
 
-            // ============================================================
             // EDIT PRODUCT
-            // ============================================================
             function openEditProduct(id) {
                 const products = loadProducts();
                 const p = products.find(x => x.id === id);
@@ -1489,9 +1467,7 @@
                 }
             }
 
-            // ============================================================
             // ADD PRODUCT
-            // ============================================================
             const addProductBtn = document.getElementById('addProductBtn');
             if (addProductBtn) {
                 addProductBtn.addEventListener('click', function() {
@@ -1575,9 +1551,7 @@
                 });
             }
 
-            // ============================================================
             // RENDER ORDERS
-            // ============================================================
             function renderOrders() {
                 const tbody = document.getElementById('ordersTableBody');
                 if (!tbody) return;
@@ -1681,9 +1655,7 @@
                 });
             }
 
-            // ============================================================
             // PAGE SETTINGS - SLIDES, ABOUT, FAQ, FEATURES, FOOTER
-            // ============================================================
             function renderPageSettings() {
                 renderSlides();
                 renderAbout();
@@ -1692,7 +1664,7 @@
                 renderFooter();
             }
 
-            // --- SLIDES ---
+            // SLIDES
             function renderSlides() {
                 const container = document.getElementById('slideList');
                 if (!container) return;
@@ -1723,8 +1695,7 @@
 
                 document.querySelectorAll('.edit-slide').forEach(btn => {
                     btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        openSlideModal(id);
+                        openSlideModal(parseInt(this.dataset.id));
                     });
                 });
 
@@ -1832,16 +1803,7 @@
                                 slides[idx] = { ...slides[idx], title, subtitle, btnText, btnLink, bg, icon, image };
                             }
                         } else {
-                            slides.push({
-                                id: getNextId(slides),
-                                title,
-                                subtitle,
-                                btnText,
-                                btnLink,
-                                bg,
-                                icon,
-                                image
-                            });
+                            slides.push({ id: getNextId(slides), title, subtitle, btnText, btnLink, bg, icon, image });
                         }
                         saveSlides(slides);
                         renderSlides();
@@ -1852,13 +1814,9 @@
             }
 
             const addSlideBtn = document.getElementById('addSlideBtn');
-            if (addSlideBtn) {
-                addSlideBtn.addEventListener('click', function() {
-                    openSlideModal(null);
-                });
-            }
+            if (addSlideBtn) addSlideBtn.addEventListener('click', function() { openSlideModal(null); });
 
-            // --- ABOUT ---
+            // ABOUT
             function renderAbout() {
                 const about = loadAbout();
                 const titleEl = document.getElementById('aboutTitle');
@@ -1880,7 +1838,7 @@
                 });
             }
 
-            // --- FAQ ---
+            // FAQ
             function renderFaq() {
                 const container = document.getElementById('faqList');
                 if (!container) return;
@@ -1907,10 +1865,7 @@
                 container.innerHTML = html;
 
                 document.querySelectorAll('.edit-faq').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        openFaqModal(id);
-                    });
+                    btn.addEventListener('click', function() { openFaqModal(parseInt(this.dataset.id)); });
                 });
 
                 document.querySelectorAll('.delete-faq').forEach(btn => {
@@ -1950,9 +1905,7 @@
                         let faqs = loadFaq();
                         if (isEdit) {
                             const idx = faqs.findIndex(f => f.id === id);
-                            if (idx !== -1) {
-                                faqs[idx] = { ...faqs[idx], question, answer };
-                            }
+                            if (idx !== -1) faqs[idx] = { ...faqs[idx], question, answer };
                         } else {
                             faqs.push({ id: getNextId(faqs), question, answer });
                         }
@@ -1965,13 +1918,9 @@
             }
 
             const addFaqBtn = document.getElementById('addFaqBtn');
-            if (addFaqBtn) {
-                addFaqBtn.addEventListener('click', function() {
-                    openFaqModal(null);
-                });
-            }
+            if (addFaqBtn) addFaqBtn.addEventListener('click', function() { openFaqModal(null); });
 
-            // --- FEATURES ---
+            // FEATURES
             function renderFeatures() {
                 const container = document.getElementById('featureList');
                 if (!container) return;
@@ -1998,10 +1947,7 @@
                 container.innerHTML = html;
 
                 document.querySelectorAll('.edit-feature').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        openFeatureModal(id);
-                    });
+                    btn.addEventListener('click', function() { openFeatureModal(parseInt(this.dataset.id)); });
                 });
 
                 document.querySelectorAll('.delete-feature').forEach(btn => {
@@ -2043,9 +1989,7 @@
                         let features = loadFeatures();
                         if (isEdit) {
                             const idx = features.findIndex(f => f.id === id);
-                            if (idx !== -1) {
-                                features[idx] = { ...features[idx], icon, title, desc };
-                            }
+                            if (idx !== -1) features[idx] = { ...features[idx], icon, title, desc };
                         } else {
                             features.push({ id: getNextId(features), icon, title, desc });
                         }
@@ -2058,13 +2002,9 @@
             }
 
             const addFeatureBtn = document.getElementById('addFeatureBtn');
-            if (addFeatureBtn) {
-                addFeatureBtn.addEventListener('click', function() {
-                    openFeatureModal(null);
-                });
-            }
+            if (addFeatureBtn) addFeatureBtn.addEventListener('click', function() { openFeatureModal(null); });
 
-            // --- FOOTER & SOSMED ---
+            // FOOTER & SOSMED
             function renderFooter() {
                 const footer = loadFooter();
                 const brandEl = document.getElementById('footerBrand');
@@ -2103,9 +2043,7 @@
                 });
             }
 
-            // ============================================================
             // SETTINGS
-            // ============================================================
             function loadSettingsToForm() {
                 const settings = loadSettings();
                 const bankInfo = loadBankInfo();
@@ -2193,9 +2131,7 @@
                 });
             }
 
-            // ============================================================
             // SEED & RESET
-            // ============================================================
             const seedDemoBtn = document.getElementById('seedDemoBtn');
             if (seedDemoBtn) {
                 seedDemoBtn.addEventListener('click', function() {
@@ -2217,15 +2153,9 @@
                                 bonus_binary: Math.floor(Math.random() * 100),
                                 bonus_reward: Math.floor(Math.random() * 20),
                                 bonus_ro: Math.floor(Math.random() * 10),
-                                left: null,
-                                right: null,
-                                sponsor_id: 1,
-                                upline_id: 1,
+                                left: null, right: null, sponsor_id: 1, upline_id: 1,
                                 position: i % 2 === 0 ? 'left' : 'right',
-                                purchase_history: [],
-                                transactions: [],
-                                orders: [],
-                                proof_image: null,
+                                purchase_history: [], transactions: [], orders: [], proof_image: null,
                                 registeredAt: new Date().toISOString()
                             };
                             if (i === 0) { const admin = users.find(u => u.id === 1); if (admin) admin.left = newUser.id; }
@@ -2250,27 +2180,13 @@
                     let users = loadUsers();
                     const admin = users.find(u => u.email === 'admin@mlm.com');
                     if (admin) {
-                        admin.left = null;
-                        admin.right = null;
-                        admin.wallet = 0;
-                        admin.bonus_sponsor = 0;
-                        admin.bonus_binary = 0;
-                        admin.bonus_reward = 0;
-                        admin.bonus_ro = 0;
-                        admin.transactions = [];
-                        admin.orders = [];
-                        admin.purchase_history = [];
+                        admin.left = null; admin.right = null; admin.wallet = 0;
+                        admin.bonus_sponsor = 0; admin.bonus_binary = 0; admin.bonus_reward = 0; admin.bonus_ro = 0;
+                        admin.transactions = []; admin.orders = []; admin.purchase_history = [];
                     }
                     users = users.filter(u => u.email === 'admin@mlm.com');
-                    saveUsers(users);
-                    saveOrders([]);
-                    saveTransactions([]);
-                    saveProducts([]);
-                    renderAdminMembers();
-                    renderVerification();
-                    renderOrders();
-                    renderAdminProducts();
-                    renderDashboard();
+                    saveUsers(users); saveOrders([]); saveTransactions([]); saveProducts([]);
+                    renderAdminMembers(); renderVerification(); renderOrders(); renderAdminProducts(); renderDashboard();
                     showToast('✅ Semua data direset (kecuali admin).', 'info');
                 });
             }
@@ -2278,29 +2194,16 @@
             const refreshBtn = document.getElementById('refreshBtn');
             if (refreshBtn) {
                 refreshBtn.addEventListener('click', function() {
-                    renderAdminMembers();
-                    renderAdminProducts();
-                    renderVerification();
-                    renderOrders();
-                    renderDashboard();
-                    loadSettingsToForm();
+                    renderAdminMembers(); renderAdminProducts(); renderVerification(); renderOrders(); renderDashboard(); loadSettingsToForm();
                     showToast('🔄 Data direfresh.', 'info');
                 });
             }
 
             const refreshVerifBtn = document.getElementById('refreshVerifBtn');
-            if (refreshVerifBtn) {
-                refreshVerifBtn.addEventListener('click', function() {
-                    renderVerification();
-                });
-            }
+            if (refreshVerifBtn) refreshVerifBtn.addEventListener('click', function() { renderVerification(); });
 
             const refreshOrdersBtn = document.getElementById('refreshOrdersBtn');
-            if (refreshOrdersBtn) {
-                refreshOrdersBtn.addEventListener('click', function() {
-                    renderOrders();
-                });
-            }
+            if (refreshOrdersBtn) refreshOrdersBtn.addEventListener('click', function() { renderOrders(); });
 
             const navUserBadge = document.getElementById('navUserBadge');
             if (navUserBadge) {
@@ -2318,9 +2221,7 @@
                 });
             }
 
-            // ============================================================
             // LOGIN OVERLAY FUNCTIONS
-            // ============================================================
             const loginOverlay = document.getElementById('loginOverlay');
             const mainApp = document.getElementById('mainApp');
 
@@ -2415,9 +2316,7 @@
                 });
             }
 
-            // ============================================================
             // CHECK SESSION
-            // ============================================================
             function checkSession() {
                 const session = getSession();
                 if (session) {
@@ -2442,9 +2341,7 @@
                 return false;
             }
 
-            // ============================================================
             // INIT
-            // ============================================================
             try {
                 let users = loadUsers();
                 if (users.length === 0) {
@@ -2456,20 +2353,9 @@
                         password: 'admin123',
                         role: 'admin',
                         status: 'verified',
-                        wallet: 0,
-                        bonus_sponsor: 0,
-                        bonus_binary: 0,
-                        bonus_reward: 0,
-                        bonus_ro: 0,
-                        left: null,
-                        right: null,
-                        sponsor_id: null,
-                        upline_id: null,
-                        position: null,
-                        purchase_history: [],
-                        transactions: [],
-                        orders: [],
-                        proof_image: null,
+                        wallet: 0, bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0,
+                        left: null, right: null, sponsor_id: null, upline_id: null, position: null,
+                        purchase_history: [], transactions: [], orders: [], proof_image: null,
                         registeredAt: new Date().toISOString()
                     }];
                     saveUsers(users);
@@ -2499,8 +2385,7 @@
                     }, 15000);
                 }
 
-                console.log('🟦 HEDTRO · Admin Panel LENGKAP dengan Halaman Utama');
-                console.log('🔑 Admin: admin@mlm.com / admin123');
+                console.log('🟦 HEDTRO · Admin Panel Responsive Mobile Ready');
             } catch (error) {
                 console.error('Error pada admin panel:', error);
                 const app = document.getElementById('mainApp');
