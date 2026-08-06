@@ -189,7 +189,7 @@
     .btn-sm-danger { background:#e53e3e; color:#fff; }
     .btn-sm-danger:hover { background:#c53030; transform:translateY(-1px); }
 
-    /* ===== WALLET CARD (DESAIN ELEGAN) ===== */
+    /* ===== WALLET CARD ===== */
     .wallet-card {
       background: linear-gradient(135deg, var(--denim-dark) 0%, var(--denim-navy) 100%);
       color: var(--cream);
@@ -345,21 +345,21 @@
     .form-card {
       background: var(--white); border-radius: var(--radius-sm);
       padding: 24px; box-shadow: var(--shadow-sm);
-      max-width: 480px; border: 1px solid rgba(0,0,0,0.04);
+      max-width: 540px; border: 1px solid rgba(0,0,0,0.04);
     }
     .form-group { margin-bottom: 18px; }
     .form-group label {
       display: block; font-weight: 600; color: var(--denim-navy);
       font-size: 0.85rem; margin-bottom: 6px;
     }
-    .form-group input, .form-group select {
+    .form-group input, .form-group select, .form-group textarea {
       width: 100%; padding: 12px 18px;
       border: 1.5px solid #e2e8f0; border-radius: 10px;
       font-size: 0.95rem; background: #f8fafc;
       font-family: inherit; transition: var(--transition);
       color: var(--denim-dark);
     }
-    .form-group input:focus, .form-group select:focus {
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
       border-color: var(--denim-blue); outline: none;
       background: var(--white);
       box-shadow: 0 0 0 3px rgba(42,75,110,0.12);
@@ -404,7 +404,40 @@
     .product-card .body .price del { color: #a0aec0; font-size: 0.8rem; font-weight: 500; }
     .product-card .body .btn-sm { margin-top: auto; width: 100%; justify-content: center; }
 
-    /* ===== BADGE STATUS ===== */
+    /* ===== CUSTOM MODAL STYLES ===== */
+    .custom-modal-overlay {
+      position: fixed; top: 0; left: 0; right: 0; bottom: 0;
+      background: rgba(11, 26, 43, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 2000;
+      display: flex; align-items: center; justify-content: center;
+      padding: 20px; opacity: 0; pointer-events: none;
+      transition: var(--transition);
+    }
+    .custom-modal-overlay.active { opacity: 1; pointer-events: all; }
+    .custom-modal {
+      background: var(--white);
+      border-radius: var(--radius);
+      width: 100%; max-width: 440px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden; transform: translateY(20px);
+      transition: var(--transition); border: 1px solid rgba(212,175,55,0.3);
+    }
+    .custom-modal-overlay.active .custom-modal { transform: translateY(0); }
+    .custom-modal-header {
+      background: var(--denim-dark); color: var(--white);
+      padding: 18px 24px; display: flex; align-items: center; justify-content: space-between;
+      border-bottom: 2px solid var(--gold-accent);
+    }
+    .custom-modal-header h3 { font-size: 1.1rem; font-weight: 700; display: flex; align-items: center; gap: 8px; }
+    .custom-modal-header h3 i { color: var(--gold-accent); }
+    .custom-modal-body { padding: 24px; color: var(--denim-dark); }
+    .custom-modal-footer {
+      padding: 16px 24px; background: #f8fafc;
+      display: flex; justify-content: flex-end; gap: 10px;
+      border-top: 1px solid #edf2f7;
+    }
+
     .badge-status {
       padding: 3px 10px; border-radius: 20px;
       font-size: 0.7rem; font-weight: 700;
@@ -453,17 +486,19 @@
       <span class="close-side" id="closeSidebar">&times;</span>
     </div>
 
-    <!-- CARD SALDO RINGKAS DI SIDEBAR -->
+    <!-- CARD SALDO RINGKAS & STATUS DI SIDEBAR -->
     <div style="padding: 6px 0 12px;">
-      <div class="wallet-card" style="padding: 14px 16px; border-radius: 14px; margin-bottom: 6px;">
-        <div>
+      <div class="wallet-card" style="padding: 16px; border-radius: 14px; margin-bottom: 6px; flex-direction: column; align-items: flex-start; gap: 10px;">
+        <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
           <div class="wallet-label" style="font-size:0.7rem;"><i class="fas fa-wallet"></i> Saldo Dompet</div>
-          <div class="wallet-amount" id="sideWalletAmount" style="font-size: 1.2rem; margin-top:2px;">Rp 0</div>
+          <span id="sideUserStatusBadge" class="node-status free" style="font-size:0.6rem; padding:2px 8px; border-radius:10px;">FREE</span>
         </div>
+        <div class="wallet-amount" id="sideWalletAmount" style="font-size: 1.3rem; margin-top:0;">Rp 0</div>
       </div>
     </div>
 
     <div class="menu-item active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
+    <div class="menu-item" data-section="profile"><i class="fas fa-id-card"></i> Profil Saya</div>
     <div class="menu-item" data-section="network"><i class="fas fa-sitemap"></i> Jaringan</div>
     <div class="menu-item" data-section="deposit"><i class="fas fa-plus-circle"></i> Deposit</div>
     <div class="menu-item" data-section="withdraw"><i class="fas fa-minus-circle"></i> Withdraw</div>
@@ -524,6 +559,23 @@
       </div>
     </div>
 
+    <!-- PROFIL MEMBER -->
+    <div class="section-content" id="sec-profile">
+      <h1 class="page-title"><i class="fas fa-id-card"></i> Profil Saya</h1>
+      <div class="form-card" style="max-width: 600px;">
+        <div class="form-group"><label>Nama Lengkap</label><input type="text" id="profName" placeholder="Nama Anda" /></div>
+        <div class="form-group"><label>Alamat Email (Akun)</label><input type="email" id="profEmail" disabled style="opacity:0.7;" /></div>
+        <div class="form-group"><label>Nomor WhatsApp / HP</label><input type="text" id="profPhone" placeholder="08xxx" /></div>
+        <div class="form-group"><label>Alamat Pengiriman Produk</label><textarea id="profAddress" rows="3" placeholder="Alamat lengkap..."></textarea></div>
+        <div class="menu-divider" style="margin: 20px 0;"></div>
+        <h4 style="margin-bottom: 14px; font-weight:700;"><i class="fas fa-university" style="color:var(--gold-accent);"></i> Data Rekening Bank / E-Wallet</h4>
+        <div class="form-group"><label>Nama Bank / E-Wallet</label><input type="text" id="profBankName" placeholder="Contoh: BCA / Mandiri / OVO" /></div>
+        <div class="form-group"><label>Nomor Rekening / Account ID</label><input type="text" id="profBankAcc" placeholder="1234xxxx" /></div>
+        <div class="form-group"><label>Atas Nama Rekening</label><input type="text" id="profBankHolder" placeholder="Sesuai buku tabungan" /></div>
+        <button class="btn-sm btn-sm-gold" id="btnSaveProfile" style="width:100%; padding:14px; justify-content:center; margin-top:10px;"><i class="fas fa-save"></i> Simpan Perubahan Profil</button>
+      </div>
+    </div>
+
     <!-- JARINGAN -->
     <div class="section-content" id="sec-network">
       <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary (2 Kaki)</h1>
@@ -577,6 +629,56 @@
 
   </div>
 
+  <!-- ===== CUSTOM MODAL UNTUK ALERT & CONFIRM ===== -->
+  <div class="custom-modal-overlay" id="customModalOverlay">
+    <div class="custom-modal">
+      <div class="custom-modal-header">
+        <h3 id="modalTitle"><i class="fas fa-info-circle"></i> Konfirmasi</h3>
+      </div>
+      <div class="custom-modal-body" id="modalBodyText">
+        Isi pesan modal...
+      </div>
+      <div class="custom-modal-footer" id="modalFooter">
+        <button class="btn-sm btn-sm-primary" id="modalBtnOk">OK</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== CUSTOM MODAL OPSI PRODUK RO (UKURAN & WARNA) ===== -->
+  <div class="custom-modal-overlay" id="roModalOverlay">
+    <div class="custom-modal">
+      <div class="custom-modal-header">
+        <h3><i class="fas fa-tshirt"></i> Pilih Variasi Produk RO</h3>
+      </div>
+      <div class="custom-modal-body">
+        <p id="roProductName" style="font-weight:700; margin-bottom:12px; font-size:1rem;"></p>
+        <div class="form-group">
+          <label>Pilih Ukuran (Size)</label>
+          <select id="roSizeSelect">
+            <option value="S">S (Small)</option>
+            <option value="M" selected>M (Medium)</option>
+            <option value="L">L (Large)</option>
+            <option value="XL">XL (Extra Large)</option>
+            <option value="XXL">XXL (Double XL)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Pilih Warna (Color)</label>
+          <select id="roColorSelect">
+            <option value="Classic Blue">Classic Blue Denim</option>
+            <option value="Dark Denim">Dark Navy Denim</option>
+            <option value="Black Indigo">Black Indigo</option>
+            <option value="Light Blue">Light Blue Wash</option>
+          </select>
+        </div>
+      </div>
+      <div class="custom-modal-footer">
+        <button class="btn-sm btn-sm-danger" id="roModalCancelBtn">Batal</button>
+        <button class="btn-sm btn-sm-gold" id="roModalConfirmBtn">Beli Sekarang</button>
+      </div>
+    </div>
+  </div>
+
   <script>
     (function() {
       'use strict';
@@ -615,6 +717,40 @@
         return;
       }
 
+      // ===== CUSTOM POPUP / MODAL UTILITY =====
+      const modalOverlay = document.getElementById('customModalOverlay');
+      const modalTitle = document.getElementById('modalTitle');
+      const modalBodyText = document.getElementById('modalBodyText');
+      const modalFooter = document.getElementById('modalFooter');
+
+      function showModalAlert(title, message, callback) {
+        modalTitle.innerHTML = `<i class="fas fa-info-circle"></i> ${title}`;
+        modalBodyText.innerHTML = message;
+        modalFooter.innerHTML = `<button class="btn-sm btn-sm-gold" id="modalOkBtn">OK</button>`;
+        modalOverlay.classList.add('active');
+        document.getElementById('modalOkBtn').onclick = function() {
+          modalOverlay.classList.remove('active');
+          if (callback) callback();
+        };
+      }
+
+      function showModalConfirm(title, message, onConfirm) {
+        modalTitle.innerHTML = `<i class="fas fa-question-circle"></i> ${title}`;
+        modalBodyText.innerHTML = message;
+        modalFooter.innerHTML = `
+          <button class="btn-sm btn-sm-danger" id="modalCancelBtn">Batal</button>
+          <button class="btn-sm btn-sm-gold" id="modalConfirmBtn">Ya, Lanjutkan</button>
+        `;
+        modalOverlay.classList.add('active');
+        document.getElementById('modalCancelBtn').onclick = function() {
+          modalOverlay.classList.remove('active');
+        };
+        document.getElementById('modalConfirmBtn').onclick = function() {
+          modalOverlay.classList.remove('active');
+          if (onConfirm) onConfirm();
+        };
+      }
+
       // ===== DOM REFS =====
       const navUserName = document.getElementById('navUserName');
       const burgerBtn = document.getElementById('burgerBtn');
@@ -624,6 +760,7 @@
       const statusBanner = document.getElementById('statusBanner');
       const walletAmount = document.getElementById('walletAmount');
       const sideWalletAmount = document.getElementById('sideWalletAmount');
+      const sideUserStatusBadge = document.getElementById('sideUserStatusBadge');
 
       // ===== SIDEBAR TOGGLE (HP) =====
       function toggleSidebar(open) {
@@ -642,6 +779,7 @@
       // ===== NAVIGASI =====
       const sections = {
         dashboard: document.getElementById('sec-dashboard'),
+        profile: document.getElementById('sec-profile'),
         network: document.getElementById('sec-network'),
         deposit: document.getElementById('sec-deposit'),
         withdraw: document.getElementById('sec-withdraw'),
@@ -657,6 +795,7 @@
         if (activeMenuItem) activeMenuItem.classList.add('active');
         if (window.innerWidth <= 768) toggleSidebar(false);
 
+        if (sectionId === 'profile') renderProfileForm();
         if (sectionId === 'network') renderNetwork();
         if (sectionId === 'history') renderFullHistory();
         if (sectionId === 'dashboard') renderDashboard();
@@ -674,6 +813,42 @@
         window.location.href = 'index.html';
       });
 
+      // ===== PROFIL MEMBER =====
+      function renderProfileForm() {
+        document.getElementById('profName').value = currentUser.name || '';
+        document.getElementById('profEmail').value = currentUser.email || '';
+        document.getElementById('profPhone').value = currentUser.phone || '';
+        document.getElementById('profAddress').value = currentUser.address || '';
+        document.getElementById('profBankName').value = currentUser.bankName || '';
+        document.getElementById('profBankAcc').value = currentUser.bankAccount || '';
+        document.getElementById('profBankHolder').value = currentUser.bankHolder || '';
+      }
+
+      document.getElementById('btnSaveProfile').addEventListener('click', function() {
+        const name = document.getElementById('profName').value.trim();
+        const phone = document.getElementById('profPhone').value.trim();
+        const address = document.getElementById('profAddress').value.trim();
+        const bankName = document.getElementById('profBankName').value.trim();
+        const bankAccount = document.getElementById('profBankAcc').value.trim();
+        const bankHolder = document.getElementById('profBankHolder').value.trim();
+
+        if (!name || !phone) {
+          showModalAlert('Peringatan', 'Nama lengkap dan nomor handphone wajib diisi.');
+          return;
+        }
+
+        currentUser.name = name;
+        currentUser.phone = phone;
+        currentUser.address = address;
+        currentUser.bankName = bankName;
+        currentUser.bankAccount = bankAccount;
+        currentUser.bankHolder = bankHolder;
+
+        saveUsers(users);
+        renderDashboard();
+        showModalAlert('Berhasil', '✅ Data profil berhasil diperbarui.');
+      });
+
       // ===== BANK INFO =====
       function renderBankInfo() {
         const el = document.getElementById('bankDetail');
@@ -684,8 +859,8 @@
 
       // ===== DEPOSIT & WITHDRAW =====
       function deposit(amount) {
-        if (amount <= 0 || isNaN(amount)) { alert('Masukkan nominal yang valid.'); return; }
-        if (amount < 10000) { alert('Minimal deposit Rp 10.000'); return; }
+        if (amount <= 0 || isNaN(amount)) { showModalAlert('Kesalahan', 'Masukkan nominal yang valid.'); return; }
+        if (amount < 10000) { showModalAlert('Kesalahan', 'Minimal deposit Rp 10.000'); return; }
         currentUser.wallet = (currentUser.wallet || 0) + amount;
         if (!currentUser.transactions) currentUser.transactions = [];
         currentUser.transactions.push({
@@ -697,19 +872,20 @@
         });
         saveUsers(users);
         renderDashboard();
-        alert('✅ Deposit Rp ' + amount.toLocaleString() + ' berhasil!');
-        showSection('dashboard');
+        showModalAlert('Deposit Berhasil', '✅ Deposit sebesar Rp ' + amount.toLocaleString() + ' telah ditambahkan ke dompet Anda.', function() {
+          showSection('dashboard');
+        });
       }
 
       function withdraw(amount, account) {
-        if (amount <= 0 || isNaN(amount)) { alert('Masukkan nominal yang valid.'); return; }
-        if (amount < 50000) { alert('Minimal withdraw Rp 50.000'); return; }
+        if (amount <= 0 || isNaN(amount)) { showModalAlert('Kesalahan', 'Masukkan nominal yang valid.'); return; }
+        if (amount < 50000) { showModalAlert('Kesalahan', 'Minimal withdraw Rp 50.000'); return; }
         if ((currentUser.wallet || 0) < amount) {
-          alert('❌ Saldo tidak mencukupi!');
+          showModalAlert('Gagal', '❌ Saldo dompet Anda tidak mencukupi.');
           return;
         }
         if (!account || account.trim() === '') {
-          alert('Masukkan nomor rekening / e-wallet tujuan.');
+          showModalAlert('Kesalahan', 'Masukkan nomor rekening / e-wallet tujuan.');
           return;
         }
         currentUser.wallet = (currentUser.wallet || 0) - amount;
@@ -723,8 +899,9 @@
         });
         saveUsers(users);
         renderDashboard();
-        alert('✅ Permintaan withdraw Rp ' + amount.toLocaleString() + ' sedang diproses.');
-        showSection('dashboard');
+        showModalAlert('Withdraw Diproses', '✅ Permintaan withdraw Rp ' + amount.toLocaleString() + ' telah diajukan dan sedang diproses admin.', function() {
+          showSection('dashboard');
+        });
       }
 
       document.getElementById('depositBtn').addEventListener('click', () => showSection('deposit'));
@@ -748,7 +925,13 @@
         // Status & Tagihan Rp 550.000 untuk Free Member
         const memberPrice = settings.memberPrice || 550000;
         let statusHtml = '';
+        const isVerified = currentUser.status === 'verified';
         
+        if (sideUserStatusBadge) {
+          sideUserStatusBadge.textContent = isVerified ? 'VERIFIED' : 'FREE';
+          sideUserStatusBadge.className = isVerified ? 'node-status verified' : 'node-status free';
+        }
+
         if (currentUser.status === 'free') {
           statusHtml = `<div>
             <strong>❌ Status: Free Member</strong><br>
@@ -814,7 +997,7 @@
           const amountClass = (t.type === 'deposit' || t.type === 'ro_purchase') ? 'plus' : 'minus';
           const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' ? '✅ Selesai' : '❌ Gagal');
           const date = new Date(t.date).toLocaleDateString() + ' ' + new Date(t.date).toLocaleTimeString();
-          html += `<div class="history-item"><span>${typeLabel} ${statusText} <span class="text-muted" style="font-size:0.7rem;">${date}</span></span><span class="amount ${amountClass}">${(t.type === 'deposit' || t.type === 'ro_purchase') ? '+' : '-'} Rp ${t.amount.toLocaleString()}</span></div>`;
+          html += `<div class="history-item"><span>${typeLabel} ${statusText} <span class="text-muted" style="font-size:0.75rem;">${date}</span></span><span class="amount ${amountClass}">${(t.type === 'deposit' || t.type === 'ro_purchase') ? '+' : '-'} Rp ${t.amount.toLocaleString()}</span></div>`;
         });
         container.innerHTML = html;
       }
@@ -896,59 +1079,83 @@
           grid.appendChild(card);
         });
 
-        // Event listener untuk tombol beli RO
         document.querySelectorAll('.buy-ro-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             const productId = parseInt(this.dataset.id);
             const price = parseInt(this.dataset.price);
-            buyRO(productId, price);
+            openROModal(productId, price);
           });
         });
       }
 
-      // ===== FUNGSI BELI RO =====
-      function buyRO(productId, price) {
+      // ===== MODAL VARIASI PRODUK RO (UKURAN & WARNA) =====
+      const roModalOverlay = document.getElementById('roModalOverlay');
+      let currentRoProductId = null;
+      let currentRoPrice = 0;
+
+      function openROModal(productId, price) {
         if (currentUser.status !== 'verified') {
-          alert('❌ Anda harus terverifikasi (verified) untuk melakukan repeat order.');
+          showModalAlert('Akses Dibatasi', '❌ Anda harus berstatus VERIFIED untuk melakukan Repeat Order (RO).');
           return;
         }
         const product = products.find(p => p.id === productId);
-        if (!product) { alert('Produk tidak ditemukan'); return; }
-        if (product.stock <= 0) { alert('Stok habis'); return; }
+        if (!product) { showModalAlert('Error', 'Produk tidak ditemukan'); return; }
+        if (product.stock <= 0) { showModalAlert('Stok Habis', 'Maaf, stok produk ini telah habis.'); return; }
 
-        if (!confirm(`Beli ${product.name} seharga Rp ${price.toLocaleString()}? Anda akan transfer ke rekening admin.`)) return;
+        currentRoProductId = productId;
+        currentRoPrice = price;
+        document.getElementById('roProductName').textContent = `${product.name} — Rp ${price.toLocaleString()}`;
+        roModalOverlay.classList.add('active');
+      }
 
-        // Kurangi stok
+      document.getElementById('roModalCancelBtn').addEventListener('click', function() {
+        roModalOverlay.classList.remove('active');
+      });
+
+      document.getElementById('roModalConfirmBtn').addEventListener('click', function() {
+        const size = document.getElementById('roSizeSelect').value;
+        const color = document.getElementById('roColorSelect').value;
+        roModalOverlay.classList.remove('active');
+        processROPurchase(currentRoProductId, currentRoPrice, size, color);
+      });
+
+      function processROPurchase(productId, price, size, color) {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+
         product.stock--;
         saveProducts(products);
 
-        // Catat transaksi RO dengan status pending
         if (!currentUser.transactions) currentUser.transactions = [];
+        const fullProductName = `${product.name} (${size} / ${color})`;
+
         currentUser.transactions.push({
           type: 'ro_purchase',
           productId: productId,
-          productName: product.name,
+          productName: fullProductName,
           amount: price,
           date: new Date().toISOString(),
           status: 'pending',
-          note: `Menunggu pembayaran transfer ke ${bankInfo.bank} - ${bankInfo.account}`
+          note: `Ukuran: ${size}, Warna: ${color} · Menunggu konfirmasi pembayaran transfer ke ${bankInfo.bank} ${bankInfo.account}`
         });
-        // Tambahkan ke purchase_history
+
         if (!currentUser.purchase_history) currentUser.purchase_history = [];
         currentUser.purchase_history.push({
           productId: productId,
-          productName: product.name,
+          productName: fullProductName,
+          size: size,
+          color: color,
           price: price,
           date: new Date().toISOString(),
           status: 'pending'
         });
         saveUsers(users);
 
-        alert('✅ Pesanan RO berhasil! Silakan transfer ke rekening admin dan tunggu konfirmasi.');
-        renderDashboard();
-        renderProductsDashboard();
-        // Buka riwayat agar user melihat status pending
-        showSection('history');
+        showModalAlert('Pesanan Berhasil', `✅ Pesanan RO untuk <b>${fullProductName}</b> berhasil diajukan!<br><br>Silakan melakukan transfer ke rekening admin (<b>${bankInfo.bank} ${bankInfo.account}</b>) untuk diproses.`, function() {
+          renderDashboard();
+          renderProductsDashboard();
+          showSection('history');
+        });
       }
 
       // ===== REFRESH DATA =====
@@ -960,6 +1167,7 @@
           localStorage.setItem('mlm_session', JSON.stringify({ id: currentUser.id }));
           const activeSection = document.querySelector('.sidebar .menu-item.active')?.dataset.section || 'dashboard';
           if (activeSection === 'dashboard') renderDashboard();
+          else if (activeSection === 'profile') renderProfileForm();
           else if (activeSection === 'network') renderNetwork();
           else if (activeSection === 'history') renderFullHistory();
           else if (activeSection === 'products') { renderProductsDashboard(); renderBankInfo(); }
@@ -968,7 +1176,7 @@
 
       document.getElementById('navUserBadge').addEventListener('click', function() {
         refreshUserData();
-        showSection('dashboard');
+        showSection('profile');
       });
 
       // ===== INIT =====
@@ -976,7 +1184,7 @@
       showSection('dashboard');
       setInterval(refreshUserData, 30000);
 
-      console.log('🟦 HEDTRO · Dashboard Modern & Elegan');
+      console.log('🟦 HEDTRO · Dashboard dengan Custom Modal & Profil Member');
     })();
   </script>
 </body>
