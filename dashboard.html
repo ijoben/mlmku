@@ -182,7 +182,7 @@
     .btn-sm-danger { background:#b13e3e; color:#fff; }
     .btn-sm-danger:hover { background:#8f2f2f; }
 
-    /* ===== WALLET ===== */
+    /* ===== WALLET CARD ===== */
     .wallet-card {
       background:var(--denim-dark); color:var(--cream);
       border-radius:var(--radius-sm); padding:20px 24px;
@@ -193,7 +193,7 @@
     .wallet-card .wallet-label { font-size:0.85rem; opacity:0.7; }
     .wallet-card .wallet-amount { font-size:2rem; font-weight:700; color:var(--gold-accent); }
 
-    /* ===== STATS ===== */
+    /* ===== STATS GRID ===== */
     .stats-grid {
       display:grid; grid-template-columns:repeat(auto-fit, minmax(170px,1fr));
       gap:16px; margin-bottom:28px;
@@ -441,6 +441,17 @@
       <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
       <span class="close-side" id="closeSidebar">&times;</span>
     </div>
+
+    <!-- CARD UTAMA (DOMPET & BONUS) DI ATAS MENU SIDEBAR -->
+    <div style="padding: 10px 0;">
+      <div class="wallet-card" style="padding: 14px; border-radius: 12px; margin-bottom: 12px;">
+        <div>
+          <div class="wallet-label"><i class="fas fa-wallet"></i> Saldo Dompet</div>
+          <div class="wallet-amount" id="sideWalletAmount" style="font-size: 1.3rem;">Rp 0</div>
+        </div>
+      </div>
+    </div>
+
     <div class="menu-item active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
     <div class="menu-item" data-section="network"><i class="fas fa-sitemap"></i> Jaringan</div>
     <div class="menu-item" data-section="deposit"><i class="fas fa-plus-circle"></i> Deposit</div>
@@ -459,6 +470,8 @@
     <div class="section-content active" id="sec-dashboard">
       <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
       <div id="statusBanner">Memuat status...</div>
+      
+      <!-- CARD DOMPET KONTEN UTAMA -->
       <div class="wallet-card">
         <div><div class="wallet-label"><i class="fas fa-wallet"></i> Saldo Dompet</div><div class="wallet-amount" id="walletAmount">Rp 0</div></div>
         <div style="display:flex; gap:8px; flex-wrap:wrap;">
@@ -466,12 +479,15 @@
           <button class="btn-sm btn-sm-primary" id="withdrawBtn"><i class="fas fa-minus-circle"></i> Withdraw</button>
         </div>
       </div>
+
+      <!-- CARD STATISTIK BONUS -->
       <div class="stats-grid">
         <div class="stat-card"><div class="label">Sponsor Bonus</div><div class="value" id="sponsorBonus">0</div></div>
         <div class="stat-card"><div class="label">Binary Bonus</div><div class="value" id="binaryBonus">0</div></div>
         <div class="stat-card"><div class="label">Reward 5L</div><div class="value" id="rewardBonus">0</div></div>
         <div class="stat-card"><div class="label">RO Produk</div><div class="value" id="roBonus">0</div></div>
       </div>
+
       <div class="history-card">
         <h3><i class="fas fa-history"></i> Riwayat Transaksi Terbaru</h3>
         <div id="transactionHistory"><p class="text-muted">Belum ada transaksi.</p></div>
@@ -577,6 +593,7 @@
       const closeSidebar = document.getElementById('closeSidebar');
       const statusBanner = document.getElementById('statusBanner');
       const walletAmount = document.getElementById('walletAmount');
+      const sideWalletAmount = document.getElementById('sideWalletAmount');
 
       // ===== SIDEBAR TOGGLE (HP) =====
       function toggleSidebar(open) {
@@ -724,7 +741,10 @@
         }
         
         statusBanner.innerHTML = statusHtml;
-        walletAmount.textContent = 'Rp ' + (currentUser.wallet || 0).toLocaleString();
+        const formattedWallet = 'Rp ' + (currentUser.wallet || 0).toLocaleString();
+        if (walletAmount) walletAmount.textContent = formattedWallet;
+        if (sideWalletAmount) sideWalletAmount.textContent = formattedWallet;
+
         document.getElementById('sponsorBonus').textContent = currentUser.bonus_sponsor || 0;
         document.getElementById('binaryBonus').textContent = currentUser.bonus_binary || 0;
         document.getElementById('rewardBonus').textContent = currentUser.bonus_reward || 0;
@@ -926,7 +946,7 @@
       showSection('dashboard');
       setInterval(refreshUserData, 30000);
 
-      console.log('🟦 HEDTRO · Dashboard Binary 2 Kaki & Tagihan Member Rp 550.000');
+      console.log('🟦 HEDTRO · Dashboard dengan Card di atas Menu');
     })();
   </script>
 </body>
