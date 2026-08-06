@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -115,7 +114,6 @@
             margin-left: 2px;
         }
 
-        /* DESKTOP MENU - horizontal */
         .nav-menu {
             display: flex;
             align-items: center;
@@ -254,7 +252,7 @@
         }
 
         /* ============================================================
-           BURGER & SIDEBAR - HANYA UNTUK HP
+           BURGER & SIDEBAR
            ============================================================ */
         .burger-btn {
             display: none !important;
@@ -386,9 +384,6 @@
             margin: 6px 0;
         }
 
-        /* ============================================================
-           HP - SEARCH & CART ICON
-           ============================================================ */
         .search-icon-hp {
             display: none;
             color: var(--cream);
@@ -432,7 +427,7 @@
         }
 
         /* ============================================================
-           POPUP OVERLAY (Search, Track, Cart, Product Detail)
+           POPUP OVERLAY
            ============================================================ */
         .popup-overlay {
             display: none;
@@ -549,7 +544,7 @@
         }
 
         /* ============================================================
-           PRODUCT DETAIL POPUP (FULL)
+           PRODUCT DETAIL POPUP
            ============================================================ */
         .product-detail-popup .popup-box {
             max-width: 700px;
@@ -794,7 +789,7 @@
         }
 
         /* ============================================================
-           CAROUSEL - FULL WIDTH (tanpa putih)
+           CAROUSEL - FULL WIDTH
            ============================================================ */
         .carousel-section {
             position: relative;
@@ -1920,7 +1915,7 @@
     </div>
 
     <!-- ============================================================
-    PRODUCT DETAIL POPUP (LENGKAP + ZOOM + PILIHAN WARNA & SIZE)
+    PRODUCT DETAIL POPUP
     ============================================================ -->
     <div class="popup-overlay product-detail-popup" id="productDetailPopup">
         <div class="popup-box">
@@ -1975,34 +1970,7 @@
         <!-- CAROUSEL -->
         <section class="carousel-section" id="carouselSection">
             <div class="carousel-track" id="carouselTrack">
-                <div class="carousel-slide" style="background: linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%);">
-                    <div class="overlay-dark"></div>
-                    <div class="slide-image"><i class="fas fa-tshirt"></i></div>
-                    <div class="slide-image-left"><i class="fas fa-tshirt"></i></div>
-                    <div class="slide-content">
-                        <h2><i class="fas fa-star"></i> 501® ORIGINAL DENIM</h2>
-                        <p>Ikonik sejak 1873 · Potongan lurus dengan raw denim 14oz premium</p>
-                        <a href="#" class="btn-slide">Lihat Koleksi</a>
-                    </div>
-                </div>
-                <div class="carousel-slide" style="background: linear-gradient(135deg, #1a2e44 0%, #2a4b6e 50%, #3a5f7e 100%);">
-                    <div class="overlay-dark"></div>
-                    <div class="slide-image"><i class="fas fa-jacket"></i></div>
-                    <div class="slide-content">
-                        <h2><i class="fas fa-jacket"></i> TRUCKER JACKET & OUTER</h2>
-                        <p>Gaya ikonik denim modern untuk penampilan casual harian Anda</p>
-                        <a href="#" class="btn-slide">Lihat Koleksi</a>
-                    </div>
-                </div>
-                <div class="carousel-slide" style="background: linear-gradient(135deg, #2a4b6e 0%, #1a2e44 50%, #0b1a2b 100%);">
-                    <div class="overlay-dark"></div>
-                    <div class="slide-image"><i class="fas fa-tags"></i></div>
-                    <div class="slide-content">
-                        <h2><i class="fas fa-tags"></i> SEASONAL SALE UP TO 40%</h2>
-                        <p>Diskon spesial koleksi denim elegan dengan harga khusus eksklusif</p>
-                        <a href="#" class="btn-slide">Lihat Promo</a>
-                    </div>
-                </div>
+                <!-- Akan diisi dari localStorage -->
             </div>
             <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
             <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
@@ -2066,7 +2034,7 @@
         </div>
 
         <!-- FEATURES -->
-        <div class="features">
+        <div class="features" id="featuresContainer">
             <div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz bermutu tinggi</p></div>
             <div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Pengiriman cepat seluruh Indonesia</p></div>
             <div class="feature-item"><i class="fas fa-exchange-alt"></i><h4>GARANSI 30 HARI</h4><p>Penukaran size tanpa ribet</p></div>
@@ -2078,7 +2046,7 @@
     <!-- ============================================================
     FOOTER
     ============================================================ -->
-    <footer class="footer">
+    <footer class="footer" id="mainFooter">
         <div class="footer-grid">
             <div class="footer-col">
                 <h4><i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> HEDTRO JEANS</h4>
@@ -2129,6 +2097,43 @@
             'use strict';
 
             // ============================================================
+            // FUNGSI MEMBACA DATA DARI LOCALSTORAGE
+            // ============================================================
+            function loadSlides() {
+                try { return JSON.parse(localStorage.getItem('hedtro_slides') || '[]'); } catch(e) { return []; }
+            }
+
+            function loadAbout() {
+                try {
+                    return JSON.parse(localStorage.getItem('hedtro_about') || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium yang menghadirkan celana jeans berkualitas tinggi dengan bahan raw denim 14oz pilihan. Kami berkomitmen untuk memberikan produk dengan kualitas terbaik, desain ikonik, dan harga yang kompetitif.</p><p>Sejak 1873, kami menghadirkan gaya denim klasik yang tetap relevan sepanjang masa. Setiap produk kami melalui proses seleksi ketat untuk memastikan kepuasan pelanggan.</p><p><i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> 100% Bahan Premium &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Desain Ikonik &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Garansi 30 Hari</p>"}');
+                } catch(e) { return { title: "Tentang Kami", content: "" }; }
+            }
+
+            function loadFaq() {
+                try { return JSON.parse(localStorage.getItem('hedtro_faq') || '[]'); } catch(e) { return []; }
+            }
+
+            function loadFeatures() {
+                try { return JSON.parse(localStorage.getItem('hedtro_features') || '[]'); } catch(e) { return []; }
+            }
+
+            function loadFooter() {
+                try {
+                    return JSON.parse(localStorage.getItem('hedtro_footer') || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.","copyright":"&copy; 2026 HEDTRO JEANS · All Rights Reserved","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}');
+                } catch(e) { return { brand: "HEDTRO JEANS", desc: "", copyright: "", social: {} }; }
+            }
+
+            function loadProductsFromDB() {
+                try { return JSON.parse(localStorage.getItem('hedtro_products') || '[]'); } catch(e) { return []; }
+            }
+
+            function loadSettings() {
+                try {
+                    return JSON.parse(localStorage.getItem('hedtro_settings') || '{"sponsorBonus":10,"binaryBonus":8,"rewardBonus":5,"roBonus":3,"memberPrice":550000,"brandName":"HEDTRO JEANS","brandLogo":"fa-tshirt","heroTitle":"HEDTRO JEANS · Premium Denim"}');
+                } catch(e) { return {}; }
+            }
+
+            // ============================================================
             // TOAST
             // ============================================================
             function showToast(message, type = 'info', duration = 3000) {
@@ -2160,62 +2165,75 @@
             }
 
             // ============================================================
-            // DATA PRODUK (dengan semua properti)
+            // DATA PRODUK (default jika localStorage kosong)
             // ============================================================
-            const allProducts = [
-                { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
-                    icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', sizes: ['28', '29', '30',
-                        '31', '32'
-                    ], colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
-                    desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet.' },
-                { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
-                    icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', sizes: ['30', '32', '34'],
-                    colors: ['Raw Denim', 'Dark Navy'],
-                    desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor.' },
-                { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM',
-                    icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', sizes: ['29', '30', '31',
-                        '32'
-                    ], colors: ['Black Stretch', 'Grey Stone'],
-                    desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual. Sangat fleksibel (high stretch).' },
-                { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%',
-                    icon: 'fa-tshirt', favorite: true, stock: 18, serial: 'HDT-SERI-004', sizes: ['28', '29', '30',
-                        '31'
-                    ], colors: ['Light Wash', 'Indigo Blue Raw Denim'],
-                    desc: 'Tampilan retro klasik tahun 90-an dengan efek pencucian warna muda (light wash) yang kasual.' },
-                { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED',
-                    icon: 'fa-jacket', favorite: true, stock: 20, serial: 'HDT-SERI-005', sizes: ['S', 'M', 'L',
-                        'XL'], colors: ['Raw Denim', 'Dark Navy'],
-                    desc: 'Jaket denim ikonik berbahan rigid denim 14.5oz dengan saku ganda di dada.' },
-                { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER',
-                    icon: 'fa-tshirt', favorite: false, stock: 35, serial: 'HDT-SERI-006', sizes: ['25', '26', '27',
-                        '28'
-                    ], colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
-                    desc: 'Celana jeans wanita potongan high-waist yang membentuk lekuk pinggang secara sempurna.' },
-                { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS',
-                    icon: 'fa-belt', favorite: false, stock: 50, serial: 'HDT-SERI-007', sizes: ['M', 'L', 'XL'],
-                    colors: ['Vintage Brown', 'Black'],
-                    desc: 'Ikat pinggang kulit sapi asli 100% dengan kepala gesper kuningan antik.' },
-                { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT',
-                    icon: 'fa-tshirt', favorite: false, stock: 22, serial: 'HDT-SERI-008', sizes: ['S', 'M', 'L',
-                        'XL'], colors: ['Vintage Wash', 'Light Wash'],
-                    desc: 'Kemeja denim kasual berbahan katun ringan 8oz yang lembut.' },
-                { id: 9, name: 'Slim Fit Black Raw Denim', price: 260000, original: 360000, tag: 'NEW', icon: 'fa-tshirt',
-                    favorite: false, stock: 28, serial: 'HDT-SERI-009', sizes: ['28', '29', '30', '31', '32'],
-                    colors: ['Black Raw Denim', 'Indigo Blue Raw Denim'],
-                    desc: 'Hitam pekat raw denim, slim fit modern.' },
-                { id: 10, name: 'Cropped Trucker Jacket', price: 390000, original: 500000, tag: 'TRENDY',
-                    icon: 'fa-jacket', favorite: false, stock: 15, serial: 'HDT-SERI-010', sizes: ['S', 'M', 'L'],
-                    colors: ['Blue Denim', 'Black'],
-                    desc: 'Jaket cropped pendek, gaya kekinian.' },
-                { id: 11, name: 'Denim Bucket Hat', price: 85000, original: 120000, tag: 'AKSESORIS',
-                    icon: 'fa-hat-cowboy', favorite: false, stock: 40, serial: 'HDT-SERI-011', sizes: ['One Size'],
-                    colors: ['Blue Denim', 'Light Wash'],
-                    desc: 'Topi bucket denim, adjustable, nyaman.' },
-                { id: 12, name: 'Canvas Tote Bag Denim', price: 150000, original: 200000, tag: 'AKSESORIS',
-                    icon: 'fa-shopping-bag', favorite: false, stock: 25, serial: 'HDT-SERI-012', sizes: ['One Size'],
-                    colors: ['Denim Blue', 'Natural'],
-                    desc: 'Tas kanvas denim, besar, cocok untuk daily.' }
-            ];
+            let allProducts = [];
+
+            function initProducts() {
+                const dbProducts = loadProductsFromDB();
+                if (dbProducts.length > 0) {
+                    allProducts = dbProducts;
+                } else {
+                    // Default products
+                    allProducts = [
+                        { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
+                            icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', sizes: ['28', '29', '30',
+                                '31', '32'
+                            ], colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
+                            desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet.', image: null },
+                        { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
+                            icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', sizes: ['30', '32', '34'],
+                            colors: ['Raw Denim', 'Dark Navy'],
+                            desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor.', image: null },
+                        { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM',
+                            icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', sizes: ['29', '30', '31',
+                                '32'
+                            ], colors: ['Black Stretch', 'Grey Stone'],
+                            desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual. Sangat fleksibel (high stretch).', image: null },
+                        { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%',
+                            icon: 'fa-tshirt', favorite: true, stock: 18, serial: 'HDT-SERI-004', sizes: ['28', '29', '30',
+                                '31'
+                            ], colors: ['Light Wash', 'Indigo Blue Raw Denim'],
+                            desc: 'Tampilan retro klasik tahun 90-an dengan efek pencucian warna muda (light wash) yang kasual.', image: null },
+                        { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED',
+                            icon: 'fa-jacket', favorite: true, stock: 20, serial: 'HDT-SERI-005', sizes: ['S', 'M', 'L',
+                                'XL'
+                            ], colors: ['Raw Denim', 'Dark Navy'],
+                            desc: 'Jaket denim ikonik berbahan rigid denim 14.5oz dengan saku ganda di dada.', image: null },
+                        { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER',
+                            icon: 'fa-tshirt', favorite: false, stock: 35, serial: 'HDT-SERI-006', sizes: ['25', '26', '27',
+                                '28'
+                            ], colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
+                            desc: 'Celana jeans wanita potongan high-waist yang membentuk lekuk pinggang secara sempurna.', image: null },
+                        { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS',
+                            icon: 'fa-belt', favorite: false, stock: 50, serial: 'HDT-SERI-007', sizes: ['M', 'L', 'XL'],
+                            colors: ['Vintage Brown', 'Black'],
+                            desc: 'Ikat pinggang kulit sapi asli 100% dengan kepala gesper kuningan antik.', image: null },
+                        { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT',
+                            icon: 'fa-tshirt', favorite: false, stock: 22, serial: 'HDT-SERI-008', sizes: ['S', 'M', 'L',
+                                'XL'
+                            ], colors: ['Vintage Wash', 'Light Wash'],
+                            desc: 'Kemeja denim kasual berbahan katun ringan 8oz yang lembut.', image: null },
+                        { id: 9, name: 'Slim Fit Black Raw Denim', price: 260000, original: 360000, tag: 'NEW',
+                            icon: 'fa-tshirt', favorite: false, stock: 28, serial: 'HDT-SERI-009', sizes: ['28', '29', '30',
+                                '31', '32'
+                            ], colors: ['Black Raw Denim', 'Indigo Blue Raw Denim'],
+                            desc: 'Hitam pekat raw denim, slim fit modern.', image: null },
+                        { id: 10, name: 'Cropped Trucker Jacket', price: 390000, original: 500000, tag: 'TRENDY',
+                            icon: 'fa-jacket', favorite: false, stock: 15, serial: 'HDT-SERI-010', sizes: ['S', 'M', 'L'],
+                            colors: ['Blue Denim', 'Black'],
+                            desc: 'Jaket cropped pendek, gaya kekinian.', image: null },
+                        { id: 11, name: 'Denim Bucket Hat', price: 85000, original: 120000, tag: 'AKSESORIS',
+                            icon: 'fa-hat-cowboy', favorite: false, stock: 40, serial: 'HDT-SERI-011', sizes: ['One Size'],
+                            colors: ['Blue Denim', 'Light Wash'],
+                            desc: 'Topi bucket denim, adjustable, nyaman.', image: null },
+                        { id: 12, name: 'Canvas Tote Bag Denim', price: 150000, original: 200000, tag: 'AKSESORIS',
+                            icon: 'fa-shopping-bag', favorite: false, stock: 25, serial: 'HDT-SERI-012', sizes: ['One Size'],
+                            colors: ['Denim Blue', 'Natural'],
+                            desc: 'Tas kanvas denim, besar, cocok untuk daily.', image: null }
+                    ];
+                }
+            }
 
             // ============================================================
             // CART STATE
@@ -2267,17 +2285,223 @@
             }
 
             // ============================================================
+            // RENDER CAROUSEL DARI LOCALSTORAGE
+            // ============================================================
+            let currentSlide = 0;
+            let slideInterval = null;
+            const track = document.getElementById('carouselTrack');
+            const dots = document.getElementById('carouselDots');
+
+            function renderCarouselFromDB() {
+                const slides = loadSlides();
+
+                if (!track) return;
+
+                // Jika tidak ada slide di DB, gunakan default
+                if (slides.length === 0) {
+                    // Default slides
+                    const defaultSlides = [
+                        { id: 1, title: '501® ORIGINAL DENIM', subtitle: 'Ikonik sejak 1873 · Potongan lurus dengan raw denim 14oz premium', btnText: 'Lihat Koleksi', btnLink: '#', bg: 'linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%)', icon: 'fa-tshirt', image: null },
+                        { id: 2, title: 'TRUCKER JACKET & OUTER', subtitle: 'Gaya ikonik denim modern untuk penampilan casual harian Anda', btnText: 'Lihat Koleksi', btnLink: '#', bg: 'linear-gradient(135deg, #1a2e44 0%, #2a4b6e 50%, #3a5f7e 100%)', icon: 'fa-jacket', image: null },
+                        { id: 3, title: 'SEASONAL SALE UP TO 40%', subtitle: 'Diskon spesial koleksi denim elegan dengan harga khusus eksklusif', btnText: 'Lihat Promo', btnLink: '#', bg: 'linear-gradient(135deg, #2a4b6e 0%, #1a2e44 50%, #0b1a2b 100%)', icon: 'fa-tags', image: null }
+                    ];
+                    renderCarouselSlides(defaultSlides);
+                    return;
+                }
+
+                renderCarouselSlides(slides);
+            }
+
+            function renderCarouselSlides(slides) {
+                // Kosongkan track
+                track.innerHTML = '';
+
+                // Buat slide dari data
+                slides.forEach((slide) => {
+                    const slideDiv = document.createElement('div');
+                    slideDiv.className = 'carousel-slide';
+                    slideDiv.style.background = slide.bg || 'linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%)';
+
+                    let imageHtml = '';
+                    if (slide.image && slide.image.startsWith('data:image')) {
+                        imageHtml = `<img src="${slide.image}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" />`;
+                    }
+
+                    slideDiv.innerHTML = `
+                        ${imageHtml}
+                        <div class="overlay-dark"></div>
+                        <div class="slide-image"><i class="fas ${slide.icon || 'fa-tshirt'}"></i></div>
+                        <div class="slide-image-left"><i class="fas ${slide.icon || 'fa-tshirt'}"></i></div>
+                        <div class="slide-content">
+                            <h2>${slide.title || 'HEDTRO JEANS'}</h2>
+                            <p>${slide.subtitle || 'Premium Denim'}</p>
+                            <a href="${slide.btnLink || '#'}" class="btn-slide">${slide.btnText || 'Lihat Koleksi'}</a>
+                        </div>
+                    `;
+                    track.appendChild(slideDiv);
+                });
+
+                // Update dots
+                const totalSlides = slides.length;
+                dots.innerHTML = '';
+                for (let i = 0; i < totalSlides; i++) {
+                    const dot = document.createElement('span');
+                    dot.className = 'dot' + (i === 0 ? ' active' : '');
+                    dot.dataset.index = i;
+                    dot.addEventListener('click', () => goToSlide(i));
+                    dots.appendChild(dot);
+                }
+
+                // Reset ke slide pertama
+                currentSlide = 0;
+                track.style.transform = 'translateX(0%)';
+
+                // Reset interval
+                if (slideInterval) clearInterval(slideInterval);
+                slideInterval = setInterval(nextSlide, 5000);
+            }
+
+            function goToSlide(index) {
+                const slides = track.querySelectorAll('.carousel-slide');
+                const totalSlides = slides.length;
+                if (totalSlides === 0) return;
+                currentSlide = (index + totalSlides) % totalSlides;
+                track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
+                document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+            }
+
+            function nextSlide() { goToSlide(currentSlide + 1); }
+
+            function prevSlide() { goToSlide(currentSlide - 1); }
+
+            // ============================================================
+            // RENDER ABOUT DARI LOCALSTORAGE
+            // ============================================================
+            function renderAboutFromDB() {
+                const about = loadAbout();
+                const container = document.getElementById('about');
+                if (!container) return;
+
+                container.innerHTML = `
+                    <h2><i class="fas fa-info-circle"></i> ${about.title || 'Tentang Kami'}</h2>
+                    ${about.content || '<p>Isi tentang kami...</p>'}
+                `;
+            }
+
+            // ============================================================
+            // RENDER FAQ DARI LOCALSTORAGE
+            // ============================================================
+            function renderFaqFromDB() {
+                const faqs = loadFaq();
+                const container = document.getElementById('faq');
+                if (!container) return;
+
+                if (faqs.length === 0) {
+                    // FAQ default sudah ada di HTML
+                    return;
+                }
+
+                let html = `<h2><i class="fas fa-question-circle"></i> Pertanyaan yang Sering Diajukan</h2>`;
+                faqs.forEach((faq) => {
+                    html += `
+                        <div class="faq-item">
+                            <div class="faq-question" onclick="toggleFaq(this)">
+                                <span>${faq.question}</span>
+                                <i class="fas fa-chevron-down"></i>
+                            </div>
+                            <div class="faq-answer">${faq.answer}</div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            // ============================================================
+            // RENDER FEATURES DARI LOCALSTORAGE
+            // ============================================================
+            function renderFeaturesFromDB() {
+                const features = loadFeatures();
+                const container = document.getElementById('featuresContainer');
+                if (!container) return;
+
+                if (features.length === 0) {
+                    // Features default sudah ada di HTML
+                    return;
+                }
+
+                let html = '';
+                features.forEach((feature) => {
+                    html += `
+                        <div class="feature-item">
+                            <i class="fas ${feature.icon || 'fa-check-circle'}"></i>
+                            <h4>${feature.title}</h4>
+                            <p>${feature.desc}</p>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+            }
+
+            // ============================================================
+            // RENDER FOOTER DARI LOCALSTORAGE
+            // ============================================================
+            function renderFooterFromDB() {
+                const footer = loadFooter();
+                const footerEl = document.getElementById('mainFooter');
+                if (!footerEl) return;
+
+                // Update brand di footer
+                const brandEl = footerEl.querySelector('.footer-col:first-child h4');
+                if (brandEl) {
+                    brandEl.innerHTML = `<i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> ${footer.brand || 'HEDTRO JEANS'}`;
+                }
+
+                // Update deskripsi footer
+                const descEl = footerEl.querySelector('.footer-col:first-child p');
+                if (descEl) {
+                    descEl.textContent = footer.desc || 'Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.';
+                }
+
+                // Update social links
+                const socialLinks = footerEl.querySelectorAll('.social-icons a');
+                const socialData = footer.social || {};
+                const socialKeys = ['instagram', 'facebook', 'youtube', 'tiktok'];
+                const socialIcons = ['fa-instagram', 'fa-facebook-f', 'fa-youtube', 'fa-tiktok'];
+
+                socialLinks.forEach((link, index) => {
+                    const key = socialKeys[index] || '';
+                    if (socialData[key]) {
+                        link.href = socialData[key];
+                    }
+                    link.innerHTML = `<i class="fab ${socialIcons[index] || 'fa-link'}"></i>`;
+                });
+
+                // Update copyright
+                const copyEl = footerEl.querySelector('.footer-bottom');
+                if (copyEl) {
+                    copyEl.textContent = footer.copyright || '&copy; 2026 HEDTRO JEANS · All Rights Reserved';
+                }
+            }
+
+            // ============================================================
             // RENDER FAVORITE CAROUSEL
             // ============================================================
             function renderFavoriteCarousel() {
                 const container = document.getElementById('favoriteCarousel');
                 const favorites = allProducts.filter(p => p.favorite === true);
                 container.innerHTML = '';
+                if (favorites.length === 0) {
+                    container.innerHTML = '<p class="text-muted">Belum ada produk favorit.</p>';
+                    return;
+                }
                 favorites.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
+                    const imgHtml = p.image && p.image.startsWith('data:image') ?
+                        `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;" />` :
+                        `<i class="fas ${p.icon}"></i>`;
                     card.innerHTML = `
-                        <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
+                        <div class="img-placeholder">${imgHtml}</div>
                         <div class="body">
                             <span class="tag">${p.tag}</span>
                             <h4>${p.name}</h4>
@@ -2298,20 +2522,28 @@
             // ============================================================
             const itemsPerPage = 6;
             let currentPage = 1;
-            const nonFavoriteProducts = allProducts.filter(p => p.favorite !== true);
+            const nonFavoriteProducts = () => allProducts.filter(p => p.favorite !== true);
 
             function renderProductGrid(page) {
                 const grid = document.getElementById('productGrid');
+                const products = nonFavoriteProducts();
                 const start = (page - 1) * itemsPerPage;
                 const end = start + itemsPerPage;
-                const pageItems = nonFavoriteProducts.slice(start, end);
+                const pageItems = products.slice(start, end);
 
                 grid.innerHTML = '';
+                if (pageItems.length === 0) {
+                    grid.innerHTML = '<p class="text-muted" style="padding:20px;text-align:center;">Belum ada produk.</p>';
+                    return;
+                }
                 pageItems.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
+                    const imgHtml = p.image && p.image.startsWith('data:image') ?
+                        `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;" />` :
+                        `<i class="fas ${p.icon}"></i>`;
                     card.innerHTML = `
-                        <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
+                        <div class="img-placeholder">${imgHtml}</div>
                         <div class="body">
                             <span class="tag">${p.tag}</span>
                             <h4>${p.name}</h4>
@@ -2330,7 +2562,11 @@
 
             function renderPagination() {
                 const container = document.getElementById('pagination');
-                const totalPages = Math.ceil(nonFavoriteProducts.length / itemsPerPage);
+                const totalPages = Math.ceil(nonFavoriteProducts().length / itemsPerPage);
+                if (totalPages <= 1) {
+                    container.innerHTML = '';
+                    return;
+                }
                 let html = '';
                 html +=
                     `<button class="page-btn" data-page="prev" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
@@ -2344,7 +2580,7 @@
                 container.querySelectorAll('.page-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const page = this.dataset.page;
-                        const totalPages = Math.ceil(nonFavoriteProducts.length / itemsPerPage);
+                        const totalPages = Math.ceil(nonFavoriteProducts().length / itemsPerPage);
                         if (page === 'prev' && currentPage > 1) { currentPage--; } else if (page === 'next' &&
                             currentPage < totalPages) { currentPage++; } else if (page !== 'prev' && page !==
                             'next') { currentPage = parseInt(page); }
@@ -2356,7 +2592,7 @@
             }
 
             // ============================================================
-            // PRODUCT BUTTONS - BUKA DETAIL POPUP
+            // PRODUCT BUTTONS
             // ============================================================
             function bindProductButtons() {
                 document.querySelectorAll('.btn-detail').forEach(btn => {
@@ -2374,7 +2610,7 @@
             }
 
             // ============================================================
-            // PRODUCT DETAIL POPUP (LENGKAP)
+            // PRODUCT DETAIL POPUP
             // ============================================================
             const detailPopup = document.getElementById('productDetailPopup');
             const closeDetailPopup = document.getElementById('closeDetailPopup');
@@ -2464,47 +2700,8 @@
             });
 
             // ============================================================
-            // CAROUSEL
+            // CAROUSEL NAVIGATION
             // ============================================================
-            document.getElementById('favScrollLeft').addEventListener('click', function() {
-                document.getElementById('favoriteCarousel').scrollBy({ left: -240, behavior: 'smooth' });
-            });
-            document.getElementById('favScrollRight').addEventListener('click', function() {
-                document.getElementById('favoriteCarousel').scrollBy({ left: 240, behavior: 'smooth' });
-            });
-
-            const carouselSection = document.getElementById('carouselSection');
-            const track = document.getElementById('carouselTrack');
-            const dots = document.getElementById('carouselDots');
-            const slides = track.querySelectorAll('.carousel-slide');
-            const totalSlides = slides.length;
-            let currentSlide = 0;
-            let slideInterval = null;
-            let touchStartX = 0;
-            let isDragging = false;
-
-            function createDots() {
-                dots.innerHTML = '';
-                for (let i = 0; i < totalSlides; i++) {
-                    const dot = document.createElement('span');
-                    dot.className = 'dot' + (i === 0 ? ' active' : '');
-                    dot.dataset.index = i;
-                    dot.addEventListener('click', () => goToSlide(i));
-                    dots.appendChild(dot);
-                }
-            }
-            createDots();
-
-            function goToSlide(index) {
-                currentSlide = (index + totalSlides) % totalSlides;
-                track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
-                document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
-            }
-
-            function nextSlide() { goToSlide(currentSlide + 1); }
-
-            function prevSlide() { goToSlide(currentSlide - 1); }
-
             document.getElementById('carouselNext').addEventListener('click', () => { nextSlide();
                 resetInterval(); });
             document.getElementById('carouselPrev').addEventListener('click', () => { prevSlide();
@@ -2512,12 +2709,17 @@
 
             function resetInterval() { if (slideInterval) clearInterval(slideInterval);
                 slideInterval = setInterval(nextSlide, 5000); }
-            resetInterval();
+
+            // Touch support untuk carousel
+            const carouselSection = document.getElementById('carouselSection');
+            let touchStartX = 0;
+            let isDragging = false;
 
             carouselSection.addEventListener('touchstart', function(e) {
                 touchStartX = e.changedTouches[0].screenX;
                 isDragging = true;
             }, { passive: true });
+
             carouselSection.addEventListener('touchend', function(e) {
                 if (!isDragging) return;
                 isDragging = false;
@@ -2529,7 +2731,17 @@
             }, { passive: true });
 
             // ============================================================
-            // FAQ
+            // SCROLL BUTTONS FAVORITE
+            // ============================================================
+            document.getElementById('favScrollLeft').addEventListener('click', function() {
+                document.getElementById('favoriteCarousel').scrollBy({ left: -240, behavior: 'smooth' });
+            });
+            document.getElementById('favScrollRight').addEventListener('click', function() {
+                document.getElementById('favoriteCarousel').scrollBy({ left: 240, behavior: 'smooth' });
+            });
+
+            // ============================================================
+            // FAQ TOGGLE
             // ============================================================
             window.toggleFaq = function(el) {
                 const answer = el.parentElement.querySelector('.faq-answer');
@@ -2544,7 +2756,7 @@
             };
 
             // ============================================================
-            // SIDEBAR & BURGER (HP ONLY)
+            // SIDEBAR & BURGER
             // ============================================================
             const burgerBtn = document.getElementById('burgerBtn');
             const sidebar = document.getElementById('sidebar');
@@ -2683,8 +2895,11 @@
                 results.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
+                    const imgHtml = p.image && p.image.startsWith('data:image') ?
+                        `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;" />` :
+                        `<i class="fas ${p.icon}"></i>`;
                     card.innerHTML = `
-                        <div class="img-placeholder"><i class="fas ${p.icon}"></i></div>
+                        <div class="img-placeholder">${imgHtml}</div>
                         <div class="body">
                             <span class="tag">${p.tag}</span>
                             <h4>${p.name}</h4>
@@ -2797,11 +3012,49 @@
             // ============================================================
             // INIT
             // ============================================================
-            renderFavoriteCarousel();
-            renderProductGrid(1);
-            updateCartUI();
+            function init() {
+                // Load produk dari localStorage
+                initProducts();
 
-            console.log('🟦 HEDTRO JEANS · Detail produk lengkap (warna, size, zoom)');
+                // Render semua komponen dari localStorage
+                renderCarouselFromDB();
+                renderAboutFromDB();
+                renderFaqFromDB();
+                renderFeaturesFromDB();
+                renderFooterFromDB();
+                renderFavoriteCarousel();
+                renderProductGrid(1);
+                updateCartUI();
+
+                // Apply settings
+                const settings = loadSettings();
+                if (settings.heroTitle) {
+                    document.title = settings.heroTitle;
+                }
+                if (settings.brandLogo) {
+                    const logo = document.querySelector('.logo');
+                    if (logo) {
+                        if (settings.brandLogo.startsWith('http')) {
+                            logo.innerHTML =
+                                `<img src="${settings.brandLogo}" alt="Logo" style="height:40px;width:auto;object-fit:contain;" /> <span>HEDTRO<span>JEANS</span></span>`;
+                        } else {
+                            logo.innerHTML =
+                                `<i class="fas ${settings.brandLogo}"></i> HEDTRO<span>JEANS</span>`;
+                        }
+                    }
+                }
+
+                console.log('🟦 HEDTRO JEANS · Data dimuat dari localStorage');
+                console.log('  - Slides:', loadSlides().length);
+                console.log('  - Products:', allProducts.length);
+                console.log('  - FAQ:', loadFaq().length);
+                console.log('  - Features:', loadFeatures().length);
+                console.log('  - Settings:', loadSettings());
+            }
+
+            // Jalankan init
+            init();
+
         })();
     </script>
 
