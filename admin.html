@@ -66,22 +66,39 @@
         }
         .nav-right .user-badge i { color:var(--gold-accent); }
 
+        /* ===== BURGER BUTTON ===== */
         .burger-btn {
             display:none;
-            flex-direction:column; gap:5px;
+            flex-direction:column;
+            gap:5px;
             padding:8px 6px;
-            background:transparent; border:none; cursor:pointer;
+            background:transparent;
+            border:none;
+            cursor:pointer;
             z-index:1101;
+            position:relative;
         }
         .burger-btn span {
-            display:block; width:28px; height:3px;
-            background:var(--cream); border-radius:4px;
-            transition:var(--transition); transform-origin:center;
+            display:block;
+            width:28px;
+            height:3px;
+            background:var(--cream);
+            border-radius:4px;
+            transition:var(--transition);
+            transform-origin:center;
         }
-        .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
-        .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
-        .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
+        .burger-btn.active span:nth-child(1) {
+            transform:translateY(8px) rotate(45deg);
+        }
+        .burger-btn.active span:nth-child(2) {
+            opacity:0;
+            transform:scaleX(0);
+        }
+        .burger-btn.active span:nth-child(3) {
+            transform:translateY(-8px) rotate(-45deg);
+        }
 
+        /* ===== SIDEBAR ===== */
         .sidebar-overlay {
             display:none;
             position:fixed; top:0; left:0; width:100%; height:100%;
@@ -89,7 +106,10 @@
             opacity:0; pointer-events:none;
             transition:var(--transition);
         }
-        .sidebar-overlay.active { opacity:1; pointer-events:all; }
+        .sidebar-overlay.active {
+            opacity:1;
+            pointer-events:all;
+        }
         .sidebar {
             position:fixed; top:0; left:0; bottom:0;
             width:var(--sidebar-width);
@@ -102,7 +122,9 @@
             transition:left 0.3s ease;
             left:-320px;
         }
-        .sidebar.open { left:0; }
+        .sidebar.open {
+            left:0;
+        }
         .sidebar .sidebar-header {
             display:flex; align-items:center; justify-content:space-between;
             padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);
@@ -129,29 +151,58 @@
         .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
         .sidebar .menu-item.logout i { color:#e74c3c; }
 
-        @media (max-width: 768px) {
-            .sidebar { left:-320px; }
-            .sidebar.open { left:0; }
-            .sidebar .sidebar-header .close-side { display:block; }
-            .burger-btn { display:flex; }
-            .sidebar-overlay { display:block; }
-            .main-content { margin-left:0; max-width:100%; padding:16px 16px 30px; }
-            .nav-right .user-badge { display:none; }
-        }
-        @media (min-width: 769px) {
-            .burger-btn { display:none !important; }
-            .sidebar { left:0 !important; }
-            .sidebar-overlay { display:none !important; }
-            .sidebar .sidebar-header .close-side { display:none !important; }
-            .main-content { margin-left:var(--sidebar-width); }
-        }
-
+        /* ===== MAIN CONTENT ===== */
         .main-content {
             margin-left: var(--sidebar-width);
             padding: 20px 24px 40px;
             transition: margin-left 0.3s ease;
             max-width: calc(100% - var(--sidebar-width));
         }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                left:-320px;
+            }
+            .sidebar.open {
+                left:0;
+            }
+            .sidebar .sidebar-header .close-side {
+                display:block;
+            }
+            .burger-btn {
+                display:flex;
+            }
+            .sidebar-overlay {
+                display:block;
+            }
+            .main-content {
+                margin-left: 0;
+                max-width: 100%;
+                padding: 16px 16px 30px;
+            }
+            .nav-right .user-badge {
+                display:none;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .burger-btn {
+                display:none !important;
+            }
+            .sidebar {
+                left:0 !important;
+            }
+            .sidebar-overlay {
+                display:none !important;
+            }
+            .sidebar .sidebar-header .close-side {
+                display:none !important;
+            }
+            .main-content {
+                margin-left: var(--sidebar-width);
+            }
+        }
+
         .page-title {
             font-size:1.6rem; font-weight:700; color:var(--denim-dark);
             margin-bottom:20px; display:flex; align-items:center; gap:12px;
@@ -219,30 +270,25 @@
             background:var(--white); border-radius:var(--radius-sm);
             padding:18px 20px; box-shadow:var(--shadow);
             border:1px solid #e2e8f0;
-            margin-bottom:16px;
         }
         .settings-card h4 {
             font-size:0.9rem; font-weight:600; margin-bottom:14px;
             display:flex; align-items:center; gap:8px;
         }
         .settings-card h4 i { color:var(--gold-accent); }
-        .settings-card .form-group { margin-bottom:12px; }
-        .settings-card .form-group label {
+        .form-group { margin-bottom:12px; }
+        .form-group label {
             display:block; font-weight:500; color:var(--denim-navy);
             font-size:0.8rem; margin-bottom:4px;
         }
-        .settings-card .form-group input,
-        .settings-card .form-group select,
-        .settings-card .form-group textarea {
+        .form-group input, .form-group select, .form-group textarea {
             width:100%; padding:10px 14px;
             border:1.5px solid #dde3ea; border-radius:60px;
             font-size:0.9rem; background:#fafcff;
             font-family:inherit; transition:var(--transition);
         }
-        .settings-card .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
-        .settings-card .form-group input:focus,
-        .settings-card .form-group select:focus,
-        .settings-card .form-group textarea:focus {
+        .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
             border-color:var(--denim-blue); outline:none;
             box-shadow:0 0 0 4px rgba(42,75,110,0.1);
         }
@@ -535,11 +581,14 @@
         .modal-box .btn-submit:hover {
             background:#b8963a; transform:scale(0.98);
         }
-        .modal-box .btn-danger {
-            background:#b13e3e; color:#fff;
+        .modal-box .proof-image {
+            max-width:200px; max-height:200px;
+            border-radius:var(--radius-sm);
+            border:1px solid var(--denim-light);
+            margin:8px 0;
         }
-        .modal-box .btn-danger:hover {
-            background:#8f2f2f;
+        .modal-box .proof-image img {
+            width:100%; height:100%; object-fit:cover;
         }
         .modal-box .order-detail {
             background:var(--cream);
@@ -551,118 +600,11 @@
             display:flex; justify-content:space-between;
             padding:4px 0; font-size:0.85rem;
         }
-        .modal-box .proof-image {
-            max-width:200px; max-height:200px;
-            border-radius:var(--radius-sm);
-            border:1px solid var(--denim-light);
-            margin:8px 0;
-        }
-        .modal-box .proof-image img {
-            width:100%; height:100%; object-fit:cover;
-        }
-
-        /* ===== SLIDE PREVIEW ===== */
-        .slide-preview {
-            display:grid;
-            grid-template-columns:repeat(auto-fill, minmax(250px,1fr));
-            gap:16px;
-            margin-bottom:16px;
-        }
-        .slide-preview .slide-item {
-            background:var(--white);
-            border-radius:var(--radius-sm);
-            overflow:hidden;
-            border:1px solid #e2e8f0;
-            box-shadow:var(--shadow);
-            position:relative;
-        }
-        .slide-preview .slide-item .slide-img {
-            height:150px;
-            background:var(--denim-light);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            overflow:hidden;
-        }
-        .slide-preview .slide-item .slide-img img {
-            width:100%;
-            height:100%;
-            object-fit:cover;
-        }
-        .slide-preview .slide-item .slide-img i {
-            font-size:3rem;
-            color:var(--denim-blue);
-        }
-        .slide-preview .slide-item .slide-body {
-            padding:12px 14px;
-        }
-        .slide-preview .slide-item .slide-body h4 {
-            font-size:0.9rem;
-            font-weight:600;
-            margin-bottom:4px;
-        }
-        .slide-preview .slide-item .slide-body p {
-            font-size:0.8rem;
-            color:#6a7e9a;
-            display:-webkit-box;
-            -webkit-line-clamp:2;
-            -webkit-box-orient:vertical;
-            overflow:hidden;
-        }
-        .slide-preview .slide-item .slide-actions {
-            padding:8px 14px;
-            border-top:1px solid #eef2f7;
-            display:flex;
-            gap:8px;
-            flex-wrap:wrap;
-        }
-
-        .faq-list, .feature-list {
-            display:flex;
-            flex-direction:column;
-            gap:8px;
-            margin-bottom:12px;
-        }
-        .faq-item-admin, .feature-item-admin {
-            background:var(--white);
-            border-radius:var(--radius-sm);
-            padding:12px 16px;
-            border:1px solid #e2e8f0;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            flex-wrap:wrap;
-            gap:8px;
-        }
-        .faq-item-admin > div:first-child,
-        .feature-item-admin > div:first-child {
-            flex:1;
-            min-width:150px;
-        }
-        .faq-item-admin .faq-actions,
-        .feature-item-admin .feature-actions {
-            display:flex;
-            gap:6px;
-            flex-shrink:0;
-        }
 
         @media (max-width:768px) {
             .stats-grid { grid-template-columns:1fr 1fr; gap:12px; }
             .stat-card .value { font-size:1.4rem; }
             .modal-box { padding:20px 16px 24px; }
-            .slide-preview { grid-template-columns:1fr !important; }
-            .slide-item .slide-img { height:120px !important; }
-            .slide-item .slide-body h4 { font-size:0.8rem !important; }
-            .slide-item .slide-body p { font-size:0.7rem !important; }
-            .settings-card { padding:12px !important; }
-            .settings-card .form-group input,
-            .settings-card .form-group textarea { font-size:0.85rem !important; padding:8px 12px !important; }
-            .flex-row { gap:6px !important; }
-            .btn-sm { padding:6px 12px !important; font-size:0.7rem !important; }
-            .faq-item-admin, .feature-item-admin { flex-direction:column; align-items:stretch; }
-            .faq-item-admin .faq-actions,
-            .feature-item-admin .feature-actions { justify-content:flex-end; }
-            .settings-grid { grid-template-columns:1fr; }
         }
         @media (max-width:480px) {
             .stats-grid { grid-template-columns:1fr 1fr; gap:8px; }
@@ -715,6 +657,7 @@
     <!-- ===== MAIN CONTENT ===== -->
     <div id="mainApp" style="display:none;">
 
+        <!-- ===== NAVBAR ===== -->
         <header class="navbar">
             <div class="logo" id="brandLogo">
                 <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
@@ -726,14 +669,19 @@
                 <a href="index.html" class="user-badge" style="background:rgba(255,255,255,0.04);">
                     <i class="fas fa-home"></i>
                 </a>
+                <!-- ===== BURGER BUTTON ===== -->
                 <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
-                    <span></span><span></span><span></span>
+                    <span></span>
+                    <span></span>
+                    <span></span>
                 </button>
             </div>
         </header>
 
+        <!-- ===== SIDEBAR OVERLAY ===== -->
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
+        <!-- ===== SIDEBAR ===== -->
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
@@ -745,17 +693,15 @@
             <div class="menu-item" data-tab="verification"><i class="fas fa-check-double"></i> Verifikasi</div>
             <div class="menu-item" data-tab="orders"><i class="fas fa-shopping-cart"></i> Orders</div>
             <div class="menu-divider"></div>
-            <!-- ===== MENU PAGE SETTINGS ===== -->
-            <div class="menu-item" data-tab="page-settings"><i class="fas fa-paint-brush"></i> Halaman Utama</div>
-            <div class="menu-divider"></div>
             <div class="menu-item" data-tab="settings"><i class="fas fa-sliders-h"></i> Pengaturan</div>
             <div class="menu-divider"></div>
             <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
         </nav>
 
+        <!-- ===== MAIN CONTENT ===== -->
         <div class="main-content">
 
-            <!-- ===== DASHBOARD ===== -->
+            <!-- DASHBOARD -->
             <div class="tab-content active" id="tabDashboard">
                 <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
                 <div class="stats-grid" id="dashboardStats">
@@ -772,7 +718,7 @@
                 </div>
             </div>
 
-            <!-- ===== MEMBERS ===== -->
+            <!-- MEMBERS -->
             <div class="tab-content" id="tabMembers">
                 <h1 class="page-title"><i class="fas fa-users"></i> Member</h1>
                 <div class="flex-row">
@@ -789,7 +735,7 @@
                 <div class="text-muted mt-16">Total member: <span id="totalMembers">0</span></div>
             </div>
 
-            <!-- ===== PRODUCTS ===== -->
+            <!-- PRODUCTS -->
             <div class="tab-content" id="tabProducts">
                 <h1 class="page-title"><i class="fas fa-boxes"></i> Produk</h1>
                 <div class="flex-row">
@@ -803,7 +749,7 @@
                 </div>
             </div>
 
-            <!-- ===== VERIFICATION ===== -->
+            <!-- VERIFICATION -->
             <div class="tab-content" id="tabVerification">
                 <h1 class="page-title"><i class="fas fa-check-double"></i> Verifikasi</h1>
                 <div class="flex-row">
@@ -817,7 +763,7 @@
                 </div>
             </div>
 
-            <!-- ===== ORDERS ===== -->
+            <!-- ORDERS -->
             <div class="tab-content" id="tabOrders">
                 <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Orders</h1>
                 <div class="flex-row">
@@ -831,84 +777,7 @@
                 </div>
             </div>
 
-            <!-- ===== PAGE SETTINGS ===== -->
-            <div class="tab-content" id="tabPageSettings">
-                <h1 class="page-title"><i class="fas fa-paint-brush"></i> Pengaturan Halaman Utama</h1>
-                
-                <!-- SLIDE CAROUSEL -->
-                <div class="settings-card">
-                    <h4><i class="fas fa-images" style="color:var(--gold-accent);"></i> Slide Carousel</h4>
-                    <p class="text-muted" style="margin-bottom:12px;">Kelola slide yang tampil di carousel halaman utama.</p>
-                    <div class="flex-row">
-                        <button class="btn-sm btn-sm-success" id="addSlideBtn"><i class="fas fa-plus"></i> Tambah Slide</button>
-                    </div>
-                    <div class="slide-preview" id="slideList"></div>
-                </div>
-
-                <!-- TENTANG KAMI -->
-                <div class="settings-card">
-                    <h4><i class="fas fa-info-circle" style="color:var(--gold-accent);"></i> Tentang Kami</h4>
-                    <p class="text-muted" style="margin-bottom:12px;">Edit konten tentang kami.</p>
-                    <div id="aboutEditor">
-                        <div class="form-group">
-                            <label>Judul</label>
-                            <input type="text" id="aboutTitle" value="Tentang Kami" />
-                        </div>
-                        <div class="form-group">
-                            <label>Konten (HTML diperbolehkan)</label>
-                            <textarea id="aboutContent" rows="6">Isi tentang kami...</textarea>
-                        </div>
-                        <button class="btn-sm btn-sm-primary" id="saveAboutBtn"><i class="fas fa-save"></i> Simpan Tentang Kami</button>
-                    </div>
-                </div>
-
-                <!-- FAQ -->
-                <div class="settings-card">
-                    <h4><i class="fas fa-question-circle" style="color:var(--gold-accent);"></i> FAQ</h4>
-                    <p class="text-muted" style="margin-bottom:12px;">Kelola pertanyaan yang sering diajukan.</p>
-                    <div class="flex-row">
-                        <button class="btn-sm btn-sm-success" id="addFaqBtn"><i class="fas fa-plus"></i> Tambah FAQ</button>
-                    </div>
-                    <div class="faq-list" id="faqList"></div>
-                </div>
-
-                <!-- KEUNGGULAN -->
-                <div class="settings-card">
-                    <h4><i class="fas fa-star" style="color:var(--gold-accent);"></i> Keunggulan</h4>
-                    <p class="text-muted" style="margin-bottom:12px;">Kelola keunggulan produk yang ditampilkan.</p>
-                    <div class="flex-row">
-                        <button class="btn-sm btn-sm-success" id="addFeatureBtn"><i class="fas fa-plus"></i> Tambah Keunggulan</button>
-                    </div>
-                    <div class="feature-list" id="featureList"></div>
-                </div>
-
-                <!-- FOOTER & SOSMED -->
-                <div class="settings-card">
-                    <h4><i class="fas fa-copyright" style="color:var(--gold-accent);"></i> Footer & Sosial Media</h4>
-                    <p class="text-muted" style="margin-bottom:12px;">Edit teks footer dan link sosial media.</p>
-                    <div class="form-group">
-                        <label>Nama Brand di Footer</label>
-                        <input type="text" id="footerBrand" value="HEDTRO JEANS" />
-                    </div>
-                    <div class="form-group">
-                        <label>Deskripsi Footer</label>
-                        <textarea id="footerDesc" rows="3">Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor.</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Copyright Text</label>
-                        <input type="text" id="footerCopyright" value="&copy; 2026 HEDTRO JEANS · All Rights Reserved" />
-                    </div>
-                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                        <div class="form-group"><label>Instagram</label><input type="text" id="sosmedInstagram" placeholder="https://instagram.com/..." /></div>
-                        <div class="form-group"><label>Facebook</label><input type="text" id="sosmedFacebook" placeholder="https://facebook.com/..." /></div>
-                        <div class="form-group"><label>YouTube</label><input type="text" id="sosmedYoutube" placeholder="https://youtube.com/..." /></div>
-                        <div class="form-group"><label>TikTok</label><input type="text" id="sosmedTiktok" placeholder="https://tiktok.com/..." /></div>
-                    </div>
-                    <button class="btn-sm btn-sm-primary" id="saveFooterBtn"><i class="fas fa-save"></i> Simpan Footer & Sosmed</button>
-                </div>
-            </div>
-
-            <!-- ===== SETTINGS ===== -->
+            <!-- SETTINGS -->
             <div class="tab-content" id="tabSettings">
                 <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan</h1>
                 <div class="settings-grid">
@@ -965,13 +834,6 @@
             const TRANSACTION_KEY = 'hedtro_transactions';
             const BANK_KEY = 'hedtro_bank_info';
             const SESSION_KEY = 'mlm_session';
-            
-            // ===== KEYS UNTUK KONTEN HALAMAN =====
-            const SLIDES_KEY = 'hedtro_slides';
-            const ABOUT_KEY = 'hedtro_about';
-            const FAQ_KEY = 'hedtro_faq';
-            const FEATURES_KEY = 'hedtro_features';
-            const FOOTER_KEY = 'hedtro_footer';
 
             // ============================================================
             // DATABASE FUNCTIONS
@@ -999,26 +861,6 @@
             }
             function saveSession(s) { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
             function clearSession() { localStorage.removeItem(SESSION_KEY); }
-
-            // ===== FUNGSI UNTUK KONTEN =====
-            function loadSlides() { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); }
-            function saveSlides(s) { localStorage.setItem(SLIDES_KEY, JSON.stringify(s)); }
-            
-            function loadAbout() { 
-                return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium yang menghadirkan celana jeans berkualitas tinggi dengan bahan raw denim 14oz pilihan. Kami berkomitmen untuk memberikan produk dengan kualitas terbaik, desain ikonik, dan harga yang kompetitif.</p><p>Sejak 1873, kami menghadirkan gaya denim klasik yang tetap relevan sepanjang masa. Setiap produk kami melalui proses seleksi ketat untuk memastikan kepuasan pelanggan.</p><p><i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> 100% Bahan Premium &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Desain Ikonik &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Garansi 30 Hari</p>"}');
-            }
-            function saveAbout(a) { localStorage.setItem(ABOUT_KEY, JSON.stringify(a)); }
-            
-            function loadFaq() { return JSON.parse(localStorage.getItem(FAQ_KEY) || '[]'); }
-            function saveFaq(f) { localStorage.setItem(FAQ_KEY, JSON.stringify(f)); }
-            
-            function loadFeatures() { return JSON.parse(localStorage.getItem(FEATURES_KEY) || '[]'); }
-            function saveFeatures(f) { localStorage.setItem(FEATURES_KEY, JSON.stringify(f)); }
-            
-            function loadFooter() { 
-                return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.","copyright":"&copy; 2026 HEDTRO JEANS · All Rights Reserved","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}');
-            }
-            function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
 
             function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
@@ -1081,7 +923,7 @@
             });
 
             // ============================================================
-            // SIDEBAR TOGGLE
+            // SIDEBAR TOGGLE (HP)
             // ============================================================
             const burgerBtn = document.getElementById('burgerBtn');
             const sidebar = document.getElementById('sidebar');
@@ -1128,9 +970,9 @@
                 if (tabId === 'products') renderAdminProducts();
                 if (tabId === 'verification') renderVerification();
                 if (tabId === 'orders') renderOrders();
-                if (tabId === 'page-settings') renderPageSettings();
                 if (tabId === 'settings') loadSettingsToForm();
                 
+                // Tutup sidebar di HP
                 if (window.innerWidth <= 768) toggleSidebar(false);
             }
 
@@ -1202,7 +1044,7 @@
             }
 
             // ============================================================
-            // RENDER MEMBERS, PRODUCTS, VERIFICATION, ORDERS (sama seperti sebelumnya)
+            // RENDER MEMBERS
             // ============================================================
             function renderAdminMembers() {
                 const tbody = document.getElementById('adminTableBody');
@@ -1246,6 +1088,9 @@
                 });
             }
 
+            // ============================================================
+            // RENDER VERIFICATION
+            // ============================================================
             function renderVerification() {
                 const tbody = document.getElementById('verifTableBody');
                 if (!tbody) return;
@@ -1308,6 +1153,9 @@
                 });
             }
 
+            // ============================================================
+            // RENDER PRODUCTS
+            // ============================================================
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
                 if (!tbody) return;
@@ -1361,30 +1209,66 @@
                 });
             }
 
+            // ============================================================
+            // EDIT PRODUCT - MODAL CUSTOM
+            // ============================================================
             function openEditProduct(id) {
                 const products = loadProducts();
                 const p = products.find(x => x.id === id);
                 if (!p) return;
+
                 const sizesStr = (p.sizes || []).join(', ');
                 const colorsStr = (p.colors || []).join(', ');
+                const imagePreviewHtml = p.image ? `<img src="${p.image}" alt="Preview" />` : '';
+
                 let html = `
                     <h3><i class="fas fa-edit" style="color:var(--gold-accent);"></i> Edit Produk</h3>
                     <p class="sub">Ubah data produk di bawah ini</p>
                     <form id="editProductForm" onsubmit="return false;">
-                        <div class="form-group"><label>Nama Produk <span style="color:red;">*</span></label><input type="text" id="editName" value="${p.name}" /></div>
-                        <div class="form-group"><label>Harga Member (Rp) <span style="color:red;">*</span></label><input type="number" id="editPrice" value="${p.price}" /></div>
-                        <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="editOriginal" value="${p.original || ''}" /></div>
-                        <div class="form-group"><label>Tag/Badge</label><input type="text" id="editTag" value="${p.tag || 'PRODUK'}" /></div>
-                        <div class="form-group"><label>Warna Badge (kode hex)</label><input type="color" id="editBadgeColor" value="${p.badgeColor || '#c9a84c'}" style="padding:4px;height:50px;" /></div>
-                        <div class="form-group"><label>Stok</label><input type="number" id="editStock" value="${p.stock || 0}" /></div>
-                        <div class="form-group"><label>Ukuran (pisah dengan koma)</label><input type="text" id="editSizes" value="${sizesStr}" placeholder="contoh: 28,29,30,31,32" /></div>
-                        <div class="form-group"><label>Warna (pisah dengan koma)</label><input type="text" id="editColors" value="${colorsStr}" placeholder="contoh: Indigo Blue, Black Stretch" /></div>
-                        <div class="form-group"><label>Deskripsi</label><textarea id="editDesc" rows="3">${p.desc || ''}</textarea></div>
+                        <div class="form-group">
+                            <label>Nama Produk <span style="color:red;">*</span></label>
+                            <input type="text" id="editName" value="${p.name}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Member (Rp) <span style="color:red;">*</span></label>
+                            <input type="number" id="editPrice" value="${p.price}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Normal (Rp)</label>
+                            <input type="number" id="editOriginal" value="${p.original || ''}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tag/Badge</label>
+                            <input type="text" id="editTag" value="${p.tag || 'PRODUK'}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Warna Badge (kode hex)</label>
+                            <input type="color" id="editBadgeColor" value="${p.badgeColor || '#c9a84c'}" style="padding:4px;height:50px;" />
+                        </div>
+                        <div class="form-group">
+                            <label>Stok</label>
+                            <input type="number" id="editStock" value="${p.stock || 0}" />
+                        </div>
+                        <div class="form-group">
+                            <label>Ukuran (pisah dengan koma)</label>
+                            <input type="text" id="editSizes" value="${sizesStr}" placeholder="contoh: 28,29,30,31,32" />
+                        </div>
+                        <div class="form-group">
+                            <label>Warna (pisah dengan koma)</label>
+                            <input type="text" id="editColors" value="${colorsStr}" placeholder="contoh: Indigo Blue, Black Stretch" />
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi</label>
+                            <textarea id="editDesc" rows="3">${p.desc || ''}</textarea>
+                        </div>
                         <div class="form-group">
                             <label>Upload Gambar</label>
                             <div class="file-input-wrapper">
                                 <input type="file" id="editImageFile" accept="image/*" />
-                                <div class="file-label"><i class="fas fa-cloud-upload-alt"></i> <span id="editImageLabel">${p.image ? 'Ganti gambar' : 'Upload gambar'}</span></div>
+                                <div class="file-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span id="editImageLabel">${p.image ? 'Ganti gambar' : 'Upload gambar'}</span>
+                                </div>
                             </div>
                             ${p.image ? `<div class="image-preview show" id="editImagePreview"><img src="${p.image}" alt="Preview" /></div>` : `<div class="image-preview" id="editImagePreview"></div>`}
                             <input type="hidden" id="editImageUrl" value="${p.image || ''}" />
@@ -1392,10 +1276,13 @@
                         <button type="submit" class="btn-submit" id="saveEditProduct"><i class="fas fa-save"></i> Simpan Perubahan</button>
                     </form>
                 `;
+
                 openModal(html);
+
                 const fileInput = document.getElementById('editImageFile');
                 const imagePreview = document.getElementById('editImagePreview');
                 const imageLabel = document.getElementById('editImageLabel');
+
                 fileInput.addEventListener('change', function(e) {
                     const file = e.target.files[0];
                     if (file) {
@@ -1409,6 +1296,7 @@
                         reader.readAsDataURL(file);
                     }
                 });
+
                 document.getElementById('saveEditProduct').addEventListener('click', function() {
                     const name = document.getElementById('editName').value.trim();
                     const price = parseInt(document.getElementById('editPrice').value);
@@ -1420,10 +1308,13 @@
                     const colorsStr = document.getElementById('editColors').value.trim();
                     const desc = document.getElementById('editDesc').value.trim();
                     const image = document.getElementById('editImageUrl').value.trim();
+
                     if (!name) { showToast('⚠️ Nama produk wajib diisi!', 'error'); return; }
                     if (isNaN(price) || price <= 0) { showToast('⚠️ Harga member harus diisi!', 'error'); return; }
+
                     const sizes = sizesStr ? sizesStr.split(',').map(s => s.trim()).filter(s => s) : [];
                     const colors = colorsStr ? colorsStr.split(',').map(c => c.trim()).filter(c => c) : [];
+
                     let products = loadProducts();
                     const product = products.find(x => x.id === id);
                     if (product) {
@@ -1446,25 +1337,58 @@
                 });
             }
 
+            // ============================================================
+            // ADD PRODUCT
+            // ============================================================
             document.getElementById('addProductBtn').addEventListener('click', function() {
                 let html = `
                     <h3><i class="fas fa-plus-circle" style="color:var(--gold-accent);"></i> Tambah Produk</h3>
                     <p class="sub">Isi data produk baru di bawah ini</p>
                     <form id="addProductForm" onsubmit="return false;">
-                        <div class="form-group"><label>Nama Produk <span style="color:red;">*</span></label><input type="text" id="addName" placeholder="Nama produk" /></div>
-                        <div class="form-group"><label>Harga Member (Rp) <span style="color:red;">*</span></label><input type="number" id="addPrice" placeholder="250000" /></div>
-                        <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="addOriginal" placeholder="350000" /></div>
-                        <div class="form-group"><label>Tag/Badge</label><input type="text" id="addTag" placeholder="BEST SELLER" value="PRODUK" /></div>
-                        <div class="form-group"><label>Warna Badge (kode hex)</label><input type="color" id="addBadgeColor" value="#c9a84c" style="padding:4px;height:50px;" /></div>
-                        <div class="form-group"><label>Stok</label><input type="number" id="addStock" placeholder="0" value="10" /></div>
-                        <div class="form-group"><label>Ukuran (pisah dengan koma)</label><input type="text" id="addSizes" placeholder="28,29,30,31,32" value="28,29,30,31,32" /></div>
-                        <div class="form-group"><label>Warna (pisah dengan koma)</label><input type="text" id="addColors" placeholder="Indigo Blue, Black Stretch" value="Indigo Blue, Black Stretch" /></div>
-                        <div class="form-group"><label>Deskripsi</label><textarea id="addDesc" rows="3" placeholder="Deskripsi produk..."></textarea></div>
+                        <div class="form-group">
+                            <label>Nama Produk <span style="color:red;">*</span></label>
+                            <input type="text" id="addName" placeholder="Nama produk" />
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Member (Rp) <span style="color:red;">*</span></label>
+                            <input type="number" id="addPrice" placeholder="250000" />
+                        </div>
+                        <div class="form-group">
+                            <label>Harga Normal (Rp)</label>
+                            <input type="number" id="addOriginal" placeholder="350000" />
+                        </div>
+                        <div class="form-group">
+                            <label>Tag/Badge</label>
+                            <input type="text" id="addTag" placeholder="BEST SELLER" value="PRODUK" />
+                        </div>
+                        <div class="form-group">
+                            <label>Warna Badge (kode hex)</label>
+                            <input type="color" id="addBadgeColor" value="#c9a84c" style="padding:4px;height:50px;" />
+                        </div>
+                        <div class="form-group">
+                            <label>Stok</label>
+                            <input type="number" id="addStock" placeholder="0" value="10" />
+                        </div>
+                        <div class="form-group">
+                            <label>Ukuran (pisah dengan koma)</label>
+                            <input type="text" id="addSizes" placeholder="28,29,30,31,32" value="28,29,30,31,32" />
+                        </div>
+                        <div class="form-group">
+                            <label>Warna (pisah dengan koma)</label>
+                            <input type="text" id="addColors" placeholder="Indigo Blue, Black Stretch" value="Indigo Blue, Black Stretch" />
+                        </div>
+                        <div class="form-group">
+                            <label>Deskripsi</label>
+                            <textarea id="addDesc" rows="3" placeholder="Deskripsi produk..."></textarea>
+                        </div>
                         <div class="form-group">
                             <label>Upload Gambar</label>
                             <div class="file-input-wrapper">
                                 <input type="file" id="addImageFile" accept="image/*" />
-                                <div class="file-label"><i class="fas fa-cloud-upload-alt"></i> <span id="addImageLabel">Upload gambar</span></div>
+                                <div class="file-label">
+                                    <i class="fas fa-cloud-upload-alt"></i>
+                                    <span id="addImageLabel">Upload gambar</span>
+                                </div>
                             </div>
                             <div class="image-preview" id="addImagePreview"></div>
                             <input type="hidden" id="addImageUrl" value="" />
@@ -1472,10 +1396,13 @@
                         <button type="submit" class="btn-submit" id="saveAddProduct"><i class="fas fa-plus"></i> Tambah Produk</button>
                     </form>
                 `;
+
                 openModal(html);
+
                 const fileInput = document.getElementById('addImageFile');
                 const imagePreview = document.getElementById('addImagePreview');
                 const imageLabel = document.getElementById('addImageLabel');
+
                 fileInput.addEventListener('change', function(e) {
                     const file = e.target.files[0];
                     if (file) {
@@ -1489,6 +1416,7 @@
                         reader.readAsDataURL(file);
                     }
                 });
+
                 document.getElementById('saveAddProduct').addEventListener('click', function() {
                     const name = document.getElementById('addName').value.trim();
                     const price = parseInt(document.getElementById('addPrice').value);
@@ -1500,16 +1428,28 @@
                     const colorsStr = document.getElementById('addColors').value.trim();
                     const desc = document.getElementById('addDesc').value.trim();
                     const image = document.getElementById('addImageUrl').value.trim();
+
                     if (!name) { showToast('⚠️ Nama produk wajib diisi!', 'error'); return; }
                     if (isNaN(price) || price <= 0) { showToast('⚠️ Harga member harus diisi!', 'error'); return; }
+
                     const sizes = sizesStr ? sizesStr.split(',').map(s => s.trim()).filter(s => s) : [];
                     const colors = colorsStr ? colorsStr.split(',').map(c => c.trim()).filter(c => c) : [];
+
                     let products = loadProducts();
                     const newProd = {
                         id: products.length ? Math.max(...products.map(p => p.id)) + 1 : 1,
-                        name, price, original, tag, badgeColor, icon: 'fa-tshirt', stock, sizes, colors,
+                        name,
+                        price,
+                        original,
+                        tag,
+                        badgeColor,
+                        icon: 'fa-tshirt',
+                        stock,
+                        sizes,
+                        colors,
                         desc: desc || 'Deskripsi produk ini akan diisi oleh admin.',
-                        image: image || null, favorite: false,
+                        image: image || null,
+                        favorite: false,
                         serial: 'HDT-SERI-' + String(products.length + 1).padStart(3, '0')
                     };
                     products.push(newProd);
@@ -1521,15 +1461,20 @@
                 });
             });
 
+            // ============================================================
+            // RENDER ORDERS
+            // ============================================================
             function renderOrders() {
                 const tbody = document.getElementById('ordersTableBody');
                 if (!tbody) return;
                 const orders = loadOrders();
                 const users = loadUsers();
+
                 if (orders.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:20px;">Belum ada pesanan.</td></tr>`;
                     return;
                 }
+
                 let html = '';
                 const sorted = [...orders].reverse();
                 sorted.forEach((o, idx) => {
@@ -1548,7 +1493,9 @@
                         <td>Rp ${(o.total || 0).toLocaleString()}</td>
                         <td><span class="badge-status ${statusClass}">${statusLabel}</span></td>
                         <td>${new Date(o.createdAt).toLocaleDateString()}</td>
-                        <td>${hasProof ? `<button class="btn-sm btn-sm-gold view-proof" data-id="${o.id}"><i class="fas fa-image"></i> Lihat</button>` : '<span style="color:#999;font-size:0.7rem;">Belum upload</span>'}</td>
+                        <td>
+                            ${hasProof ? `<button class="btn-sm btn-sm-gold view-proof" data-id="${o.id}"><i class="fas fa-image"></i> Lihat</button>` : '<span style="color:#999;font-size:0.7rem;">Belum upload</span>'}
+                        </td>
                         <td>
                             ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
                             ${o.status === 'processing' ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim</button>` : ''}
@@ -1566,12 +1513,14 @@
                         const proof = order.proof_image || order.proof || '';
                         const user = users.find(u => u.id === order.user_id);
                         const userName = user ? (user.name || user.username) : 'Unknown';
+
                         let itemsHtml = '';
                         if (order.items) {
                             order.items.forEach(item => {
                                 itemsHtml += `<div class="item"><span>${item.name} x${item.qty}</span><span>Rp ${(item.price * item.qty).toLocaleString()}</span></div>`;
                             });
                         }
+
                         let html = `
                             <h3><i class="fas fa-receipt" style="color:var(--gold-accent);"></i> Detail Order</h3>
                             <p class="sub">${order.order_number || 'ORD-'+order.id}</p>
@@ -1625,403 +1574,37 @@
             }
 
             // ============================================================
-            // PAGE SETTINGS - SLIDES, ABOUT, FAQ, FEATURES, FOOTER
-            // ============================================================
-            function renderPageSettings() {
-                renderSlides();
-                renderAbout();
-                renderFaq();
-                renderFeatures();
-                renderFooter();
-            }
-
-            // --- SLIDES ---
-            function renderSlides() {
-                const container = document.getElementById('slideList');
-                const slides = loadSlides();
-                if (slides.length === 0) {
-                    container.innerHTML = '<p class="text-muted">Belum ada slide. Klik "Tambah Slide" untuk menambahkan.</p>';
-                    return;
-                }
-                let html = '';
-                slides.forEach((slide, index) => {
-                    const imgHtml = slide.image ? `<img src="${slide.image}" />` : `<i class="fas fa-image"></i>`;
-                    html += `
-                        <div class="slide-item">
-                            <div class="slide-img">${imgHtml}</div>
-                            <div class="slide-body">
-                                <h4>${slide.title || 'Slide ' + (index+1)}</h4>
-                                <p>${slide.subtitle || ''}</p>
-                                <p style="font-size:0.7rem;color:#999;margin-top:4px;">Urutan: ${index + 1}</p>
-                            </div>
-                            <div class="slide-actions">
-                                <button class="btn-sm btn-sm-warning edit-slide" data-id="${slide.id}"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="btn-sm btn-sm-danger delete-slide" data-id="${slide.id}"><i class="fas fa-trash"></i> Hapus</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-
-                document.querySelectorAll('.edit-slide').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        openSlideModal(id);
-                    });
-                });
-
-                document.querySelectorAll('.delete-slide').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        if (!confirm('Hapus slide ini?')) return;
-                        let slides = loadSlides();
-                        slides = slides.filter(s => s.id !== id);
-                        saveSlides(slides);
-                        renderSlides();
-                        showToast('✅ Slide dihapus.', 'info');
-                    });
-                });
-            }
-
-            function openSlideModal(id) {
-                const slides = loadSlides();
-                const slide = id ? slides.find(s => s.id === id) : null;
-                const isEdit = !!slide;
-
-                let html = `
-                    <h3><i class="fas fa-image" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit' : 'Tambah'} Slide</h3>
-                    <p class="sub">${isEdit ? 'Ubah data slide' : 'Isi data slide baru'}</p>
-                    <form id="slideForm" onsubmit="return false;">
-                        <div class="form-group">
-                            <label>Judul <span style="color:red;">*</span></label>
-                            <input type="text" id="slideTitle" value="${slide ? slide.title : ''}" placeholder="Judul slide" />
-                        </div>
-                        <div class="form-group">
-                            <label>Subtitle / Deskripsi</label>
-                            <input type="text" id="slideSubtitle" value="${slide ? slide.subtitle : ''}" placeholder="Deskripsi slide" />
-                        </div>
-                        <div class="form-group">
-                            <label>Tombol Text</label>
-                            <input type="text" id="slideBtnText" value="${slide ? slide.btnText : 'Lihat Koleksi'}" placeholder="Tombol" />
-                        </div>
-                        <div class="form-group">
-                            <label>Link Tombol</label>
-                            <input type="text" id="slideBtnLink" value="${slide ? slide.btnLink : '#'}" placeholder="Link" />
-                        </div>
-                        <div class="form-group">
-                            <label>Warna Background (gradient)</label>
-                            <input type="text" id="slideBg" value="${slide ? slide.bg : 'linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%)'}" placeholder="linear-gradient(...)" />
-                        </div>
-                        <div class="form-group">
-                            <label>Icon (Font Awesome)</label>
-                            <input type="text" id="slideIcon" value="${slide ? slide.icon : 'fa-tshirt'}" placeholder="fa-tshirt" />
-                        </div>
-                        <div class="form-group">
-                            <label>Upload Gambar</label>
-                            <div class="file-input-wrapper">
-                                <input type="file" id="slideImageFile" accept="image/*" />
-                                <div class="file-label">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <span id="slideImageLabel">${slide && slide.image ? 'Ganti gambar' : 'Upload gambar'}</span>
-                                </div>
-                            </div>
-                            ${slide && slide.image ? `<div class="image-preview show" id="slideImagePreview"><img src="${slide.image}" alt="Preview" /></div>` : `<div class="image-preview" id="slideImagePreview"></div>`}
-                            <input type="hidden" id="slideImageUrl" value="${slide ? slide.image || '' : ''}" />
-                        </div>
-                        <button type="submit" class="btn-submit" id="saveSlideBtn"><i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Tambah'} Slide</button>
-                    </form>
-                `;
-
-                openModal(html);
-
-                const fileInput = document.getElementById('slideImageFile');
-                const imagePreview = document.getElementById('slideImagePreview');
-                const imageLabel = document.getElementById('slideImageLabel');
-
-                fileInput.addEventListener('change', function(e) {
-                    const file = e.target.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            imagePreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
-                            imagePreview.classList.add('show');
-                            document.getElementById('slideImageUrl').value = event.target.result;
-                            imageLabel.textContent = file.name;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
-
-                document.getElementById('saveSlideBtn').addEventListener('click', function() {
-                    const title = document.getElementById('slideTitle').value.trim();
-                    const subtitle = document.getElementById('slideSubtitle').value.trim();
-                    const btnText = document.getElementById('slideBtnText').value.trim() || 'Lihat Koleksi';
-                    const btnLink = document.getElementById('slideBtnLink').value.trim() || '#';
-                    const bg = document.getElementById('slideBg').value.trim() || 'linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%)';
-                    const icon = document.getElementById('slideIcon').value.trim() || 'fa-tshirt';
-                    const image = document.getElementById('slideImageUrl').value.trim();
-
-                    if (!title) { showToast('⚠️ Judul slide wajib diisi!', 'error'); return; }
-
-                    let slides = loadSlides();
-                    if (isEdit) {
-                        const idx = slides.findIndex(s => s.id === id);
-                        if (idx !== -1) {
-                            slides[idx] = { ...slides[idx], title, subtitle, btnText, btnLink, bg, icon, image };
-                        }
-                    } else {
-                        slides.push({
-                            id: getNextId(slides),
-                            title,
-                            subtitle,
-                            btnText,
-                            btnLink,
-                            bg,
-                            icon,
-                            image
-                        });
-                    }
-                    saveSlides(slides);
-                    renderSlides();
-                    closeModal();
-                    showToast(`✅ Slide ${isEdit ? 'diupdate' : 'ditambahkan'}!`, 'success');
-                });
-            }
-
-            document.getElementById('addSlideBtn').addEventListener('click', function() {
-                openSlideModal(null);
-            });
-
-            // --- ABOUT ---
-            function renderAbout() {
-                const about = loadAbout();
-                document.getElementById('aboutTitle').value = about.title || 'Tentang Kami';
-                document.getElementById('aboutContent').value = about.content || '';
-            }
-
-            document.getElementById('saveAboutBtn').addEventListener('click', function() {
-                const title = document.getElementById('aboutTitle').value.trim() || 'Tentang Kami';
-                const content = document.getElementById('aboutContent').value.trim();
-                if (!content) { showToast('⚠️ Konten tentang kami wajib diisi!', 'error'); return; }
-                saveAbout({ title, content });
-                showToast('✅ Tentang Kami berhasil disimpan!', 'success');
-            });
-
-            // --- FAQ ---
-            function renderFaq() {
-                const container = document.getElementById('faqList');
-                const faqs = loadFaq();
-                if (faqs.length === 0) {
-                    container.innerHTML = '<p class="text-muted">Belum ada FAQ. Klik "Tambah FAQ" untuk menambahkan.</p>';
-                    return;
-                }
-                let html = '';
-                faqs.forEach((faq) => {
-                    html += `
-                        <div class="faq-item-admin">
-                            <div>
-                                <strong>${faq.question}</strong>
-                                <p style="font-size:0.8rem;color:#6a7e9a;margin-top:2px;">${faq.answer}</p>
-                            </div>
-                            <div class="faq-actions">
-                                <button class="btn-sm btn-sm-warning edit-faq" data-id="${faq.id}"><i class="fas fa-edit"></i></button>
-                                <button class="btn-sm btn-sm-danger delete-faq" data-id="${faq.id}"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-
-                document.querySelectorAll('.edit-faq').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        openFaqModal(id);
-                    });
-                });
-
-                document.querySelectorAll('.delete-faq').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        if (!confirm('Hapus FAQ ini?')) return;
-                        let faqs = loadFaq();
-                        faqs = faqs.filter(f => f.id !== id);
-                        saveFaq(faqs);
-                        renderFaq();
-                        showToast('✅ FAQ dihapus.', 'info');
-                    });
-                });
-            }
-
-            function openFaqModal(id) {
-                const faqs = loadFaq();
-                const faq = id ? faqs.find(f => f.id === id) : null;
-                const isEdit = !!faq;
-                let html = `
-                    <h3><i class="fas fa-question-circle" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit' : 'Tambah'} FAQ</h3>
-                    <p class="sub">${isEdit ? 'Ubah data FAQ' : 'Isi data FAQ baru'}</p>
-                    <form id="faqForm" onsubmit="return false;">
-                        <div class="form-group"><label>Pertanyaan <span style="color:red;">*</span></label><input type="text" id="faqQuestion" value="${faq ? faq.question : ''}" placeholder="Pertanyaan" /></div>
-                        <div class="form-group"><label>Jawaban <span style="color:red;">*</span></label><textarea id="faqAnswer" rows="3" placeholder="Jawaban">${faq ? faq.answer : ''}</textarea></div>
-                        <button type="submit" class="btn-submit" id="saveFaqBtn"><i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Tambah'} FAQ</button>
-                    </form>
-                `;
-                openModal(html);
-                document.getElementById('saveFaqBtn').addEventListener('click', function() {
-                    const question = document.getElementById('faqQuestion').value.trim();
-                    const answer = document.getElementById('faqAnswer').value.trim();
-                    if (!question) { showToast('⚠️ Pertanyaan wajib diisi!', 'error'); return; }
-                    if (!answer) { showToast('⚠️ Jawaban wajib diisi!', 'error'); return; }
-                    let faqs = loadFaq();
-                    if (isEdit) {
-                        const idx = faqs.findIndex(f => f.id === id);
-                        if (idx !== -1) {
-                            faqs[idx] = { ...faqs[idx], question, answer };
-                        }
-                    } else {
-                        faqs.push({ id: getNextId(faqs), question, answer });
-                    }
-                    saveFaq(faqs);
-                    renderFaq();
-                    closeModal();
-                    showToast(`✅ FAQ ${isEdit ? 'diupdate' : 'ditambahkan'}!`, 'success');
-                });
-            }
-
-            document.getElementById('addFaqBtn').addEventListener('click', function() {
-                openFaqModal(null);
-            });
-
-            // --- FEATURES ---
-            function renderFeatures() {
-                const container = document.getElementById('featureList');
-                const features = loadFeatures();
-                if (features.length === 0) {
-                    container.innerHTML = '<p class="text-muted">Belum ada keunggulan. Klik "Tambah Keunggulan" untuk menambahkan.</p>';
-                    return;
-                }
-                let html = '';
-                features.forEach((feature) => {
-                    html += `
-                        <div class="feature-item-admin">
-                            <div>
-                                <strong><i class="fas ${feature.icon || 'fa-check-circle'}" style="color:var(--gold-accent);"></i> ${feature.title}</strong>
-                                <p style="font-size:0.8rem;color:#6a7e9a;margin-top:2px;">${feature.desc}</p>
-                            </div>
-                            <div class="feature-actions">
-                                <button class="btn-sm btn-sm-warning edit-feature" data-id="${feature.id}"><i class="fas fa-edit"></i></button>
-                                <button class="btn-sm btn-sm-danger delete-feature" data-id="${feature.id}"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-
-                document.querySelectorAll('.edit-feature').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        openFeatureModal(id);
-                    });
-                });
-
-                document.querySelectorAll('.delete-feature').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        if (!confirm('Hapus keunggulan ini?')) return;
-                        let features = loadFeatures();
-                        features = features.filter(f => f.id !== id);
-                        saveFeatures(features);
-                        renderFeatures();
-                        showToast('✅ Keunggulan dihapus.', 'info');
-                    });
-                });
-            }
-
-            function openFeatureModal(id) {
-                const features = loadFeatures();
-                const feature = id ? features.find(f => f.id === id) : null;
-                const isEdit = !!feature;
-                let html = `
-                    <h3><i class="fas fa-star" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit' : 'Tambah'} Keunggulan</h3>
-                    <p class="sub">${isEdit ? 'Ubah data keunggulan' : 'Isi data keunggulan baru'}</p>
-                    <form id="featureForm" onsubmit="return false;">
-                        <div class="form-group"><label>Icon (Font Awesome) <span style="color:red;">*</span></label><input type="text" id="featureIcon" value="${feature ? feature.icon : 'fa-check-circle'}" placeholder="fa-check-circle" /></div>
-                        <div class="form-group"><label>Judul <span style="color:red;">*</span></label><input type="text" id="featureTitle" value="${feature ? feature.title : ''}" placeholder="Judul keunggulan" /></div>
-                        <div class="form-group"><label>Deskripsi <span style="color:red;">*</span></label><input type="text" id="featureDesc" value="${feature ? feature.desc : ''}" placeholder="Deskripsi" /></div>
-                        <button type="submit" class="btn-submit" id="saveFeatureBtn"><i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Tambah'} Keunggulan</button>
-                    </form>
-                `;
-                openModal(html);
-                document.getElementById('saveFeatureBtn').addEventListener('click', function() {
-                    const icon = document.getElementById('featureIcon').value.trim() || 'fa-check-circle';
-                    const title = document.getElementById('featureTitle').value.trim();
-                    const desc = document.getElementById('featureDesc').value.trim();
-                    if (!title) { showToast('⚠️ Judul wajib diisi!', 'error'); return; }
-                    if (!desc) { showToast('⚠️ Deskripsi wajib diisi!', 'error'); return; }
-                    let features = loadFeatures();
-                    if (isEdit) {
-                        const idx = features.findIndex(f => f.id === id);
-                        if (idx !== -1) {
-                            features[idx] = { ...features[idx], icon, title, desc };
-                        }
-                    } else {
-                        features.push({ id: getNextId(features), icon, title, desc });
-                    }
-                    saveFeatures(features);
-                    renderFeatures();
-                    closeModal();
-                    showToast(`✅ Keunggulan ${isEdit ? 'diupdate' : 'ditambahkan'}!`, 'success');
-                });
-            }
-
-            document.getElementById('addFeatureBtn').addEventListener('click', function() {
-                openFeatureModal(null);
-            });
-
-            // --- FOOTER & SOSMED ---
-            function renderFooter() {
-                const footer = loadFooter();
-                document.getElementById('footerBrand').value = footer.brand || 'HEDTRO JEANS';
-                document.getElementById('footerDesc').value = footer.desc || '';
-                document.getElementById('footerCopyright').value = footer.copyright || '&copy; 2026 HEDTRO JEANS · All Rights Reserved';
-                document.getElementById('sosmedInstagram').value = footer.social?.instagram || '';
-                document.getElementById('sosmedFacebook').value = footer.social?.facebook || '';
-                document.getElementById('sosmedYoutube').value = footer.social?.youtube || '';
-                document.getElementById('sosmedTiktok').value = footer.social?.tiktok || '';
-            }
-
-            document.getElementById('saveFooterBtn').addEventListener('click', function() {
-                const footer = {
-                    brand: document.getElementById('footerBrand').value.trim() || 'HEDTRO JEANS',
-                    desc: document.getElementById('footerDesc').value.trim(),
-                    copyright: document.getElementById('footerCopyright').value.trim() || '&copy; 2026 HEDTRO JEANS · All Rights Reserved',
-                    social: {
-                        instagram: document.getElementById('sosmedInstagram').value.trim(),
-                        facebook: document.getElementById('sosmedFacebook').value.trim(),
-                        youtube: document.getElementById('sosmedYoutube').value.trim(),
-                        tiktok: document.getElementById('sosmedTiktok').value.trim()
-                    }
-                };
-                saveFooter(footer);
-                showToast('✅ Footer & Sosmed berhasil disimpan!', 'success');
-            });
-
-            // ============================================================
             // SETTINGS
             // ============================================================
             function loadSettingsToForm() {
                 const settings = loadSettings();
                 const bankInfo = loadBankInfo();
-                document.getElementById('setSponsorBonus').value = settings.sponsorBonus || 10;
-                document.getElementById('setBinaryBonus').value = settings.binaryBonus || 8;
-                document.getElementById('setRewardBonus').value = settings.rewardBonus || 5;
-                document.getElementById('setRoBonus').value = settings.roBonus || 3;
-                document.getElementById('setMemberPrice').value = settings.memberPrice || 550000;
-                document.getElementById('setBrandName').value = settings.brandName || 'HEDTRO JEANS';
-                document.getElementById('setBrandLogo').value = settings.brandLogo || 'fa-tshirt';
-                document.getElementById('setHeroTitle').value = settings.heroTitle || 'HEDTRO JEANS · Premium Denim';
-                document.getElementById('setBankName').value = bankInfo.bank || 'BCA';
-                document.getElementById('setBankAccount').value = bankInfo.account || '1234567890';
-                document.getElementById('setBankHolder').value = bankInfo.name || 'HEDTRO JEANS';
+
+                const els = {
+                    setSponsorBonus: document.getElementById('setSponsorBonus'),
+                    setBinaryBonus: document.getElementById('setBinaryBonus'),
+                    setRewardBonus: document.getElementById('setRewardBonus'),
+                    setRoBonus: document.getElementById('setRoBonus'),
+                    setMemberPrice: document.getElementById('setMemberPrice'),
+                    setBrandName: document.getElementById('setBrandName'),
+                    setBrandLogo: document.getElementById('setBrandLogo'),
+                    setHeroTitle: document.getElementById('setHeroTitle'),
+                    setBankName: document.getElementById('setBankName'),
+                    setBankAccount: document.getElementById('setBankAccount'),
+                    setBankHolder: document.getElementById('setBankHolder')
+                };
+
+                if (els.setSponsorBonus) els.setSponsorBonus.value = settings.sponsorBonus || 10;
+                if (els.setBinaryBonus) els.setBinaryBonus.value = settings.binaryBonus || 8;
+                if (els.setRewardBonus) els.setRewardBonus.value = settings.rewardBonus || 5;
+                if (els.setRoBonus) els.setRoBonus.value = settings.roBonus || 3;
+                if (els.setMemberPrice) els.setMemberPrice.value = settings.memberPrice || 550000;
+                if (els.setBrandName) els.setBrandName.value = settings.brandName || 'HEDTRO JEANS';
+                if (els.setBrandLogo) els.setBrandLogo.value = settings.brandLogo || 'fa-tshirt';
+                if (els.setHeroTitle) els.setHeroTitle.value = settings.heroTitle || 'HEDTRO JEANS · Premium Denim';
+                if (els.setBankName) els.setBankName.value = bankInfo.bank || 'BCA';
+                if (els.setBankAccount) els.setBankAccount.value = bankInfo.account || '1234567890';
+                if (els.setBankHolder) els.setBankHolder.value = bankInfo.name || 'HEDTRO JEANS';
             }
 
             document.getElementById('saveBonusSettings').addEventListener('click', function() {
@@ -2083,10 +1666,16 @@
                             bonus_binary: Math.floor(Math.random() * 100),
                             bonus_reward: Math.floor(Math.random() * 20),
                             bonus_ro: Math.floor(Math.random() * 10),
-                            left: null, right: null, sponsor_id: 1, upline_id: 1,
+                            left: null,
+                            right: null,
+                            sponsor_id: 1,
+                            upline_id: 1,
                             position: i % 2 === 0 ? 'left' : 'right',
-                            purchase_history: [], transactions: [], orders: [],
-                            proof_image: null, registeredAt: new Date().toISOString()
+                            purchase_history: [],
+                            transactions: [],
+                            orders: [],
+                            proof_image: null,
+                            registeredAt: new Date().toISOString()
                         };
                         if (i === 0) { const admin = users.find(u => u.id === 1); if (admin) admin.left = newUser.id; }
                         if (i === 1) { const admin = users.find(u => u.id === 1); if (admin) admin.right = newUser.id; }
@@ -2107,9 +1696,16 @@
                 let users = loadUsers();
                 const admin = users.find(u => u.email === 'admin@mlm.com');
                 if (admin) {
-                    admin.left = null; admin.right = null; admin.wallet = 0;
-                    admin.bonus_sponsor = 0; admin.bonus_binary = 0; admin.bonus_reward = 0; admin.bonus_ro = 0;
-                    admin.transactions = []; admin.orders = []; admin.purchase_history = [];
+                    admin.left = null;
+                    admin.right = null;
+                    admin.wallet = 0;
+                    admin.bonus_sponsor = 0;
+                    admin.bonus_binary = 0;
+                    admin.bonus_reward = 0;
+                    admin.bonus_ro = 0;
+                    admin.transactions = [];
+                    admin.orders = [];
+                    admin.purchase_history = [];
                 }
                 users = users.filter(u => u.email === 'admin@mlm.com');
                 saveUsers(users);
@@ -2173,20 +1769,24 @@
                 const users = loadUsers();
                 const user = users.find(u => (u.email === email || u.username === email) && u.password === password);
                 const msgEl = document.getElementById('adminLoginMsg');
+
                 if (!user) {
                     msgEl.className = 'msg error';
                     msgEl.innerText = '❌ Email/Username atau password salah.';
                     return;
                 }
+
                 if (user.role !== 'admin') {
                     msgEl.className = 'msg error';
                     msgEl.innerText = '❌ Akses ditolak. Bukan akun admin.';
                     return;
                 }
+
                 clearSession();
                 saveSession({ id: user.id, role: user.role });
                 msgEl.className = 'msg success';
                 msgEl.innerText = '✅ Login berhasil!';
+
                 setTimeout(() => {
                     hideAdminLogin();
                     renderDashboard();
@@ -2194,13 +1794,15 @@
                     renderAdminProducts();
                     renderVerification();
                     renderOrders();
-                    renderPageSettings();
                     loadSettingsToForm();
                     applySettings();
                     showToast('👋 Selamat datang Admin!', 'success');
                 }, 500);
             }
 
+            // ============================================================
+            // LOGIN EVENTS
+            // ============================================================
             document.getElementById('adminLoginBtn').addEventListener('click', function() {
                 const email = document.getElementById('adminLoginEmail').value.trim();
                 const password = document.getElementById('adminLoginPassword').value.trim();
@@ -2238,7 +1840,6 @@
                         renderAdminProducts();
                         renderVerification();
                         renderOrders();
-                        renderPageSettings();
                         loadSettingsToForm();
                         applySettings();
                         return true;
@@ -2268,8 +1869,15 @@
                     bonus_binary: 0,
                     bonus_reward: 0,
                     bonus_ro: 0,
-                    left: null, right: null, sponsor_id: null, upline_id: null, position: null,
-                    purchase_history: [], transactions: [], orders: [], proof_image: null,
+                    left: null,
+                    right: null,
+                    sponsor_id: null,
+                    upline_id: null,
+                    position: null,
+                    purchase_history: [],
+                    transactions: [],
+                    orders: [],
+                    proof_image: null,
                     registeredAt: new Date().toISOString()
                 }];
                 saveUsers(users);
@@ -2277,11 +1885,52 @@
 
             let products = loadProducts();
             if (products.length === 0) {
-                const defaultProducts = [
-                    { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', badgeColor: '#c9a84c', icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', desc: 'Celana jeans premium dengan potongan slim-fit modern.', sizes: ['28', '29', '30', '31', '32'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'], image: null },
-                    { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', badgeColor: '#2a4b6e', icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', desc: 'Model straight cut klasik legendaris.', sizes: ['30', '32', '34'], colors: ['Raw Denim', 'Dark Navy'], image: null },
-                    { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', badgeColor: '#b13e3e', icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', desc: 'Warna hitam legam pekat yang elegan.', sizes: ['29', '30', '31', '32'], colors: ['Black Stretch', 'Grey Stone'], image: null }
-                ];
+                const defaultProducts = [{
+                    id: 1,
+                    name: 'Slim Fit Premium Indigo 501®',
+                    price: 250000,
+                    original: 350000,
+                    tag: 'BEST SELLER',
+                    badgeColor: '#c9a84c',
+                    icon: 'fa-tshirt',
+                    favorite: true,
+                    stock: 45,
+                    serial: 'HDT-SERI-001',
+                    desc: 'Celana jeans premium dengan potongan slim-fit modern.',
+                    sizes: ['28', '29', '30', '31', '32'],
+                    colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
+                    image: null
+                }, {
+                    id: 2,
+                    name: 'Classic Straight Cut Raw',
+                    price: 280000,
+                    original: 390000,
+                    tag: 'NEW ARRIVAL',
+                    badgeColor: '#2a4b6e',
+                    icon: 'fa-tshirt',
+                    favorite: true,
+                    stock: 30,
+                    serial: 'HDT-SERI-002',
+                    desc: 'Model straight cut klasik legendaris.',
+                    sizes: ['30', '32', '34'],
+                    colors: ['Raw Denim', 'Dark Navy'],
+                    image: null
+                }, {
+                    id: 3,
+                    name: 'Jet Black Stretch Comfort',
+                    price: 240000,
+                    original: 330000,
+                    tag: 'HOT ITEM',
+                    badgeColor: '#b13e3e',
+                    icon: 'fa-tshirt',
+                    favorite: true,
+                    stock: 25,
+                    serial: 'HDT-SERI-003',
+                    desc: 'Warna hitam legam pekat yang elegan.',
+                    sizes: ['29', '30', '31', '32'],
+                    colors: ['Black Stretch', 'Grey Stone'],
+                    image: null
+                }];
                 saveProducts(defaultProducts);
             }
 
@@ -2295,11 +1944,10 @@
                     if (activeTab === 'verification') renderVerification();
                     if (activeTab === 'orders') renderOrders();
                     if (activeTab === 'products') renderAdminProducts();
-                    if (activeTab === 'page-settings') renderPageSettings();
                 }, 15000);
             }
 
-            console.log('🟦 HEDTRO · Admin Panel dengan Pengaturan Halaman Utama (diperbaiki)');
+            console.log('🟦 HEDTRO · Admin Panel dengan Burger Menu HP');
             console.log('🔑 Admin: admin@mlm.com / admin123');
         })();
     </script>
