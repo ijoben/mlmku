@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <style>
-        /* ===== SAMA SEPERTI SEBELUMNYA ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --denim-dark: #0b1a2b;
@@ -38,6 +37,7 @@
         ::-webkit-scrollbar-track { background:var(--cream); }
         ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
+        /* ===== NAVBAR ===== */
         .navbar {
             position: fixed; top:0; left:0; right:0; z-index:1100;
             background: var(--denim-dark);
@@ -66,21 +66,39 @@
         }
         .nav-right .user-badge i { color:var(--gold-accent); }
 
+        /* ===== BURGER BUTTON ===== */
         .burger-btn {
             display:none;
-            flex-direction:column; gap:5px;
-            padding:6px; background:transparent; border:none; cursor:pointer;
+            flex-direction:column;
+            gap:5px;
+            padding:8px 6px;
+            background:transparent;
+            border:none;
+            cursor:pointer;
             z-index:1101;
+            position:relative;
         }
         .burger-btn span {
-            display:block; width:28px; height:3px;
-            background:var(--cream); border-radius:4px;
-            transition:var(--transition); transform-origin:center;
+            display:block;
+            width:28px;
+            height:3px;
+            background:var(--cream);
+            border-radius:4px;
+            transition:var(--transition);
+            transform-origin:center;
         }
-        .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
-        .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
-        .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
+        .burger-btn.active span:nth-child(1) {
+            transform:translateY(8px) rotate(45deg);
+        }
+        .burger-btn.active span:nth-child(2) {
+            opacity:0;
+            transform:scaleX(0);
+        }
+        .burger-btn.active span:nth-child(3) {
+            transform:translateY(-8px) rotate(-45deg);
+        }
 
+        /* ===== SIDEBAR ===== */
         .sidebar-overlay {
             display:none;
             position:fixed; top:0; left:0; width:100%; height:100%;
@@ -88,7 +106,10 @@
             opacity:0; pointer-events:none;
             transition:var(--transition);
         }
-        .sidebar-overlay.active { opacity:1; pointer-events:all; }
+        .sidebar-overlay.active {
+            opacity:1;
+            pointer-events:all;
+        }
         .sidebar {
             position:fixed; top:0; left:0; bottom:0;
             width:var(--sidebar-width);
@@ -99,13 +120,10 @@
             border-right:3px solid var(--gold-accent);
             display:flex; flex-direction:column; gap:4px;
             transition:left 0.3s ease;
-            left:0;
+            left:-320px;
         }
-        @media (max-width: 768px) {
-            .sidebar { left:-320px; }
-            .sidebar.open { left:0; }
-            .burger-btn { display:flex; }
-            .sidebar-overlay { display:block; }
+        .sidebar.open {
+            left:0;
         }
         .sidebar .sidebar-header {
             display:flex; align-items:center; justify-content:space-between;
@@ -120,9 +138,6 @@
             display:none;
             color:var(--cream); font-size:1.6rem; cursor:pointer;
         }
-        @media (max-width: 768px) {
-            .sidebar .sidebar-header .close-side { display:block; }
-        }
         .sidebar .menu-item {
             display:flex; align-items:center; gap:14px;
             padding:12px 16px; border-radius:12px;
@@ -136,19 +151,58 @@
         .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
         .sidebar .menu-item.logout i { color:#e74c3c; }
 
+        /* ===== MAIN CONTENT ===== */
         .main-content {
             margin-left: var(--sidebar-width);
             padding: 20px 24px 40px;
             transition: margin-left 0.3s ease;
             max-width: calc(100% - var(--sidebar-width));
         }
+
         @media (max-width: 768px) {
+            .sidebar {
+                left:-320px;
+            }
+            .sidebar.open {
+                left:0;
+            }
+            .sidebar .sidebar-header .close-side {
+                display:block;
+            }
+            .burger-btn {
+                display:flex;
+            }
+            .sidebar-overlay {
+                display:block;
+            }
             .main-content {
                 margin-left: 0;
                 max-width: 100%;
                 padding: 16px 16px 30px;
             }
+            .nav-right .user-badge {
+                display:none;
+            }
         }
+
+        @media (min-width: 769px) {
+            .burger-btn {
+                display:none !important;
+            }
+            .sidebar {
+                left:0 !important;
+            }
+            .sidebar-overlay {
+                display:none !important;
+            }
+            .sidebar .sidebar-header .close-side {
+                display:none !important;
+            }
+            .main-content {
+                margin-left: var(--sidebar-width);
+            }
+        }
+
         .page-title {
             font-size:1.6rem; font-weight:700; color:var(--denim-dark);
             margin-bottom:20px; display:flex; align-items:center; gap:12px;
@@ -273,6 +327,7 @@
             margin-top:30px; font-size:0.8rem;
         }
 
+        /* ===== DASHBOARD STATS ===== */
         .stats-grid {
             display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
             gap:16px; margin-bottom:28px;
@@ -314,6 +369,7 @@
         .history-item .amount.plus { color:#1f7a4b; }
         .history-item .amount.minus { color:#b13e3e; }
 
+        /* ===== LOGIN OVERLAY ===== */
         .login-overlay {
             position:fixed; inset:0; z-index:9999;
             background:rgba(0,0,0,0.7);
@@ -409,6 +465,7 @@
         }
         .login-overlay.hidden { display:none; }
 
+        /* ===== MODAL ===== */
         .modal-overlay {
             display:none;
             position:fixed; inset:0; z-index:9998;
@@ -450,9 +507,7 @@
             color:var(--denim-navy); font-size:0.85rem;
             opacity:0.7; margin-bottom:16px;
         }
-        .modal-box .form-group {
-            margin-bottom:14px;
-        }
+        .modal-box .form-group { margin-bottom:14px; }
         .modal-box .form-group label {
             display:block; font-weight:600; font-size:0.8rem;
             color:var(--denim-navy); margin-bottom:4px;
@@ -468,7 +523,7 @@
             outline:none;
         }
         .modal-box .form-group textarea {
-            border-radius:var(--radius-sm); resize:vertical; min-height:60px;
+            border-radius:var(--radius-sm); resize:vertical; min-height:50px;
         }
         .modal-box .form-group input:focus,
         .modal-box .form-group select:focus,
@@ -514,9 +569,7 @@
         .modal-box .form-group .image-preview img {
             width:100%; height:100%; object-fit:cover;
         }
-        .modal-box .form-group .image-preview.show {
-            display:block;
-        }
+        .modal-box .form-group .image-preview.show { display:block; }
         .modal-box .btn-submit {
             width:100%; padding:14px;
             background:var(--gold-accent); color:var(--denim-dark);
@@ -527,12 +580,6 @@
         }
         .modal-box .btn-submit:hover {
             background:#b8963a; transform:scale(0.98);
-        }
-        .modal-box .btn-danger {
-            background:#b13e3e; color:#fff;
-        }
-        .modal-box .btn-danger:hover {
-            background:#8f2f2f;
         }
         .modal-box .proof-image {
             max-width:200px; max-height:200px;
@@ -564,6 +611,8 @@
             .stat-card { padding:12px 14px; }
             .stat-card .value { font-size:1.2rem; }
             .modal-box { padding:16px 12px 20px; }
+            .navbar .logo { font-size:1.1rem; }
+            .navbar .logo img { height:32px; }
         }
     </style>
 </head>
@@ -608,16 +657,31 @@
     <!-- ===== MAIN CONTENT ===== -->
     <div id="mainApp" style="display:none;">
 
+        <!-- ===== NAVBAR ===== -->
         <header class="navbar">
-            <div class="logo" id="brandLogo"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></div>
+            <div class="logo" id="brandLogo">
+                <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
+            </div>
             <div class="nav-right">
-                <div class="user-badge" id="navUserBadge"><i class="fas fa-user-cog"></i> <span id="navUserName">Admin</span></div>
-                <a href="index.html" class="user-badge" style="background:rgba(255,255,255,0.04);"><i class="fas fa-home"></i></a>
-                <button class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></button>
+                <div class="user-badge" id="navUserBadge">
+                    <i class="fas fa-user-cog"></i> <span id="navUserName">Admin</span>
+                </div>
+                <a href="index.html" class="user-badge" style="background:rgba(255,255,255,0.04);">
+                    <i class="fas fa-home"></i>
+                </a>
+                <!-- ===== BURGER BUTTON ===== -->
+                <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </button>
             </div>
         </header>
 
+        <!-- ===== SIDEBAR OVERLAY ===== -->
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+        <!-- ===== SIDEBAR ===== -->
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
@@ -634,7 +698,9 @@
             <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
         </nav>
 
+        <!-- ===== MAIN CONTENT ===== -->
         <div class="main-content">
+
             <!-- DASHBOARD -->
             <div class="tab-content active" id="tabDashboard">
                 <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
@@ -744,12 +810,14 @@
                     </div>
                 </div>
             </div>
+
         </div>
 
         <footer class="footer">
             <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Admin Panel</p>
             <p style="opacity:0.6; margin-top:4px;">Sistem MLM terintegrasi</p>
         </footer>
+
     </div>
 
     <script>
@@ -795,6 +863,13 @@
             function clearSession() { localStorage.removeItem(SESSION_KEY); }
 
             function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
+
+            function getCurrentUser() {
+                const session = getSession();
+                if (!session) return null;
+                const users = loadUsers();
+                return users.find(u => u.id === session.id) || null;
+            }
 
             // ============================================================
             // TOAST
@@ -848,6 +923,66 @@
             });
 
             // ============================================================
+            // SIDEBAR TOGGLE (HP)
+            // ============================================================
+            const burgerBtn = document.getElementById('burgerBtn');
+            const sidebar = document.getElementById('sidebar');
+            const sidebarOverlay = document.getElementById('sidebarOverlay');
+            const closeSidebar = document.getElementById('closeSidebar');
+
+            function toggleSidebar(open) {
+                const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
+                if (window.innerWidth <= 768) {
+                    sidebar.classList.toggle('open', isOpen);
+                    sidebarOverlay.classList.toggle('active', isOpen);
+                    burgerBtn.classList.toggle('active', isOpen);
+                    document.body.style.overflow = isOpen ? 'hidden' : '';
+                }
+            }
+
+            burgerBtn.addEventListener('click', function(e) {
+                e.stopPropagation();
+                toggleSidebar();
+            });
+
+            closeSidebar.addEventListener('click', function() {
+                toggleSidebar(false);
+            });
+
+            sidebarOverlay.addEventListener('click', function() {
+                toggleSidebar(false);
+            });
+
+            // ============================================================
+            // TAB NAVIGATION
+            // ============================================================
+            function switchTab(tabId) {
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                const tabContent = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
+                if (tabContent) tabContent.classList.add('active');
+
+                document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(el => el.classList.remove('active'));
+                const activeMenuItem = document.querySelector(`.sidebar .menu-item[data-tab="${tabId}"]`);
+                if (activeMenuItem) activeMenuItem.classList.add('active');
+
+                if (tabId === 'dashboard') renderDashboard();
+                if (tabId === 'members') renderAdminMembers();
+                if (tabId === 'products') renderAdminProducts();
+                if (tabId === 'verification') renderVerification();
+                if (tabId === 'orders') renderOrders();
+                if (tabId === 'settings') loadSettingsToForm();
+                
+                // Tutup sidebar di HP
+                if (window.innerWidth <= 768) toggleSidebar(false);
+            }
+
+            document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(item => {
+                item.addEventListener('click', function() {
+                    switchTab(this.dataset.tab);
+                });
+            });
+
+            // ============================================================
             // APPLY SETTINGS
             // ============================================================
             function applySettings() {
@@ -868,54 +1003,6 @@
                 const nameEl = document.getElementById('navUserName');
                 if (nameEl) nameEl.textContent = 'Admin';
             }
-
-            // ============================================================
-            // SIDEBAR TOGGLE
-            // ============================================================
-            const burgerBtn = document.getElementById('burgerBtn');
-            const sidebar = document.getElementById('sidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            const closeSidebar = document.getElementById('closeSidebar');
-
-            function toggleSidebar(open) {
-                const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
-                if (window.innerWidth <= 768) {
-                    sidebar.classList.toggle('open', isOpen);
-                    sidebarOverlay.classList.toggle('active', isOpen);
-                    burgerBtn.classList.toggle('active', isOpen);
-                    document.body.style.overflow = isOpen ? 'hidden' : '';
-                }
-            }
-            if (burgerBtn) burgerBtn.addEventListener('click', () => toggleSidebar());
-            if (closeSidebar) closeSidebar.addEventListener('click', () => toggleSidebar(false));
-            if (sidebarOverlay) sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
-
-            // ============================================================
-            // TAB NAVIGATION
-            // ============================================================
-            function switchTab(tabId) {
-                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                const tabContent = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
-                if (tabContent) tabContent.classList.add('active');
-
-                document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(el => el.classList.remove('active'));
-                const activeMenuItem = document.querySelector(`.sidebar .menu-item[data-tab="${tabId}"]`);
-                if (activeMenuItem) activeMenuItem.classList.add('active');
-
-                if (tabId === 'dashboard') renderDashboard();
-                if (tabId === 'members') renderAdminMembers();
-                if (tabId === 'products') renderAdminProducts();
-                if (tabId === 'verification') renderVerification();
-                if (tabId === 'orders') renderOrders();
-                if (tabId === 'settings') loadSettingsToForm();
-            }
-
-            document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(item => {
-                item.addEventListener('click', function() {
-                    toggleSidebar(false);
-                    switchTab(this.dataset.tab);
-                });
-            });
 
             // ============================================================
             // RENDER DASHBOARD
@@ -1067,7 +1154,7 @@
             }
 
             // ============================================================
-            // RENDER PRODUCTS - GAMBAR LANGSUNG DARI DATA
+            // RENDER PRODUCTS
             // ============================================================
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
@@ -1077,7 +1164,6 @@
                 products.forEach((p, idx) => {
                     const sizes = (p.sizes || []).join(', ') || '-';
                     const colors = (p.colors || []).join(', ') || '-';
-                    // Tampilkan gambar jika ada
                     let imgHtml = `<i class="fas fa-tshirt" style="font-size:1.5rem;color:var(--denim-blue);"></i>`;
                     if (p.image && p.image.startsWith('data:image')) {
                         imgHtml = `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />`;
@@ -1252,7 +1338,7 @@
             }
 
             // ============================================================
-            // ADD PRODUCT - MODAL CUSTOM
+            // ADD PRODUCT
             // ============================================================
             document.getElementById('addProductBtn').addEventListener('click', function() {
                 let html = `
@@ -1861,7 +1947,7 @@
                 }, 15000);
             }
 
-            console.log('🟦 HEDTRO · Admin Panel lengkap');
+            console.log('🟦 HEDTRO · Admin Panel dengan Burger Menu HP');
             console.log('🔑 Admin: admin@mlm.com / admin123');
         })();
     </script>
