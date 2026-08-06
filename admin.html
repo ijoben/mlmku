@@ -37,7 +37,6 @@
         ::-webkit-scrollbar-track { background:var(--cream); }
         ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
-        /* ===== NAVBAR ===== */
         .navbar {
             position: fixed; top:0; left:0; right:0; z-index:1100;
             background: var(--denim-dark);
@@ -66,39 +65,22 @@
         }
         .nav-right .user-badge i { color:var(--gold-accent); }
 
-        /* ===== BURGER BUTTON ===== */
         .burger-btn {
             display:none;
-            flex-direction:column;
-            gap:5px;
+            flex-direction:column; gap:5px;
             padding:8px 6px;
-            background:transparent;
-            border:none;
-            cursor:pointer;
+            background:transparent; border:none; cursor:pointer;
             z-index:1101;
-            position:relative;
         }
         .burger-btn span {
-            display:block;
-            width:28px;
-            height:3px;
-            background:var(--cream);
-            border-radius:4px;
-            transition:var(--transition);
-            transform-origin:center;
+            display:block; width:28px; height:3px;
+            background:var(--cream); border-radius:4px;
+            transition:var(--transition); transform-origin:center;
         }
-        .burger-btn.active span:nth-child(1) {
-            transform:translateY(8px) rotate(45deg);
-        }
-        .burger-btn.active span:nth-child(2) {
-            opacity:0;
-            transform:scaleX(0);
-        }
-        .burger-btn.active span:nth-child(3) {
-            transform:translateY(-8px) rotate(-45deg);
-        }
+        .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
+        .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
+        .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
 
-        /* ===== SIDEBAR ===== */
         .sidebar-overlay {
             display:none;
             position:fixed; top:0; left:0; width:100%; height:100%;
@@ -106,10 +88,7 @@
             opacity:0; pointer-events:none;
             transition:var(--transition);
         }
-        .sidebar-overlay.active {
-            opacity:1;
-            pointer-events:all;
-        }
+        .sidebar-overlay.active { opacity:1; pointer-events:all; }
         .sidebar {
             position:fixed; top:0; left:0; bottom:0;
             width:var(--sidebar-width);
@@ -122,9 +101,7 @@
             transition:left 0.3s ease;
             left:-320px;
         }
-        .sidebar.open {
-            left:0;
-        }
+        .sidebar.open { left:0; }
         .sidebar .sidebar-header {
             display:flex; align-items:center; justify-content:space-between;
             padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);
@@ -151,58 +128,29 @@
         .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
         .sidebar .menu-item.logout i { color:#e74c3c; }
 
-        /* ===== MAIN CONTENT ===== */
+        @media (max-width: 768px) {
+            .sidebar { left:-320px; }
+            .sidebar.open { left:0; }
+            .sidebar .sidebar-header .close-side { display:block; }
+            .burger-btn { display:flex; }
+            .sidebar-overlay { display:block; }
+            .main-content { margin-left:0; max-width:100%; padding:16px 16px 30px; }
+            .nav-right .user-badge { display:none; }
+        }
+        @media (min-width: 769px) {
+            .burger-btn { display:none !important; }
+            .sidebar { left:0 !important; }
+            .sidebar-overlay { display:none !important; }
+            .sidebar .sidebar-header .close-side { display:none !important; }
+            .main-content { margin-left:var(--sidebar-width); }
+        }
+
         .main-content {
             margin-left: var(--sidebar-width);
             padding: 20px 24px 40px;
             transition: margin-left 0.3s ease;
             max-width: calc(100% - var(--sidebar-width));
         }
-
-        @media (max-width: 768px) {
-            .sidebar {
-                left:-320px;
-            }
-            .sidebar.open {
-                left:0;
-            }
-            .sidebar .sidebar-header .close-side {
-                display:block;
-            }
-            .burger-btn {
-                display:flex;
-            }
-            .sidebar-overlay {
-                display:block;
-            }
-            .main-content {
-                margin-left: 0;
-                max-width: 100%;
-                padding: 16px 16px 30px;
-            }
-            .nav-right .user-badge {
-                display:none;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .burger-btn {
-                display:none !important;
-            }
-            .sidebar {
-                left:0 !important;
-            }
-            .sidebar-overlay {
-                display:none !important;
-            }
-            .sidebar .sidebar-header .close-side {
-                display:none !important;
-            }
-            .main-content {
-                margin-left: var(--sidebar-width);
-            }
-        }
-
         .page-title {
             font-size:1.6rem; font-weight:700; color:var(--denim-dark);
             margin-bottom:20px; display:flex; align-items:center; gap:12px;
@@ -332,7 +280,6 @@
             margin-top:30px; font-size:0.8rem;
         }
 
-        /* ===== DASHBOARD STATS ===== */
         .stats-grid {
             display:grid; grid-template-columns:repeat(auto-fit, minmax(180px,1fr));
             gap:16px; margin-bottom:28px;
@@ -374,7 +321,6 @@
         .history-item .amount.plus { color:#1f7a4b; }
         .history-item .amount.minus { color:#b13e3e; }
 
-        /* ===== LOGIN OVERLAY ===== */
         .login-overlay {
             position:fixed; inset:0; z-index:9999;
             background:rgba(0,0,0,0.7);
@@ -470,7 +416,6 @@
         }
         .login-overlay.hidden { display:none; }
 
-        /* ===== MODAL ===== */
         .modal-overlay {
             display:none;
             position:fixed; inset:0; z-index:9998;
@@ -586,15 +531,6 @@
         .modal-box .btn-submit:hover {
             background:#b8963a; transform:scale(0.98);
         }
-        .modal-box .proof-image {
-            max-width:200px; max-height:200px;
-            border-radius:var(--radius-sm);
-            border:1px solid var(--denim-light);
-            margin:8px 0;
-        }
-        .modal-box .proof-image img {
-            width:100%; height:100%; object-fit:cover;
-        }
         .modal-box .order-detail {
             background:var(--cream);
             border-radius:var(--radius-sm);
@@ -604,6 +540,15 @@
         .modal-box .order-detail .item {
             display:flex; justify-content:space-between;
             padding:4px 0; font-size:0.85rem;
+        }
+        .modal-box .proof-image {
+            max-width:200px; max-height:200px;
+            border-radius:var(--radius-sm);
+            border:1px solid var(--denim-light);
+            margin:8px 0;
+        }
+        .modal-box .proof-image img {
+            width:100%; height:100%; object-fit:cover;
         }
 
         /* ===== SLIDE PREVIEW ===== */
@@ -760,7 +705,6 @@
     <!-- ===== MAIN CONTENT ===== -->
     <div id="mainApp" style="display:none;">
 
-        <!-- ===== NAVBAR ===== -->
         <header class="navbar">
             <div class="logo" id="brandLogo">
                 <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
@@ -772,19 +716,14 @@
                 <a href="index.html" class="user-badge" style="background:rgba(255,255,255,0.04);">
                     <i class="fas fa-home"></i>
                 </a>
-                <!-- ===== BURGER BUTTON ===== -->
                 <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
-                    <span></span>
-                    <span></span>
-                    <span></span>
+                    <span></span><span></span><span></span>
                 </button>
             </div>
         </header>
 
-        <!-- ===== SIDEBAR OVERLAY ===== -->
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
-        <!-- ===== SIDEBAR ===== -->
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
@@ -804,10 +743,9 @@
             <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
         </nav>
 
-        <!-- ===== MAIN CONTENT ===== -->
         <div class="main-content">
 
-            <!-- DASHBOARD -->
+            <!-- ===== DASHBOARD ===== -->
             <div class="tab-content active" id="tabDashboard">
                 <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
                 <div class="stats-grid" id="dashboardStats">
@@ -824,7 +762,7 @@
                 </div>
             </div>
 
-            <!-- MEMBERS -->
+            <!-- ===== MEMBERS ===== -->
             <div class="tab-content" id="tabMembers">
                 <h1 class="page-title"><i class="fas fa-users"></i> Member</h1>
                 <div class="flex-row">
@@ -841,7 +779,7 @@
                 <div class="text-muted mt-16">Total member: <span id="totalMembers">0</span></div>
             </div>
 
-            <!-- PRODUCTS -->
+            <!-- ===== PRODUCTS ===== -->
             <div class="tab-content" id="tabProducts">
                 <h1 class="page-title"><i class="fas fa-boxes"></i> Produk</h1>
                 <div class="flex-row">
@@ -855,7 +793,7 @@
                 </div>
             </div>
 
-            <!-- VERIFICATION -->
+            <!-- ===== VERIFICATION ===== -->
             <div class="tab-content" id="tabVerification">
                 <h1 class="page-title"><i class="fas fa-check-double"></i> Verifikasi</h1>
                 <div class="flex-row">
@@ -869,7 +807,7 @@
                 </div>
             </div>
 
-            <!-- ORDERS -->
+            <!-- ===== ORDERS ===== -->
             <div class="tab-content" id="tabOrders">
                 <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Orders</h1>
                 <div class="flex-row">
@@ -960,7 +898,7 @@
                 </div>
             </div>
 
-            <!-- SETTINGS -->
+            <!-- ===== SETTINGS ===== -->
             <div class="tab-content" id="tabSettings">
                 <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan</h1>
                 <div class="settings-grid">
@@ -1052,7 +990,18 @@
             function saveSession(s) { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
             function clearSession() { localStorage.removeItem(SESSION_KEY); }
 
-            // ===== FUNGSI UNTUK KONTEN =====
+            function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
+
+            function getCurrentUser() {
+                const session = getSession();
+                if (!session) return null;
+                const users = loadUsers();
+                return users.find(u => u.id === session.id) || null;
+            }
+
+            // ============================================================
+            // FUNGSI UNTUK KONTEN HALAMAN
+            // ============================================================
             function loadSlides() { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); }
             function saveSlides(s) { localStorage.setItem(SLIDES_KEY, JSON.stringify(s)); }
             
@@ -1071,15 +1020,6 @@
                 return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.","copyright":"&copy; 2026 HEDTRO JEANS · All Rights Reserved","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}');
             }
             function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
-
-            function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
-
-            function getCurrentUser() {
-                const session = getSession();
-                if (!session) return null;
-                const users = loadUsers();
-                return users.find(u => u.id === session.id) || null;
-            }
 
             // ============================================================
             // TOAST
@@ -1167,10 +1107,10 @@
             // TAB NAVIGATION
             // ============================================================
             function switchTab(tabId) {
-                // HIDE ALL TAB CONTENT
+                // HIDE ALL
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 
-                // SHOW SELECTED TAB
+                // SHOW SELECTED
                 const tabContent = document.getElementById('tab' + tabId.charAt(0).toUpperCase() + tabId.slice(1));
                 if (tabContent) {
                     tabContent.classList.add('active');
@@ -1190,7 +1130,6 @@
                 if (tabId === 'page-settings') renderPageSettings();
                 if (tabId === 'settings') loadSettingsToForm();
                 
-                // TUTUP SIDEBAR HP
                 if (window.innerWidth <= 768) toggleSidebar(false);
             }
 
@@ -1437,56 +1376,25 @@
 
                 const sizesStr = (p.sizes || []).join(', ');
                 const colorsStr = (p.colors || []).join(', ');
-                const imagePreviewHtml = p.image ? `<img src="${p.image}" alt="Preview" />` : '';
 
                 let html = `
                     <h3><i class="fas fa-edit" style="color:var(--gold-accent);"></i> Edit Produk</h3>
                     <p class="sub">Ubah data produk di bawah ini</p>
                     <form id="editProductForm" onsubmit="return false;">
-                        <div class="form-group">
-                            <label>Nama Produk <span style="color:red;">*</span></label>
-                            <input type="text" id="editName" value="${p.name}" />
-                        </div>
-                        <div class="form-group">
-                            <label>Harga Member (Rp) <span style="color:red;">*</span></label>
-                            <input type="number" id="editPrice" value="${p.price}" />
-                        </div>
-                        <div class="form-group">
-                            <label>Harga Normal (Rp)</label>
-                            <input type="number" id="editOriginal" value="${p.original || ''}" />
-                        </div>
-                        <div class="form-group">
-                            <label>Tag/Badge</label>
-                            <input type="text" id="editTag" value="${p.tag || 'PRODUK'}" />
-                        </div>
-                        <div class="form-group">
-                            <label>Warna Badge (kode hex)</label>
-                            <input type="color" id="editBadgeColor" value="${p.badgeColor || '#c9a84c'}" style="padding:4px;height:50px;" />
-                        </div>
-                        <div class="form-group">
-                            <label>Stok</label>
-                            <input type="number" id="editStock" value="${p.stock || 0}" />
-                        </div>
-                        <div class="form-group">
-                            <label>Ukuran (pisah dengan koma)</label>
-                            <input type="text" id="editSizes" value="${sizesStr}" placeholder="contoh: 28,29,30,31,32" />
-                        </div>
-                        <div class="form-group">
-                            <label>Warna (pisah dengan koma)</label>
-                            <input type="text" id="editColors" value="${colorsStr}" placeholder="contoh: Indigo Blue, Black Stretch" />
-                        </div>
-                        <div class="form-group">
-                            <label>Deskripsi</label>
-                            <textarea id="editDesc" rows="3">${p.desc || ''}</textarea>
-                        </div>
+                        <div class="form-group"><label>Nama Produk <span style="color:red;">*</span></label><input type="text" id="editName" value="${p.name}" /></div>
+                        <div class="form-group"><label>Harga Member (Rp) <span style="color:red;">*</span></label><input type="number" id="editPrice" value="${p.price}" /></div>
+                        <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="editOriginal" value="${p.original || ''}" /></div>
+                        <div class="form-group"><label>Tag/Badge</label><input type="text" id="editTag" value="${p.tag || 'PRODUK'}" /></div>
+                        <div class="form-group"><label>Warna Badge (kode hex)</label><input type="color" id="editBadgeColor" value="${p.badgeColor || '#c9a84c'}" style="padding:4px;height:50px;" /></div>
+                        <div class="form-group"><label>Stok</label><input type="number" id="editStock" value="${p.stock || 0}" /></div>
+                        <div class="form-group"><label>Ukuran (pisah dengan koma)</label><input type="text" id="editSizes" value="${sizesStr}" placeholder="contoh: 28,29,30,31,32" /></div>
+                        <div class="form-group"><label>Warna (pisah dengan koma)</label><input type="text" id="editColors" value="${colorsStr}" placeholder="contoh: Indigo Blue, Black Stretch" /></div>
+                        <div class="form-group"><label>Deskripsi</label><textarea id="editDesc" rows="3">${p.desc || ''}</textarea></div>
                         <div class="form-group">
                             <label>Upload Gambar</label>
                             <div class="file-input-wrapper">
                                 <input type="file" id="editImageFile" accept="image/*" />
-                                <div class="file-label">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <span id="editImageLabel">${p.image ? 'Ganti gambar' : 'Upload gambar'}</span>
-                                </div>
+                                <div class="file-label"><i class="fas fa-cloud-upload-alt"></i> <span id="editImageLabel">${p.image ? 'Ganti gambar' : 'Upload gambar'}</span></div>
                             </div>
                             ${p.image ? `<div class="image-preview show" id="editImagePreview"><img src="${p.image}" alt="Preview" /></div>` : `<div class="image-preview" id="editImagePreview"></div>`}
                             <input type="hidden" id="editImageUrl" value="${p.image || ''}" />
@@ -1494,13 +1402,10 @@
                         <button type="submit" class="btn-submit" id="saveEditProduct"><i class="fas fa-save"></i> Simpan Perubahan</button>
                     </form>
                 `;
-
                 openModal(html);
-
                 const fileInput = document.getElementById('editImageFile');
                 const imagePreview = document.getElementById('editImagePreview');
                 const imageLabel = document.getElementById('editImageLabel');
-
                 fileInput.addEventListener('change', function(e) {
                     const file = e.target.files[0];
                     if (file) {
@@ -1514,7 +1419,6 @@
                         reader.readAsDataURL(file);
                     }
                 });
-
                 document.getElementById('saveEditProduct').addEventListener('click', function() {
                     const name = document.getElementById('editName').value.trim();
                     const price = parseInt(document.getElementById('editPrice').value);
@@ -1526,13 +1430,10 @@
                     const colorsStr = document.getElementById('editColors').value.trim();
                     const desc = document.getElementById('editDesc').value.trim();
                     const image = document.getElementById('editImageUrl').value.trim();
-
                     if (!name) { showToast('⚠️ Nama produk wajib diisi!', 'error'); return; }
                     if (isNaN(price) || price <= 0) { showToast('⚠️ Harga member harus diisi!', 'error'); return; }
-
                     const sizes = sizesStr ? sizesStr.split(',').map(s => s.trim()).filter(s => s) : [];
                     const colors = colorsStr ? colorsStr.split(',').map(c => c.trim()).filter(c => c) : [];
-
                     let products = loadProducts();
                     const product = products.find(x => x.id === id);
                     if (product) {
@@ -1563,50 +1464,20 @@
                     <h3><i class="fas fa-plus-circle" style="color:var(--gold-accent);"></i> Tambah Produk</h3>
                     <p class="sub">Isi data produk baru di bawah ini</p>
                     <form id="addProductForm" onsubmit="return false;">
-                        <div class="form-group">
-                            <label>Nama Produk <span style="color:red;">*</span></label>
-                            <input type="text" id="addName" placeholder="Nama produk" />
-                        </div>
-                        <div class="form-group">
-                            <label>Harga Member (Rp) <span style="color:red;">*</span></label>
-                            <input type="number" id="addPrice" placeholder="250000" />
-                        </div>
-                        <div class="form-group">
-                            <label>Harga Normal (Rp)</label>
-                            <input type="number" id="addOriginal" placeholder="350000" />
-                        </div>
-                        <div class="form-group">
-                            <label>Tag/Badge</label>
-                            <input type="text" id="addTag" placeholder="BEST SELLER" value="PRODUK" />
-                        </div>
-                        <div class="form-group">
-                            <label>Warna Badge (kode hex)</label>
-                            <input type="color" id="addBadgeColor" value="#c9a84c" style="padding:4px;height:50px;" />
-                        </div>
-                        <div class="form-group">
-                            <label>Stok</label>
-                            <input type="number" id="addStock" placeholder="0" value="10" />
-                        </div>
-                        <div class="form-group">
-                            <label>Ukuran (pisah dengan koma)</label>
-                            <input type="text" id="addSizes" placeholder="28,29,30,31,32" value="28,29,30,31,32" />
-                        </div>
-                        <div class="form-group">
-                            <label>Warna (pisah dengan koma)</label>
-                            <input type="text" id="addColors" placeholder="Indigo Blue, Black Stretch" value="Indigo Blue, Black Stretch" />
-                        </div>
-                        <div class="form-group">
-                            <label>Deskripsi</label>
-                            <textarea id="addDesc" rows="3" placeholder="Deskripsi produk..."></textarea>
-                        </div>
+                        <div class="form-group"><label>Nama Produk <span style="color:red;">*</span></label><input type="text" id="addName" placeholder="Nama produk" /></div>
+                        <div class="form-group"><label>Harga Member (Rp) <span style="color:red;">*</span></label><input type="number" id="addPrice" placeholder="250000" /></div>
+                        <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="addOriginal" placeholder="350000" /></div>
+                        <div class="form-group"><label>Tag/Badge</label><input type="text" id="addTag" placeholder="BEST SELLER" value="PRODUK" /></div>
+                        <div class="form-group"><label>Warna Badge (kode hex)</label><input type="color" id="addBadgeColor" value="#c9a84c" style="padding:4px;height:50px;" /></div>
+                        <div class="form-group"><label>Stok</label><input type="number" id="addStock" placeholder="0" value="10" /></div>
+                        <div class="form-group"><label>Ukuran (pisah dengan koma)</label><input type="text" id="addSizes" placeholder="28,29,30,31,32" value="28,29,30,31,32" /></div>
+                        <div class="form-group"><label>Warna (pisah dengan koma)</label><input type="text" id="addColors" placeholder="Indigo Blue, Black Stretch" value="Indigo Blue, Black Stretch" /></div>
+                        <div class="form-group"><label>Deskripsi</label><textarea id="addDesc" rows="3" placeholder="Deskripsi produk..."></textarea></div>
                         <div class="form-group">
                             <label>Upload Gambar</label>
                             <div class="file-input-wrapper">
                                 <input type="file" id="addImageFile" accept="image/*" />
-                                <div class="file-label">
-                                    <i class="fas fa-cloud-upload-alt"></i>
-                                    <span id="addImageLabel">Upload gambar</span>
-                                </div>
+                                <div class="file-label"><i class="fas fa-cloud-upload-alt"></i> <span id="addImageLabel">Upload gambar</span></div>
                             </div>
                             <div class="image-preview" id="addImagePreview"></div>
                             <input type="hidden" id="addImageUrl" value="" />
@@ -1614,13 +1485,10 @@
                         <button type="submit" class="btn-submit" id="saveAddProduct"><i class="fas fa-plus"></i> Tambah Produk</button>
                     </form>
                 `;
-
                 openModal(html);
-
                 const fileInput = document.getElementById('addImageFile');
                 const imagePreview = document.getElementById('addImagePreview');
                 const imageLabel = document.getElementById('addImageLabel');
-
                 fileInput.addEventListener('change', function(e) {
                     const file = e.target.files[0];
                     if (file) {
@@ -1634,7 +1502,6 @@
                         reader.readAsDataURL(file);
                     }
                 });
-
                 document.getElementById('saveAddProduct').addEventListener('click', function() {
                     const name = document.getElementById('addName').value.trim();
                     const price = parseInt(document.getElementById('addPrice').value);
@@ -1646,28 +1513,16 @@
                     const colorsStr = document.getElementById('addColors').value.trim();
                     const desc = document.getElementById('addDesc').value.trim();
                     const image = document.getElementById('addImageUrl').value.trim();
-
                     if (!name) { showToast('⚠️ Nama produk wajib diisi!', 'error'); return; }
                     if (isNaN(price) || price <= 0) { showToast('⚠️ Harga member harus diisi!', 'error'); return; }
-
                     const sizes = sizesStr ? sizesStr.split(',').map(s => s.trim()).filter(s => s) : [];
                     const colors = colorsStr ? colorsStr.split(',').map(c => c.trim()).filter(c => c) : [];
-
                     let products = loadProducts();
                     const newProd = {
                         id: products.length ? Math.max(...products.map(p => p.id)) + 1 : 1,
-                        name,
-                        price,
-                        original,
-                        tag,
-                        badgeColor,
-                        icon: 'fa-tshirt',
-                        stock,
-                        sizes,
-                        colors,
+                        name, price, original, tag, badgeColor, icon: 'fa-tshirt', stock, sizes, colors,
                         desc: desc || 'Deskripsi produk ini akan diisi oleh admin.',
-                        image: image || null,
-                        favorite: false,
+                        image: image || null, favorite: false,
                         serial: 'HDT-SERI-' + String(products.length + 1).padStart(3, '0')
                     };
                     products.push(newProd);
@@ -1687,12 +1542,10 @@
                 if (!tbody) return;
                 const orders = loadOrders();
                 const users = loadUsers();
-
                 if (orders.length === 0) {
                     tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:20px;">Belum ada pesanan.</td></tr>`;
                     return;
                 }
-
                 let html = '';
                 const sorted = [...orders].reverse();
                 sorted.forEach((o, idx) => {
@@ -1711,9 +1564,7 @@
                         <td>Rp ${(o.total || 0).toLocaleString()}</td>
                         <td><span class="badge-status ${statusClass}">${statusLabel}</span></td>
                         <td>${new Date(o.createdAt).toLocaleDateString()}</td>
-                        <td>
-                            ${hasProof ? `<button class="btn-sm btn-sm-gold view-proof" data-id="${o.id}"><i class="fas fa-image"></i> Lihat</button>` : '<span style="color:#999;font-size:0.7rem;">Belum upload</span>'}
-                        </td>
+                        <td>${hasProof ? `<button class="btn-sm btn-sm-gold view-proof" data-id="${o.id}"><i class="fas fa-image"></i> Lihat</button>` : '<span style="color:#999;font-size:0.7rem;">Belum upload</span>'}</td>
                         <td>
                             ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
                             ${o.status === 'processing' ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim</button>` : ''}
@@ -1731,14 +1582,12 @@
                         const proof = order.proof_image || order.proof || '';
                         const user = users.find(u => u.id === order.user_id);
                         const userName = user ? (user.name || user.username) : 'Unknown';
-
                         let itemsHtml = '';
                         if (order.items) {
                             order.items.forEach(item => {
                                 itemsHtml += `<div class="item"><span>${item.name} x${item.qty}</span><span>Rp ${(item.price * item.qty).toLocaleString()}</span></div>`;
                             });
                         }
-
                         let html = `
                             <h3><i class="fas fa-receipt" style="color:var(--gold-accent);"></i> Detail Order</h3>
                             <p class="sub">${order.order_number || 'ORD-'+order.id}</p>
@@ -1805,6 +1654,7 @@
             // --- SLIDES ---
             function renderSlides() {
                 const container = document.getElementById('slideList');
+                if (!container) return;
                 const slides = loadSlides();
                 if (slides.length === 0) {
                     container.innerHTML = '<p class="text-muted">Belum ada slide. Klik "Tambah Slide" untuk menambahkan.</p>';
@@ -1977,6 +1827,7 @@
             // --- FAQ ---
             function renderFaq() {
                 const container = document.getElementById('faqList');
+                if (!container) return;
                 const faqs = loadFaq();
                 if (faqs.length === 0) {
                     container.innerHTML = '<p class="text-muted">Belum ada FAQ. Klik "Tambah FAQ" untuk menambahkan.</p>';
@@ -2027,14 +1878,8 @@
                     <h3><i class="fas fa-question-circle" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit' : 'Tambah'} FAQ</h3>
                     <p class="sub">${isEdit ? 'Ubah data FAQ' : 'Isi data FAQ baru'}</p>
                     <form id="faqForm" onsubmit="return false;">
-                        <div class="form-group">
-                            <label>Pertanyaan <span style="color:red;">*</span></label>
-                            <input type="text" id="faqQuestion" value="${faq ? faq.question : ''}" placeholder="Pertanyaan" />
-                        </div>
-                        <div class="form-group">
-                            <label>Jawaban <span style="color:red;">*</span></label>
-                            <textarea id="faqAnswer" rows="3" placeholder="Jawaban">${faq ? faq.answer : ''}</textarea>
-                        </div>
+                        <div class="form-group"><label>Pertanyaan <span style="color:red;">*</span></label><input type="text" id="faqQuestion" value="${faq ? faq.question : ''}" placeholder="Pertanyaan" /></div>
+                        <div class="form-group"><label>Jawaban <span style="color:red;">*</span></label><textarea id="faqAnswer" rows="3" placeholder="Jawaban">${faq ? faq.answer : ''}</textarea></div>
                         <button type="submit" class="btn-submit" id="saveFaqBtn"><i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Tambah'} FAQ</button>
                     </form>
                 `;
@@ -2067,6 +1912,7 @@
             // --- FEATURES ---
             function renderFeatures() {
                 const container = document.getElementById('featureList');
+                if (!container) return;
                 const features = loadFeatures();
                 if (features.length === 0) {
                     container.innerHTML = '<p class="text-muted">Belum ada keunggulan. Klik "Tambah Keunggulan" untuk menambahkan.</p>';
@@ -2117,18 +1963,9 @@
                     <h3><i class="fas fa-star" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit' : 'Tambah'} Keunggulan</h3>
                     <p class="sub">${isEdit ? 'Ubah data keunggulan' : 'Isi data keunggulan baru'}</p>
                     <form id="featureForm" onsubmit="return false;">
-                        <div class="form-group">
-                            <label>Icon (Font Awesome) <span style="color:red;">*</span></label>
-                            <input type="text" id="featureIcon" value="${feature ? feature.icon : 'fa-check-circle'}" placeholder="fa-check-circle" />
-                        </div>
-                        <div class="form-group">
-                            <label>Judul <span style="color:red;">*</span></label>
-                            <input type="text" id="featureTitle" value="${feature ? feature.title : ''}" placeholder="Judul keunggulan" />
-                        </div>
-                        <div class="form-group">
-                            <label>Deskripsi <span style="color:red;">*</span></label>
-                            <input type="text" id="featureDesc" value="${feature ? feature.desc : ''}" placeholder="Deskripsi" />
-                        </div>
+                        <div class="form-group"><label>Icon (Font Awesome) <span style="color:red;">*</span></label><input type="text" id="featureIcon" value="${feature ? feature.icon : 'fa-check-circle'}" placeholder="fa-check-circle" /></div>
+                        <div class="form-group"><label>Judul <span style="color:red;">*</span></label><input type="text" id="featureTitle" value="${feature ? feature.title : ''}" placeholder="Judul keunggulan" /></div>
+                        <div class="form-group"><label>Deskripsi <span style="color:red;">*</span></label><input type="text" id="featureDesc" value="${feature ? feature.desc : ''}" placeholder="Deskripsi" /></div>
                         <button type="submit" class="btn-submit" id="saveFeatureBtn"><i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Tambah'} Keunggulan</button>
                     </form>
                 `;
@@ -2484,52 +2321,11 @@
 
             let products = loadProducts();
             if (products.length === 0) {
-                const defaultProducts = [{
-                    id: 1,
-                    name: 'Slim Fit Premium Indigo 501®',
-                    price: 250000,
-                    original: 350000,
-                    tag: 'BEST SELLER',
-                    badgeColor: '#c9a84c',
-                    icon: 'fa-tshirt',
-                    favorite: true,
-                    stock: 45,
-                    serial: 'HDT-SERI-001',
-                    desc: 'Celana jeans premium dengan potongan slim-fit modern.',
-                    sizes: ['28', '29', '30', '31', '32'],
-                    colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
-                    image: null
-                }, {
-                    id: 2,
-                    name: 'Classic Straight Cut Raw',
-                    price: 280000,
-                    original: 390000,
-                    tag: 'NEW ARRIVAL',
-                    badgeColor: '#2a4b6e',
-                    icon: 'fa-tshirt',
-                    favorite: true,
-                    stock: 30,
-                    serial: 'HDT-SERI-002',
-                    desc: 'Model straight cut klasik legendaris.',
-                    sizes: ['30', '32', '34'],
-                    colors: ['Raw Denim', 'Dark Navy'],
-                    image: null
-                }, {
-                    id: 3,
-                    name: 'Jet Black Stretch Comfort',
-                    price: 240000,
-                    original: 330000,
-                    tag: 'HOT ITEM',
-                    badgeColor: '#b13e3e',
-                    icon: 'fa-tshirt',
-                    favorite: true,
-                    stock: 25,
-                    serial: 'HDT-SERI-003',
-                    desc: 'Warna hitam legam pekat yang elegan.',
-                    sizes: ['29', '30', '31', '32'],
-                    colors: ['Black Stretch', 'Grey Stone'],
-                    image: null
-                }];
+                const defaultProducts = [
+                    { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', badgeColor: '#c9a84c', icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', desc: 'Celana jeans premium dengan potongan slim-fit modern.', sizes: ['28', '29', '30', '31', '32'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'], image: null },
+                    { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', badgeColor: '#2a4b6e', icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', desc: 'Model straight cut klasik legendaris.', sizes: ['30', '32', '34'], colors: ['Raw Denim', 'Dark Navy'], image: null },
+                    { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', badgeColor: '#b13e3e', icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', desc: 'Warna hitam legam pekat yang elegan.', sizes: ['29', '30', '31', '32'], colors: ['Black Stretch', 'Grey Stone'], image: null }
+                ];
                 saveProducts(defaultProducts);
             }
 
