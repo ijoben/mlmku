@@ -18,7 +18,7 @@
       --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
       --cream: #faf8f5;
       --white: #ffffff;
-      --shadow-sm: 0 4px 15px rgba(0,0,0,0.05); /* Diperbarui untuk premium look */
+      --shadow-sm: 0 4px 15px rgba(0,0,0,0.05);
       --shadow: 0 8px 24px rgba(11,26,43,0.08);
       --shadow-lg: 0 16px 32px rgba(11,26,43,0.12);
       --radius: 20px;
@@ -69,7 +69,7 @@
     .nav-right .user-badge:hover { background:rgba(255,255,255,0.15); }
     .nav-right .user-badge i { color:var(--gold-accent); }
 
-    /* ===== BURGER (hanya mobile) ===== */
+    /* ===== BURGER ===== */
     .burger-btn {
       display:none;
       flex-direction:column; gap:5px;
@@ -163,18 +163,6 @@
     }
     .page-title i { color:var(--gold-accent); font-size:1.4rem; }
 
-    /* ===== STATUS BANNER ===== */
-    #statusBanner {
-      padding:16px 20px; border-radius:var(--radius-sm);
-      margin-bottom:24px;
-      display:flex; align-items:center; flex-wrap:wrap; gap:12px;
-      font-weight:500; line-height:1.5; font-size:0.9rem;
-      box-shadow: var(--shadow-sm);
-    }
-    .status-free { background:#fff5f5; color:#c53030; border:1px solid #feb2b2; display: flex; }
-    .status-pending { background:#fffaf0; color:#dd6b20; border:1px solid #fbd38d; display: flex; }
-    .status-verified { display: none; }
-
     .btn-sm {
       padding:9px 20px; border-radius:60px; font-weight:700; font-size:0.8rem;
       transition:var(--transition); font-family:inherit; display:inline-flex; align-items:center; gap:6px;
@@ -189,40 +177,43 @@
     .btn-sm-danger { background:#e53e3e; color:#fff; }
     .btn-sm-danger:hover { background:#c53030; transform:translateY(-1px); }
 
-    /* ===== WALLET CARD (PREMIUM) ===== */
+    /* ===== WALLET CARD (PREMIUM UNTUK PC & MOBILE) ===== */
     .wallet-card {
       background: linear-gradient(135deg, #0b1a2b 0%, #1a2e44 100%);
       color: var(--cream);
       border-radius: var(--radius);
-      padding: 24px 28px;
+      padding: 36px 40px; /* Padding lebih besar untuk PC */
       margin-bottom: 24px;
       display: flex; justify-content: space-between; align-items: center;
-      flex-wrap: wrap; gap: 16px;
+      flex-wrap: wrap; gap: 20px;
       border: 1px solid rgba(212,175,55,0.3);
       box-shadow: 0 10px 25px rgba(11,26,43,0.15);
       position: relative; overflow: hidden;
+      min-height: 200px; /* Minimal tinggi agar terlihat lebih eksklusif */
     }
     .wallet-card::before {
-      content: ''; position: absolute; top: -50%; right: -20%;
-      width: 250px; height: 250px;
-      background: radial-gradient(circle, rgba(212,175,55,0.12) 0%, rgba(255,255,255,0) 70%);
+      content: ''; position: absolute; top: -50%; right: -10%;
+      width: 400px; height: 400px;
+      background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(255,255,255,0) 70%);
       pointer-events: none;
     }
-    .wallet-card .wallet-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: 600; display: flex; align-items: center; gap: 8px; }
+    .wallet-card .wallet-label { font-size: 0.9rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: 600; display: flex; align-items: center; gap: 8px; }
     .wallet-card .wallet-label i { color: var(--gold-accent); }
-    .wallet-card .wallet-amount { font-size: 2.2rem; font-weight: 800; color: var(--white); margin-top: 4px; letter-spacing: -0.5px; }
+    .wallet-card .wallet-amount { font-size: 3rem; font-weight: 800; color: var(--white); margin-top: 10px; letter-spacing: -0.5px; } /* Ukuran font diperbesar di PC */
     
     /* REFERAL LINK */
     .ref-link-container {
-        margin-top: 15px;
+        margin-top: 20px;
         background: rgba(255,255,255,0.06);
-        padding: 10px 15px;
+        padding: 12px 18px;
         border-radius: 8px;
         display: flex;
         align-items: center;
         gap: 10px;
-        font-size: 0.85rem;
+        font-size: 0.95rem;
         border: 1px solid rgba(255,255,255,0.1);
+        width: 100%;
+        max-width: 500px;
     }
     .ref-link-input {
         background: transparent;
@@ -232,15 +223,16 @@
         font-family: monospace;
         outline: none;
         width: 100%;
+        font-size: 1rem;
     }
     .copy-btn {
         background: var(--gold-accent);
         color: var(--denim-dark);
         border: none;
-        padding: 5px 10px;
+        padding: 6px 14px;
         border-radius: 4px;
         cursor: pointer;
-        font-size: 0.75rem;
+        font-size: 0.8rem;
         font-weight: bold;
     }
     .copy-btn:hover { background: #b8963a; }
@@ -248,7 +240,7 @@
     /* ===== STATS GRID (PREMIUM & JARAK DIPERBAIKI) ===== */
     .stats-grid {
       display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-      gap: 16px; margin-bottom: 24px; /* Disamakan jaraknya */
+      gap: 16px; margin-bottom: 24px;
     }
     .stat-card {
       background: var(--white); border-radius: var(--radius-sm);
@@ -279,8 +271,8 @@
     .history-card {
       background: var(--white); border-radius: var(--radius-sm);
       padding: 22px 24px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);
-      border: 1px solid rgba(0,0,0,0.04); margin-top: 0; /* Menghilangkan celah berlebih */
-      margin-bottom: 24px; /* Seragam */
+      border: 1px solid rgba(0,0,0,0.04); margin-top: 0;
+      margin-bottom: 24px;
     }
     .history-card h3 {
       font-size: 1.05rem; font-weight: 700; margin-bottom: 16px;
@@ -475,7 +467,7 @@
       box-shadow: var(--shadow-sm);
       border: 1px solid rgba(0,0,0,0.05);
       overflow-x: auto;
-      margin-bottom: 20px;
+      margin-bottom: 24px;
     }
     table {
       width: 100%;
@@ -591,8 +583,8 @@
       .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
       .stat-card { padding: 16px; }
       .stat-card .value { font-size: 1.3rem; }
-      .wallet-card { padding: 20px; flex-direction: column; align-items: stretch; }
-      .wallet-card .wallet-amount { font-size: 1.8rem; }
+      .wallet-card { padding: 24px 20px; flex-direction: column; align-items: stretch; min-height: auto; }
+      .wallet-card .wallet-amount { font-size: 2.2rem; }
       .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
       .form-row { grid-template-columns: 1fr; gap: 0; }
     }
@@ -619,7 +611,7 @@
 
     <!-- CARD SALDO RINGKAS & STATUS DI SIDEBAR -->
     <div style="padding: 6px 0 12px;">
-      <div class="wallet-card" style="padding: 16px; border-radius: 14px; margin-bottom: 6px; flex-direction: column; align-items: flex-start; gap: 10px;">
+      <div class="wallet-card" style="padding: 16px; border-radius: 14px; margin-bottom: 6px; flex-direction: column; align-items: flex-start; gap: 10px; min-height: auto;">
         <div style="width:100%; display:flex; justify-content:space-between; align-items:center;">
           <div class="wallet-label" style="font-size:0.7rem;"><i class="fas fa-wallet"></i> Saldo Dompet</div>
           <span id="sideUserStatusBadge" class="node-status free" style="font-size:0.6rem; padding:2px 8px; border-radius:10px;">FREE</span>
@@ -646,9 +638,8 @@
     <!-- DASHBOARD -->
     <div class="section-content active" id="sec-dashboard">
       <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
-      <div id="statusBanner">Memuat status...</div>
       
-      <!-- CARD DOMPET UTAMA -->
+      <!-- CARD DOMPET UTAMA (Premium Look Khusus PC/Mobile) -->
       <div class="wallet-card">
         <div style="flex-grow: 1;">
           <div class="wallet-label"><i class="fas fa-wallet"></i> Saldo Dompet Anda</div>
@@ -657,7 +648,7 @@
           <!-- LINK REFERAL -->
           <div class="ref-link-container">
               <i class="fas fa-link"></i>
-              <input type="text" id="refLink" class="ref-link-input" readonly value="https://hedtrojeans.com/register?ref=username">
+              <input type="text" id="refLink" class="ref-link-input" readonly>
               <button class="copy-btn" onclick="copyRefLink()"><i class="fas fa-copy"></i> Copy</button>
           </div>
         </div>
@@ -712,7 +703,7 @@
     <!-- DOWNLINE -->
     <div class="section-content" id="sec-downline">
       <h1 class="page-title"><i class="fas fa-users"></i> Downline Saya</h1>
-      <div class="form-section-card" style="margin-bottom: 20px;">
+      <div class="form-section-card" style="margin-bottom: 24px;">
           <p>Total Downline Disponsori: <strong id="totalDownlineCount" style="font-size: 1.2rem; color: var(--denim-blue);">0</strong></p>
       </div>
       
@@ -743,13 +734,14 @@
       <h1 class="page-title"><i class="fas fa-plus-circle"></i> Deposit</h1>
       
       <!-- Info Rekening Admin untuk Deposit -->
-      <div id="depositBankInfo" style="background:#edf2f7; padding:16px 20px; border-radius:var(--radius-sm); margin-bottom:20px; border-left:4px solid var(--denim-blue); max-width: 500px;">
+      <div id="depositBankInfo" style="background:#edf2f7; padding:16px 20px; border-radius:var(--radius-sm); margin-bottom:24px; border-left:4px solid var(--denim-blue); max-width: 600px;">
         <p style="font-size:0.95rem;"><strong>💳 Rekening Tujuan Deposit:</strong></p>
         <p id="depositBankDetail" style="font-weight:700; color:var(--denim-dark); margin:4px 0;">Memuat data bank...</p>
         <p class="text-muted" style="font-size:0.8rem;">Silakan transfer sesuai nominal yang diajukan ke rekening di atas.</p>
       </div>
 
-      <div class="form-section-card" style="max-width:500px;">
+      <!-- FORM DEPOSIT (TAHAP 1) -->
+      <div class="form-section-card" id="depositStep1" style="max-width:600px; margin-bottom: 24px;">
         <div class="form-group"><label>Nominal Deposit (Rp)</label><input type="number" id="depositAmount" placeholder="Masukkan nominal" min="10000" /></div>
         <div class="form-group"><label>Metode Pembayaran</label>
           <select id="depositMethod">
@@ -758,22 +750,63 @@
             <option value="qris">QRIS</option>
           </select>
         </div>
-        <button class="btn-sm btn-sm-success" id="submitDeposit" style="width:100%; padding:14px; justify-content:center;">Kirim Deposit</button>
+        <button class="btn-sm btn-sm-primary" id="btnProsesDeposit" style="width:100%; padding:14px; justify-content:center;">Proses Deposit</button>
         <p class="text-muted mt-16">Minimal deposit Rp 10.000</p>
       </div>
+
+      <!-- KONFIRMASI DEPOSIT (TAHAP 2) -->
+      <div class="form-section-card" id="depositStep2" style="max-width:600px; margin-bottom: 24px; display: none; border: 2px solid var(--gold-accent);">
+        <h3 style="margin-bottom: 15px; color: var(--denim-dark);"><i class="fas fa-check-circle" style="color:var(--gold-accent);"></i> Konfirmasi Transfer</h3>
+        <p style="margin-bottom: 10px; font-size: 0.95rem;">Silakan transfer <strong>TEPAT</strong> sesuai nominal berikut (termasuk 3 digit kode unik):</p>
+        
+        <div style="background: var(--cream); padding: 15px; border-radius: 8px; text-align: center; margin-bottom: 15px; font-size: 2rem; font-weight: 800; color: var(--denim-blue); letter-spacing: 1px;">
+            <span id="confirmDepositAmount">Rp 0</span>
+        </div>
+        
+        <p class="text-muted" style="font-size: 0.8rem; margin-bottom: 20px;">*Kode unik (3 angka terakhir) akan mempercepat proses verifikasi oleh Admin.</p>
+
+        <div class="form-group">
+            <label>Upload Bukti Transfer</label>
+            <input type="file" id="depositProof" accept="image/*" />
+        </div>
+        
+        <div style="display: flex; gap: 10px; margin-top: 20px;">
+            <button class="btn-sm btn-sm-danger" id="btnCancelDeposit" style="flex: 1; padding: 12px; justify-content:center;">Batal</button>
+            <button class="btn-sm btn-sm-success" id="btnSubmitProof" style="flex: 1; padding: 12px; justify-content:center;">Konfirmasi Sudah Transfer</button>
+        </div>
+      </div>
+
+      <!-- RIWAYAT DEPOSIT -->
+      <h3 style="font-size: 1.1rem; color: var(--denim-dark); margin-bottom: 12px;"><i class="fas fa-list"></i> Riwayat Deposit</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Metode</th>
+              <th>Nominal</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="depositHistoryBody">
+            <!-- Data riwayat deposit dirender di sini -->
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
     <!-- WITHDRAW -->
     <div class="section-content" id="sec-withdraw">
       <h1 class="page-title"><i class="fas fa-minus-circle"></i> Withdraw</h1>
       
-      <div style="background:#fffaf0; padding:12px 16px; border-radius:var(--radius-sm); border-left:4px solid #dd6b20; margin-bottom: 20px; max-width: 500px;">
+      <div style="background:#fffaf0; padding:12px 16px; border-radius:var(--radius-sm); border-left:4px solid #dd6b20; margin-bottom: 24px; max-width: 600px;">
           <p style="font-size: 0.85rem; color: #dd6b20; margin: 0;">
               <i class="fas fa-info-circle"></i> <strong>Perhatian:</strong> Setiap pengajuan withdraw membutuhkan <strong>persetujuan Admin</strong> untuk diproses (estimasi 1x24 jam kerja).
           </p>
       </div>
 
-      <div class="form-section-card" style="max-width:500px;">
+      <div class="form-section-card" style="max-width:600px; margin-bottom: 24px;">
         <div class="form-group">
             <label>Sisa Saldo Anda</label>
             <input type="text" id="wdAvailableBal" disabled style="font-weight: bold; color: var(--denim-blue);" />
@@ -789,11 +822,30 @@
         <button class="btn-sm btn-sm-primary" id="submitWithdraw" style="width:100%; padding:14px; justify-content:center;">Ajukan Withdraw</button>
         <p class="text-muted mt-16">Minimal withdraw Rp 50.000</p>
       </div>
+
+      <!-- RIWAYAT WITHDRAW -->
+      <h3 style="font-size: 1.1rem; color: var(--denim-dark); margin-bottom: 12px;"><i class="fas fa-list"></i> Riwayat Withdraw</h3>
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Rekening Tujuan</th>
+              <th>Nominal</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="withdrawHistoryBody">
+            <!-- Data riwayat withdraw dirender di sini -->
+          </tbody>
+        </table>
+      </div>
+
     </div>
 
-    <!-- RIWAYAT -->
+    <!-- RIWAYAT KESELURUHAN -->
     <div class="section-content" id="sec-history">
-      <h1 class="page-title"><i class="fas fa-history"></i> Riwayat Transaksi</h1>
+      <h1 class="page-title"><i class="fas fa-history"></i> Riwayat Keseluruhan</h1>
       
       <div class="table-container">
         <table>
@@ -1106,6 +1158,9 @@
       let downlineData = [];
       let downlineCurrentPage = 1;
       const downlineRowsPerPage = 10;
+      
+      let tempDepositAmount = 0;
+      let tempUniqueCode = 0;
 
       // ===== COPY REFERAL LINK =====
       window.copyRefLink = function() {
@@ -1157,7 +1212,6 @@
       const sidebar = document.getElementById('sidebar');
       const sidebarOverlay = document.getElementById('sidebarOverlay');
       const closeSidebar = document.getElementById('closeSidebar');
-      const statusBanner = document.getElementById('statusBanner');
       const walletAmount = document.getElementById('walletAmount');
       const sideWalletAmount = document.getElementById('sideWalletAmount');
       const sideUserStatusBadge = document.getElementById('sideUserStatusBadge');
@@ -1203,8 +1257,8 @@
         if (sectionId === 'history') { historyCurrentPage = 1; renderHistoryTable(); }
         if (sectionId === 'dashboard') renderDashboard();
         if (sectionId === 'products') renderProductsDashboard();
-        if (sectionId === 'deposit') renderDepositBankInfo();
-        if (sectionId === 'withdraw') prepareWithdrawForm();
+        if (sectionId === 'deposit') { renderDepositBankInfo(); renderDepositHistory(); }
+        if (sectionId === 'withdraw') { prepareWithdrawForm(); renderWithdrawHistory(); }
       }
 
       document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(item => {
@@ -1223,33 +1277,23 @@
         users = loadUsers();
         currentUser = users.find(u => u.id === currentUser.id) || currentUser;
 
-        // Akun & Keamanan
         document.getElementById('profUsername').value = currentUser.username || '';
         document.getElementById('profEmail').value = currentUser.email || '';
         document.getElementById('profPassword').value = '';
         document.getElementById('profConfirmPassword').value = '';
-
-        // Identitas & Kontak
         document.getElementById('profFullname').value = currentUser.fullname || currentUser.name || '';
         document.getElementById('profNik').value = currentUser.nik || '';
         document.getElementById('profPhone').value = currentUser.phone || '';
         document.getElementById('profWhatsapp').value = currentUser.whatsapp || '';
-
-        // Rekening Bank
         document.getElementById('profBankName').value = currentUser.bankName || 'BCA';
         document.getElementById('profBankAccount').value = currentUser.bankAccount || '';
         document.getElementById('profBankHolder').value = currentUser.bankHolder || '';
-
-        // Alamat Pengiriman
         document.getElementById('profAddress').value = currentUser.address || '';
         document.getElementById('profCity').value = currentUser.city || '';
-
-        // Spesifikasi Jeans
         document.getElementById('profSerial').value = currentUser.serialNumber || '';
         document.getElementById('profJeansSize').value = currentUser.jeansSize || '30';
         document.getElementById('profJeansColor').value = currentUser.jeansColor || 'Indigo Blue Raw Denim';
 
-        // Penempatan Tim (Read Only)
         let sponsorUser = users.find(u => u.id === currentUser.sponsor_id);
         let uplineUser = users.find(u => u.id === currentUser.upline_id);
 
@@ -1279,20 +1323,13 @@
         }
 
         if (password !== '') {
-          if (password.length < 6) {
-            showModalAlert('Peringatan', '⚠️ Kata sandi minimal 6 karakter.');
-            return;
-          }
-          if (password !== confirmPassword) {
-            showModalAlert('Peringatan', '⚠️ Konfirmasi kata sandi baru tidak cocok.');
-            return;
-          }
+          if (password.length < 6) { showModalAlert('Peringatan', '⚠️ Kata sandi minimal 6 karakter.'); return; }
+          if (password !== confirmPassword) { showModalAlert('Peringatan', '⚠️ Konfirmasi kata sandi baru tidak cocok.'); return; }
           currentUser.password = password;
         }
 
         if (nik.length !== 16 || isNaN(nik)) {
-          showModalAlert('Peringatan', '⚠️ NIK harus 16 digit angka.');
-          return;
+          showModalAlert('Peringatan', '⚠️ NIK harus 16 digit angka.'); return;
         }
 
         currentUser.fullname = fullname;
@@ -1318,33 +1355,89 @@
         showModalAlert('Berhasil', '✅ Profil Anda telah diperbarui.');
       });
 
-      // ===== DEPOSIT =====
+      // ===== DEPOSIT DENGAN KODE UNIK (2 TAHAP) =====
       function renderDepositBankInfo() {
           bankInfo = loadBankInfo();
           document.getElementById('depositBankDetail').textContent = `Bank: ${bankInfo.bank} - ${bankInfo.account} (a.n ${bankInfo.name})`;
       }
 
-      document.getElementById('submitDeposit').addEventListener('click', function() {
+      document.getElementById('btnProsesDeposit').addEventListener('click', function() {
         const amount = parseInt(document.getElementById('depositAmount').value);
         if (amount <= 0 || isNaN(amount)) { showModalAlert('Kesalahan', 'Masukkan nominal yang valid.'); return; }
         if (amount < 10000) { showModalAlert('Kesalahan', 'Minimal deposit Rp 10.000'); return; }
         
-        currentUser.wallet = (currentUser.wallet || 0) + amount; // Simulasi instant. Realita harusnya pending
-        if (!currentUser.transactions) currentUser.transactions = [];
-        currentUser.transactions.push({
-          type: 'deposit',
-          amount: amount,
-          date: new Date().toISOString(),
-          status: 'success', // Simulasi auto success
-          method: document.getElementById('depositMethod').value
-        });
-        saveUsers(users);
-        renderDashboard();
-        document.getElementById('depositAmount').value = '';
-        showModalAlert('Deposit Berhasil', '✅ Deposit sebesar Rp ' + amount.toLocaleString() + ' telah ditambahkan ke dompet Anda.', function() {
-          showSection('dashboard');
-        });
+        // Generate kode unik 3 digit
+        tempUniqueCode = Math.floor(Math.random() * 900) + 100;
+        tempDepositAmount = amount + tempUniqueCode;
+        
+        // Ganti tampilan ke Tahap 2 (Konfirmasi)
+        document.getElementById('depositStep1').style.display = 'none';
+        document.getElementById('depositStep2').style.display = 'block';
+        document.getElementById('confirmDepositAmount').textContent = 'Rp ' + tempDepositAmount.toLocaleString();
+        document.getElementById('depositProof').value = ""; // Reset file input
       });
+
+      document.getElementById('btnCancelDeposit').addEventListener('click', function() {
+        document.getElementById('depositStep2').style.display = 'none';
+        document.getElementById('depositStep1').style.display = 'block';
+      });
+
+      document.getElementById('btnSubmitProof').addEventListener('click', function() {
+          // Hanya simulasi upload, dalam real app file ini dikirim ke server
+          const proofInput = document.getElementById('depositProof').value;
+          if(!proofInput) {
+              showModalAlert('Peringatan', 'Silakan lampirkan bukti transfer terlebih dahulu.');
+              return;
+          }
+
+          if (!currentUser.transactions) currentUser.transactions = [];
+          
+          currentUser.transactions.push({
+              type: 'deposit',
+              amount: tempDepositAmount,
+              originalAmount: tempDepositAmount - tempUniqueCode,
+              uniqueCode: tempUniqueCode,
+              date: new Date().toISOString(),
+              status: 'pending',
+              method: document.getElementById('depositMethod').value,
+              proofUploaded: true
+          });
+          
+          saveUsers(users);
+          renderDepositHistory();
+          renderDashboard();
+          
+          // Kembali ke tahap awal
+          document.getElementById('depositAmount').value = '';
+          document.getElementById('depositStep2').style.display = 'none';
+          document.getElementById('depositStep1').style.display = 'block';
+          
+          showModalAlert('Menunggu Verifikasi', '✅ Bukti transfer berhasil dikirim. Deposit Anda sedang diproses oleh Admin (Status: Pending).');
+      });
+
+      function renderDepositHistory() {
+          const tbody = document.getElementById('depositHistoryBody');
+          const dpTxs = (currentUser.transactions || []).filter(t => t.type === 'deposit').reverse();
+          
+          if(dpTxs.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada riwayat deposit.</td></tr>';
+              return;
+          }
+
+          let html = '';
+          dpTxs.forEach(t => {
+              const date = new Date(t.date).toLocaleString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+              let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' ? 'status-success' : 'status-failed');
+              
+              html += `<tr>
+                  <td>${date}</td>
+                  <td>${t.method === 'bank' ? 'Transfer Bank' : t.method}</td>
+                  <td style="font-weight:700; color: #2e7d32;">Rp ${t.amount.toLocaleString()}</td>
+                  <td><span class="status-badge ${badge}">${t.status}</span></td>
+              </tr>`;
+          });
+          tbody.innerHTML = html;
+      }
 
       // ===== WITHDRAW =====
       function prepareWithdrawForm() {
@@ -1391,12 +1484,35 @@
             });
             saveUsers(users);
             renderDashboard();
+            renderWithdrawHistory();
             document.getElementById('withdrawAmount').value = '';
-            showModalAlert('Withdraw Diajukan', '✅ Permintaan withdraw Rp ' + amount.toLocaleString() + ' berhasil dikirim ke Admin dan menunggu proses persetujuan.', function() {
-              showSection('history');
-            });
+            showModalAlert('Withdraw Diajukan', '✅ Permintaan withdraw Rp ' + amount.toLocaleString() + ' berhasil dikirim ke Admin dan menunggu proses persetujuan.');
         });
       });
+
+      function renderWithdrawHistory() {
+          const tbody = document.getElementById('withdrawHistoryBody');
+          const wdTxs = (currentUser.transactions || []).filter(t => t.type === 'withdraw').reverse();
+          
+          if(wdTxs.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada riwayat withdraw.</td></tr>';
+              return;
+          }
+
+          let html = '';
+          wdTxs.forEach(t => {
+              const date = new Date(t.date).toLocaleString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+              let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' ? 'status-success' : 'status-failed');
+              
+              html += `<tr>
+                  <td>${date}</td>
+                  <td>${t.account}</td>
+                  <td style="font-weight:700; color: #e53e3e;">Rp ${t.amount.toLocaleString()}</td>
+                  <td><span class="status-badge ${badge}">${t.status}</span></td>
+              </tr>`;
+          });
+          tbody.innerHTML = html;
+      }
 
       document.getElementById('depositBtn').addEventListener('click', () => showSection('deposit'));
       document.getElementById('withdrawBtn').addEventListener('click', () => showSection('withdraw'));
@@ -1405,39 +1521,15 @@
       function renderDashboard() {
         navUserName.textContent = currentUser.fullname || currentUser.name || currentUser.username;
         
-        // Link Referal
-        const baseUrl = window.location.origin + window.location.pathname.replace('dashboard.html', '');
-        refLinkInput.value = `${baseUrl}register.html?ref=${currentUser.username}`;
+        // Link Referal Murni domain/ref/user
+        const rootUrl = window.location.origin;
+        refLinkInput.value = `${rootUrl}/ref/${currentUser.username}`;
 
-        // Status Banner (Disembunyikan jika verified sesuai instruksi)
-        const memberPrice = settings.memberPrice || 550000;
-        let statusHtml = '';
         const isVerified = currentUser.status === 'verified';
-        
         if (sideUserStatusBadge) {
           sideUserStatusBadge.textContent = isVerified ? 'VERIFIED' : 'FREE';
           sideUserStatusBadge.className = isVerified ? 'node-status verified' : 'node-status free';
         }
-
-        if (currentUser.status === 'free') {
-          statusHtml = `<div>
-            <strong>❌ Status: Free Member</strong><br>
-            <span>Tagihan Pendaftaran: <strong>Rp ${memberPrice.toLocaleString()}</strong></span><br>
-            <span style="font-size:0.8rem;">Silakan melakukan pembayaran ke <b>${bankInfo.bank} ${bankInfo.account} (a.n ${bankInfo.name})</b> dan konfirmasi ke Admin beserta Nomor Seri Pendaftaran Anda.</span>
-          </div>`;
-          statusBanner.className = 'status-free';
-        } else if (currentUser.status === 'pending') {
-          statusHtml = `<div>
-            <strong>⏳ Status: Menunggu Verifikasi Admin</strong><br>
-            <span>Pembayaran pendaftaran sedang diproses oleh admin.</span>
-          </div>`;
-          statusBanner.className = 'status-pending';
-        } else {
-          // Jika verified, sembunyikan banner
-          statusBanner.className = 'status-verified'; 
-        }
-        
-        if(statusHtml !== '') statusBanner.innerHTML = statusHtml;
 
         const formattedWallet = 'Rp ' + (currentUser.wallet || 0).toLocaleString();
         if (walletAmount) walletAmount.textContent = formattedWallet;
@@ -1466,7 +1558,7 @@
           else if(t.type === 'withdraw') typeLabel = 'Withdraw';
           else if(t.type === 'registration') typeLabel = 'Pendaftaran';
 
-          const amountClass = (t.type === 'deposit' || t.type === 'ro_purchase') ? 'plus' : 'minus'; // asumsi beli RO masuk riwayat sbg + di tabel ini, walau aslinya mengurangi wallet atau via TF
+          const amountClass = (t.type === 'deposit' || t.type === 'ro_purchase') ? 'plus' : 'minus'; 
           const sign = (t.type === 'deposit' || t.type === 'bonus') ? '+' : '-';
           
           let statusHtml = '';
@@ -1482,7 +1574,7 @@
         container.innerHTML = html;
       }
 
-      // ===== RENDER TABEL HISTORY DGN PAGINATION =====
+      // ===== RENDER TABEL HISTORY KESELURUHAN =====
       function renderHistoryTable() {
           const tbody = document.getElementById('historyTableBody');
           historyData = [...(currentUser.transactions || [])].reverse();
@@ -1609,9 +1701,8 @@
       }
 
       function buildBinaryTree(userId, level, maxDepth, parentUsername, position) {
-        if (level > maxDepth) return null; // Berhenti di maksimal level tampilan
+        if (level > maxDepth) return null;
         
-        // Jika node tidak ada, kembalikan objek empty untuk menampilkan tombol ADD
         if (!userId) {
             return { isEmpty: true, parentUsername: parentUsername, position: position };
         }
@@ -1634,10 +1725,9 @@
       function renderBinaryTreeHTML(node) {
         if (!node) return '';
 
-        // Tampilan untuk kotak kosong (Bisa di klik untuk daftar)
+        // Tampilan untuk kotak kosong (Bisa di klik untuk daftar, menggunakan relative path langsung ke register.html)
         if (node.isEmpty) {
-            const baseUrl = window.location.origin + window.location.pathname.replace('dashboard.html', '');
-            const registerUrl = `${baseUrl}register.html?ref=${currentUser.username}&upline=${node.parentUsername}&pos=${node.position}`;
+            const registerUrl = `register.html?ref=${currentUser.username}&upline=${node.parentUsername}&pos=${node.position}`;
             const posText = node.position === 'left' ? 'Kiri' : 'Kanan';
             
             return `
@@ -1660,7 +1750,6 @@
           </div>
         `;
 
-        // Render anak-anak jika level ini atau di bawahnya belum mencapai max
         if (node.left || node.right) {
             html += `<div class="binary-children">`;
             html += `<div class="binary-child">${renderBinaryTreeHTML(node.left)}</div>`;
@@ -1706,7 +1795,7 @@
         });
       }
 
-      // ===== MODAL VARIASI PRODUK RO (DENGAN NO SERI & PEMBAYARAN) =====
+      // ===== MODAL VARIASI PRODUK RO =====
       const roModalOverlay = document.getElementById('roModalOverlay');
       const roPaymentSelection = document.getElementById('roPaymentSelection');
       const roModalNextBtn = document.getElementById('roModalNextBtn');
@@ -1715,7 +1804,7 @@
       
       let currentRoProductId = null;
       let currentRoPrice = 0;
-      let selectedPaymentMethod = null; // 'wallet' or 'bank'
+      let selectedPaymentMethod = null;
 
       function openROModal(productId, price) {
         if (currentUser.status !== 'verified') {
@@ -1731,7 +1820,6 @@
         document.getElementById('roProductName').textContent = `${product.name} — Rp ${price.toLocaleString()}`;
         document.getElementById('roSerialNumber').value = '';
         
-        // Reset state modal
         roPaymentSelection.style.display = 'none';
         roModalNextBtn.style.display = 'block';
         roModalConfirmBankBtn.style.display = 'none';
@@ -1740,9 +1828,7 @@
         document.getElementById('btnPayWallet').style.opacity = '1';
         document.getElementById('btnPayBank').style.opacity = '1';
         
-        // Update info saldo dompet
         document.getElementById('roWalletBal').textContent = `(Rp ${(currentUser.wallet || 0).toLocaleString()})`;
-
         roModalOverlay.classList.add('active');
       }
 
@@ -1750,7 +1836,6 @@
         roModalOverlay.classList.remove('active');
       });
 
-      // Lanjut pilih pembayaran
       roModalNextBtn.addEventListener('click', function() {
           const serialNo = document.getElementById('roSerialNumber').value.trim();
           if(!serialNo || serialNo.length < 5) {
@@ -1762,7 +1847,6 @@
           roPaymentSelection.style.display = 'block';
       });
 
-      // Pilihan Saldo Dompet
       document.getElementById('btnPayWallet').addEventListener('click', function() {
           if((currentUser.wallet || 0) < currentRoPrice) {
               showModalAlert('Saldo Kurang', 'Saldo dompet Anda tidak mencukupi untuk pembelian ini.');
@@ -1775,7 +1859,6 @@
           });
       });
 
-      // Pilihan Transfer Bank
       document.getElementById('btnPayBank').addEventListener('click', function() {
           selectedPaymentMethod = 'bank';
           document.getElementById('btnPayWallet').style.opacity = '0.5';
@@ -1811,7 +1894,7 @@
         
         if (paymentMethod === 'wallet') {
             currentUser.wallet -= currentRoPrice;
-            txStatus = 'success'; // Auto success klo potong saldo
+            txStatus = 'success';
             txNote = `Seri: ${serialNo} | Dibayar dengan Saldo Dompet`;
         }
 
@@ -1871,8 +1954,8 @@
           else if (activeSection === 'downline') renderDownlineTable();
           else if (activeSection === 'history') renderHistoryTable();
           else if (activeSection === 'products') renderProductsDashboard();
-          else if (activeSection === 'deposit') renderDepositBankInfo();
-          else if (activeSection === 'withdraw') prepareWithdrawForm();
+          else if (activeSection === 'deposit') { renderDepositBankInfo(); renderDepositHistory(); }
+          else if (activeSection === 'withdraw') { prepareWithdrawForm(); renderWithdrawHistory(); }
         }
       }
 
