@@ -31,6 +31,7 @@
             color: var(--denim-dark);
             padding-top: 70px;
             overflow-x: hidden;
+            width: 100%;
         }
         a { text-decoration:none; color:inherit; }
         button { cursor:pointer; font-family:inherit; border:none; background:none; }
@@ -136,6 +137,7 @@
             padding: 20px 24px 40px;
             transition: margin-left 0.3s ease;
             max-width: calc(100% - var(--sidebar-width));
+            width: 100%;
         }
         .page-title {
             font-size:1.6rem; font-weight:700; color:var(--denim-dark);
@@ -155,6 +157,7 @@
             overflow-x: auto;
             white-space: nowrap;
             -webkit-overflow-scrolling: touch;
+            width: 100%;
         }
         .sub-tab-nav::-webkit-scrollbar { display: none; }
         .sub-tab-btn {
@@ -240,6 +243,7 @@
             padding:20px; box-shadow:var(--shadow);
             border:1px solid #e2e8f0;
             margin-bottom:16px;
+            width: 100%;
         }
         .settings-card h4 {
             font-size:0.95rem; font-weight:700; margin-bottom:14px;
@@ -495,7 +499,7 @@
         .faq-item-admin > div:first-child, .feature-item-admin > div:first-child { flex:1; min-width:150px; }
         .faq-item-admin .faq-actions, .feature-item-admin .feature-actions { display:flex; gap:6px; flex-shrink:0; }
 
-        /* ===== OPTIMASI LAYAR HP (MOBILE COMPACT GRID FIXES) ===== */
+        /* ===== OPTIMASI LAYAR HP PERBAIKAN OFFSIDE & GRID CARD ===== */
         @media (max-width: 768px) {
             .navbar { padding: 10px 14px; }
             .navbar .logo { font-size: 1.1rem; }
@@ -508,7 +512,7 @@
             .sidebar .sidebar-header .close-side { display:block; }
             .sidebar-overlay { display:block; }
 
-            .main-content { margin-left:0; max-width:100%; padding:14px 10px 30px; }
+            .main-content { margin-left:0; max-width:100%; padding:14px 10px 30px; width:100%; overflow-x:hidden; }
             .page-title { font-size: 1.25rem; margin-bottom: 12px; }
 
             .dashboard-banner { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; }
@@ -531,19 +535,21 @@
             .slide-preview { grid-template-columns: 1fr !important; }
             .modal-box { padding: 20px 16px 24px; border-radius: 20px; }
 
-            .sub-tab-nav { padding-bottom: 8px; margin-bottom: 14px; }
+            .sub-tab-nav { padding-bottom: 8px; margin-bottom: 14px; width: 100%; }
             .sub-tab-btn { padding: 6px 12px; font-size: 0.75rem; }
 
-            /* COMPACT GRID CARD UNTUK SEMUA TABEL DI HP TANPA SCROLL HORIZONTAL */
+            /* PERBAIKAN COMPACT GRID MOBILE SUPAYA TIDAK MELUAP / OFFSIDE */
             .table-wrap {
                 background: transparent;
                 border: none;
                 box-shadow: none;
                 overflow-x: visible;
+                width: 100%;
             }
             table, thead, tbody, th, td, tr {
                 display: block;
                 width: 100%;
+                box-sizing: border-box;
             }
             thead {
                 display: none; /* Sembunyikan Header Tabel di HP */
@@ -552,6 +558,7 @@
                 display: flex;
                 flex-direction: column;
                 gap: 12px;
+                width: 100%;
             }
             tbody tr {
                 background: var(--white);
@@ -562,16 +569,22 @@
                 display: flex;
                 flex-direction: column;
                 gap: 8px;
-                position: relative;
+                width: 100%;
+                max-width: 100%;
+                box-sizing: border-box;
             }
             tbody td {
                 padding: 0;
                 border: none;
-                font-size: 0.85rem;
+                font-size: 0.82rem;
                 display: flex;
                 justify-content: space-between;
                 align-items: center;
                 text-align: right;
+                width: 100%;
+                max-width: 100%;
+                overflow-wrap: anywhere;
+                word-break: break-word;
             }
             tbody td::before {
                 content: attr(data-label);
@@ -583,7 +596,6 @@
                 flex-shrink: 0;
             }
             
-            /* Custom styling khusus elemen tertentu dalam card hp */
             tbody td:last-child {
                 margin-top: 6px;
                 padding-top: 8px;
@@ -927,7 +939,6 @@
             <div class="tab-content" id="tabSettings">
                 <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan Sistem</h1>
                 
-                <!-- SUB-TAB NAVIGATION DENGAN SCROLL HORIZONTAL DISESUAIKAN UNTUK HP -->
                 <div class="sub-tab-nav">
                     <button class="sub-tab-btn active" data-subtab="subSponsor">Sponsor & RO</button>
                     <button class="sub-tab-btn" data-subtab="subBinary">Binary (10 Level)</button>
@@ -1076,10 +1087,22 @@
             const FEATURES_KEY = 'hedtro_features';
             const FOOTER_KEY = 'hedtro_footer';
 
-            // FUNGSI DATABASE
-            function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
+            // FUNGSI PEMBANTU KONTEN DITARUH DIPALING ATAS SUPAYA TIDAK MISSING ERROR
+            function loadSlides() { try { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); } catch(e) { return []; } }
+            function saveSlides(s) { localStorage.setItem(SLIDES_KEY, JSON.stringify(s)); }
+            function loadAbout() { try { return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}'); } catch(e) { return {title:"Tentang Kami", content:""}; } }
+            function saveAbout(a) { localStorage.setItem(ABOUT_KEY, JSON.stringify(a)); }
+            function loadFaq() { try { return JSON.parse(localStorage.getItem(FAQ_KEY) || '[]'); } catch(e) { return []; } }
+            function saveFaq(f) { localStorage.setItem(FAQ_KEY, JSON.stringify(f)); }
+            function loadFeatures() { try { return JSON.parse(localStorage.getItem(FEATURES_KEY) || '[]'); } catch(e) { return []; } }
+            function saveFeatures(f) { localStorage.setItem(FEATURES_KEY, JSON.stringify(f)); }
+            function loadFooter() { try { return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium...","copyright":"&copy; 2026 HEDTRO JEANS","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}'); } catch(e) { return {brand:"HEDTRO JEANS", desc:"", copyright:"", social:{}}; } }
+            function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
+
+            // FUNGSI DATABASE UTAMA
+            function loadUsers() { try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch(e) { return []; } }
             function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-            function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
+            function loadProducts() { try { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); } catch(e) { return []; } }
             function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
             
             function loadSettings() {
@@ -1094,17 +1117,20 @@
                     brandIcon: "fa-tshirt",
                     heroTitle: "HEDTRO JEANS · Premium Denim"
                 };
-                const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
-                return { ...defaultSet, ...saved };
+                try {
+                    const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
+                    return { ...defaultSet, ...saved };
+                } catch(e) { return defaultSet; }
             }
 
             function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
-            function loadOrders() { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); }
+            function loadOrders() { try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); } catch(e) { return []; } }
             function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
-            function loadTransactions() { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); }
+            function loadTransactions() { try { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); } catch(e) { return []; } }
             function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
             function loadBankInfo() {
-                return JSON.parse(localStorage.getItem(BANK_KEY) || '{"bank":"BCA","account":"1234567890","name":"HEDTRO JEANS"}');
+                try { return JSON.parse(localStorage.getItem(BANK_KEY) || '{"bank":"BCA","account":"1234567890","name":"HEDTRO JEANS"}'); }
+                catch(e) { return {bank:"BCA",account:"1234567890",name:"HEDTRO JEANS"}; }
             }
             function saveBankInfo(b) { localStorage.setItem(BANK_KEY, JSON.stringify(b)); }
             function getSession() {
@@ -1115,20 +1141,9 @@
             function saveSession(s) { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
             function clearSession() { localStorage.removeItem(SESSION_KEY); }
 
-            function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
+            function getNextId(arr) { return arr && arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
-            function loadSlides() { try { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); } catch(e) { return []; } }
-            function saveSlides(s) { localStorage.setItem(SLIDES_KEY, JSON.stringify(s)); }
-            function loadAbout() { try { return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}'); } catch(e) { return {title:"Tentang Kami", content:""}; } }
-            function saveAbout(a) { localStorage.setItem(ABOUT_KEY, JSON.stringify(a)); }
-            function loadFaq() { try { return JSON.parse(localStorage.getItem(FAQ_KEY) || '[]'); } catch(e) { return []; } }
-            function saveFaq(f) { localStorage.setItem(FAQ_KEY, JSON.stringify(f)); }
-            function loadFeatures() { try { return JSON.parse(localStorage.getItem(FEATURES_KEY) || '[]'); } catch(e) { return []; } }
-            function saveFeatures(f) { localStorage.setItem(FEATURES_KEY, JSON.stringify(f)); }
-            function loadFooter() { try { return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium...","copyright":"&copy; 2026 HEDTRO JEANS","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}'); } catch(e) { return {brand:"HEDTRO JEANS", desc:"", copyright:"", social:{}}; } }
-            function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
-
-            // TOAST
+            // TOAST NOTIFIKASI
             function showToast(message, type = 'info', duration = 3000) {
                 const container = document.getElementById('toastContainer');
                 if (!container) return;
@@ -1154,7 +1169,7 @@
                 }, duration);
             }
 
-            // MODAL
+            // MODAL SYSTEM
             const modalOverlay = document.getElementById('modalOverlay');
             const modalBox = document.getElementById('modalBox');
             const modalClose = document.getElementById('modalClose');
@@ -1229,7 +1244,7 @@
                 });
             });
 
-            // SUB TABS DI MENU PENGATURAN
+            // SUB TABS PENGATURAN
             document.querySelectorAll('.sub-tab-btn').forEach(btn => {
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
@@ -1241,7 +1256,7 @@
                 });
             });
 
-            // APPLY SETTINGS
+            // APPLY BRAND & SETTINGS
             function applySettings() {
                 const settings = loadSettings();
                 const logoEl = document.getElementById('brandLogo');
@@ -1325,7 +1340,7 @@
                 });
             }
 
-            // RENDER MEMBERS (DENGAN DATA-LABEL COMPACT GRID HP)
+            // RENDER MEMBERS
             function renderAdminMembers() {
                 const tbody = document.getElementById('adminTableBody');
                 if (!tbody) return;
@@ -1456,7 +1471,7 @@
             const addMemberBtn = document.getElementById('addMemberBtn');
             if(addMemberBtn) addMemberBtn.addEventListener('click', function() { openMemberModal(null); });
 
-            // RENDER VERIFICATION (DENGAN DATA-LABEL COMPACT GRID HP)
+            // RENDER VERIFICATION
             function renderVerification() {
                 const tbody = document.getElementById('verifTableBody');
                 if (!tbody) return;
@@ -1496,7 +1511,7 @@
                 });
             }
 
-            // RENDER PRODUCTS (DENGAN DATA-LABEL COMPACT GRID HP)
+            // RENDER PRODUCTS
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
                 if (!tbody) return;
@@ -1545,7 +1560,7 @@
                 });
             }
 
-            // RENDER ORDERS (DENGAN DATA-LABEL COMPACT GRID HP)
+            // RENDER ORDERS
             function renderOrders() {
                 const tbody = document.getElementById('ordersTableBody');
                 if (!tbody) return;
