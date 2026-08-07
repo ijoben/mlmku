@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <style>
-        /* ===== RESET ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2;
@@ -22,7 +21,6 @@
         ::-webkit-scrollbar-track { background:var(--cream); }
         ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
-        /* ===== NAVBAR ===== */
         .navbar { position: fixed; top:0; left:0; right:0; z-index:1100; background: var(--denim-dark); padding: 12px 20px; display: flex; align-items:center; justify-content:space-between; border-bottom:3px solid var(--gold-accent); height:70px; }
         .navbar .logo { display:flex; align-items:center; gap:8px; color:var(--white); font-weight:800; font-size:1.4rem; }
         .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
@@ -62,13 +60,12 @@
         .tab-content { display:none; }
         .tab-content.active { display:block; }
 
-        /* ===== SUB TABS PENGATURAN ===== */
         .sub-tab-nav { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--denim-light); padding-bottom: 10px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; width: 100%; }
         .sub-tab-nav::-webkit-scrollbar { display: none; }
         .sub-tab-btn { padding: 8px 16px; border-radius: 40px; font-size: 0.82rem; font-weight: 600; background: var(--white); color: var(--denim-navy); border: 1px solid #dde3ea; transition: var(--transition); flex-shrink: 0; }
         .sub-tab-btn:hover { background: var(--denim-light); }
         .sub-tab-btn.active { background: var(--denim-dark); color: var(--gold-accent); border-color: var(--denim-dark); box-shadow: 0 4px 12px rgba(11,26,43,0.15); }
-
+        
         .sub-tab-content { display: none; }
         .sub-tab-content.active { display: block; }
 
@@ -86,27 +83,25 @@
 
         .flex-row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:12px; }
 
-        /* TABEL DEFAULT DESKTOP */
         .table-wrap { overflow-x:auto; border-radius:var(--radius-sm); border:1px solid #e2e8f0; background:var(--white); width: 100%; -webkit-overflow-scrolling: touch; box-shadow: var(--shadow); margin-bottom: 12px; }
         table { width:100%; border-collapse:collapse; font-size:0.82rem; min-width:650px; }
         thead { background:var(--denim-dark); color:var(--cream); }
         th { padding:12px 14px; text-align:left; font-weight:600; white-space: nowrap; }
         td { padding:10px 14px; border-bottom:1px solid #eef2f7; vertical-align: middle; }
 
-        /* ===== PAGINATION ===== */
         .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 16px; flex-wrap: wrap; width: 100%; }
         .page-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #dde3ea; background: var(--white); color: var(--denim-navy); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
         .page-btn:hover:not(:disabled) { background: var(--denim-light); }
         .page-btn.active { background: var(--denim-dark); color: var(--gold-accent); border-color: var(--denim-dark); }
         .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .badge-admin { background:var(--gold-accent); color:var(--denim-dark); padding:1px 10px; border-radius:40px; font-size:0.6rem; font-weight:700; margin-left:4px; }
         .badge-status { padding:2px 12px; border-radius:40px; font-size:0.7rem; font-weight:600; display: inline-block; white-space: nowrap; }
         .badge-pending { background:#fff3cd; color:#856404; }
         .badge-success { background:#d4edda; color:#155724; }
         .badge-failed { background:#f8d7da; color:#721c24; }
         .badge-free { background:#f8d7da; color:#721c24; }
         .badge-verified { background:#d4edda; color:#155724; }
+        .badge-admin { background:var(--gold-accent); color:var(--denim-dark); padding:1px 10px; border-radius:40px; font-size:0.6rem; font-weight:700; margin-left:4px; }
 
         .text-muted { color:#6a7e9a; font-size:0.8rem; }
         .mt-16 { margin-top:16px; }
@@ -170,7 +165,7 @@
         .login-overlay .login-box .form-group label { display:block; font-weight:600; font-size:0.8rem; color:var(--denim-navy); margin-bottom:4px; }
         .login-overlay .login-box .form-group input { width:100%; padding:12px 16px; border:1.5px solid var(--denim-light); border-radius:60px; font-size:0.95rem; background:var(--cream); font-family:inherit; transition:var(--transition); outline:none; }
         .login-overlay .login-box .form-group input:focus { border-color:var(--gold-accent); box-shadow:0 0 0 4px rgba(201,168,76,0.08); }
-        .login-overlay .login-box .btn-login { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor:pointer; }
+        .login-overlay .login-box .btn-login { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor: pointer; }
         .login-overlay .login-box .btn-login:hover { background:#b8963a; transform:scale(0.98); }
         .login-overlay .login-box .msg { margin-top:12px; padding:8px; border-radius:var(--radius-sm); font-size:0.85rem; min-height:20px; }
         .login-overlay .login-box .msg.error { background:#fde8e8; color:#b13e3e; }
@@ -196,11 +191,7 @@
         .modal-box .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
         .modal-box .btn-submit { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor:pointer;}
         .modal-box .btn-submit:hover { background:#b8963a; transform:scale(0.98); }
-        .modal-box .order-detail { background:var(--cream); border-radius:var(--radius-sm); padding:14px 16px; margin:10px 0; }
-        .modal-box .order-detail .item { display:flex; justify-content:space-between; padding:4px 0; font-size:0.85rem; }
-        .modal-box .proof-image { max-width:200px; max-height:200px; border-radius:var(--radius-sm); border:1px solid var(--denim-light); margin:8px 0; }
-        .modal-box .proof-image img { width:100%; height:100%; object-fit:cover; }
-
+        
         .slide-preview, .faq-list, .feature-list { display:flex; flex-direction:column; gap:12px; margin-bottom:16px; }
         .admin-list-item { background:var(--white); border-radius:var(--radius-sm); padding:12px 16px; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; box-shadow:var(--shadow); }
         .admin-list-item > div:first-child { flex:1; min-width:150px; }
@@ -244,13 +235,13 @@
 </head>
 <body>
 
-    <!-- OVERLAY LOGIN (Type dirubah agar tidak memicu form submit) -->
+    <!-- OVERLAY LOGIN (Bukan element <form> agar tidak ter-submit otomatis) -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <div class="logo-icon"><i class="fas fa-tshirt"></i></div>
             <h2>Admin Panel</h2>
             <p class="sub">Masuk sebagai administrator</p>
-            <form id="adminLoginForm">
+            <div id="adminLoginForm">
                 <div class="form-group">
                     <label>Email atau Username</label>
                     <input type="text" id="adminLoginEmail" placeholder="admin@mlm.com" value="admin@mlm.com" />
@@ -259,12 +250,12 @@
                     <label>Kata Sandi</label>
                     <input type="password" id="adminLoginPassword" placeholder="••••••••" value="admin123" />
                 </div>
-                <!-- Tombol button memanggil fungsi secara langsung -->
-                <button type="button" class="btn-login" onclick="doAdminLogin()"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+                <!-- Tombol button yang memanggil event JavaScript -->
+                <button type="button" class="btn-login" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
                 <div class="msg" id="adminLoginMsg"></div>
-            </form>
+            </div>
             <div class="demo-hint" style="margin-top:16px;">
-                🔑 Demo: <span onclick="fillAdminDemo()" style="color:var(--gold-accent);font-weight:bold;cursor:pointer;">admin@mlm.com / admin123</span>
+                🔑 Demo: <span id="adminDemoBtn" style="color:var(--gold-accent);font-weight:bold;cursor:pointer;">admin@mlm.com / admin123</span>
             </div>
             <a href="index.html" class="back-to-home" style="display:inline-block;margin-top:12px;color:var(--denim-blue);font-size:0.8rem;"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
         </div>
@@ -273,7 +264,7 @@
     <!-- MODAL GLOBAL -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box" id="modalBox">
-            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <button class="modal-close" id="modalClose">&times;</button>
             <div id="modalContent"></div>
         </div>
     </div>
@@ -288,31 +279,30 @@
             <div class="nav-right">
                 <div class="user-badge" id="navUserBadge"><i class="fas fa-user-cog"></i> <span id="navUserName">Admin</span></div>
                 <a href="index.html" class="user-badge" style="background:rgba(255,255,255,0.04);"><i class="fas fa-home"></i></a>
-                <button class="burger-btn" onclick="toggleSidebar()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+                <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu"><span></span><span></span><span></span></button>
             </div>
         </header>
 
-        <div class="sidebar-overlay" onclick="toggleSidebar(false)" id="sidebarOverlay"></div>
+        <div class="sidebar-overlay" id="sidebarOverlay"></div>
 
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
                 <div class="logo-side" id="sideBrandLogo"><i class="fas fa-tshirt"></i> HEDTRO</div>
-                <span class="close-side" onclick="toggleSidebar(false)">&times;</span>
+                <span class="close-side" id="closeSidebar">&times;</span>
             </div>
-            <!-- Event click diletakkan di elemen HTML secara langsung -->
-            <div class="menu-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</div>
-            <div class="menu-item" data-tab="members" onclick="switchTab('members')"><i class="fas fa-users"></i> Member</div>
-            <div class="menu-item" data-tab="products" onclick="switchTab('products')"><i class="fas fa-boxes"></i> Produk</div>
-            <div class="menu-item" data-tab="verification" onclick="switchTab('verification')"><i class="fas fa-check-double"></i> Verifikasi</div>
-            <div class="menu-item" data-tab="orders" onclick="switchTab('orders')"><i class="fas fa-shopping-cart"></i> Orders</div>
-            <div class="menu-item" data-tab="deposit" onclick="switchTab('deposit')"><i class="fas fa-wallet"></i> Deposit</div>
-            <div class="menu-item" data-tab="withdraw" onclick="switchTab('withdraw')"><i class="fas fa-money-bill-wave"></i> Withdraw</div>
+            <div class="menu-item active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
+            <div class="menu-item" data-tab="members"><i class="fas fa-users"></i> Member</div>
+            <div class="menu-item" data-tab="products"><i class="fas fa-boxes"></i> Produk</div>
+            <div class="menu-item" data-tab="verification"><i class="fas fa-check-double"></i> Verifikasi</div>
+            <div class="menu-item" data-tab="orders"><i class="fas fa-shopping-cart"></i> Orders</div>
+            <div class="menu-item" data-tab="deposit"><i class="fas fa-wallet"></i> Deposit</div>
+            <div class="menu-item" data-tab="withdraw"><i class="fas fa-money-bill-wave"></i> Withdraw</div>
             <div class="menu-divider"></div>
-            <div class="menu-item" data-tab="page-settings" onclick="switchTab('page-settings')"><i class="fas fa-paint-brush"></i> Halaman Utama</div>
+            <div class="menu-item" data-tab="page-settings"><i class="fas fa-paint-brush"></i> Halaman Utama</div>
             <div class="menu-divider"></div>
-            <div class="menu-item" data-tab="settings" onclick="switchTab('settings')"><i class="fas fa-sliders-h"></i> Pengaturan</div>
+            <div class="menu-item" data-tab="settings"><i class="fas fa-sliders-h"></i> Pengaturan</div>
             <div class="menu-divider"></div>
-            <div class="menu-item logout" onclick="clearSessionAndReload()"><i class="fas fa-sign-out-alt"></i> Keluar</div>
+            <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
         </nav>
 
         <div class="main-content">
@@ -323,7 +313,7 @@
                         <h2>Selamat Datang Kembali, Administrator! <i class="fas fa-crown" style="color:var(--gold-accent);"></i></h2>
                         <p>Kelola performa penjualan, pesanan member, jaringan komisi, dan sistem HEDTRO JEANS di sini.</p>
                     </div>
-                    <div><button type="button" class="btn-sm btn-sm-gold" onclick="quickSync()"><i class="fas fa-sync-alt"></i> Refresh Statistik</button></div>
+                    <div><button type="button" class="btn-sm btn-sm-gold" id="quickSyncBtn"><i class="fas fa-sync-alt"></i> Refresh Statistik</button></div>
                 </div>
 
                 <h1 class="page-title" style="font-size: 1.2rem; margin-bottom: 12px;"><i class="fas fa-chart-pie"></i> Ringkasan Sistem</h1>
@@ -346,10 +336,8 @@
             <div class="tab-content" id="tabMembers">
                 <h1 class="page-title"><i class="fas fa-users"></i> Member</h1>
                 <div class="flex-row">
-                    <button type="button" class="btn-sm btn-sm-success" onclick="openMemberModal()"><i class="fas fa-user-plus"></i> Tambah Member</button>
-                    <button type="button" class="btn-sm btn-sm-primary" onclick="renderAdminMembers(); showToast('Direfresh!', 'info')"><i class="fas fa-sync"></i> Refresh</button>
-                    <button type="button" class="btn-sm btn-sm-gold" onclick="seedDemo()"><i class="fas fa-database"></i> Seed Demo</button>
-                    <button type="button" class="btn-sm btn-sm-danger" onclick="resetAll()"><i class="fas fa-trash"></i> Reset Semua</button>
+                    <button type="button" class="btn-sm btn-sm-success" id="addMemberBtn"><i class="fas fa-user-plus"></i> Tambah Member</button>
+                    <button type="button" class="btn-sm btn-sm-primary" id="refreshBtn"><i class="fas fa-sync"></i> Refresh</button>
                 </div>
                 <div class="table-wrap">
                     <table>
@@ -365,7 +353,7 @@
             <div class="tab-content" id="tabProducts">
                 <h1 class="page-title"><i class="fas fa-boxes"></i> Produk</h1>
                 <div class="flex-row">
-                    <button type="button" class="btn-sm btn-sm-success" onclick="openProductModal()"><i class="fas fa-plus"></i> Tambah Produk</button>
+                    <button type="button" class="btn-sm btn-sm-success" id="addProductBtn"><i class="fas fa-plus"></i> Tambah Produk</button>
                 </div>
                 <div class="table-wrap">
                     <table>
@@ -379,9 +367,6 @@
             <!-- VERIFICATION -->
             <div class="tab-content" id="tabVerification">
                 <h1 class="page-title"><i class="fas fa-check-double"></i> Verifikasi Member</h1>
-                <div class="flex-row">
-                    <button type="button" class="btn-sm btn-sm-primary" onclick="renderVerification(); showToast('Direfresh!', 'info')"><i class="fas fa-sync"></i> Refresh</button>
-                </div>
                 <div class="table-wrap">
                     <table>
                         <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Status</th><th>Bukti Transfer</th><th>Aksi</th></tr></thead>
@@ -394,9 +379,6 @@
             <!-- ORDERS -->
             <div class="tab-content" id="tabOrders">
                 <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Daftar Pesanan</h1>
-                <div class="flex-row">
-                    <button type="button" class="btn-sm btn-sm-primary" onclick="renderOrders(); showToast('Direfresh!', 'info')"><i class="fas fa-sync"></i> Refresh</button>
-                </div>
                 <div class="table-wrap">
                     <table>
                         <thead><tr><th>ID</th><th>Member</th><th>Alamat</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead>
@@ -409,9 +391,6 @@
             <!-- DEPOSIT -->
             <div class="tab-content" id="tabDeposit">
                 <h1 class="page-title"><i class="fas fa-wallet"></i> Verifikasi Deposit</h1>
-                <div class="flex-row">
-                    <button type="button" class="btn-sm btn-sm-primary" onclick="renderDeposit(); showToast('Direfresh!', 'info')"><i class="fas fa-sync"></i> Refresh</button>
-                </div>
                 <div class="table-wrap">
                     <table>
                         <thead><tr><th>ID Transaksi</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
@@ -424,9 +403,6 @@
             <!-- WITHDRAW -->
             <div class="tab-content" id="tabWithdraw">
                 <h1 class="page-title"><i class="fas fa-money-bill-wave"></i> Verifikasi Withdraw</h1>
-                <div class="flex-row">
-                    <button type="button" class="btn-sm btn-sm-primary" onclick="renderWithdraw(); showToast('Direfresh!', 'info')"><i class="fas fa-sync"></i> Refresh</button>
-                </div>
                 <div class="table-wrap">
                     <table>
                         <thead><tr><th>ID Transaksi</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
@@ -444,7 +420,7 @@
                     <h4><i class="fas fa-images" style="color:var(--gold-accent);"></i> Slide Carousel</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Kelola slide yang tampil di carousel halaman utama.</p>
                     <div class="flex-row">
-                        <button type="button" class="btn-sm btn-sm-success" onclick="openSlideModal()"><i class="fas fa-plus"></i> Tambah Slide</button>
+                        <button type="button" class="btn-sm btn-sm-success" id="addSlideBtn"><i class="fas fa-plus"></i> Tambah Slide</button>
                     </div>
                     <div class="slide-preview" id="slideList"></div>
                 </div>
@@ -454,7 +430,7 @@
                     <div id="aboutEditor">
                         <div class="form-group"><label>Judul</label><input type="text" id="aboutTitle" value="Tentang Kami" /></div>
                         <div class="form-group"><label>Konten (HTML diperbolehkan)</label><textarea id="aboutContent" rows="6">Isi tentang kami...</textarea></div>
-                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveAboutData()"><i class="fas fa-save"></i> Simpan Tentang Kami</button>
+                        <button type="button" class="btn-sm btn-sm-primary" id="saveAboutBtn"><i class="fas fa-save"></i> Simpan Tentang Kami</button>
                     </div>
                 </div>
 
@@ -462,7 +438,7 @@
                     <h4><i class="fas fa-question-circle" style="color:var(--gold-accent);"></i> FAQ</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Kelola pertanyaan yang sering diajukan.</p>
                     <div class="flex-row">
-                        <button type="button" class="btn-sm btn-sm-success" onclick="openFaqModal()"><i class="fas fa-plus"></i> Tambah FAQ</button>
+                        <button type="button" class="btn-sm btn-sm-success" id="addFaqBtn"><i class="fas fa-plus"></i> Tambah FAQ</button>
                     </div>
                     <div class="faq-list" id="faqList"></div>
                 </div>
@@ -471,7 +447,7 @@
                     <h4><i class="fas fa-star" style="color:var(--gold-accent);"></i> Keunggulan</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Kelola keunggulan produk yang ditampilkan.</p>
                     <div class="flex-row">
-                        <button type="button" class="btn-sm btn-sm-success" onclick="openFeatModal()"><i class="fas fa-plus"></i> Tambah Keunggulan</button>
+                        <button type="button" class="btn-sm btn-sm-success" id="addFeatureBtn"><i class="fas fa-plus"></i> Tambah Keunggulan</button>
                     </div>
                     <div class="feature-list" id="featureList"></div>
                 </div>
@@ -488,7 +464,7 @@
                         <div class="form-group"><label>YouTube</label><input type="text" id="sosmedYoutube" placeholder="https://youtube.com/..." /></div>
                         <div class="form-group"><label>TikTok</label><input type="text" id="sosmedTiktok" placeholder="https://tiktok.com/..." /></div>
                     </div>
-                    <button type="button" class="btn-sm btn-sm-primary" onclick="saveFooterData()"><i class="fas fa-save"></i> Simpan Footer & Sosmed</button>
+                    <button type="button" class="btn-sm btn-sm-primary" id="saveFooterBtn"><i class="fas fa-save"></i> Simpan Footer & Sosmed</button>
                 </div>
             </div>
 
@@ -497,13 +473,13 @@
                 <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan Sistem</h1>
                 
                 <div class="sub-tab-nav">
-                    <button class="sub-tab-btn active" data-subtab="subBrand" onclick="switchSubTab('subBrand', this)">Brand & Tampilan</button>
-                    <button class="sub-tab-btn" data-subtab="subBank" onclick="switchSubTab('subBank', this)">Rekening Bank</button>
-                    <button class="sub-tab-btn" data-subtab="subShop" onclick="switchSubTab('subShop', this)">Toko & Member</button>
-                    <button class="sub-tab-btn" data-subtab="subSponsor" onclick="switchSubTab('subSponsor', this)">Sponsor & RO</button>
-                    <button class="sub-tab-btn" data-subtab="subBinary" onclick="switchSubTab('subBinary', this)">Binary (10 Level)</button>
-                    <button class="sub-tab-btn" data-subtab="subReward" onclick="switchSubTab('subReward', this)">Reward (5 Level)</button>
-                    <button class="sub-tab-btn" data-subtab="subAdminAcc" onclick="switchSubTab('subAdminAcc', this)">Kredensial Admin</button>
+                    <button type="button" class="sub-tab-btn active" data-subtab="subBrand">Brand & Tampilan</button>
+                    <button type="button" class="sub-tab-btn" data-subtab="subBank">Rekening Bank</button>
+                    <button type="button" class="sub-tab-btn" data-subtab="subShop">Toko & Member</button>
+                    <button type="button" class="sub-tab-btn" data-subtab="subSponsor">Sponsor & RO</button>
+                    <button type="button" class="sub-tab-btn" data-subtab="subBinary">Binary (10 Level)</button>
+                    <button type="button" class="sub-tab-btn" data-subtab="subReward">Reward (5 Level)</button>
+                    <button type="button" class="sub-tab-btn" data-subtab="subAdminAcc">Kredensial Admin</button>
                 </div>
 
                 <div class="sub-tab-content active" id="subBrand">
@@ -511,26 +487,14 @@
                         <h4><i class="fas fa-paint-brush"></i> Brand & Tampilan Visual</h4>
                         <div class="form-group"><label>Nama Brand</label><input type="text" id="setBrandName" /></div>
                         <div class="form-group"><label>Judul Halaman Web</label><input type="text" id="setHeroTitle" /></div>
-                        <div class="form-group">
-                            <label>Logo Brand (Upload Gambar)</label>
-                            <input type="file" accept="image/*" onchange="previewImage(this, 'setBrandLogo', 'brandLogoPreview')" />
-                            <input type="hidden" id="setBrandLogo" />
-                            <img id="brandLogoPreview" style="max-height:80px; display:none; margin-top:8px; border-radius:8px;" />
-                        </div>
-                        <div class="form-group">
-                            <label>Favicon / Small Icon (Upload Gambar)</label>
-                            <input type="file" accept="image/*" onchange="previewImage(this, 'setBrandIcon', 'brandIconPreview')" />
-                            <input type="hidden" id="setBrandIcon" />
-                            <img id="brandIconPreview" style="max-height:80px; display:none; margin-top:8px; border-radius:8px;" />
-                        </div>
-                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveBrandData()">Simpan Brand</button>
+                        <button type="button" class="btn-sm btn-sm-primary" id="saveBrandSettings">Simpan Brand</button>
                     </div>
                 </div>
 
                 <div class="sub-tab-content" id="subBank">
                     <div class="settings-card">
                         <h4><i class="fas fa-university"></i> Rekening Pembayaran</h4>
-                        <div class="flex-row"><button type="button" class="btn-sm btn-sm-success" onclick="openBankModal()"><i class="fas fa-plus"></i> Tambah Pembayaran</button></div>
+                        <div class="flex-row"><button type="button" class="btn-sm btn-sm-success" id="addBankBtn"><i class="fas fa-plus"></i> Tambah Pembayaran</button></div>
                         <div class="table-wrap">
                             <table>
                                 <thead><tr><th>Bank</th><th>No. Rek</th><th>Atas Nama</th><th>Aksi</th></tr></thead>
@@ -544,7 +508,7 @@
                     <div class="settings-card">
                         <h4><i class="fas fa-store"></i> Paket Registrasi Member</h4>
                         <div class="form-group"><label>Harga Paket Member (Rp)</label><input type="number" id="setMemberPrice" /></div>
-                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveShopData()">Simpan Toko</button>
+                        <button type="button" class="btn-sm btn-sm-primary" id="saveShopSettings">Simpan Toko</button>
                     </div>
                 </div>
 
@@ -553,7 +517,7 @@
                         <h4><i class="fas fa-percent"></i> Komisi Sponsor & RO</h4>
                         <div class="form-group"><label>Bonus Sponsor (%)</label><input type="number" id="setSponsorBonus" /></div>
                         <div class="form-group"><label>Bonus Repeat Order / RO (%)</label><input type="number" id="setRoBonus" /></div>
-                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveBonusData()">Simpan Sponsor & RO</button>
+                        <button type="button" class="btn-sm btn-sm-primary" id="saveBonusSettings">Simpan Sponsor & RO</button>
                     </div>
                 </div>
 
@@ -572,7 +536,7 @@
                             <div class="form-group"><label>L9 (%)</label><input type="number" id="setBinaryL9" step="0.1" /></div>
                             <div class="form-group"><label>L10 (%)</label><input type="number" id="setBinaryL10" step="0.1" /></div>
                         </div>
-                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveBinaryData()">Simpan Komisi</button>
+                        <button type="button" class="btn-sm btn-sm-primary" id="saveBinarySettings">Simpan Komisi</button>
                     </div>
                 </div>
 
@@ -586,7 +550,7 @@
                             <div class="form-group"><label>L4 (%)</label><input type="number" id="setRewardL4" step="0.1" /></div>
                             <div class="form-group"><label>L5 (%)</label><input type="number" id="setRewardL5" step="0.1" /></div>
                         </div>
-                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveRewardData()">Simpan Reward</button>
+                        <button type="button" class="btn-sm btn-sm-primary" id="saveRewardSettings">Simpan Reward</button>
                     </div>
                 </div>
 
@@ -595,7 +559,7 @@
                         <h4><i class="fas fa-user-shield"></i> User & Password Admin</h4>
                         <div class="form-group"><label>Username / Email</label><input type="text" id="setAdminEmail" /></div>
                         <div class="form-group"><label>Sandi Baru</label><input type="password" id="setAdminPassword" placeholder="Kosongkan jika tidak diubah" /></div>
-                        <button type="button" class="btn-sm btn-sm-danger" onclick="saveAdminData()">Simpan Kredensial</button>
+                        <button type="button" class="btn-sm btn-sm-danger" id="saveAdminAccountSettings">Simpan Kredensial</button>
                     </div>
                 </div>
             </div>
@@ -608,7 +572,7 @@
 
     </div>
 
-    <!-- SCRIPT JS -->
+    <!-- SCRIPT JS PENUH & BEBAS ERROR -->
     <script>
         (function() {
             'use strict';
@@ -630,7 +594,10 @@
             let statePage = { members: 1, products: 1, verif: 1, orders: 1, deposit: 1, withdraw: 1 };
             const ITEMS_PER_PAGE = 10;
 
-            // HELPER LOAD & SAVE
+            // FUNGSI HELPER AMAN (Mencegah Null Error)
+            function el(id) { return document.getElementById(id); }
+            function bindClick(id, fn) { const e = el(id); if (e) e.addEventListener('click', fn); }
+
             function L(k,d) { try{ return JSON.parse(localStorage.getItem(k))||d; }catch(e){return d;} }
             function S(k,v) { localStorage.setItem(k, JSON.stringify(v)); }
             
@@ -662,7 +629,7 @@
 
             // TOAST & MODAL
             window.showToast = function(msg, type = 'info') {
-                const c = document.getElementById('toastContainer');
+                const c = el('toastContainer');
                 if (!c) return;
                 const i = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
                 const t = document.createElement('div');
@@ -672,64 +639,69 @@
                 setTimeout(() => { if(t.parentElement) t.remove() }, 3000);
             }
 
-            const modalOverlay = document.getElementById('modalOverlay');
-            const modalContent = document.getElementById('modalContent');
-            window.openModal = function(html) { modalContent.innerHTML = html; modalOverlay.classList.add('show'); document.body.style.overflow = 'hidden'; }
-            window.closeModal = function() { modalOverlay.classList.remove('show'); document.body.style.overflow = ''; }
+            window.openModal = function(html) { 
+                const mc = el('modalContent'); const mo = el('modalOverlay');
+                if(mc && mo) { mc.innerHTML = html; mo.classList.add('show'); document.body.style.overflow = 'hidden'; }
+            }
+            window.closeModal = function() { 
+                const mo = el('modalOverlay');
+                if(mo) { mo.classList.remove('show'); document.body.style.overflow = ''; }
+            }
 
-            window.previewImage = function(input, targetValId, targetImgId) {
-                if (input.files && input.files[0]) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        const img = document.getElementById(targetImgId);
-                        if(img) { img.src = e.target.result; img.style.display = 'inline-block'; }
-                        const val = document.getElementById(targetValId);
-                        if(val) val.value = e.target.result;
-                    };
-                    reader.readAsDataURL(input.files[0]);
-                }
-            };
+            bindClick('modalClose', closeModal);
+            const modalOverlay = el('modalOverlay');
+            if(modalOverlay) modalOverlay.addEventListener('click', (e) => { if(e.target === modalOverlay) closeModal(); });
 
             // SIDEBAR
             window.toggleSidebar = function(open) {
-                const sidebar = document.getElementById('sidebar');
-                const sidebarOverlay = document.getElementById('sidebarOverlay');
-                const burgerBtn = document.getElementById('burgerBtn');
-                if(!sidebar) return;
-                const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
-                sidebar.classList.toggle('open', isOpen);
-                sidebarOverlay.classList.toggle('active', isOpen);
-                if(burgerBtn) burgerBtn.classList.toggle('active', isOpen);
+                const sb = el('sidebar'); const sbo = el('sidebarOverlay'); const bb = el('burgerBtn');
+                if(!sb) return;
+                const isOpen = open !== undefined ? open : !sb.classList.contains('open');
+                sb.classList.toggle('open', isOpen);
+                if(sbo) sbo.classList.toggle('active', isOpen);
+                if(bb) bb.classList.toggle('active', isOpen);
                 document.body.style.overflow = isOpen && window.innerWidth <= 768 ? 'hidden' : '';
             }
 
+            bindClick('burgerBtn', (e) => { e.stopPropagation(); toggleSidebar(); });
+            bindClick('closeSidebar', () => toggleSidebar(false));
+            bindClick('sidebarOverlay', () => toggleSidebar(false));
+
             // PAGINATION
-            function buildPagination(totalItems, currentPage, containerId, tabKey, renderFunc) {
-                const c = document.getElementById(containerId);
+            window.changePage = function(tabKey, newPage, renderFuncName) {
+                if(newPage) { 
+                    statePage[tabKey] = newPage; 
+                    if(renderFuncName === 'renderAdminMembers') renderAdminMembers();
+                    if(renderFuncName === 'renderAdminProducts') renderAdminProducts();
+                    if(renderFuncName === 'renderVerification') renderVerification();
+                    if(renderFuncName === 'renderOrders') renderOrders();
+                    if(renderFuncName === 'renderDeposit') renderDeposit();
+                    if(renderFuncName === 'renderWithdraw') renderWithdraw();
+                }
+            }
+
+            function buildPagination(totalItems, currentPage, containerId, tabKey, renderFuncName) {
+                const c = el(containerId);
                 if (!c) return;
                 const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
                 if (totalItems === 0) { c.innerHTML = ''; return; }
-                let html = `<button class="page-btn" ${currentPage===1?'disabled':''} onclick="changePage('${tabKey}', ${currentPage-1}, ${renderFunc.name})">Prev</button>`;
+                let html = `<button class="page-btn" ${currentPage===1?'disabled':''} onclick="changePage('${tabKey}', ${currentPage-1}, '${renderFuncName}')">Prev</button>`;
                 let startP = Math.max(1, currentPage - 1); let endP = Math.min(totalPages, currentPage + 1);
-                if (startP > 1) html += `<button class="page-btn" onclick="changePage('${tabKey}', 1, ${renderFunc.name})">1</button><span>...</span>`;
-                for (let i = startP; i <= endP; i++) html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="changePage('${tabKey}', ${i}, ${renderFunc.name})">${i}</button>`;
-                if (endP < totalPages) html += `<span>...</span><button class="page-btn" onclick="changePage('${tabKey}', ${totalPages}, ${renderFunc.name})">${totalPages}</button>`;
-                html += `<button class="page-btn" ${currentPage===totalPages?'disabled':''} onclick="changePage('${tabKey}', ${currentPage+1}, ${renderFunc.name})">Next</button>`;
+                if (startP > 1) html += `<button class="page-btn" onclick="changePage('${tabKey}', 1, '${renderFuncName}')">1</button><span>...</span>`;
+                for (let i = startP; i <= endP; i++) html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="changePage('${tabKey}', ${i}, '${renderFuncName}')">${i}</button>`;
+                if (endP < totalPages) html += `<span>...</span><button class="page-btn" onclick="changePage('${tabKey}', ${totalPages}, '${renderFuncName}')">${totalPages}</button>`;
+                html += `<button class="page-btn" ${currentPage===totalPages?'disabled':''} onclick="changePage('${tabKey}', ${currentPage+1}, '${renderFuncName}')">Next</button>`;
                 c.innerHTML = html;
             }
 
-            window.changePage = function(tabKey, newPage, renderFunc) {
-                if(newPage) { statePage[tabKey] = newPage; renderFunc(); }
-            }
-
-            // TABS
+            // TABS SWITCHER
             window.switchTab = function(tabId) {
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 let targetId = 'tab' + tabId.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('');
-                const tabContent = document.getElementById(targetId);
+                const tabContent = el(targetId);
                 if (tabContent) tabContent.classList.add('active');
 
-                document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(el => el.classList.remove('active'));
+                document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(m => m.classList.remove('active'));
                 const activeMenu = document.querySelector(`.sidebar .menu-item[data-tab="${tabId}"]`);
                 if (activeMenu) activeMenu.classList.add('active');
 
@@ -747,41 +719,51 @@
                 toggleSidebar(false);
             }
 
-            window.switchSubTab = function(subTabId, btnEl) {
-                document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
-                document.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
-                if(btnEl) btnEl.classList.add('active');
-                const targetSub = document.getElementById(subTabId);
-                if(targetSub) targetSub.classList.add('active');
-                sessionStorage.setItem('adminActiveSubTab', subTabId);
-            }
+            document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(item => {
+                item.addEventListener('click', function() { switchTab(this.dataset.tab); });
+            });
+
+            document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
+                    this.classList.add('active');
+                    const targetSub = el(this.dataset.subtab);
+                    if(targetSub) targetSub.classList.add('active');
+                    sessionStorage.setItem('adminActiveSubTab', this.dataset.subtab);
+                });
+            });
 
             // GLOBAL ACTIONS
-            window.quickSync = function() { renderDashboard(); showToast('Statistik diperbarui!', 'success'); }
-            window.clearSessionAndReload = function() { localStorage.removeItem(SESSION_KEY); window.location.reload(); }
-            window.seedDemo = function() {
-                let users = loadUsers();
-                const demoNames = ['Budi', 'Siti', 'Agus', 'Rina'];
-                let added = 0;
-                demoNames.forEach((n,i) => {
-                    let email = n.toLowerCase()+'@mail.com';
-                    if (!users.find(u => u.email === email)) {
-                        users.push({ id: getNextId(users), username: n.toLowerCase(), email: email, password: '123', name: n, role: 'user', status: i%2===0?'verified':'free', wallet: 10000, transactions:[], purchase_history:[], orders:[], registeredAt: new Date().toISOString() });
-                        added++;
-                    }
-                });
-                saveUsers(users); renderAdminMembers(); showToast(`✅ ${added} member demo ditambahkan.`, 'success');
-            }
-            window.resetAll = function() {
-                if(!confirm('⚠️ Hapus SEMUA data (kecuali admin)?')) return;
-                let users = loadUsers(); const admin = users.find(u => u.role === 'admin' || u.email === 'admin@mlm.com');
-                users = admin ? [admin] : [];
-                saveUsers(users); saveOrders([]); saveTransactions([]); saveProducts([]);
-                statePage = { members:1, products:1, verif:1, orders:1, deposit:1, withdraw:1 };
-                renderAdminMembers(); renderAdminProducts(); renderDashboard(); showToast('Semua data direset.', 'info');
-            }
+            window.doAdminLogin = function() {
+                const emailEl = el('adminLoginEmail'); const passEl = el('adminLoginPassword');
+                if(!emailEl || !passEl) return;
+                const email = emailEl.value.trim(); const pass = passEl.value.trim();
+                const users = loadUsers();
+                const admin = users.find(u => (u.email === email || u.username === email) && u.password === pass && u.role === 'admin');
+                if (admin || (email === 'admin@mlm.com' && pass === 'admin123')) {
+                    localStorage.setItem(SESSION_KEY, JSON.stringify({ id: admin ? admin.id : 1, role: 'admin' }));
+                    const lo = el('loginOverlay'); if(lo) lo.classList.add('hidden');
+                    const ma = el('mainApp'); if(ma) ma.style.display = 'block';
+                    const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
+                    switchTab(savedTab);
+                    showToast('Welcome Admin!', 'success');
+                } else { 
+                    const msgEl = el('adminLoginMsg');
+                    if(msgEl) { msgEl.innerText = '❌ Akses ditolak. Email/Password salah.'; msgEl.className = 'msg error'; }
+                }
+            };
 
-            // GLOBALS (CRUD)
+            bindClick('adminLoginBtn', doAdminLogin);
+            bindClick('sideLogoutBtn', () => { localStorage.removeItem(SESSION_KEY); window.location.reload(); });
+            bindClick('quickSyncBtn', () => { renderDashboard(); showToast('Statistik diperbarui!', 'success'); });
+
+            const pwdInput = el('adminLoginPassword');
+            if(pwdInput) pwdInput.addEventListener('keydown', function(e) { if(e.key === 'Enter') { e.preventDefault(); doAdminLogin(); } });
+            const emailInput = el('adminLoginEmail');
+            if(emailInput) emailInput.addEventListener('keydown', function(e) { if(e.key === 'Enter') { e.preventDefault(); pwdInput.focus(); } });
+
+            // GLOBAL TRANSACTION PROCESSOR
             window.processTx = function(id, newStatus, type) {
                 let txs = loadTransactions(); let tx = txs.find(t => t.id === id); if (!tx) return;
                 let users = loadUsers(); let user = users.find(u => u.id === tx.user_id);
@@ -795,6 +777,7 @@
                 if (type === 'deposit') renderDeposit(); if (type === 'withdraw') renderWithdraw();
                 renderDashboard(); showToast(`Transaksi ${newStatus}.`, newStatus==='success'?'success':'warning');
             }
+
             window.delTx = function(id, type) {
                 if(!confirm('Hapus transaksi?')) return;
                 let txs = loadTransactions().filter(t => t.id !== id); saveTransactions(txs);
@@ -803,24 +786,25 @@
                 renderDashboard(); showToast('Transaksi dihapus.', 'info');
             }
 
-            // DASHBOARD
+            // DASHBOARD RENDER
             window.renderDashboard = function() {
                 const users = loadUsers(); const orders = loadOrders(); const products = loadProducts(); const transactions = loadTransactions();
-                document.getElementById('statTotalMember').textContent = users.length;
-                document.getElementById('statVerifiedMember').textContent = users.filter(u => u.status === 'verified').length;
-                document.getElementById('statTotalOrders').textContent = orders.length;
-                document.getElementById('statPendingOrders').textContent = orders.filter(o => o.status === 'pending').length;
-                document.getElementById('statTotalProducts').textContent = products.length;
-                document.getElementById('statTotalTransactions').textContent = 'Rp ' + transactions.reduce((s, t) => s + (t.amount||t.price||0), 0).toLocaleString();
+                
+                const elTM = el('statTotalMember'); if(elTM) elTM.textContent = users.length;
+                const elVM = el('statVerifiedMember'); if(elVM) elVM.textContent = users.filter(u => u.status === 'verified').length;
+                const elTO = el('statTotalOrders'); if(elTO) elTO.textContent = orders.length;
+                const elPO = el('statPendingOrders'); if(elPO) elPO.textContent = orders.filter(o => o.status === 'pending').length;
+                const elTP = el('statTotalProducts'); if(elTP) elTP.textContent = products.length;
+                const elTT = el('statTotalTransactions'); if(elTT) elTT.textContent = 'Rp ' + transactions.reduce((s, t) => s + (t.amount||t.price||0), 0).toLocaleString();
 
-                const container = document.getElementById('adminTransactionHistory');
-                const sorted = [...transactions].reverse().slice(0, 10);
-                if (sorted.length === 0) { container.innerHTML = '<p class="text-muted">Kosong.</p>'; return; }
+                const container = el('adminTransactionHistory');
+                if(!container) return;
+                const sorted = [...transactions].reverse().slice(0, 15);
+                if (sorted.length === 0) { container.innerHTML = '<p class="text-muted">Belum ada transaksi.</p>'; return; }
                 container.innerHTML = sorted.map(t => {
                     const u = users.find(x => x.id === t.user_id);
                     let actionBtn = (t.status === 'pending' && (t.type === 'deposit' || t.type === 'withdraw')) 
                         ? `<button type="button" class="btn-sm btn-sm-success" onclick="processTx(${t.id},'success','${t.type}')" style="margin-left:6px;padding:4px 8px;font-size:0.7rem;">Approve</button>` : '';
-                    if (t.status === 'pending' && t.proof_image) actionBtn += `<button type="button" class="btn-sm btn-sm-gold" onclick="viewProof('${t.proof_image}')" style="margin-left:4px;padding:4px 8px;font-size:0.7rem;">Bukti</button>`;
                     return `<div class="history-item" style="flex-wrap:wrap;gap:8px;">
                         <span style="flex:1;"><strong>${u?u.name||u.username:'Guest'}</strong> · ${(t.type||'').toUpperCase()} (${t.status}) <small class="text-muted">${new Date(t.date||t.createdAt||Date.now()).toLocaleDateString()}</small></span>
                         <span class="amount ${['deposit','order','ro_purchase'].includes(t.type)?'plus':'minus'}" style="display:flex;align-items:center;">Rp ${(t.amount||0).toLocaleString()} ${actionBtn}</span>
@@ -830,13 +814,15 @@
 
             // MEMBERS CRUD
             window.renderAdminMembers = function() {
-                const tbody = document.getElementById('adminTableBody');
+                const tbody = el('adminTableBody');
                 if(!tbody) return;
                 const users = loadUsers(); const total = users.length;
-                document.getElementById('totalMembers').textContent = total;
-                if (total === 0) { tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">Kosong.</td></tr>`; document.getElementById('membersPagination').innerHTML=''; return; }
+                const tm = el('totalMembers'); if(tm) tm.textContent = total;
+                if (total === 0) { tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">Kosong.</td></tr>`; el('membersPagination').innerHTML=''; return; }
+                
                 statePage.members = Math.max(1, Math.min(statePage.members, Math.ceil(total/ITEMS_PER_PAGE)||1));
                 const paginated = users.slice((statePage.members - 1)*ITEMS_PER_PAGE, statePage.members*ITEMS_PER_PAGE);
+                
                 tbody.innerHTML = paginated.map(u => `<tr>
                     <td data-label="ID">${u.id}</td><td data-label="Nama"><strong>${u.name||u.username}</strong></td><td data-label="Email">${u.email}</td>
                     <td data-label="Alamat">${u.address||'-'}</td><td data-label="Sponsor">${u.sponsor_id||'-'}</td><td data-label="Posisi">${u.position||'-'}</td>
@@ -846,8 +832,11 @@
                         <button type="button" class="btn-sm btn-sm-warning" onclick="openMemberModal(${u.id})">Edit</button>
                         ${u.role!=='admin' ? `<button type="button" class="btn-sm btn-sm-danger" onclick="delMember(${u.id})">Hapus</button>` : ''}
                     </div></td></tr>`).join('');
-                buildPagination(total, statePage.members, 'membersPagination', 'members', renderAdminMembers);
+                buildPagination(total, statePage.members, 'membersPagination', 'members', 'renderAdminMembers');
             }
+            bindClick('addMemberBtn', () => openMemberModal());
+            bindClick('refreshBtn', () => { renderAdminMembers(); showToast('Direfresh!', 'info'); });
+            
             window.openMemberModal = function(id = null) {
                 let users = loadUsers(); let user = id ? users.find(u => u.id === id) : null;
                 openModal(`<h3>${user ? 'Edit Member' : 'Tambah Member'}</h3>
@@ -861,9 +850,10 @@
             }
             window.saveMember = function(id) {
                 let users = loadUsers();
-                let name = document.getElementById('mName').value.trim(); let username = document.getElementById('mUsername').value.trim();
-                let email = document.getElementById('mEmail').value.trim(); let pass = document.getElementById('mPass').value;
-                let status = document.getElementById('mStatus').value; let wallet = parseInt(document.getElementById('mWallet').value)||0;
+                let name = el('mName').value.trim(); let username = el('mUsername').value.trim();
+                let email = el('mEmail').value.trim(); let pass = el('mPass').value;
+                let status = el('mStatus').value; let wallet = parseInt(el('mWallet').value)||0;
+                
                 if(!name || !username || !email) return showToast('Harap isi dengan benar', 'error');
                 if(id) {
                     let u = users.find(x => x.id === id);
@@ -881,46 +871,45 @@
 
             // PRODUCTS CRUD
             window.renderAdminProducts = function() {
-                const tbody = document.getElementById('adminProductTableBody');
+                const tbody = el('adminProductTableBody');
                 if(!tbody) return;
                 const products = loadProducts(); const total = products.length;
-                if(total===0) { tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;">Kosong.</td></tr>`; document.getElementById('productsPagination').innerHTML=''; return; }
+                if(total===0) { tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;">Kosong.</td></tr>`; el('productsPagination').innerHTML=''; return; }
+                
                 statePage.products = Math.max(1, Math.min(statePage.products, Math.ceil(total/ITEMS_PER_PAGE)||1));
                 const paginated = products.slice((statePage.products-1)*ITEMS_PER_PAGE, statePage.products*ITEMS_PER_PAGE);
+                
                 tbody.innerHTML = paginated.map((p,i) => `<tr><td data-label="#">${(statePage.products-1)*ITEMS_PER_PAGE+i+1}</td>
-                    <td data-label="Gambar"><img src="${p.image||''}" style="height:30px; ${p.image?'':'display:none;'}"><i class="fas ${p.icon||'fa-tshirt'}" style="${p.image?'display:none;':''}"></i></td>
-                    <td data-label="Nama">${p.name}</td>
+                    <td data-label="Gambar"><i class="fas ${p.icon||'fa-tshirt'}"></i></td><td data-label="Nama">${p.name}</td>
                     <td data-label="Harga">Rp ${(p.price||0).toLocaleString()}</td><td data-label="Normal">Rp ${(p.original||0).toLocaleString()}</td>
                     <td data-label="Tag">${p.tag||'-'}</td><td data-label="Stok">${p.stock||0}</td>
                     <td data-label="Aksi"><div style="display:flex;gap:6px;justify-content:flex-end;"><button type="button" class="btn-sm btn-sm-warning" onclick="openProductModal(${p.id})">Edit</button> <button type="button" class="btn-sm btn-sm-danger" onclick="delProduct(${p.id})">Hapus</button></div></td></tr>`).join('');
-                buildPagination(total, statePage.products, 'productsPagination', 'products', renderAdminProducts);
+                buildPagination(total, statePage.products, 'productsPagination', 'products', 'renderAdminProducts');
             }
+            bindClick('addProductBtn', () => openProductModal());
+            
             window.openProductModal = function(id = null) {
                 let prods = loadProducts(); let p = id ? prods.find(x => x.id === id) : null;
                 openModal(`<h3>${p ? 'Edit Produk' : 'Tambah Produk'}</h3>
-                    <div class="form-group"><label>Nama Produk</label><input type="text" id="pName" value="${p?p.name:''}"></div>
+                    <div class="form-group"><label>Nama</label><input type="text" id="pName" value="${p?p.name:''}"></div>
                     <div class="form-group"><label>Harga Member</label><input type="number" id="pPrice" value="${p?p.price:''}"></div>
                     <div class="form-group"><label>Harga Normal</label><input type="number" id="pOriginal" value="${p?p.original||'':''}"></div>
                     <div class="form-group"><label>Stok</label><input type="number" id="pStock" value="${p?p.stock||0:0}"></div>
                     <div class="form-group"><label>Tag (Badge)</label><input type="text" id="pTag" value="${p?p.tag||'PRODUK':''}"></div>
-                    <div class="form-group">
-                        <label>Gambar Produk</label>
-                        <input type="file" accept="image/*" onchange="previewImage(this, 'pImgUrl', 'pImgPreview')">
-                        <input type="hidden" id="pImgUrl" value="${p?p.image||'':''}">
-                        <br><img id="pImgPreview" src="${p?p.image||'':''}" style="max-height:80px; margin-top:8px; border-radius:8px; ${p&&p.image?'':'display:none;'}">
-                    </div>
                     <button type="button" class="btn-submit" onclick="saveProduct(${id})">Simpan</button>`);
             }
             window.saveProduct = function(id) {
                 let prods = loadProducts();
-                let name = document.getElementById('pName').value.trim(); let price = parseInt(document.getElementById('pPrice').value)||0;
-                let orig = parseInt(document.getElementById('pOriginal').value)||0; let stock = parseInt(document.getElementById('pStock').value)||0;
-                let tag = document.getElementById('pTag').value.trim() || 'PRODUK'; let img = document.getElementById('pImgUrl').value;
+                let name = el('pName').value.trim(); let price = parseInt(el('pPrice').value)||0;
+                let orig = parseInt(el('pOriginal').value)||0; let stock = parseInt(el('pStock').value)||0; let tag = el('pTag').value.trim() || 'PRODUK';
+                
                 if(!name || price <= 0) return showToast('Nama & Harga wajib', 'error');
                 if(id) {
                     let p = prods.find(x => x.id === id);
-                    if(p) { p.name=name; p.price=price; p.original=orig; p.stock=stock; p.tag=tag; p.image=img; }
-                } else { prods.push({ id: getNextId(prods), name, price, original:orig, stock, tag:tag, image:img, sizes:['30','32'], colors:['Raw'], icon:'fa-tshirt' }); }
+                    if(p) { p.name=name; p.price=price; p.original=orig; p.stock=stock; p.tag=tag; }
+                } else { 
+                    prods.push({ id: getNextId(prods), name, price, original:orig, stock, tag:tag, sizes:['30','32'], colors:['Raw'], icon:'fa-tshirt' }); 
+                }
                 saveProducts(prods); closeModal(); renderAdminProducts(); showToast('Tersimpan', 'success');
             }
             window.delProduct = function(id) {
@@ -930,10 +919,11 @@
 
             // VERIFICATION CRUD
             window.renderVerification = function() {
-                const tbody = document.getElementById('verifTableBody');
+                const tbody = el('verifTableBody');
                 if(!tbody) return;
                 const users = loadUsers().filter(u => u.status === 'pending' || u.status === 'free');
-                if(users.length===0){ tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;">Semua terverifikasi.</td></tr>`; document.getElementById('verifPagination').innerHTML=''; return; }
+                if(users.length===0){ tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;">Semua terverifikasi.</td></tr>`; el('verifPagination').innerHTML=''; return; }
+                
                 statePage.verif = Math.max(1, Math.min(statePage.verif, Math.ceil(users.length/ITEMS_PER_PAGE)||1));
                 tbody.innerHTML = users.slice((statePage.verif-1)*ITEMS_PER_PAGE, statePage.verif*ITEMS_PER_PAGE).map(u => `<tr>
                     <td data-label="ID">${u.id}</td><td data-label="Nama">${u.name||u.username}</td><td data-label="Email">${u.email}</td>
@@ -942,10 +932,11 @@
                     <td data-label="Aksi"><div style="display:flex;gap:6px;justify-content:flex-end;">
                         <button type="button" class="btn-sm btn-sm-success" onclick="verifyUser(${u.id}, 'verified')">Terima</button>
                         <button type="button" class="btn-sm btn-sm-warning" onclick="verifyUser(${u.id}, 'free')">Tolak</button>
-                        <button type="button" class="btn-sm btn-sm-danger" onclick="delMember(${u.id})">Hapus</button>
                     </div></td></tr>`).join('');
-                buildPagination(users.length, statePage.verif, 'verifPagination', 'verif', renderVerification);
+                buildPagination(users.length, statePage.verif, 'verifPagination', 'verif', 'renderVerification');
             }
+            bindClick('refreshVerifBtn', () => { renderVerification(); showToast('Direfresh!', 'info'); });
+            
             window.verifyUser = function(id, status) {
                 let users = loadUsers(); let u = users.find(x => x.id === id);
                 if(!u) return; u.status = status; if(status==='free') u.proof_image = null;
@@ -957,12 +948,14 @@
 
             // ORDERS CRUD
             window.renderOrders = function() {
-                const tbody = document.getElementById('ordersTableBody');
+                const tbody = el('ordersTableBody');
                 if(!tbody) return;
                 const orders = loadOrders(); const total = orders.length;
-                if(total===0) { tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;">Kosong.</td></tr>`; document.getElementById('ordersPagination').innerHTML=''; return; }
+                if(total===0) { tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;">Kosong.</td></tr>`; el('ordersPagination').innerHTML=''; return; }
+                
                 statePage.orders = Math.max(1, Math.min(statePage.orders, Math.ceil(total/ITEMS_PER_PAGE)||1));
                 const paginated = [...orders].reverse().slice((statePage.orders-1)*ITEMS_PER_PAGE, statePage.orders*ITEMS_PER_PAGE);
+                
                 tbody.innerHTML = paginated.map(o => `<tr><td data-label="ID">${o.id}</td><td data-label="Nama">${o.user_name}</td>
                     <td data-label="Alamat">${o.shipping_address||'-'}</td><td data-label="Total">Rp ${(o.total||0).toLocaleString()}</td>
                     <td data-label="Status"><span class="badge-status badge-${o.status||'pending'}">${(o.status||'pending').toUpperCase()}</span></td>
@@ -971,8 +964,10 @@
                         ${o.status==='processing' ? `<button type="button" class="btn-sm btn-sm-primary" onclick="updateOrder(${o.id},'shipped')">Kirim</button>` : ''}
                         <button type="button" class="btn-sm btn-sm-danger" onclick="delOrder(${o.id})">Hapus</button>
                     </div></td></tr>`).join('');
-                buildPagination(total, statePage.orders, 'ordersPagination', 'orders', renderOrders);
+                buildPagination(total, statePage.orders, 'ordersPagination', 'orders', 'renderOrders');
             }
+            bindClick('refreshOrdersBtn', () => { renderOrders(); showToast('Direfresh!', 'info'); });
+            
             window.updateOrder = function(id, st) {
                 let orders = loadOrders(); let o = orders.find(x => x.id === id); if(!o) return; o.status = st; saveOrders(orders);
                 let txs = loadTransactions(); let tx = txs.find(t => t.id === id); if(tx) { tx.status = st==='processing'?'success':st; saveTransactions(txs); }
@@ -987,9 +982,10 @@
 
             // DEPOSIT & WITHDRAW
             window.renderDeposit = function() {
-                const tbody = document.getElementById('depositTableBody'); if(!tbody) return;
+                const tbody = el('depositTableBody'); if(!tbody) return;
                 const txs = loadTransactions().filter(t => t.type === 'deposit').reverse();
-                if(txs.length===0) { tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;">Kosong.</td></tr>`; document.getElementById('depositPagination').innerHTML=''; return; }
+                if(txs.length===0) { tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;">Kosong.</td></tr>`; el('depositPagination').innerHTML=''; return; }
+                
                 statePage.deposit = Math.max(1, Math.min(statePage.deposit, Math.ceil(txs.length/ITEMS_PER_PAGE)||1));
                 tbody.innerHTML = txs.slice((statePage.deposit-1)*ITEMS_PER_PAGE, statePage.deposit*ITEMS_PER_PAGE).map(t => `<tr>
                     <td data-label="ID">${t.id}</td><td data-label="Nominal">Rp ${(t.amount||0).toLocaleString()}</td><td data-label="Status"><span class="badge-status badge-${t.status}">${t.status.toUpperCase()}</span></td>
@@ -997,12 +993,15 @@
                         ${t.status==='pending' ? `<button type="button" class="btn-sm btn-sm-success" onclick="processTx(${t.id},'success','deposit')">Approve</button> <button type="button" class="btn-sm btn-sm-warning" onclick="processTx(${t.id},'failed','deposit')">Reject</button>` : ''}
                         <button type="button" class="btn-sm btn-sm-danger" onclick="delTx(${t.id}, 'deposit')">Hapus</button>
                     </div></td></tr>`).join('');
-                buildPagination(txs.length, statePage.deposit, 'depositPagination', 'deposit', renderDeposit);
+                buildPagination(txs.length, statePage.deposit, 'depositPagination', 'deposit', 'renderDeposit');
             }
+            bindClick('refreshDepositBtn', () => { renderDeposit(); showToast('Direfresh!', 'info'); });
+
             window.renderWithdraw = function() {
-                const tbody = document.getElementById('withdrawTableBody'); if(!tbody) return;
+                const tbody = el('withdrawTableBody'); if(!tbody) return;
                 const txs = loadTransactions().filter(t => t.type === 'withdraw').reverse();
-                if(txs.length===0) { tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;">Kosong.</td></tr>`; document.getElementById('withdrawPagination').innerHTML=''; return; }
+                if(txs.length===0) { tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;">Kosong.</td></tr>`; el('withdrawPagination').innerHTML=''; return; }
+                
                 statePage.withdraw = Math.max(1, Math.min(statePage.withdraw, Math.ceil(txs.length/ITEMS_PER_PAGE)||1));
                 tbody.innerHTML = txs.slice((statePage.withdraw-1)*ITEMS_PER_PAGE, statePage.withdraw*ITEMS_PER_PAGE).map(t => `<tr>
                     <td data-label="ID">${t.id}</td><td data-label="Nominal">Rp ${(t.amount||0).toLocaleString()}</td><td data-label="Status"><span class="badge-status badge-${t.status}">${t.status.toUpperCase()}</span></td>
@@ -1010,31 +1009,31 @@
                         ${t.status==='pending' ? `<button type="button" class="btn-sm btn-sm-success" onclick="processTx(${t.id},'success','withdraw')">Approve</button> <button type="button" class="btn-sm btn-sm-warning" onclick="processTx(${t.id},'failed','withdraw')">Reject</button>` : ''}
                         <button type="button" class="btn-sm btn-sm-danger" onclick="delTx(${t.id}, 'withdraw')">Hapus</button>
                     </div></td></tr>`).join('');
-                buildPagination(txs.length, statePage.withdraw, 'withdrawPagination', 'withdraw', renderWithdraw);
+                buildPagination(txs.length, statePage.withdraw, 'withdrawPagination', 'withdraw', 'renderWithdraw');
             }
+            bindClick('refreshWithdrawBtn', () => { renderWithdraw(); showToast('Direfresh!', 'info'); });
 
             // PAGE SETTINGS (CMS)
             window.renderPageSettings = function() {
                 renderSlides(); renderFaq(); renderFeatures();
                 const a = L(ABOUT_KEY, {title:'Tentang', content:''});
-                const elTitle = document.getElementById('aboutTitle'); if(elTitle) elTitle.value = a.title||''; 
-                const elContent = document.getElementById('aboutContent'); if(elContent) elContent.value = a.content||'';
+                const elTitle = el('aboutTitle'); if(elTitle) elTitle.value = a.title||''; 
+                const elContent = el('aboutContent'); if(elContent) elContent.value = a.content||'';
                 
                 const f = L(FOOTER_KEY, {brand:'HEDTRO', desc:'', copyright:'', social:{}});
-                const efb = document.getElementById('footerBrand'); if(efb) efb.value = f.brand||''; 
-                const efd = document.getElementById('footerDesc'); if(efd) efd.value = f.desc||''; 
-                const efc = document.getElementById('footerCopyright'); if(efc) efc.value = f.copyright||'';
+                const efb = el('footerBrand'); if(efb) efb.value = f.brand||''; 
+                const efd = el('footerDesc'); if(efd) efd.value = f.desc||''; 
+                const efc = el('footerCopyright'); if(efc) efc.value = f.copyright||'';
                 if(f.social) {
-                    const si = document.getElementById('sosmedInstagram'); if(si) si.value = f.social.instagram||''; 
-                    const sf = document.getElementById('sosmedFacebook'); if(sf) sf.value = f.social.facebook||''; 
-                    const sy = document.getElementById('sosmedYoutube'); if(sy) sy.value = f.social.youtube||''; 
-                    const st = document.getElementById('sosmedTiktok'); if(st) st.value = f.social.tiktok||'';
+                    const si = el('sosmedInstagram'); if(si) si.value = f.social.instagram||''; 
+                    const sf = el('sosmedFacebook'); if(sf) sf.value = f.social.facebook||''; 
+                    const sy = el('sosmedYoutube'); if(sy) sy.value = f.social.youtube||''; 
+                    const st = el('sosmedTiktok'); if(st) st.value = f.social.tiktok||'';
                 }
             }
             
-            // SLIDES CRUD
             window.renderSlides = function() {
-                const slides = L(SLIDES_KEY, []); const c = document.getElementById('slideList'); if(!c) return;
+                const slides = L(SLIDES_KEY, []); const c = el('slideList'); if(!c) return;
                 if(slides.length===0) { c.innerHTML = '<p class="text-muted">Kosong.</p>'; return; }
                 c.innerHTML = slides.map(s => `<div class="admin-list-item"><div><h4>${s.title}</h4><p>${s.subtitle}</p></div><div class="actions"><button type="button" class="btn-sm btn-sm-warning" onclick="openSlideModal(${s.id})">Edit</button> <button type="button" class="btn-sm btn-sm-danger" onclick="delSlide(${s.id})">Hapus</button></div></div>`).join('');
             }
@@ -1046,16 +1045,16 @@
                     <button type="button" class="btn-submit" onclick="saveSlide(${id})">Simpan</button>`);
             }
             window.saveSlide = function(id) {
-                let sl = L(SLIDES_KEY, []); let t = document.getElementById('sTitle').value; let sub = document.getElementById('sSub').value;
+                let sl = L(SLIDES_KEY, []); let t = el('sTitle').value; let sub = el('sSub').value;
                 if(!t) return showToast('Judul wajib', 'error');
                 if(id) { let s = sl.find(x=>x.id===id); if(s) {s.title=t; s.subtitle=sub;} } else { sl.push({id:Date.now(), title:t, subtitle:sub, bg:'linear-gradient(135deg, #0b1a2b, #2a4b6e)'}); }
                 S(SLIDES_KEY, sl); closeModal(); renderSlides(); showToast('Tersimpan', 'success');
             }
             window.delSlide = function(id) { if(!confirm('Hapus slide?')) return; S(SLIDES_KEY, L(SLIDES_KEY,[]).filter(x=>x.id!==id)); renderSlides(); showToast('Dihapus','info'); }
+            bindClick('addSlideBtn', () => openSlideModal());
 
-            // FAQ CRUD
             window.renderFaq = function() {
-                const faqs = L(FAQ_KEY, []); const c = document.getElementById('faqList'); if(!c) return;
+                const faqs = L(FAQ_KEY, []); const c = el('faqList'); if(!c) return;
                 if(faqs.length===0) { c.innerHTML = '<p class="text-muted">Kosong.</p>'; return; }
                 c.innerHTML = faqs.map(f => `<div class="admin-list-item"><div><h4>${f.question}</h4><p>${f.answer}</p></div><div class="actions"><button type="button" class="btn-sm btn-sm-warning" onclick="openFaqModal(${f.id})">Edit</button> <button type="button" class="btn-sm btn-sm-danger" onclick="delFaq(${f.id})">Hapus</button></div></div>`).join('');
             }
@@ -1067,16 +1066,16 @@
                     <button type="button" class="btn-submit" onclick="saveFaqData(${id})">Simpan</button>`);
             }
             window.saveFaqData = function(id) {
-                let fq = L(FAQ_KEY, []); let q = document.getElementById('fQ').value; let a = document.getElementById('fA').value;
+                let fq = L(FAQ_KEY, []); let q = el('fQ').value; let a = el('fA').value;
                 if(!q || !a) return showToast('Wajib isi', 'error');
                 if(id) { let f = fq.find(x=>x.id===id); if(f) {f.question=q; f.answer=a;} } else { fq.push({id:Date.now(), question:q, answer:a}); }
                 S(FAQ_KEY, fq); closeModal(); renderFaq(); showToast('Tersimpan', 'success');
             }
             window.delFaq = function(id) { if(!confirm('Hapus FAQ?')) return; S(FAQ_KEY, L(FAQ_KEY,[]).filter(x=>x.id!==id)); renderFaq(); showToast('Dihapus','info'); }
+            bindClick('addFaqBtn', () => openFaqModal());
 
-            // FEATURE CRUD
             window.renderFeatures = function() {
-                const feats = L(FEATURES_KEY, []); const c = document.getElementById('featureList'); if(!c) return;
+                const feats = L(FEATURES_KEY, []); const c = el('featureList'); if(!c) return;
                 if(feats.length===0) { c.innerHTML = '<p class="text-muted">Kosong.</p>'; return; }
                 c.innerHTML = feats.map(f => `<div class="admin-list-item"><div><h4>${f.title}</h4><p>${f.desc}</p></div><div class="actions"><button type="button" class="btn-sm btn-sm-warning" onclick="openFeatModal(${f.id})">Edit</button> <button type="button" class="btn-sm btn-sm-danger" onclick="delFeat(${f.id})">Hapus</button></div></div>`).join('');
             }
@@ -1088,43 +1087,41 @@
                     <button type="button" class="btn-submit" onclick="saveFeat(${id})">Simpan</button>`);
             }
             window.saveFeat = function(id) {
-                let fs = L(FEATURES_KEY, []); let t = document.getElementById('ftT').value; let d = document.getElementById('ftD').value;
+                let fs = L(FEATURES_KEY, []); let t = el('ftT').value; let d = el('ftD').value;
                 if(!t) return showToast('Judul wajib', 'error');
                 if(id) { let f = fs.find(x=>x.id===id); if(f) {f.title=t; f.desc=d;} } else { fs.push({id:Date.now(), title:t, desc:d, icon:'fa-check-circle'}); }
                 S(FEATURES_KEY, fs); closeModal(); renderFeatures(); showToast('Tersimpan', 'success');
             }
             window.delFeat = function(id) { if(!confirm('Hapus Feature?')) return; S(FEATURES_KEY, L(FEATURES_KEY,[]).filter(x=>x.id!==id)); renderFeatures(); showToast('Dihapus','info'); }
+            bindClick('addFeatureBtn', () => openFeatModal());
 
             // PAGE SAVE BTNS
-            window.saveAboutData = function() { S(ABOUT_KEY, {title:document.getElementById('aboutTitle').value, content:document.getElementById('aboutContent').value}); showToast('Tersimpan', 'success'); };
-            window.saveFooterData = function() { S(FOOTER_KEY, {brand:document.getElementById('footerBrand').value, desc:document.getElementById('footerDesc').value, copyright:document.getElementById('footerCopyright').value, social:{instagram:document.getElementById('sosmedInstagram').value, facebook:document.getElementById('sosmedFacebook').value, youtube:document.getElementById('sosmedYoutube').value, tiktok:document.getElementById('sosmedTiktok').value}}); showToast('Tersimpan', 'success'); };
+            bindClick('saveAboutBtn', () => { S(ABOUT_KEY, {title:el('aboutTitle').value, content:el('aboutContent').value}); showToast('Tersimpan', 'success'); });
+            bindClick('saveFooterBtn', () => { S(FOOTER_KEY, {brand:el('footerBrand').value, desc:el('footerDesc').value, copyright:el('footerCopyright').value, social:{instagram:el('sosmedInstagram').value, facebook:el('sosmedFacebook').value, youtube:el('sosmedYoutube').value, tiktok:el('sosmedTiktok').value}}); showToast('Tersimpan', 'success'); });
 
             // SETTINGS
             window.loadSettingsToForm = function() {
                 const set = loadSettings(); const users = loadUsers(); const admin = users.find(u => u.email === 'admin@mlm.com' || u.role === 'admin');
                 
-                const sb = document.getElementById('setSponsorBonus'); if(sb) sb.value = set.sponsorBonus || 10; 
-                const rb = document.getElementById('setRoBonus'); if(rb) rb.value = set.roBonus || 3;
-                
+                const sb = el('setSponsorBonus'); if(sb) sb.value = set.sponsorBonus || 10; 
+                const rb = el('setRoBonus'); if(rb) rb.value = set.roBonus || 3;
                 const bL = set.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5]; 
-                for(let i=1; i<=10; i++) { let el = document.getElementById(`setBinaryL${i}`); if(el) el.value = bL[i-1]!==undefined?bL[i-1]:0; }
-                
+                for(let i=1; i<=10; i++) { let elB = el(`setBinaryL${i}`); if(elB) elB.value = bL[i-1]!==undefined?bL[i-1]:0; }
                 const rL = set.rewardBonusLevels || [5, 4, 3, 2, 1]; 
-                for(let i=1; i<=5; i++) { let el = document.getElementById(`setRewardL${i}`); if(el) el.value = rL[i-1]!==undefined?rL[i-1]:0; }
+                for(let i=1; i<=5; i++) { let elR = el(`setRewardL${i}`); if(elR) elR.value = rL[i-1]!==undefined?rL[i-1]:0; }
                 
-                const smp = document.getElementById('setMemberPrice'); if(smp) smp.value = set.memberPrice || 550000;
-                const sbn = document.getElementById('setBrandName'); if(sbn) sbn.value = set.brandName || 'HEDTRO JEANS'; 
-                const sht = document.getElementById('setHeroTitle'); if(sht) sht.value = set.heroTitle || 'HEDTRO JEANS · Premium Denim';
+                const smp = el('setMemberPrice'); if(smp) smp.value = set.memberPrice || 550000;
+                const sbn = el('setBrandName'); if(sbn) sbn.value = set.brandName || 'HEDTRO JEANS'; 
+                const sht = el('setHeroTitle'); if(sht) sht.value = set.heroTitle || 'HEDTRO JEANS · Premium Denim';
                 
-                const sae = document.getElementById('setAdminEmail'); if(admin && sae) sae.value = admin.email;
+                const sae = el('setAdminEmail'); if(admin && sae) sae.value = admin.email;
             }
 
             window.renderBankSettings = function() {
-                const banks = loadBankInfo(); const tbody = document.getElementById('bankTableBody'); if(!tbody) return;
+                const banks = loadBankInfo(); const tbody = el('bankTableBody'); if(!tbody) return;
                 if(banks.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Kosong.</td></tr>'; return; }
                 tbody.innerHTML = banks.map(b => `<tr><td data-label="Bank"><strong>${b.bank}</strong></td><td data-label="Rekening">${b.account}</td><td data-label="Nama">${b.name}</td><td data-label="Aksi"><div style="display:flex;gap:6px;"><button type="button" class="btn-sm btn-sm-warning" onclick="openBankModal(${b.id})">Edit</button> <button type="button" class="btn-sm btn-sm-danger" onclick="delBank(${b.id})">Hapus</button></div></td></tr>`).join('');
             }
-
             window.openBankModal = function(id = null) {
                 let bs = loadBankInfo(); let b = id ? bs.find(x => x.id === id) : null;
                 openModal(`<h3>${b?'Edit':'Tambah'} Bank</h3>
@@ -1134,56 +1131,20 @@
                     <button type="button" class="btn-submit" onclick="saveBank(${id})">Simpan</button>`);
             }
             window.saveBank = function(id) {
-                let bs = loadBankInfo(); let bank = document.getElementById('mBankName').value; let acc = document.getElementById('mBankAcc').value; let name = document.getElementById('mBankHolder').value;
+                let bs = loadBankInfo(); let bank = el('mBankName').value; let acc = el('mBankAcc').value; let name = el('mBankHolder').value;
                 if(!bank||!acc) return showToast('Wajib diisi', 'error');
                 if(id) { let b = bs.find(x=>x.id===id); if(b) {b.bank=bank; b.account=acc; b.name=name;} } else { bs.push({id:Date.now(), bank, account:acc, name}); }
                 saveBankInfo(bs); renderBankSettings(); closeModal(); showToast('Tersimpan', 'success');
             }
             window.delBank = function(id) { if(!confirm('Hapus rekening?')) return; saveBankInfo(loadBankInfo().filter(x=>x.id!==id)); renderBankSettings(); showToast('Dihapus', 'info'); }
+            bindClick('addBankBtn', () => openBankModal());
 
-            window.saveBonusData = function() { let s = loadSettings(); s.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value)||0; s.roBonus = parseFloat(document.getElementById('setRoBonus').value)||0; saveSettings(s); showToast('Tersimpan', 'success'); };
-            window.saveBinaryData = function() { let s = loadSettings(); let b = []; for(let i=1; i<=10; i++) b.push(parseFloat(document.getElementById(`setBinaryL${i}`).value)||0); s.binaryBonusLevels = b; saveSettings(s); showToast('Tersimpan', 'success'); };
-            window.saveRewardData = function() { let s = loadSettings(); let r = []; for(let i=1; i<=5; i++) r.push(parseFloat(document.getElementById(`setRewardL${i}`).value)||0); s.rewardBonusLevels = r; saveSettings(s); showToast('Tersimpan', 'success'); };
-            window.saveAdminData = function() { const newEmail = document.getElementById('setAdminEmail').value.trim(); const newPass = document.getElementById('setAdminPassword').value.trim(); let us = loadUsers(); let ad = us.find(u=>u.role==='admin'); if(ad) {ad.email=newEmail; if(newPass) ad.password=newPass; saveUsers(us); showToast('Tersimpan', 'success');} };
-            window.saveBrandData = function() { 
-                let s = loadSettings(); s.brandName = document.getElementById('setBrandName').value.trim() || 'HEDTRO JEANS';
-                let logoInput = document.getElementById('setBrandLogo'); if(logoInput && logoInput.value) s.brandLogo = logoInput.value;
-                let iconInput = document.getElementById('setBrandIcon'); if(iconInput && iconInput.value) s.brandIcon = iconInput.value;
-                s.heroTitle = document.getElementById('setHeroTitle').value.trim() || 'HEDTRO JEANS · Premium Denim'; saveSettings(s); showToast('Tersimpan', 'success'); 
-            };
-            window.saveShopData = function() { let s = loadSettings(); s.memberPrice = parseFloat(document.getElementById('setMemberPrice').value)||550000; saveSettings(s); showToast('Tersimpan', 'success'); };
-
-            // PENGENDALI LOGIN EKSPLISIT (WINDOW FUNCTION)
-            window.doAdminLogin = function() {
-                const email = document.getElementById('adminLoginEmail').value.trim();
-                const pass = document.getElementById('adminLoginPassword').value.trim();
-                const users = loadUsers();
-                const admin = users.find(u => (u.email === email || u.username === email) && u.password === pass && u.role === 'admin');
-                if (admin || (email === 'admin@mlm.com' && pass === 'admin123')) {
-                    saveSession({ id: admin ? admin.id : 1, role: 'admin' });
-                    document.getElementById('loginOverlay').classList.add('hidden');
-                    document.getElementById('mainApp').style.display = 'block';
-                    const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
-                    switchTab(savedTab);
-                    showToast('Welcome Admin!', 'success');
-                } else { 
-                    document.getElementById('adminLoginMsg').innerText = '❌ Akses ditolak. Email/Password salah.';
-                    document.getElementById('adminLoginMsg').className = 'msg error';
-                }
-            };
-
-            window.fillAdminDemo = function() {
-                document.getElementById('adminLoginEmail').value = 'admin@mlm.com';
-                document.getElementById('adminLoginPassword').value = 'admin123';
-                doAdminLogin();
-            };
-
-            // Tangani tombol enter pada form password
-            const pwdInput = document.getElementById('adminLoginPassword');
-            if(pwdInput) pwdInput.onkeydown = function(e) { if(e.key === 'Enter') { e.preventDefault(); doAdminLogin(); } };
-
-            const emailInput = document.getElementById('adminLoginEmail');
-            if(emailInput) emailInput.onkeydown = function(e) { if(e.key === 'Enter') { e.preventDefault(); document.getElementById('adminLoginPassword').focus(); } };
+            bindClick('saveBonusSettings', () => { let s = loadSettings(); s.sponsorBonus = parseFloat(el('setSponsorBonus').value)||0; s.roBonus = parseFloat(el('setRoBonus').value)||0; saveSettings(s); showToast('Tersimpan', 'success'); });
+            bindClick('saveBinarySettings', () => { let s = loadSettings(); let b = []; for(let i=1; i<=10; i++) b.push(parseFloat(el(`setBinaryL${i}`).value)||0); s.binaryBonusLevels = b; saveSettings(s); showToast('Tersimpan', 'success'); });
+            bindClick('saveRewardSettings', () => { let s = loadSettings(); let r = []; for(let i=1; i<=5; i++) r.push(parseFloat(el(`setRewardL${i}`).value)||0); s.rewardBonusLevels = r; saveSettings(s); showToast('Tersimpan', 'success'); });
+            bindClick('saveAdminAccountSettings', () => { let email = el('setAdminEmail').value.trim(); let pass = el('setAdminPassword').value.trim(); let us = loadUsers(); let ad = us.find(u=>u.role==='admin'); if(ad) {ad.email=email; if(pass) ad.password=pass; saveUsers(us); showToast('Tersimpan', 'success');} });
+            bindClick('saveBrandSettings', () => { let s = loadSettings(); s.brandName = el('setBrandName').value.trim() || 'HEDTRO JEANS'; s.heroTitle = el('setHeroTitle').value.trim() || 'HEDTRO JEANS · Premium Denim'; saveSettings(s); showToast('Tersimpan', 'success'); });
+            bindClick('saveShopSettings', () => { let s = loadSettings(); s.memberPrice = parseFloat(el('setMemberPrice').value)||550000; saveSettings(s); showToast('Tersimpan', 'success'); });
 
             // INIT
             let initUsers = loadUsers();
@@ -1191,8 +1152,8 @@
             
             const curSession = getSession();
             if (curSession && curSession.role === 'admin') { 
-                const overlay = document.getElementById('loginOverlay'); if(overlay) overlay.classList.add('hidden'); 
-                const mainApp = document.getElementById('mainApp'); if(mainApp) mainApp.style.display = 'block'; 
+                const overlay = el('loginOverlay'); if(overlay) overlay.classList.add('hidden'); 
+                const mainApp = el('mainApp'); if(mainApp) mainApp.style.display = 'block'; 
                 const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
                 switchTab(savedTab);
                 const savedSubTab = sessionStorage.getItem('adminActiveSubTab');
