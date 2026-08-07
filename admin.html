@@ -34,7 +34,7 @@
         }
         a { text-decoration:none; color:inherit; }
         button { cursor:pointer; font-family:inherit; border:none; background:none; }
-        ::-webkit-scrollbar { width:6px; }
+        ::-webkit-scrollbar { width:6px; height:6px; }
         ::-webkit-scrollbar-track { background:var(--cream); }
         ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
@@ -146,13 +146,17 @@
         .tab-content { display:none; }
         .tab-content.active { display:block; }
 
-        /* ===== SUB TABS UNTUK PENGATURAN ===== */
+        /* ===== SUB TABS DI PENGATURAN ===== */
         .sub-tab-nav {
-            display: flex; flex-wrap: wrap; gap: 8px;
+            display: flex; gap: 8px;
             margin-bottom: 20px;
             border-bottom: 2px solid var(--denim-light);
             padding-bottom: 10px;
+            overflow-x: auto;
+            white-space: nowrap;
+            -webkit-overflow-scrolling: touch;
         }
+        .sub-tab-nav::-webkit-scrollbar { display: none; }
         .sub-tab-btn {
             padding: 8px 16px;
             border-radius: 40px;
@@ -161,6 +165,7 @@
             color: var(--denim-navy);
             border: 1px solid #dde3ea;
             transition: var(--transition);
+            flex-shrink: 0;
         }
         .sub-tab-btn:hover { background: var(--denim-light); }
         .sub-tab-btn.active {
@@ -195,18 +200,21 @@
             margin-bottom:12px;
         }
 
+        /* TABEL OPTIMASI */
         .table-wrap {
             overflow-x:auto; border-radius:var(--radius-sm);
             border:1px solid #e2e8f0; background:var(--white);
             width: 100%;
             -webkit-overflow-scrolling: touch;
+            box-shadow: var(--shadow);
+            margin-bottom: 12px;
         }
         table {
             width:100%; border-collapse:collapse; font-size:0.82rem;
-            min-width:750px;
+            min-width:650px;
         }
         thead { background:var(--denim-dark); color:var(--cream); }
-        th { padding:12px 14px; text-align:left; font-weight:600; }
+        th { padding:12px 14px; text-align:left; font-weight:600; white-space: nowrap; }
         td { padding:10px 14px; border-bottom:1px solid #eef2f7; vertical-align: middle; }
 
         .badge-admin {
@@ -487,6 +495,7 @@
         .faq-item-admin > div:first-child, .feature-item-admin > div:first-child { flex:1; min-width:150px; }
         .faq-item-admin .faq-actions, .feature-item-admin .feature-actions { display:flex; gap:6px; flex-shrink:0; }
 
+        /* ===== OPTIMASI LAYAR HP (MOBILE FIXES) ===== */
         @media (max-width: 768px) {
             .navbar { padding: 10px 14px; }
             .navbar .logo { font-size: 1.1rem; }
@@ -499,19 +508,36 @@
             .sidebar .sidebar-header .close-side { display:block; }
             .sidebar-overlay { display:block; }
 
-            .main-content { margin-left:0; max-width:100%; padding:16px 12px 30px; }
-            .page-title { font-size: 1.3rem; margin-bottom: 14px; }
+            .main-content { margin-left:0; max-width:100%; padding:14px 10px 30px; }
+            .page-title { font-size: 1.25rem; margin-bottom: 12px; }
 
-            .dashboard-banner { flex-direction: column; align-items: flex-start; gap: 10px; }
-            .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
-            .stat-card { padding: 12px 14px; }
-            .stat-card .value { font-size: 1.3rem; }
+            .dashboard-banner { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; }
+            
+            /* KONSISTEN 2 KOLOM 1 BARIS UNTUK STATISTIK DASHBOARD DI HP */
+            .stats-grid { 
+                grid-template-columns: repeat(2, 1fr) !important; 
+                gap: 10px; 
+                margin-bottom: 20px; 
+            }
+            .stat-card { padding: 12px 10px; }
+            .stat-card .label { font-size: 0.65rem; letter-spacing: 0px; }
+            .stat-card .value { font-size: 1.2rem; margin-top: 2px; }
+            .stat-card .sub { font-size: 0.65rem; }
+            .stat-card .icon-bg { font-size: 2rem; right: 8px; bottom: 6px; }
 
             .settings-grid { grid-template-columns: 1fr; gap: 12px; }
             .settings-card { padding: 14px; }
             .level-grid { grid-template-columns: 1fr !important; }
             .slide-preview { grid-template-columns: 1fr !important; }
             .modal-box { padding: 20px 16px 24px; border-radius: 20px; }
+
+            /* PERBAIKAN TABEL MOBILE */
+            table { font-size: 0.78rem; min-width: 600px; }
+            th, td { padding: 8px 10px; }
+            .btn-sm { padding: 6px 12px !important; font-size: 0.72rem !important; }
+
+            .sub-tab-nav { padding-bottom: 8px; margin-bottom: 14px; }
+            .sub-tab-btn { padding: 6px 12px; font-size: 0.75rem; }
         }
 
         @media (min-width: 769px) {
@@ -523,7 +549,6 @@
         }
 
         @media (max-width: 480px) {
-            .stats-grid { grid-template-columns: 1fr; }
             .history-item { font-size: 0.8rem; flex-direction: column; gap: 4px; }
             .history-item .amount { align-self: flex-start; }
         }
@@ -622,42 +647,44 @@
                 </div>
 
                 <h1 class="page-title" style="font-size: 1.2rem; margin-bottom: 12px;"><i class="fas fa-chart-pie"></i> Ringkasan Sistem</h1>
+                
+                <!-- CARD DASHBOARD 2 KOLOM RAPI DI HP -->
                 <div class="stats-grid" id="dashboardStats">
                     <div class="stat-card">
                         <i class="fas fa-users icon-bg"></i>
                         <div class="label">Total Member</div>
                         <div class="value" id="statTotalMember">0</div>
-                        <div class="sub">Terdaftar secara menyeluruh</div>
+                        <div class="sub">Terdaftar</div>
                     </div>
                     <div class="stat-card" style="border-left-color: #2ecc71;">
                         <i class="fas fa-user-check icon-bg"></i>
                         <div class="label">Verified Member</div>
                         <div class="value" id="statVerifiedMember">0</div>
-                        <div class="sub">Akun aktif bertransaksi</div>
+                        <div class="sub">Aktif</div>
                     </div>
                     <div class="stat-card" style="border-left-color: #3498db;">
                         <i class="fas fa-shopping-bag icon-bg"></i>
                         <div class="label">Total Pesanan</div>
                         <div class="value" id="statTotalOrders">0</div>
-                        <div class="sub">Keseluruhan order</div>
+                        <div class="sub">Semua order</div>
                     </div>
                     <div class="stat-card" style="border-left-color: #e67e22;">
                         <i class="fas fa-clock icon-bg"></i>
                         <div class="label">Pesanan Pending</div>
                         <div class="value" id="statPendingOrders">0</div>
-                        <div class="sub">Perlu penanganan</div>
+                        <div class="sub">Menunggu</div>
                     </div>
                     <div class="stat-card" style="border-left-color: #9b59b6;">
                         <i class="fas fa-boxes icon-bg"></i>
                         <div class="label">Total Produk</div>
                         <div class="value" id="statTotalProducts">0</div>
-                        <div class="sub">Tersedia di katalog</div>
+                        <div class="sub">Di katalog</div>
                     </div>
                     <div class="stat-card" style="border-left-color: #16a085;">
                         <i class="fas fa-wallet icon-bg"></i>
                         <div class="label">Total Transaksi</div>
                         <div class="value" id="statTotalTransactions">Rp 0</div>
-                        <div class="sub">Volume uang beredar</div>
+                        <div class="sub">Volume uang</div>
                     </div>
                 </div>
 
@@ -845,7 +872,7 @@
             <div class="tab-content" id="tabSettings">
                 <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan Sistem</h1>
                 
-                <!-- SUB-TAB NAVIGATION -->
+                <!-- SUB-TAB NAVIGATION DENGAN SCROLL HORIZONTAL DISESUAIKAN UNTUK HP -->
                 <div class="sub-tab-nav">
                     <button class="sub-tab-btn active" data-subtab="subSponsor">Sponsor & RO</button>
                     <button class="sub-tab-btn" data-subtab="subBinary">Binary (10 Level)</button>
@@ -903,7 +930,7 @@
                     </div>
                 </div>
 
-                <!-- 4. BRAND & TAMPILAN (UPLOAD LOGO & ICON) -->
+                <!-- 4. BRAND & TAMPILAN -->
                 <div class="sub-tab-content" id="subBrand">
                     <div class="settings-card">
                         <h4><i class="fas fa-paint-brush"></i> Brand & Tampilan Visual</h4>
@@ -1538,7 +1565,6 @@
 
                 document.getElementById('setAdminEmail').value = adminUser ? adminUser.email : 'admin@mlm.com';
 
-                // Setup Image Previews
                 const bPreview = document.getElementById('brandLogoPreview');
                 if(settings.brandLogo && (settings.brandLogo.startsWith('data:image') || settings.brandLogo.startsWith('http'))) {
                     bPreview.src = settings.brandLogo; bPreview.classList.add('show');
