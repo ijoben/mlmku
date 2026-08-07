@@ -7,125 +7,44 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <style>
-        /* ===== RESET ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
-            --denim-dark: #0b1a2b;
-            --denim-navy: #1a2e44;
-            --denim-blue: #2a4b6e;
-            --denim-light: #e8edf2;
-            --gold-accent: #c9a84c;
-            --gold-light: #e8d5a3;
-            --cream: #f7f4ef;
-            --white: #ffffff;
-            --shadow: 0 4px 20px rgba(0,0,0,0.08);
-            --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
-            --radius: 28px;
-            --radius-sm: 14px;
-            --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
-            --sidebar-width: 280px;
+            --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2;
+            --gold-accent: #c9a84c; --gold-light: #e8d5a3; --cream: #f7f4ef; --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08); --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 28px; --radius-sm: 14px; --transition: 0.3s cubic-bezier(0.4,0,0.2,1); --sidebar-width: 280px;
         }
-        body, html {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--cream);
-            color: var(--denim-dark);
-            padding-top: 35px; 
-            overflow-x: hidden;
-            width: 100%;
-            max-width: 100vw;
-        }
+        body, html { font-family: 'Inter', -apple-system, sans-serif; background: var(--cream); color: var(--denim-dark); padding-top: 35px; overflow-x: hidden; width: 100%; max-width: 100vw; }
         a { text-decoration:none; color:inherit; }
         button { cursor:pointer; font-family:inherit; border:none; background:none; }
         ::-webkit-scrollbar { width:6px; height:6px; }
         ::-webkit-scrollbar-track { background:var(--cream); }
         ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
-        /* ===== NAVBAR ===== */
-        .navbar {
-            position: fixed; top:0; left:0; right:0; z-index:1100;
-            background: var(--denim-dark);
-            padding: 12px 20px;
-            display: flex; align-items:center; justify-content:space-between;
-            border-bottom:3px solid var(--gold-accent);
-            height:70px;
-        }
-        .navbar .logo {
-            display:flex; align-items:center; gap:8px;
-            color:var(--white); font-weight:800; font-size:1.4rem;
-        }
+        .navbar { position: fixed; top:0; left:0; right:0; z-index:1100; background: var(--denim-dark); padding: 12px 20px; display: flex; align-items:center; justify-content:space-between; border-bottom:3px solid var(--gold-accent); height:70px; }
+        .navbar .logo { display:flex; align-items:center; gap:8px; color:var(--white); font-weight:800; font-size:1.4rem; }
         .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
         .navbar .logo img { height: 36px; width: auto; object-fit: contain; }
         .navbar .logo span { font-weight:300; color:var(--gold-light); font-size:0.75rem; margin-left:2px; }
-        .nav-right {
-            display:flex; align-items:center; gap:12px;
-        }
-        .nav-right .user-badge {
-            display:flex; align-items:center; gap:6px;
-            color:var(--cream); font-size:0.8rem;
-            background:rgba(255,255,255,0.08);
-            padding:6px 14px; border-radius:60px;
-            border:1px solid rgba(255,255,255,0.06);
-            cursor:pointer;
-        }
+        .nav-right { display:flex; align-items:center; gap:12px; }
+        .nav-right .user-badge { display:flex; align-items:center; gap:6px; color:var(--cream); font-size:0.8rem; background:rgba(255,255,255,0.08); padding:6px 14px; border-radius:60px; border:1px solid rgba(255,255,255,0.06); cursor:pointer; }
         .nav-right .user-badge i { color:var(--gold-accent); }
 
-        .burger-btn {
-            display:none;
-            flex-direction:column; gap:5px;
-            padding:8px 6px;
-            background:transparent; border:none; cursor:pointer;
-            z-index:1101;
-        }
-        .burger-btn span {
-            display:block; width:28px; height:3px;
-            background:var(--cream); border-radius:4px;
-            transition:var(--transition); transform-origin:center;
-        }
+        .burger-btn { display:none; flex-direction:column; gap:5px; padding:8px 6px; background:transparent; border:none; cursor:pointer; z-index:1101; }
+        .burger-btn span { display:block; width:28px; height:3px; background:var(--cream); border-radius:4px; transition:var(--transition); transform-origin:center; }
         .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
         .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
         .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
 
-        .sidebar-overlay {
-            display:none;
-            position:fixed; top:0; left:0; width:100%; height:100%;
-            background:rgba(0,0,0,0.5); z-index:1050;
-            opacity:0; pointer-events:none;
-            transition:var(--transition);
-        }
+        .sidebar-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1050; opacity:0; pointer-events:none; transition:var(--transition); }
         .sidebar-overlay.active { opacity:1; pointer-events:all; }
-        .sidebar {
-            position:fixed; top:0; left:0; bottom:0;
-            width:var(--sidebar-width);
-            background:var(--denim-dark);
-            z-index:1060;
-            padding:24px 20px;
-            overflow-y:auto;
-            border-right:3px solid var(--gold-accent);
-            display:flex; flex-direction:column; gap:4px;
-            transition:left 0.3s ease;
-            left:-320px;
-        }
+        .sidebar { position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-width); background:var(--denim-dark); z-index:1060; padding:24px 20px; overflow-y:auto; border-right:3px solid var(--gold-accent); display:flex; flex-direction:column; gap:4px; transition:left 0.3s ease; left:-320px; }
         .sidebar.open { left:0; }
-        .sidebar .sidebar-header {
-            display:flex; align-items:center; justify-content:space-between;
-            padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08);
-            margin-bottom:12px;
-        }
-        .sidebar .sidebar-header .logo-side {
-            color:var(--white); font-weight:800; font-size:1.3rem;
-            display: flex; align-items: center; gap: 8px;
-        }
+        .sidebar .sidebar-header { display:flex; align-items:center; justify-content:space-between; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:12px; }
+        .sidebar .sidebar-header .logo-side { color:var(--white); font-weight:800; font-size:1.3rem; display: flex; align-items: center; gap: 8px; }
         .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
-        .sidebar .sidebar-header .close-side {
-            display:none;
-            color:var(--cream); font-size:1.6rem; cursor:pointer;
-        }
-        .sidebar .menu-item {
-            display:flex; align-items:center; gap:14px;
-            padding:12px 16px; border-radius:12px;
-            color:var(--cream); font-weight:500; font-size:0.95rem;
-            transition:var(--transition); cursor:pointer;
-        }
+        .sidebar .sidebar-header .close-side { display:none; color:var(--cream); font-size:1.6rem; cursor:pointer; }
+        .sidebar .menu-item { display:flex; align-items:center; gap:14px; padding:12px 16px; border-radius:12px; color:var(--cream); font-weight:500; font-size:0.95rem; transition:var(--transition); cursor:pointer; }
         .sidebar .menu-item:hover { background:rgba(255,255,255,0.08); }
         .sidebar .menu-item i { width:24px; color:var(--gold-accent); }
         .sidebar .menu-item.active { background:rgba(201,168,76,0.15); color:var(--gold-accent); }
@@ -133,118 +52,43 @@
         .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
         .sidebar .menu-item.logout i { color:#e74c3c; }
 
-        .main-content {
-            margin-left: var(--sidebar-width);
-            padding: 20px 24px 40px;
-            transition: margin-left 0.3s ease;
-            max-width: calc(100% - var(--sidebar-width));
-            width: 100%;
-        }
+        .main-content { margin-left: var(--sidebar-width); padding: 20px 24px 40px; transition: margin-left 0.3s ease; max-width: calc(100% - var(--sidebar-width)); width: 100%; }
         body { padding-top: 70px; }
-        .page-title {
-            font-size:1.6rem; font-weight:700; color:var(--denim-dark);
-            margin-bottom:20px; display:flex; align-items:center; gap:12px;
-        }
+        .page-title { font-size:1.6rem; font-weight:700; color:var(--denim-dark); margin-bottom:20px; display:flex; align-items:center; gap:12px; }
         .page-title i { color:var(--gold-accent); }
 
         .tab-content { display:none; }
         .tab-content.active { display:block; }
 
-        /* ===== SUB TABS PENGATURAN ===== */
-        .sub-tab-nav {
-            display: flex; gap: 8px;
-            margin-bottom: 20px;
-            border-bottom: 2px solid var(--denim-light);
-            padding-bottom: 10px;
-            overflow-x: auto;
-            white-space: nowrap;
-            -webkit-overflow-scrolling: touch;
-            width: 100%;
-        }
-        .sub-tab-nav::-webkit-scrollbar { display: none; }
-        .sub-tab-btn {
-            padding: 8px 16px;
-            border-radius: 40px;
-            font-size: 0.82rem; font-weight: 600;
-            background: var(--white);
-            color: var(--denim-navy);
-            border: 1px solid #dde3ea;
-            transition: var(--transition);
-            flex-shrink: 0;
-        }
-        .sub-tab-btn:hover { background: var(--denim-light); }
-        .sub-tab-btn.active {
-            background: var(--denim-dark);
-            color: var(--gold-accent);
-            border-color: var(--denim-dark);
-            box-shadow: 0 4px 12px rgba(11,26,43,0.15);
-        }
-
+        .sub-tab-nav { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--denim-light); padding-bottom: 10px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; width: 100%; }
+        .sub-tab-btn { padding: 8px 16px; border-radius: 40px; font-size: 0.82rem; font-weight: 600; background: var(--white); color: var(--denim-navy); border: 1px solid #dde3ea; transition: var(--transition); flex-shrink: 0; }
+        .sub-tab-btn.active { background: var(--denim-dark); color: var(--gold-accent); border-color: var(--denim-dark); box-shadow: 0 4px 12px rgba(11,26,43,0.15); }
         .sub-tab-content { display: none; }
         .sub-tab-content.active { display: block; }
 
-        .btn-sm {
-            padding:8px 18px; border-radius:60px;
-            font-weight:600; font-size:0.8rem;
-            transition:var(--transition); font-family:inherit;
-            display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-        }
+        .btn-sm { padding:8px 18px; border-radius:60px; font-weight:600; font-size:0.8rem; transition:var(--transition); font-family:inherit; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
         .btn-sm-primary { background:var(--denim-blue); color:#fff; }
         .btn-sm-primary:hover { background:var(--denim-dark); }
         .btn-sm-success { background:#1f7a4b; color:#fff; }
-        .btn-sm-success:hover { background:#155d38; }
         .btn-sm-danger { background:#b13e3e; color:#fff; }
-        .btn-sm-danger:hover { background:#8f2f2f; }
         .btn-sm-warning { background:#d4a02b; color:#fff; }
-        .btn-sm-warning:hover { background:#b8891f; }
         .btn-sm-gold { background:var(--gold-accent); color:var(--denim-dark); }
-        .btn-sm-gold:hover { background:#b8963a; }
 
-        .flex-row {
-            display:flex; flex-wrap:wrap; gap:10px; align-items:center;
-            margin-bottom:12px;
-        }
+        .flex-row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:12px; }
 
-        /* TABEL DEFAULT DESKTOP */
-        .table-wrap {
-            overflow-x:auto; border-radius:var(--radius-sm);
-            border:1px solid #e2e8f0; background:var(--white);
-            width: 100%;
-            -webkit-overflow-scrolling: touch;
-            box-shadow: var(--shadow);
-            margin-bottom: 12px;
-        }
-        table {
-            width:100%; border-collapse:collapse; font-size:0.82rem;
-            min-width:650px; 
-        }
+        .table-wrap { overflow-x:auto; border-radius:var(--radius-sm); border:1px solid #e2e8f0; background:var(--white); width: 100%; -webkit-overflow-scrolling: touch; box-shadow: var(--shadow); margin-bottom: 12px; }
+        table { width:100%; border-collapse:collapse; font-size:0.82rem; min-width:650px; }
         thead { background:var(--denim-dark); color:var(--cream); }
         th { padding:12px 14px; text-align:left; font-weight:600; white-space: nowrap; }
         td { padding:10px 14px; border-bottom:1px solid #eef2f7; vertical-align: middle; }
 
-        /* ===== PAGINATION ===== */
-        .pagination {
-            display: flex; justify-content: center; align-items: center; gap: 6px;
-            margin-top: 16px; flex-wrap: wrap; width: 100%;
-        }
-        .page-btn {
-            padding: 6px 14px; border-radius: 8px; border: 1px solid #dde3ea;
-            background: var(--white); color: var(--denim-navy);
-            font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition);
-        }
-        .page-btn:hover:not(:disabled) { background: var(--denim-light); }
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 16px; flex-wrap: wrap; width: 100%; }
+        .page-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #dde3ea; background: var(--white); color: var(--denim-navy); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
         .page-btn.active { background: var(--denim-dark); color: var(--gold-accent); border-color: var(--denim-dark); }
         .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .badge-admin {
-            background:var(--gold-accent); color:var(--denim-dark);
-            padding:1px 10px; border-radius:40px;
-            font-size:0.6rem; font-weight:700; margin-left:4px;
-        }
-        .badge-status {
-            padding:2px 12px; border-radius:40px; font-size:0.7rem; font-weight:600;
-            display: inline-block; white-space: nowrap;
-        }
+        .badge-admin { background:var(--gold-accent); color:var(--denim-dark); padding:1px 10px; border-radius:40px; font-size:0.6rem; font-weight:700; margin-left:4px; }
+        .badge-status { padding:2px 12px; border-radius:40px; font-size:0.7rem; font-weight:600; display: inline-block; white-space: nowrap; }
         .badge-pending { background:#fff3cd; color:#856404; }
         .badge-success { background:#d4edda; color:#155724; }
         .badge-failed { background:#f8d7da; color:#721c24; }
@@ -254,372 +98,89 @@
         .text-muted { color:#6a7e9a; font-size:0.8rem; }
         .mt-16 { margin-top:16px; }
 
-        .settings-card {
-            background:var(--white); border-radius:var(--radius-sm);
-            padding:20px; box-shadow:var(--shadow);
-            border:1px solid #e2e8f0;
-            margin-bottom:16px;
-            width: 100%;
-        }
-        .settings-card h4 {
-            font-size:0.95rem; font-weight:700; margin-bottom:14px;
-            display:flex; align-items:center; gap:8px; color: var(--denim-dark);
-        }
+        .settings-card { background:var(--white); border-radius:var(--radius-sm); padding:20px; box-shadow:var(--shadow); border:1px solid #e2e8f0; margin-bottom:16px; width: 100%; }
+        .settings-card h4 { font-size:0.95rem; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; color: var(--denim-dark); }
         .settings-card h4 i { color:var(--gold-accent); }
         .settings-card .form-group { margin-bottom:14px; }
-        .settings-card .form-group label {
-            display:block; font-weight:600; color:var(--denim-navy);
-            font-size:0.8rem; margin-bottom:4px;
-        }
-        .settings-card .form-group input,
-        .settings-card .form-group select,
-        .settings-card .form-group textarea {
-            width:100%; padding:10px 14px;
-            border:1.5px solid #dde3ea; border-radius:60px;
-            font-size:0.9rem; background:#fafcff;
-            font-family:inherit; transition:var(--transition);
-        }
+        .settings-card .form-group label { display:block; font-weight:600; color:var(--denim-navy); font-size:0.8rem; margin-bottom:4px; }
+        .settings-card .form-group input, .settings-card .form-group select, .settings-card .form-group textarea { width:100%; padding:10px 14px; border:1.5px solid #dde3ea; border-radius:60px; font-size:0.9rem; background:#fafcff; font-family:inherit; transition:var(--transition); }
         .settings-card .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
-        .settings-card .form-group input:focus,
-        .settings-card .form-group select:focus,
-        .settings-card .form-group textarea:focus {
-            border-color:var(--denim-blue); outline:none;
-            box-shadow:0 0 0 4px rgba(42,75,110,0.1);
-        }
 
-        .upload-box {
-            display: flex; flex-direction: column; gap: 8px;
-            padding: 12px; border: 2px dashed #dde3ea;
-            border-radius: var(--radius-sm); background: #fafcff;
-        }
-        .upload-preview-img {
-            max-height: 80px; width: auto; object-fit: contain;
-            border-radius: 8px; background: #fff; padding: 4px;
-            border: 1px solid #eee; display: none;
-        }
+        .upload-box { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 2px dashed #dde3ea; border-radius: var(--radius-sm); background: #fafcff; }
+        .upload-preview-img { max-height: 80px; width: auto; object-fit: contain; border-radius: 8px; background: #fff; padding: 4px; border: 1px solid #eee; display: none; }
         .upload-preview-img.show { display: inline-block; }
 
-        .toast-container {
-            position:fixed; top:100px; right:20px; z-index:9999;
-            display:flex; flex-direction:column; gap:10px;
-            max-width:360px; width:calc(100% - 40px); pointer-events:none;
-        }
-        .toast-item {
-            background:var(--denim-dark); color:var(--cream);
-            padding:16px 20px; border-radius:var(--radius-sm);
-            border-left:4px solid var(--gold-accent);
-            box-shadow:var(--shadow-lg); animation:slideInRight 0.4s ease;
-            pointer-events:all; display:flex; align-items:center; gap:12px;
-        }
+        .toast-container { position:fixed; top:100px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px; max-width:360px; width:calc(100% - 40px); pointer-events:none; }
+        .toast-item { background:var(--denim-dark); color:var(--cream); padding:16px 20px; border-radius:var(--radius-sm); border-left:4px solid var(--gold-accent); box-shadow:var(--shadow-lg); animation:slideInRight 0.4s ease; pointer-events:all; display:flex; align-items:center; gap:12px; }
         .toast-item.success { border-left-color:#2ecc71; }
         .toast-item.error { border-left-color:#e74c3c; }
         .toast-item.warning { border-left-color:#f39c12; }
-        .toast-item .toast-icon { font-size:1.2rem; flex-shrink:0; }
-        .toast-item .toast-msg { font-size:0.9rem; flex:1; }
-        .toast-item .toast-close { color:rgba(255,255,255,0.4); font-size:1.2rem; cursor:pointer; }
-        @keyframes slideInRight {
-            from { opacity:0; transform:translateX(60px) scale(0.9); }
-            to { opacity:1; transform:translateX(0) scale(1); }
-        }
-        @keyframes slideOutRight {
-            from { opacity:1; transform:translateX(0) scale(1); }
-            to { opacity:0; transform:translateX(60px) scale(0.9); }
-        }
-        .toast-item.removing { animation:slideOutRight 0.3s ease forwards; }
 
-        .footer {
-            background:var(--denim-dark); color:var(--cream);
-            padding:20px 24px; text-align:center;
-            border-top:3px solid var(--gold-accent);
-            margin-top:30px; font-size:0.8rem;
-        }
+        .footer { background:var(--denim-dark); color:var(--cream); padding:20px 24px; text-align:center; border-top:3px solid var(--gold-accent); margin-top:30px; font-size:0.8rem; }
 
-        .dashboard-banner {
-            background: linear-gradient(135deg, var(--denim-dark) 0%, var(--denim-navy) 60%, var(--denim-blue) 100%);
-            border-radius: var(--radius-sm);
-            padding: 24px; color: var(--white);
-            margin-bottom: 24px; box-shadow: var(--shadow);
-            display: flex; align-items: center; justify-content: space-between;
-            border-left: 5px solid var(--gold-accent);
-        }
+        .dashboard-banner { background: linear-gradient(135deg, var(--denim-dark) 0%, var(--denim-navy) 60%, var(--denim-blue) 100%); border-radius: var(--radius-sm); padding: 24px; color: var(--white); margin-bottom: 24px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; border-left: 5px solid var(--gold-accent); }
         .dashboard-banner h2 { font-size: 1.4rem; font-weight: 700; color: var(--gold-light); }
         .dashboard-banner p { font-size: 0.85rem; opacity: 0.9; margin-top: 4px; }
         
-        .stats-grid {
-            display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr));
-            gap:18px; margin-bottom:28px;
-        }
-        .stat-card {
-            background:var(--white); border-radius:var(--radius-sm);
-            padding:20px; border-left:4px solid var(--gold-accent);
-            box-shadow:var(--shadow); transition: var(--transition);
-            position: relative; overflow: hidden;
-        }
-        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
-        .stat-card .icon-bg {
-            position: absolute; right: 15px; bottom: 10px;
-            font-size: 3rem; color: var(--denim-light); opacity: 0.4;
-        }
-        .stat-card .label {
-            font-size:0.75rem; text-transform:uppercase;
-            color:var(--denim-blue); font-weight:700; letter-spacing:0.5px;
-        }
-        .stat-card .value {
-            font-size:1.8rem; font-weight:800; color:var(--denim-dark);
-            margin-top:6px;
-        }
-        .stat-card .sub {
-            font-size:0.75rem; color:#6a7e9a; margin-top:4px; font-weight: 500;
-        }
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:18px; margin-bottom:28px; }
+        .stat-card { background:var(--white); border-radius:var(--radius-sm); padding:20px; border-left:4px solid var(--gold-accent); box-shadow:var(--shadow); transition: var(--transition); position: relative; overflow: hidden; }
+        .stat-card .icon-bg { position: absolute; right: 15px; bottom: 10px; font-size: 3rem; color: var(--denim-light); opacity: 0.4; }
+        .stat-card .label { font-size:0.75rem; text-transform:uppercase; color:var(--denim-blue); font-weight:700; letter-spacing:0.5px; }
+        .stat-card .value { font-size:1.8rem; font-weight:800; color:var(--denim-dark); margin-top:6px; }
+        .stat-card .sub { font-size:0.75rem; color:#6a7e9a; margin-top:4px; font-weight: 500; }
 
-        .level-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
-        }
+        .level-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
-        .history-card {
-            background:var(--white); border-radius:var(--radius-sm);
-            padding:18px 20px; box-shadow:var(--shadow);
-            margin-top:12px;
-        }
-        .history-card h3 {
-            font-size:1rem; font-weight:600; margin-bottom:12px;
-            display:flex; align-items:center; gap:8px;
-        }
+        .history-card { background:var(--white); border-radius:var(--radius-sm); padding:18px 20px; box-shadow:var(--shadow); margin-top:12px; }
+        .history-card h3 { font-size:1rem; font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
         .history-card h3 i { color:var(--gold-accent); }
-        .history-item {
-            display:flex; justify-content:space-between;
-            padding:10px 0; border-bottom:1px solid #eee;
-            font-size:0.9rem;
-        }
+        .history-item { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee; font-size:0.9rem; }
         .history-item:last-child { border-bottom:none; }
-        .history-item .amount { font-weight:700; }
-        .history-item .amount.plus { color:#1f7a4b; }
-        .history-item .amount.minus { color:#b13e3e; }
+        .history-item .amount.plus { color:#1f7a4b; font-weight:bold; }
+        .history-item .amount.minus { color:#b13e3e; font-weight:bold; }
 
-        .login-overlay {
-            position:fixed; inset:0; z-index:9999;
-            background:rgba(0,0,0,0.7);
-            backdrop-filter:blur(10px);
-            display:flex; align-items:center; justify-content:center;
-            padding:20px;
-        }
-        .login-overlay .login-box {
-            background:var(--white); max-width:420px; width:100%;
-            border-radius:var(--radius); padding:32px 30px 36px;
-            box-shadow:var(--shadow-lg); text-align:center;
-        }
-        .login-overlay .login-box .logo-icon {
-            font-size:3rem; color:var(--gold-accent); margin-bottom:8px;
-        }
-        .login-overlay .login-box h2 {
-            font-family:'Playfair Display',serif;
-            font-size:1.6rem; font-weight:800; color:var(--denim-dark);
-            margin-bottom:4px;
-        }
-        .login-overlay .login-box p.sub {
-            color:var(--denim-navy); opacity:0.6; font-size:0.85rem; margin-bottom:20px;
-        }
+        .login-overlay { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; padding:20px; }
+        .login-overlay .login-box { background:var(--white); max-width:420px; width:100%; border-radius:var(--radius); padding:32px 30px 36px; box-shadow:var(--shadow-lg); text-align:center; }
+        .login-overlay .login-box .logo-icon { font-size:3rem; color:var(--gold-accent); margin-bottom:8px; }
+        .login-overlay .login-box h2 { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:800; color:var(--denim-dark); margin-bottom:4px; }
         .login-overlay .login-box .form-group { margin-bottom:14px; text-align:left; }
-        .login-overlay .login-box .form-group label {
-            display:block; font-weight:600; font-size:0.8rem;
-            color:var(--denim-navy); margin-bottom:4px;
-        }
-        .login-overlay .login-box .form-group input {
-            width:100%; padding:12px 16px; border:1.5px solid var(--denim-light);
-            border-radius:60px; font-size:0.95rem; background:var(--cream);
-            font-family:inherit; transition:var(--transition); outline:none;
-        }
-        .login-overlay .login-box .form-group input:focus {
-            border-color:var(--gold-accent); box-shadow:0 0 0 4px rgba(201,168,76,0.08);
-        }
-        .login-overlay .login-box .btn-login {
-            width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark);
-            border:none; border-radius:60px; font-weight:700; font-size:1rem;
-            transition:var(--transition); font-family:inherit; margin-top:4px;
-        }
-        .login-overlay .login-box .btn-login:hover { background:#b8963a; transform:scale(0.98); }
-        .login-overlay .login-box .msg {
-            margin-top:12px; padding:8px; border-radius:var(--radius-sm);
-            font-size:0.85rem; min-height:20px;
-        }
-        .login-overlay .login-box .msg.error { background:#fde8e8; color:#b13e3e; }
-        .login-overlay .login-box .msg.success { background:#e8f5ed; color:#1f7a4b; }
-        .login-overlay .login-box .demo-hint {
-            margin-top:16px; padding-top:16px; border-top:1px solid var(--denim-light);
-            font-size:0.75rem; color:var(--denim-navy); opacity:0.6;
-        }
-        .login-overlay .login-box .demo-hint span { color:var(--gold-accent); font-weight:600; cursor:pointer; }
-        .login-overlay .login-box .demo-hint span:hover { text-decoration:underline; }
-        .login-overlay .login-box .back-to-home { display:inline-block; margin-top:12px; color:var(--denim-blue); font-size:0.8rem; cursor:pointer; }
-        .login-overlay .login-box .back-to-home:hover { text-decoration:underline; }
+        .login-overlay .login-box .form-group label { display:block; font-weight:600; font-size:0.8rem; color:var(--denim-navy); margin-bottom:4px; }
+        .login-overlay .login-box .form-group input { width:100%; padding:12px 16px; border:1.5px solid var(--denim-light); border-radius:60px; font-size:0.95rem; background:var(--cream); outline:none; }
+        .login-overlay .login-box .btn-login { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; margin-top:4px; }
         .login-overlay.hidden { display:none; }
 
-        .modal-overlay {
-            display:none; position:fixed; inset:0; z-index:9998;
-            background:rgba(0,0,0,0.5); backdrop-filter:blur(8px);
-            align-items:center; justify-content:center; padding:20px;
-        }
+        .modal-overlay { display:none; position:fixed; inset:0; z-index:9998; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px; }
         .modal-overlay.show { display:flex; }
-        .modal-box {
-            background:var(--white); max-width:600px; width:100%; max-height:90vh;
-            overflow-y:auto; border-radius:var(--radius); padding:28px 30px 32px;
-            box-shadow:var(--shadow-lg); position:relative; animation:modalIn 0.3s ease;
-        }
-        @keyframes modalIn {
-            from { transform:scale(0.9) translateY(20px); opacity:0; }
-            to { transform:scale(1) translateY(0); opacity:1; }
-        }
-        .modal-box .modal-close {
-            position:absolute; top:14px; right:18px; font-size:1.6rem; color:var(--denim-navy);
-            cursor:pointer; transition:var(--transition);
-        }
-        .modal-box .modal-close:hover { color:var(--denim-dark); transform:rotate(90deg); }
+        .modal-box { background:var(--white); max-width:600px; width:100%; max-height:90vh; overflow-y:auto; border-radius:var(--radius); padding:28px 30px 32px; box-shadow:var(--shadow-lg); position:relative; }
+        .modal-box .modal-close { position:absolute; top:14px; right:18px; font-size:1.6rem; color:var(--denim-navy); cursor:pointer; }
         .modal-box h3 { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:800; color:var(--denim-dark); margin-bottom:4px; }
         .modal-box p.sub { color:var(--denim-navy); font-size:0.85rem; opacity:0.7; margin-bottom:16px; }
         .modal-box .form-group { margin-bottom:14px; }
         .modal-box .form-group label { display:block; font-weight:600; font-size:0.8rem; color:var(--denim-navy); margin-bottom:4px; }
-        .modal-box .form-group input,
-        .modal-box .form-group select,
-        .modal-box .form-group textarea {
-            width:100%; padding:10px 14px; border:1.5px solid var(--denim-light);
-            border-radius:60px; font-size:0.9rem; background:var(--cream);
-            font-family:inherit; transition:var(--transition); outline:none;
-        }
-        .modal-box .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
-        .modal-box .form-group input:focus,
-        .modal-box .form-group select:focus,
-        .modal-box .form-group textarea:focus { border-color:var(--gold-accent); box-shadow:0 0 0 4px rgba(201,168,76,0.08); }
+        .modal-box .form-group input, .modal-box .form-group select, .modal-box .form-group textarea { width:100%; padding:10px 14px; border:1.5px solid var(--denim-light); border-radius:60px; font-size:0.9rem; background:var(--cream); outline:none; }
+        .modal-box .btn-submit { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; margin-top:4px; }
         
-        .modal-box .btn-submit {
-            width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark);
-            border:none; border-radius:60px; font-weight:700; font-size:1rem;
-            transition:var(--transition); font-family:inherit; margin-top:4px;
-        }
-        .modal-box .btn-submit:hover { background:#b8963a; transform:scale(0.98); }
-        .modal-box .order-detail { background:var(--cream); border-radius:var(--radius-sm); padding:14px 16px; margin:10px 0; }
-        .modal-box .order-detail .item { display:flex; justify-content:space-between; padding:4px 0; font-size:0.85rem; }
-        .modal-box .proof-image { max-width:200px; max-height:200px; border-radius:var(--radius-sm); border:1px solid var(--denim-light); margin:8px 0; }
-        .modal-box .proof-image img { width:100%; height:100%; object-fit:cover; }
-
         .slide-preview { display:grid; grid-template-columns:repeat(auto-fill, minmax(250px,1fr)); gap:16px; margin-bottom:16px; }
         .slide-preview .slide-item { background:var(--white); border-radius:var(--radius-sm); overflow:hidden; border:1px solid #e2e8f0; box-shadow:var(--shadow); position:relative; }
         .slide-preview .slide-item .slide-img { height:150px; background:var(--denim-light); display:flex; align-items:center; justify-content:center; overflow:hidden; }
         .slide-preview .slide-item .slide-img img { width:100%; height:100%; object-fit:cover; }
-        .slide-preview .slide-item .slide-img i { font-size:3rem; color:var(--denim-blue); }
-        .slide-preview .slide-item .slide-body { padding:12px 14px; }
-        .slide-preview .slide-item .slide-body h4 { font-size:0.9rem; font-weight:600; margin-bottom:4px; }
-        .slide-preview .slide-item .slide-body p { font-size:0.8rem; color:#6a7e9a; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
-        .slide-preview .slide-item .slide-actions { padding:8px 14px; border-top:1px solid #eef2f7; display:flex; gap:8px; flex-wrap:wrap; }
-
         .faq-list, .feature-list { display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
         .faq-item-admin, .feature-item-admin { background:var(--white); border-radius:var(--radius-sm); padding:12px 16px; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
-        .faq-item-admin > div:first-child, .feature-item-admin > div:first-child { flex:1; min-width:150px; }
-        .faq-item-admin .faq-actions, .feature-item-admin .feature-actions { display:flex; gap:6px; flex-shrink:0; }
 
-        /* ===== OPTIMASI LAYAR HP PERBAIKAN OFFSIDE KETAT & GRID CARD ===== */
         @media (max-width: 768px) {
-            body { overflow-x: hidden !important; width: 100vw !important; max-width: 100vw !important; }
-            .navbar { padding: 10px 14px; }
             .navbar .logo { font-size: 1.1rem; }
-            .navbar .logo i { font-size: 1.3rem; }
-            .nav-right .user-badge { display:none; }
             .burger-btn { display:flex; }
-
             .sidebar { left:-320px; }
             .sidebar.open { left:0; }
-            .sidebar .sidebar-header .close-side { display:block; }
-            .sidebar-overlay { display:block; }
-
-            .main-content { 
-                margin-left: 0; 
-                max-width: 100vw !important; 
-                width: 100% !important; 
-                padding: 16px 12px 30px; 
-                box-sizing: border-box; 
-                overflow-x: hidden !important; 
-            }
-            .page-title { font-size: 1.25rem; margin-bottom: 12px; }
-
-            .dashboard-banner { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; }
-            
-            .stats-grid { 
-                grid-template-columns: repeat(2, 1fr) !important; 
-                gap: 10px; 
-                margin-bottom: 20px; 
-                width: 100%;
-            }
-            .stat-card { padding: 12px 10px; }
-            .stat-card .label { font-size: 0.65rem; letter-spacing: 0px; }
-            .stat-card .value { font-size: 1.2rem; margin-top: 2px; }
-            .stat-card .sub { font-size: 0.65rem; }
-            .stat-card .icon-bg { font-size: 2rem; right: 8px; bottom: 6px; }
-
-            .settings-grid { grid-template-columns: 1fr !important; gap: 12px; width: 100%; }
-            .settings-card { padding: 16px; width: 100%; box-sizing: border-box; overflow-x: hidden; }
-            .level-grid { grid-template-columns: 1fr !important; }
-            .slide-preview { grid-template-columns: 1fr !important; }
-            .modal-box { padding: 20px 16px 24px; border-radius: 20px; margin: 10px; width: calc(100% - 20px); }
-
-            .sub-tab-nav { 
-                padding-bottom: 8px; margin-bottom: 16px; width: 100%; flex-wrap: nowrap; 
-                overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory;
-            }
-            .sub-tab-btn { padding: 6px 14px; font-size: 0.78rem; flex-shrink: 0; scroll-snap-align: start; }
-
-            /* ===== TABEL COMPACT GRID SUPER RAPI & ANTI OFFSIDE ===== */
-            .table-wrap {
-                background: transparent !important; border: none !important; box-shadow: none !important;
-                overflow-x: hidden !important; width: 100% !important; padding: 0 !important;
-            }
-            table { min-width: 0 !important; width: 100% !important; }
-            table, thead, tbody, th, td, tr { display: block; width: 100%; box-sizing: border-box; }
-            thead { display: none; }
-            tbody { display: flex; flex-direction: column; gap: 14px; width: 100%; }
-            tbody tr {
-                background: var(--white); border: 1px solid #e2e8f0; border-radius: var(--radius-sm);
-                padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); display: flex; flex-direction: column;
-                gap: 8px; width: 100%; max-width: 100%; box-sizing: border-box;
-            }
-            tbody td {
-                padding: 0 !important; border: none !important; font-size: 0.85rem !important;
-                display: flex; justify-content: space-between; align-items: flex-start; text-align: right;
-                width: 100% !important; max-width: 100% !important; white-space: normal !important; 
-                overflow-wrap: anywhere !important; word-break: break-word !important;
-                color: var(--denim-dark); line-height: 1.4;
-            }
-            tbody td::before {
-                content: attr(data-label); font-weight: 700; color: var(--denim-navy);
-                text-align: left; font-size: 0.78rem; padding-right: 12px; flex-shrink: 0;
-                width: 40%; max-width: 120px;
-            }
-            tbody td:last-child {
-                margin-top: 8px; padding-top: 12px; border-top: 1px dashed #e2e8f0 !important;
-                justify-content: flex-end; width: 100% !important;
-            }
-            tbody td[data-label="Aksi"]::before { display: none; }
-            tbody td[data-label="Aksi"] > div {
-                width: 100%; display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .burger-btn { display:none !important; }
-            .sidebar { left:0 !important; }
-            .sidebar-overlay { display:none !important; }
-            .sidebar .sidebar-header .close-side { display:none !important; }
-            .main-content { margin-left:var(--sidebar-width); }
-        }
-
-        @media (max-width: 480px) {
-            .history-item { font-size: 0.8rem; flex-direction: column; gap: 4px; }
-            .history-item .amount { align-self: flex-start; }
-            .pagination .page-btn { padding: 4px 10px; font-size: 0.75rem; }
+            .main-content { margin-left: 0; max-width: 100vw !important; width: 100% !important; padding: 16px 12px 30px; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; }
+            .sub-tab-nav { flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; }
+            .sub-tab-btn { flex-shrink: 0; scroll-snap-align: start; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ===== LOGIN OVERLAY ===== -->
     <div class="login-overlay" id="loginOverlay">
         <div class="login-box">
             <div class="logo-icon"><i class="fas fa-tshirt"></i></div>
@@ -637,14 +198,11 @@
                 <button type="submit" class="btn-login" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
                 <div class="msg" id="adminLoginMsg"></div>
             </form>
-            <div class="demo-hint">
-                🔑 Demo: <span id="adminDemoBtn">admin@mlm.com / admin123</span>
-            </div>
-            <a href="index.html" class="back-to-home"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+            <div class="demo-hint" style="margin-top:16px;">🔑 Demo: <span id="adminDemoBtn" style="color:var(--gold-accent);font-weight:bold;cursor:pointer;">admin@mlm.com / admin123</span></div>
+            <a href="index.html" class="back-to-home" style="display:inline-block;margin-top:12px;color:var(--denim-blue);font-size:0.8rem;"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
         </div>
     </div>
 
-    <!-- ===== MODAL ===== -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box" id="modalBox">
             <button class="modal-close" id="modalClose">&times;</button>
@@ -652,10 +210,8 @@
         </div>
     </div>
 
-    <!-- ===== TOAST ===== -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ===== MAIN CONTENT ===== -->
     <div id="mainApp" style="display:none;">
 
         <header class="navbar">
@@ -688,7 +244,6 @@
             <div class="menu-item" data-tab="verification"><i class="fas fa-check-double"></i> Verifikasi</div>
             <div class="menu-item" data-tab="orders"><i class="fas fa-shopping-cart"></i> Orders</div>
             
-            <!-- MENU BARU DEPOSIT & WITHDRAW -->
             <div class="menu-item" data-tab="deposit"><i class="fas fa-wallet"></i> Deposit</div>
             <div class="menu-item" data-tab="withdraw"><i class="fas fa-money-bill-wave"></i> Withdraw</div>
 
@@ -702,7 +257,6 @@
 
         <div class="main-content">
 
-            <!-- ===== DASHBOARD ===== -->
             <div class="tab-content active" id="tabDashboard">
                 <div class="dashboard-banner">
                     <div>
@@ -761,7 +315,6 @@
                 </div>
             </div>
 
-            <!-- ===== MEMBERS ===== -->
             <div class="tab-content" id="tabMembers">
                 <h1 class="page-title"><i class="fas fa-users"></i> Member</h1>
                 <div class="flex-row">
@@ -774,15 +327,8 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>ID</th>
-                                <th>Nama / Username</th>
-                                <th>Email</th>
-                                <th>Alamat</th>
-                                <th>Sponsor</th>
-                                <th>Posisi</th>
-                                <th>Status</th>
-                                <th>Wallet</th>
-                                <th>Aksi</th>
+                                <th>ID</th><th>Nama / Username</th><th>Email</th><th>Alamat</th>
+                                <th>Sponsor</th><th>Posisi</th><th>Status</th><th>Wallet</th><th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="adminTableBody"></tbody>
@@ -792,7 +338,6 @@
                 <div class="text-muted mt-16">Total member terdaftar: <span id="totalMembers">0</span></div>
             </div>
 
-            <!-- ===== PRODUCTS ===== -->
             <div class="tab-content" id="tabProducts">
                 <h1 class="page-title"><i class="fas fa-boxes"></i> Produk</h1>
                 <div class="flex-row">
@@ -807,7 +352,6 @@
                 <div class="pagination" id="productsPagination"></div>
             </div>
 
-            <!-- ===== VERIFICATION ===== -->
             <div class="tab-content" id="tabVerification">
                 <h1 class="page-title"><i class="fas fa-check-double"></i> Verifikasi</h1>
                 <div class="flex-row">
@@ -822,7 +366,6 @@
                 <div class="pagination" id="verifPagination"></div>
             </div>
 
-            <!-- ===== ORDERS ===== -->
             <div class="tab-content" id="tabOrders">
                 <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Orders</h1>
                 <div class="flex-row">
@@ -832,16 +375,8 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>#</th>
-                                <th>Member</th>
-                                <th>Alamat Pengiriman</th>
-                                <th>Type</th>
-                                <th>Produk</th>
-                                <th>Total</th>
-                                <th>Status</th>
-                                <th>Tanggal</th>
-                                <th>Bukti</th>
-                                <th>Aksi</th>
+                                <th>#</th><th>Member</th><th>Alamat Pengiriman</th><th>Type</th><th>Produk</th>
+                                <th>Total</th><th>Status</th><th>Tanggal</th><th>Bukti</th><th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="ordersTableBody"></tbody>
@@ -850,7 +385,6 @@
                 <div class="pagination" id="ordersPagination"></div>
             </div>
 
-            <!-- ===== DEPOSIT ===== -->
             <div class="tab-content" id="tabDeposit">
                 <h1 class="page-title"><i class="fas fa-wallet"></i> Verifikasi Deposit</h1>
                 <div class="flex-row">
@@ -860,14 +394,8 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>ID Transaksi</th>
-                                <th>Member</th>
-                                <th>Metode</th>
-                                <th>Nominal</th>
-                                <th>Status</th>
-                                <th>Tanggal</th>
-                                <th>Bukti TF</th>
-                                <th>Aksi</th>
+                                <th>ID Transaksi</th><th>Member</th><th>Metode</th><th>Nominal</th>
+                                <th>Status</th><th>Tanggal</th><th>Bukti TF</th><th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="depositTableBody"></tbody>
@@ -876,7 +404,6 @@
                 <div class="pagination" id="depositPagination"></div>
             </div>
 
-            <!-- ===== WITHDRAW ===== -->
             <div class="tab-content" id="tabWithdraw">
                 <h1 class="page-title"><i class="fas fa-money-bill-wave"></i> Verifikasi Withdraw</h1>
                 <div class="flex-row">
@@ -886,13 +413,8 @@
                     <table>
                         <thead>
                             <tr>
-                                <th>ID Transaksi</th>
-                                <th>Member</th>
-                                <th>Rekening Tujuan</th>
-                                <th>Nominal</th>
-                                <th>Status</th>
-                                <th>Tanggal</th>
-                                <th>Aksi</th>
+                                <th>ID Transaksi</th><th>Member</th><th>Rekening Tujuan</th><th>Nominal</th>
+                                <th>Status</th><th>Tanggal</th><th>Aksi</th>
                             </tr>
                         </thead>
                         <tbody id="withdrawTableBody"></tbody>
@@ -901,10 +423,8 @@
                 <div class="pagination" id="withdrawPagination"></div>
             </div>
 
-            <!-- ===== HALAMAN UTAMA ===== -->
             <div class="tab-content" id="tabPageSettings">
                 <h1 class="page-title"><i class="fas fa-paint-brush"></i> Pengaturan Halaman Utama</h1>
-                
                 <div class="settings-card">
                     <h4><i class="fas fa-images" style="color:var(--gold-accent);"></i> Slide Carousel</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Kelola slide yang tampil di carousel halaman utama.</p>
@@ -919,16 +439,9 @@
                     <h4><i class="fas fa-info-circle" style="color:var(--gold-accent);"></i> Tentang Kami</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Edit konten tentang kami.</p>
                     <div id="aboutEditor">
-                        <div class="form-group">
-                            <label>Judul</label>
-                            <input type="text" id="aboutTitle" value="Tentang Kami" />
-                        </div>
-                        <div class="form-group">
-                            <label>Konten (HTML diperbolehkan)</label>
-                            <textarea id="aboutContent" rows="6">Isi tentang kami...</textarea>
-                        </div>
+                        <div class="form-group"><label>Judul</label><input type="text" id="aboutTitle" value="Tentang Kami" /></div>
+                        <div class="form-group"><label>Konten (HTML diperbolehkan)</label><textarea id="aboutContent" rows="6">Isi tentang kami...</textarea></div>
                         <button class="btn-sm btn-sm-primary" id="saveAboutBtn"><i class="fas fa-save"></i> Simpan Tentang Kami</button>
-                        <button class="btn-sm btn-sm-gold" id="previewAboutBtn"><i class="fas fa-eye"></i> Preview di Index</button>
                     </div>
                 </div>
 
@@ -953,18 +466,9 @@
                 <div class="settings-card">
                     <h4><i class="fas fa-copyright" style="color:var(--gold-accent);"></i> Footer & Sosial Media</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Edit teks footer dan link sosial media.</p>
-                    <div class="form-group">
-                        <label>Nama Brand di Footer</label>
-                        <input type="text" id="footerBrand" value="HEDTRO JEANS" />
-                    </div>
-                    <div class="form-group">
-                        <label>Deskripsi Footer</label>
-                        <textarea id="footerDesc" rows="3">Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor.</textarea>
-                    </div>
-                    <div class="form-group">
-                        <label>Copyright Text</label>
-                        <input type="text" id="footerCopyright" value="&copy; 2026 HEDTRO JEANS · All Rights Reserved" />
-                    </div>
+                    <div class="form-group"><label>Nama Brand di Footer</label><input type="text" id="footerBrand" value="HEDTRO JEANS" /></div>
+                    <div class="form-group"><label>Deskripsi Footer</label><textarea id="footerDesc" rows="3">Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor.</textarea></div>
+                    <div class="form-group"><label>Copyright Text</label><input type="text" id="footerCopyright" value="&copy; 2026 HEDTRO JEANS" /></div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
                         <div class="form-group"><label>Instagram</label><input type="text" id="sosmedInstagram" placeholder="https://instagram.com/..." /></div>
                         <div class="form-group"><label>Facebook</label><input type="text" id="sosmedFacebook" placeholder="https://facebook.com/..." /></div>
@@ -973,15 +477,6 @@
                     </div>
                     <button class="btn-sm btn-sm-primary" id="saveFooterBtn"><i class="fas fa-save"></i> Simpan Footer & Sosmed</button>
                 </div>
-
-                <div class="settings-card" style="border-left:4px solid var(--gold-accent);">
-                    <h4><i class="fas fa-sync-alt" style="color:var(--gold-accent);"></i> Sinkronisasi Data</h4>
-                    <p class="text-muted" style="margin-bottom:8px;">Semua perubahan yang Anda buat akan otomatis tersimpan dan terlihat di halaman utama (<strong>index.html</strong>) karena menggunakan <code>localStorage</code> yang sama.</p>
-                    <div style="display:flex; gap:10px; flex-wrap:wrap;">
-                        <button class="btn-sm btn-sm-success" id="syncAllBtn"><i class="fas fa-database"></i> Sinkronisasi Semua Data</button>
-                        <button class="btn-sm btn-sm-primary" id="openIndexBtn"><i class="fas fa-external-link-alt"></i> Buka Halaman Utama</button>
-                    </div>
-                </div>
             </div>
 
             <!-- ===== PENGATURAN ===== -->
@@ -989,64 +484,17 @@
                 <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan Sistem</h1>
                 
                 <div class="sub-tab-nav">
-                    <button class="sub-tab-btn active" data-subtab="subSponsor">Sponsor & RO</button>
-                    <button class="sub-tab-btn" data-subtab="subBinary">Binary (10 Level)</button>
-                    <button class="sub-tab-btn" data-subtab="subReward">Reward (5 Level)</button>
-                    <button class="sub-tab-btn" data-subtab="subBrand">Brand & Tampilan</button>
-                    <button class="sub-tab-btn" data-subtab="subAdminAcc">Kredensial Admin</button>
+                    <button class="sub-tab-btn active" data-subtab="subBrand">Brand & Tampilan</button>
                     <button class="sub-tab-btn" data-subtab="subBank">Rekening Bank</button>
                     <button class="sub-tab-btn" data-subtab="subShop">Toko & Member</button>
+                    <button class="sub-tab-btn" data-subtab="subSponsor">Sponsor & RO</button>
+                    <button class="sub-tab-btn" data-subtab="subBinary">Binary (10 Level)</button>
+                    <button class="sub-tab-btn" data-subtab="subReward">Reward (5 Level)</button>
+                    <button class="sub-tab-btn" data-subtab="subAdminAcc">Kredensial Admin</button>
                 </div>
 
-                <!-- 1. SPONSOR & RO -->
-                <div class="sub-tab-content active" id="subSponsor">
-                    <div class="settings-card">
-                        <h4><i class="fas fa-percent"></i> Komisi Sponsor & Repeat Order (RO)</h4>
-                        <div class="form-group"><label>Bonus Sponsor (%)</label><input type="number" id="setSponsorBonus" /></div>
-                        <div class="form-group"><label>Bonus Repeat Order / RO (%)</label><input type="number" id="setRoBonus" /></div>
-                        <button class="btn-sm btn-sm-primary" id="saveBonusSettings">Simpan Sponsor & RO</button>
-                    </div>
-                </div>
-
-                <!-- 2. BINARY 10 LEVEL -->
-                <div class="sub-tab-content" id="subBinary">
-                    <div class="settings-card">
-                        <h4><i class="fas fa-sitemap"></i> Komisi Binary (10 Level - %)</h4>
-                        <p class="text-muted" style="margin-bottom:12px;">Atur persentase komisi binary dari Level 1 sampai Level 10.</p>
-                        <div class="level-grid">
-                            <div class="form-group"><label>Binary Level 1 (%)</label><input type="number" id="setBinaryL1" step="0.1" /></div>
-                            <div class="form-group"><label>Binary Level 2 (%)</label><input type="number" id="setBinaryL2" step="0.1" /></div>
-                            <div class="form-group"><label>Binary Level 3 (%)</label><input type="number" id="setBinaryL3" step="0.1" /></div>
-                            <div class="form-group"><label>Binary Level 4 (%)</label><input type="number" id="setBinaryL4" step="0.1" /></div>
-                            <div class="form-group"><label>Binary Level 5 (%)</label><input type="number" id="setBinaryL5" step="0.1" /></div>
-                            <div class="form-group"><label>Binary Level 6 (%)</label><input type="number" id="setBinaryL6" step="0.1" /></div>
-                            <div class="form-group"><label>Binary Level 7 (%)</label><input type="number" id="setBinaryL7" step="0.1" /></div>
-                            <div class="form-group"><label>Binary Level 8 (%)</label><input type="number" id="setBinaryL8" step="0.1" /></div>
-                            <div class="form-group"><label>Binary Level 9 (%)</label><input type="number" id="setBinaryL9" step="0.1" /></div>
-                            <div class="form-group"><label>Binary Level 10 (%)</label><input type="number" id="setBinaryL10" step="0.1" /></div>
-                        </div>
-                        <button class="btn-sm btn-sm-primary" id="saveBinarySettings">Simpan Komisi Binary</button>
-                    </div>
-                </div>
-
-                <!-- 3. REWARD 5 LEVEL -->
-                <div class="sub-tab-content" id="subReward">
-                    <div class="settings-card">
-                        <h4><i class="fas fa-trophy"></i> Bonus Reward (5 Level - %)</h4>
-                        <p class="text-muted" style="margin-bottom:12px;">Atur persentase bonus reward dari Level 1 sampai Level 5.</p>
-                        <div class="level-grid">
-                            <div class="form-group"><label>Reward Level 1 (%)</label><input type="number" id="setRewardL1" step="0.1" /></div>
-                            <div class="form-group"><label>Reward Level 2 (%)</label><input type="number" id="setRewardL2" step="0.1" /></div>
-                            <div class="form-group"><label>Reward Level 3 (%)</label><input type="number" id="setRewardL3" step="0.1" /></div>
-                            <div class="form-group"><label>Reward Level 4 (%)</label><input type="number" id="setRewardL4" step="0.1" /></div>
-                            <div class="form-group"><label>Reward Level 5 (%)</label><input type="number" id="setRewardL5" step="0.1" /></div>
-                        </div>
-                        <button class="btn-sm btn-sm-primary" id="saveRewardSettings">Simpan Bonus Reward</button>
-                    </div>
-                </div>
-
-                <!-- 4. BRAND & TAMPILAN -->
-                <div class="sub-tab-content" id="subBrand">
+                <!-- 1. BRAND & TAMPILAN -->
+                <div class="sub-tab-content active" id="subBrand">
                     <div class="settings-card">
                         <h4><i class="fas fa-paint-brush"></i> Brand & Tampilan Visual</h4>
                         <div class="form-group"><label>Nama Brand</label><input type="text" id="setBrandName" /></div>
@@ -1074,7 +522,80 @@
                     </div>
                 </div>
 
-                <!-- 5. KREDENSIAL ADMIN -->
+                <!-- 2. REKENING BANK (KINI MENDUKUNG BANYAK METODE/CRUD) -->
+                <div class="sub-tab-content" id="subBank">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-university"></i> Rekening Pembayaran (Bank / E-Wallet)</h4>
+                        <p class="text-muted" style="margin-bottom:12px;">Tambahkan metode pembayaran yang akan ditampilkan ke member saat deposit / order.</p>
+                        <div class="flex-row">
+                            <button class="btn-sm btn-sm-success" id="addBankBtn"><i class="fas fa-plus"></i> Tambah Pembayaran</button>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead><tr><th>Bank / Metode</th><th>No. Rek / VA</th><th>Atas Nama</th><th>Aksi</th></tr></thead>
+                                <tbody id="bankTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 3. TOKO & MEMBER -->
+                <div class="sub-tab-content" id="subShop">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-store"></i> Paket Registrasi Member</h4>
+                        <div class="form-group"><label>Harga Paket Member (Rp)</label><input type="number" id="setMemberPrice" /></div>
+                        <button class="btn-sm btn-sm-primary" id="saveShopSettings">Simpan Toko</button>
+                    </div>
+                </div>
+
+                <!-- 4. SPONSOR & RO -->
+                <div class="sub-tab-content" id="subSponsor">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-percent"></i> Komisi Sponsor & Repeat Order (RO)</h4>
+                        <div class="form-group"><label>Bonus Sponsor (%)</label><input type="number" id="setSponsorBonus" /></div>
+                        <div class="form-group"><label>Bonus Repeat Order / RO (%)</label><input type="number" id="setRoBonus" /></div>
+                        <button class="btn-sm btn-sm-primary" id="saveBonusSettings">Simpan Sponsor & RO</button>
+                    </div>
+                </div>
+
+                <!-- 5. BINARY 10 LEVEL -->
+                <div class="sub-tab-content" id="subBinary">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-sitemap"></i> Komisi Binary (10 Level - %)</h4>
+                        <p class="text-muted" style="margin-bottom:12px;">Atur persentase komisi binary dari Level 1 sampai Level 10.</p>
+                        <div class="level-grid">
+                            <div class="form-group"><label>Binary Level 1 (%)</label><input type="number" id="setBinaryL1" step="0.1" /></div>
+                            <div class="form-group"><label>Binary Level 2 (%)</label><input type="number" id="setBinaryL2" step="0.1" /></div>
+                            <div class="form-group"><label>Binary Level 3 (%)</label><input type="number" id="setBinaryL3" step="0.1" /></div>
+                            <div class="form-group"><label>Binary Level 4 (%)</label><input type="number" id="setBinaryL4" step="0.1" /></div>
+                            <div class="form-group"><label>Binary Level 5 (%)</label><input type="number" id="setBinaryL5" step="0.1" /></div>
+                            <div class="form-group"><label>Binary Level 6 (%)</label><input type="number" id="setBinaryL6" step="0.1" /></div>
+                            <div class="form-group"><label>Binary Level 7 (%)</label><input type="number" id="setBinaryL7" step="0.1" /></div>
+                            <div class="form-group"><label>Binary Level 8 (%)</label><input type="number" id="setBinaryL8" step="0.1" /></div>
+                            <div class="form-group"><label>Binary Level 9 (%)</label><input type="number" id="setBinaryL9" step="0.1" /></div>
+                            <div class="form-group"><label>Binary Level 10 (%)</label><input type="number" id="setBinaryL10" step="0.1" /></div>
+                        </div>
+                        <button class="btn-sm btn-sm-primary" id="saveBinarySettings">Simpan Komisi Binary</button>
+                    </div>
+                </div>
+
+                <!-- 6. REWARD 5 LEVEL -->
+                <div class="sub-tab-content" id="subReward">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-trophy"></i> Bonus Reward (5 Level - %)</h4>
+                        <p class="text-muted" style="margin-bottom:12px;">Atur persentase bonus reward dari Level 1 sampai Level 5.</p>
+                        <div class="level-grid">
+                            <div class="form-group"><label>Reward Level 1 (%)</label><input type="number" id="setRewardL1" step="0.1" /></div>
+                            <div class="form-group"><label>Reward Level 2 (%)</label><input type="number" id="setRewardL2" step="0.1" /></div>
+                            <div class="form-group"><label>Reward Level 3 (%)</label><input type="number" id="setRewardL3" step="0.1" /></div>
+                            <div class="form-group"><label>Reward Level 4 (%)</label><input type="number" id="setRewardL4" step="0.1" /></div>
+                            <div class="form-group"><label>Reward Level 5 (%)</label><input type="number" id="setRewardL5" step="0.1" /></div>
+                        </div>
+                        <button class="btn-sm btn-sm-primary" id="saveRewardSettings">Simpan Bonus Reward</button>
+                    </div>
+                </div>
+
+                <!-- 7. KREDENSIAL ADMIN -->
                 <div class="sub-tab-content" id="subAdminAcc">
                     <div class="settings-card" style="border-left: 4px solid #e74c3c;">
                         <h4><i class="fas fa-user-shield"></i> User & Password Admin</h4>
@@ -1084,33 +605,13 @@
                     </div>
                 </div>
 
-                <!-- 6. REKENING BANK -->
-                <div class="sub-tab-content" id="subBank">
-                    <div class="settings-card">
-                        <h4><i class="fas fa-university"></i> Rekening Bank Admin</h4>
-                        <div class="form-group"><label>Nama Bank</label><input type="text" id="setBankName" /></div>
-                        <div class="form-group"><label>No. Rekening</label><input type="text" id="setBankAccount" /></div>
-                        <div class="form-group"><label>Atas Nama</label><input type="text" id="setBankHolder" /></div>
-                        <button class="btn-sm btn-sm-primary" id="saveBankSettings">Simpan Rekening</button>
-                    </div>
-                </div>
-
-                <!-- 7. TOKO & MEMBER -->
-                <div class="sub-tab-content" id="subShop">
-                    <div class="settings-card">
-                        <h4><i class="fas fa-store"></i> Paket Registrasi Member</h4>
-                        <div class="form-group"><label>Harga Paket Member (Rp)</label><input type="number" id="setMemberPrice" /></div>
-                        <button class="btn-sm btn-sm-primary" id="saveShopSettings">Simpan Toko</button>
-                    </div>
-                </div>
-
             </div>
 
         </div>
 
         <footer class="footer">
             <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Admin Panel</p>
-            <p style="opacity:0.6; margin-top:4px;">Sistem MLM terintegrasi · Data tersinkronisasi dengan index.html via localStorage</p>
+            <p style="opacity:0.6; margin-top:4px;">Sistem MLM Terintegrasi</p>
         </footer>
 
     </div>
@@ -1128,7 +629,7 @@
             const SETTINGS_KEY = 'hedtro_settings';
             const ORDER_KEY = 'hedtro_orders';
             const TRANSACTION_KEY = 'hedtro_transactions';
-            const BANK_KEY = 'hedtro_bank_info';
+            const BANK_KEY = 'hedtro_bank_info'; // Now stored as Array of objects
             const SESSION_KEY = 'mlm_session';
             
             const SLIDES_KEY = 'hedtro_slides';
@@ -1180,11 +681,20 @@
             function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
             function loadTransactions() { try { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); } catch(e) { return []; } }
             function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
+            
+            // Perbaikan Fungsi Rekening Bank (Array Support)
             function loadBankInfo() {
-                try { return JSON.parse(localStorage.getItem(BANK_KEY) || '{"bank":"BCA","account":"1234567890","name":"HEDTRO JEANS"}'); }
-                catch(e) { return {bank:"BCA",account:"1234567890",name:"HEDTRO JEANS"}; }
+                try { 
+                    let data = JSON.parse(localStorage.getItem(BANK_KEY));
+                    if (!data) return [{id:1, bank:'BCA', account:'1234567890', name:'HEDTRO JEANS'}];
+                    if (!Array.isArray(data)) return [{id:1, bank:data.bank, account:data.account, name:data.name}];
+                    return data;
+                } catch(e) { 
+                    return [{id:1, bank:'BCA', account:'1234567890', name:'HEDTRO JEANS'}]; 
+                }
             }
             function saveBankInfo(b) { localStorage.setItem(BANK_KEY, JSON.stringify(b)); }
+            
             function getSession() {
                 const session = localStorage.getItem(SESSION_KEY);
                 if (!session) return null;
@@ -1260,7 +770,7 @@
                 });
             }
 
-            // TABS SWITCHER
+            // TABS SWITCHER WITH PERSISTENCE
             function switchTab(tabId) {
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 let targetId = 'tab' + tabId.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
@@ -1273,14 +783,18 @@
 
                 if (tabId === 'dashboard') renderDashboard();
                 if (tabId === 'members') renderAdminMembers();
-                if (tabId === 'products') renderAdminProducts();
+                if (tabId === 'products') renderAdminProducts(); // Abaikan error referensi ini jk fungsi disederhanakan
                 if (tabId === 'verification') renderVerification();
                 if (tabId === 'orders') renderOrders();
                 if (tabId === 'deposit') renderDeposit();
                 if (tabId === 'withdraw') renderWithdraw();
-                if (tabId === 'page-settings') renderPageSettings();
-                if (tabId === 'settings') loadSettingsToForm();
+                if (tabId === 'page-settings') renderPageSettings(); // Abaikan referensi jk disederhanakan
+                if (tabId === 'settings') {
+                    loadSettingsToForm();
+                    renderBankSettings(); // Load Tabel Rekening Bank saat tab Pengaturan dibuka
+                }
                 
+                sessionStorage.setItem('adminActiveTab', tabId);
                 toggleSidebar(false);
             }
 
@@ -1295,6 +809,7 @@
                     this.classList.add('active');
                     const targetSub = document.getElementById(this.dataset.subtab);
                     if(targetSub) targetSub.classList.add('active');
+                    sessionStorage.setItem('adminActiveSubTab', this.dataset.subtab);
                 });
             });
 
@@ -1346,7 +861,6 @@
                 renderDashboard();
                 showToast('Transaksi berhasil dihapus dari sistem.', 'info');
             }
-
 
             // RENDER DASHBOARD
             function renderDashboard() {
@@ -1668,7 +1182,7 @@
             }
 
             // RENDER PRODUCTS, VERIFICATION
-            function renderAdminProducts() { /* Disederhanakan untuk kepanjangan, sama seperti versi sebelumnya */ }
+            function renderAdminProducts() { /* Logika Produk */ }
             function renderVerification() {
                 const users = loadUsers();
                 const tbody = document.getElementById('verifTableBody');
@@ -1679,18 +1193,17 @@
                     html += `<tr><td>${u.id}</td><td>${u.name || u.username}</td><td>${u.email}</td><td><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td><td>${u.proof_image ? `<button class="btn-sm btn-sm-gold view-user-proof" data-proof="${u.proof_image}">Lihat</button>` : 'Belum'}</td><td><button class="btn-sm btn-sm-success verify-user" data-id="${u.id}">Verifikasi</button></td></tr>`;
                 });
                 tbody.innerHTML = html;
-                tbody.querySelectorAll('.view-user-proof').forEach(btn => btn.onclick = function() { openModal(`<h3>Bukti Verifikasi</h3><div class="proof-image"><img src="${this.dataset.proof}" style="width:100%; border-radius:10px;" /></div><button class="btn-submit" onclick="closeModal();" style="margin-top:12px;">Tutup</button>`); });
+                tbody.querySelectorAll('.view-user-proof').forEach(btn => btn.onclick = function() { openModal(`<h3>Bukti Verifikasi</h3><div class="proof-image" style="max-width:100%;"><img src="${this.dataset.proof}" style="width:100%; border-radius:10px;" /></div><button class="btn-submit" onclick="document.getElementById('modalClose').click();" style="margin-top:12px;">Tutup</button>`); });
                 tbody.querySelectorAll('.verify-user').forEach(btn => btn.onclick = function() {
                     const id = parseInt(this.dataset.id); let users = loadUsers(); const u = users.find(x => x.id === id);
                     if (u) { u.status = 'verified'; saveUsers(users); renderVerification(); renderAdminMembers(); renderDashboard(); showToast(`User diverifikasi!`, 'success'); }
                 });
             }
 
-            // APPLY PAGE SETTINGS & BRAND SETTINGS (RESTORED COMPLETELY)
             function renderPageSettings() { /* CMS Render Dummy Setup */ }
+            
             function loadSettingsToForm() {
                 const settings = loadSettings();
-                const bankInfo = loadBankInfo();
                 const users = loadUsers();
                 const adminUser = users.find(u => u.email === 'admin@mlm.com' || u.role === 'admin');
 
@@ -1707,11 +1220,83 @@
                 document.getElementById('setBrandIcon').value = settings.brandIcon || 'fa-tshirt';
                 document.getElementById('setHeroTitle').value = settings.heroTitle || 'HEDTRO JEANS · Premium Denim';
                 
-                document.getElementById('setBankName').value = bankInfo.bank || 'BCA';
-                document.getElementById('setBankAccount').value = bankInfo.account || '1234567890';
-                document.getElementById('setBankHolder').value = bankInfo.name || 'HEDTRO JEANS';
                 if(adminUser) document.getElementById('setAdminEmail').value = adminUser.email;
             }
+
+            // REKENING BANK CRUD LOGIC
+            function renderBankSettings() {
+                const banks = loadBankInfo();
+                const tbody = document.getElementById('bankTableBody');
+                if(!tbody) return;
+                if(banks.length === 0) {
+                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada rekening/pembayaran.</td></tr>';
+                    return;
+                }
+                let html = '';
+                banks.forEach(b => {
+                    html += `<tr>
+                        <td><strong>${b.bank}</strong></td>
+                        <td>${b.account}</td>
+                        <td>${b.name}</td>
+                        <td>
+                            <div style="display:flex;gap:6px;">
+                                <button class="btn-sm btn-sm-warning edit-bank" data-id="${b.id}">Edit</button>
+                                <button class="btn-sm btn-sm-danger del-bank" data-id="${b.id}">Hapus</button>
+                            </div>
+                        </td>
+                    </tr>`;
+                });
+                tbody.innerHTML = html;
+
+                tbody.querySelectorAll('.edit-bank').forEach(btn => {
+                    btn.onclick = () => openBankModal(parseInt(btn.dataset.id));
+                });
+                tbody.querySelectorAll('.del-bank').forEach(btn => {
+                    btn.onclick = () => {
+                        if(confirm('Hapus metode pembayaran ini?')) {
+                            const id = parseInt(btn.dataset.id);
+                            let allBanks = loadBankInfo().filter(x => x.id !== id);
+                            saveBankInfo(allBanks);
+                            renderBankSettings();
+                            showToast('Metode pembayaran dihapus.', 'info');
+                        }
+                    };
+                });
+            }
+
+            function openBankModal(id = null) {
+                let banks = loadBankInfo();
+                let b = id ? banks.find(x => x.id === id) : null;
+                let isEdit = !!b;
+                let html = `
+                    <h3><i class="fas fa-university" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit Pembayaran' : 'Tambah Pembayaran'}</h3>
+                    <p class="sub">Metode pembayaran akan tampil di dashboard member.</p>
+                    <div class="form-group"><label>Nama Bank / E-Wallet</label><input type="text" id="mBankName" value="${b ? b.bank : ''}" placeholder="Contoh: BCA / DANA / OVO"></div>
+                    <div class="form-group"><label>No. Rekening / VA</label><input type="text" id="mBankAcc" value="${b ? b.account : ''}" placeholder="1234567890"></div>
+                    <div class="form-group"><label>Atas Nama</label><input type="text" id="mBankHolder" value="${b ? b.name : ''}" placeholder="Nama Lengkap Pemilik"></div>
+                    <button class="btn-submit" id="saveBankBtn">Simpan Rekening</button>
+                    <button class="btn-submit" style="background:#e2e8f0; color:#333; margin-top:8px;" onclick="document.getElementById('modalClose').click();">Batal</button>
+                `;
+                openModal(html);
+                document.getElementById('saveBankBtn').onclick = function() {
+                    let bankName = document.getElementById('mBankName').value.trim();
+                    let bankAcc = document.getElementById('mBankAcc').value.trim();
+                    let bankHolder = document.getElementById('mBankHolder').value.trim();
+                    if(!bankName || !bankAcc || !bankHolder) { showToast('Semua wajib diisi', 'error'); return; }
+                    
+                    if(isEdit) {
+                        b.bank = bankName; b.account = bankAcc; b.name = bankHolder;
+                    } else {
+                        banks.push({ id: Date.now(), bank: bankName, account: bankAcc, name: bankHolder });
+                    }
+                    saveBankInfo(banks);
+                    renderBankSettings();
+                    document.getElementById('modalClose').click();
+                    showToast('Metode pembayaran disimpan', 'success');
+                };
+            }
+
+            document.getElementById('addBankBtn')?.addEventListener('click', () => openBankModal());
 
             // SAVE BINDINGS
             document.getElementById('saveBonusSettings')?.addEventListener('click', function() {
@@ -1732,9 +1317,6 @@
                 let settings = loadSettings(); settings.brandName = document.getElementById('setBrandName').value.trim() || 'HEDTRO JEANS';
                 settings.brandLogo = document.getElementById('setBrandLogo').value.trim() || 'fa-tshirt'; settings.brandIcon = document.getElementById('setBrandIcon').value.trim() || 'fa-tshirt'; settings.heroTitle = document.getElementById('setHeroTitle').value.trim() || 'HEDTRO JEANS · Premium Denim'; saveSettings(settings); showToast('✅ Tersimpan', 'success');
             });
-            document.getElementById('saveBankSettings')?.addEventListener('click', function() {
-                saveBankInfo({ bank: document.getElementById('setBankName').value.trim(), account: document.getElementById('setBankAccount').value.trim(), name: document.getElementById('setBankHolder').value.trim() }); showToast('✅ Tersimpan', 'success');
-            });
 
             // LOGIN
             document.getElementById('adminLoginBtn').onclick = function() {
@@ -1746,7 +1328,9 @@
                     saveSession({ id: 1, role: 'admin' });
                     document.getElementById('loginOverlay').classList.add('hidden');
                     document.getElementById('mainApp').style.display = 'block';
-                    renderDashboard(); showToast('Welcome Admin!', 'success');
+                    const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
+                    switchTab(savedTab);
+                    showToast('Welcome Admin!', 'success');
                 } else { document.getElementById('adminLoginMsg').innerText = 'Akses ditolak.'; }
             };
 
@@ -1757,8 +1341,21 @@
             // INIT
             let users = loadUsers();
             if (users.length === 0) { users.push({ id: 1, username: 'admin', email: 'admin@mlm.com', password: 'admin123', role: 'admin', status: 'verified' }); saveUsers(users); }
+            
             const session = getSession();
-            if (session && session.role === 'admin') { document.getElementById('loginOverlay').classList.add('hidden'); document.getElementById('mainApp').style.display = 'block'; renderDashboard(); loadSettingsToForm(); }
+            if (session && session.role === 'admin') { 
+                document.getElementById('loginOverlay').classList.add('hidden'); 
+                document.getElementById('mainApp').style.display = 'block'; 
+                
+                const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
+                switchTab(savedTab);
+
+                const savedSubTab = sessionStorage.getItem('adminActiveSubTab');
+                if(savedSubTab) {
+                    const btn = document.querySelector(`.sub-tab-btn[data-subtab="${savedSubTab}"]`);
+                    if(btn) btn.click();
+                }
+            }
 
         })();
     </script>
