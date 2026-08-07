@@ -29,7 +29,7 @@
             font-family: 'Inter', -apple-system, sans-serif;
             background: var(--cream);
             color: var(--denim-dark);
-            padding-top: 35px; /* Sesuaikan padding untuk mobile */
+            padding-top: 35px; 
             overflow-x: hidden;
             width: 100%;
             max-width: 100vw;
@@ -150,7 +150,7 @@
         .tab-content { display:none; }
         .tab-content.active { display:block; }
 
-        /* ===== SUB TABS DI PENGATURAN ===== */
+        /* ===== SUB TABS PENGATURAN ===== */
         .sub-tab-nav {
             display: flex; gap: 8px;
             margin-bottom: 20px;
@@ -216,11 +216,25 @@
         }
         table {
             width:100%; border-collapse:collapse; font-size:0.82rem;
-            min-width:650px; /* BATASAN INI YANG BIKIN ERROR DI HP SEBELUMNYA */
+            min-width:650px; 
         }
         thead { background:var(--denim-dark); color:var(--cream); }
         th { padding:12px 14px; text-align:left; font-weight:600; white-space: nowrap; }
         td { padding:10px 14px; border-bottom:1px solid #eef2f7; vertical-align: middle; }
+
+        /* ===== PAGINATION ===== */
+        .pagination {
+            display: flex; justify-content: center; align-items: center; gap: 6px;
+            margin-top: 16px; flex-wrap: wrap; width: 100%;
+        }
+        .page-btn {
+            padding: 6px 14px; border-radius: 8px; border: 1px solid #dde3ea;
+            background: var(--white); color: var(--denim-navy);
+            font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition);
+        }
+        .page-btn:hover:not(:disabled) { background: var(--denim-light); }
+        .page-btn.active { background: var(--denim-dark); color: var(--gold-accent); border-color: var(--denim-dark); }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
         .badge-admin {
             background:var(--gold-accent); color:var(--denim-dark);
@@ -527,7 +541,6 @@
 
             .dashboard-banner { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; }
             
-            /* KONSISTEN 2 KOLOM 1 BARIS UNTUK STATISTIK DASHBOARD DI HP */
             .stats-grid { 
                 grid-template-columns: repeat(2, 1fr) !important; 
                 gap: 10px; 
@@ -546,90 +559,41 @@
             .slide-preview { grid-template-columns: 1fr !important; }
             .modal-box { padding: 20px 16px 24px; border-radius: 20px; margin: 10px; width: calc(100% - 20px); }
 
-            /* PERBAIKAN SUB-TAB MENU PENGATURAN HP AGAR BISA SCROLL RAPI */
             .sub-tab-nav { 
-                padding-bottom: 8px; 
-                margin-bottom: 16px; 
-                width: 100%; 
-                flex-wrap: nowrap; 
-                overflow-x: auto; 
-                -webkit-overflow-scrolling: touch; 
-                scroll-snap-type: x mandatory;
+                padding-bottom: 8px; margin-bottom: 16px; width: 100%; flex-wrap: nowrap; 
+                overflow-x: auto; -webkit-overflow-scrolling: touch; scroll-snap-type: x mandatory;
             }
             .sub-tab-btn { padding: 6px 14px; font-size: 0.78rem; flex-shrink: 0; scroll-snap-align: start; }
 
             /* ===== TABEL COMPACT GRID SUPER RAPI & ANTI OFFSIDE ===== */
             .table-wrap {
-                background: transparent !important;
-                border: none !important;
-                box-shadow: none !important;
-                overflow-x: hidden !important; /* Mencegah tumpahan horizontal */
-                width: 100% !important;
-                padding: 0 !important;
+                background: transparent !important; border: none !important; box-shadow: none !important;
+                overflow-x: hidden !important; width: 100% !important; padding: 0 !important;
             }
-            /* PENYEBAB UTAMA OFFSIDE DIRESET DI SINI */
-            table {
-                min-width: 0 !important;
-                width: 100% !important;
-            }
-            table, thead, tbody, th, td, tr {
-                display: block;
-                width: 100%;
-                box-sizing: border-box;
-            }
+            table { min-width: 0 !important; width: 100% !important; }
+            table, thead, tbody, th, td, tr { display: block; width: 100%; box-sizing: border-box; }
             thead { display: none; }
-            tbody {
-                display: flex;
-                flex-direction: column;
-                gap: 14px;
-                width: 100%;
-            }
+            tbody { display: flex; flex-direction: column; gap: 14px; width: 100%; }
             tbody tr {
-                background: var(--white);
-                border: 1px solid #e2e8f0;
-                border-radius: var(--radius-sm);
-                padding: 16px;
-                box-shadow: 0 4px 12px rgba(0,0,0,0.04);
-                display: flex;
-                flex-direction: column;
-                gap: 8px;
-                width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
+                background: var(--white); border: 1px solid #e2e8f0; border-radius: var(--radius-sm);
+                padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); display: flex; flex-direction: column;
+                gap: 8px; width: 100%; max-width: 100%; box-sizing: border-box;
             }
             tbody td {
-                padding: 0 !important;
-                border: none !important;
-                font-size: 0.85rem !important;
-                display: flex;
-                justify-content: space-between;
-                align-items: flex-start;
-                text-align: right;
-                width: 100% !important;
-                max-width: 100% !important; 
-                white-space: normal !important; 
-                overflow-wrap: anywhere !important;
-                word-break: break-word !important;
-                color: var(--denim-dark);
-                line-height: 1.4;
+                padding: 0 !important; border: none !important; font-size: 0.85rem !important;
+                display: flex; justify-content: space-between; align-items: flex-start; text-align: right;
+                width: 100% !important; max-width: 100% !important; white-space: normal !important; 
+                overflow-wrap: anywhere !important; word-break: break-word !important;
+                color: var(--denim-dark); line-height: 1.4;
             }
             tbody td::before {
-                content: attr(data-label);
-                font-weight: 700;
-                color: var(--denim-navy);
-                text-align: left;
-                font-size: 0.78rem;
-                padding-right: 12px;
-                flex-shrink: 0;
-                width: 40%;
-                max-width: 120px;
+                content: attr(data-label); font-weight: 700; color: var(--denim-navy);
+                text-align: left; font-size: 0.78rem; padding-right: 12px; flex-shrink: 0;
+                width: 40%; max-width: 120px;
             }
             tbody td:last-child {
-                margin-top: 8px;
-                padding-top: 12px;
-                border-top: 1px dashed #e2e8f0 !important;
-                justify-content: flex-end;
-                width: 100% !important;
+                margin-top: 8px; padding-top: 12px; border-top: 1px dashed #e2e8f0 !important;
+                justify-content: flex-end; width: 100% !important;
             }
             tbody td[data-label="Aksi"]::before { display: none; }
             tbody td[data-label="Aksi"] > div {
@@ -648,6 +612,7 @@
         @media (max-width: 480px) {
             .history-item { font-size: 0.8rem; flex-direction: column; gap: 4px; }
             .history-item .amount { align-self: flex-start; }
+            .pagination .page-btn { padding: 4px 10px; font-size: 0.75rem; }
         }
     </style>
 </head>
@@ -817,7 +782,8 @@
                         <tbody id="adminTableBody"></tbody>
                     </table>
                 </div>
-                <div class="text-muted mt-16">Total member: <span id="totalMembers">0</span></div>
+                <div class="pagination" id="membersPagination"></div>
+                <div class="text-muted mt-16">Total member terdaftar: <span id="totalMembers">0</span></div>
             </div>
 
             <!-- ===== PRODUCTS ===== -->
@@ -832,6 +798,7 @@
                         <tbody id="adminProductTableBody"></tbody>
                     </table>
                 </div>
+                <div class="pagination" id="productsPagination"></div>
             </div>
 
             <!-- ===== VERIFICATION ===== -->
@@ -846,6 +813,7 @@
                         <tbody id="verifTableBody"></tbody>
                     </table>
                 </div>
+                <div class="pagination" id="verifPagination"></div>
             </div>
 
             <!-- ===== ORDERS ===== -->
@@ -873,6 +841,7 @@
                         <tbody id="ordersTableBody"></tbody>
                     </table>
                 </div>
+                <div class="pagination" id="ordersPagination"></div>
             </div>
 
             <!-- ===== HALAMAN UTAMA ===== -->
@@ -1111,40 +1080,37 @@
             const FEATURES_KEY = 'hedtro_features';
             const FOOTER_KEY = 'hedtro_footer';
 
+            // PAGINATION STATES
+            let statePage = {
+                members: 1,
+                products: 1,
+                verif: 1,
+                orders: 1
+            };
+            const ITEMS_PER_PAGE = 10;
+
             // FUNGSI PEMBANTU (Mencegah "ReferenceError" saat Reload)
             function loadSlides() { try { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); } catch(e) { return []; } }
             function saveSlides(s) { localStorage.setItem(SLIDES_KEY, JSON.stringify(s)); }
-            
             function loadAbout() { try { return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}'); } catch(e) { return {title:"Tentang Kami", content:""}; } }
             function saveAbout(a) { localStorage.setItem(ABOUT_KEY, JSON.stringify(a)); }
-            
             function loadFaq() { try { return JSON.parse(localStorage.getItem(FAQ_KEY) || '[]'); } catch(e) { return []; } }
             function saveFaq(f) { localStorage.setItem(FAQ_KEY, JSON.stringify(f)); }
-            
             function loadFeatures() { try { return JSON.parse(localStorage.getItem(FEATURES_KEY) || '[]'); } catch(e) { return []; } }
             function saveFeatures(f) { localStorage.setItem(FEATURES_KEY, JSON.stringify(f)); }
-            
             function loadFooter() { try { return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium...","copyright":"&copy; 2026 HEDTRO JEANS","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}'); } catch(e) { return {brand:"HEDTRO JEANS", desc:"", copyright:"", social:{}}; } }
             function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
 
             // FUNGSI DATABASE UTAMA
             function loadUsers() { try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch(e) { return []; } }
             function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-            
             function loadProducts() { try { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); } catch(e) { return []; } }
             function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-            
             function loadSettings() {
                 const defaultSet = {
-                    sponsorBonus: 10,
-                    binaryBonusLevels: [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5],
-                    rewardBonusLevels: [5, 4, 3, 2, 1],
-                    roBonus: 3,
-                    memberPrice: 550000,
-                    brandName: "HEDTRO JEANS",
-                    brandLogo: "fa-tshirt",
-                    brandIcon: "fa-tshirt",
-                    heroTitle: "HEDTRO JEANS · Premium Denim"
+                    sponsorBonus: 10, binaryBonusLevels: [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5],
+                    rewardBonusLevels: [5, 4, 3, 2, 1], roBonus: 3, memberPrice: 550000,
+                    brandName: "HEDTRO JEANS", brandLogo: "fa-tshirt", brandIcon: "fa-tshirt", heroTitle: "HEDTRO JEANS · Premium Denim"
                 };
                 try {
                     const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
@@ -1152,19 +1118,15 @@
                 } catch(e) { return defaultSet; }
             }
             function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
-            
             function loadOrders() { try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); } catch(e) { return []; } }
             function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
-            
             function loadTransactions() { try { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); } catch(e) { return []; } }
             function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
-            
             function loadBankInfo() {
                 try { return JSON.parse(localStorage.getItem(BANK_KEY) || '{"bank":"BCA","account":"1234567890","name":"HEDTRO JEANS"}'); }
                 catch(e) { return {bank:"BCA",account:"1234567890",name:"HEDTRO JEANS"}; }
             }
             function saveBankInfo(b) { localStorage.setItem(BANK_KEY, JSON.stringify(b)); }
-            
             function getSession() {
                 const session = localStorage.getItem(SESSION_KEY);
                 if (!session) return null;
@@ -1213,19 +1175,13 @@
                 modalOverlay.classList.add('show');
                 document.body.style.overflow = 'hidden';
             }
-
             function closeModal() {
                 if (!modalOverlay) return;
                 modalOverlay.classList.remove('show');
                 document.body.style.overflow = '';
             }
-
             if (modalClose) modalClose.addEventListener('click', closeModal);
-            if (modalOverlay) {
-                modalOverlay.addEventListener('click', function(e) {
-                    if (e.target === modalOverlay) closeModal();
-                });
-            }
+            if (modalOverlay) modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) closeModal(); });
 
             // SIDEBAR TOGGLE
             const burgerBtn = document.getElementById('burgerBtn');
@@ -1241,7 +1197,6 @@
                 if (burgerBtn) burgerBtn.classList.toggle('active', isOpen);
                 document.body.style.overflow = isOpen ? 'hidden' : '';
             }
-
             if (burgerBtn) burgerBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleSidebar(); });
             if (closeSidebar) closeSidebar.addEventListener('click', function() { toggleSidebar(false); });
             if (sidebarOverlay) sidebarOverlay.addEventListener('click', function() { toggleSidebar(false); });
@@ -1249,10 +1204,8 @@
             // TAB NAVIGATION
             function switchTab(tabId) {
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
-                
                 let targetId = 'tab' + tabId.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
                 const tabContent = document.getElementById(targetId);
-                
                 if (tabContent) tabContent.classList.add('active');
 
                 document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(el => el.classList.remove('active'));
@@ -1271,9 +1224,7 @@
             }
 
             document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(item => {
-                item.addEventListener('click', function() {
-                    switchTab(this.dataset.tab);
-                });
+                item.addEventListener('click', function() { switchTab(this.dataset.tab); });
             });
 
             // SUB TABS PENGATURAN
@@ -1281,7 +1232,6 @@
                 btn.addEventListener('click', function() {
                     document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
                     document.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
-                    
                     this.classList.add('active');
                     const targetSub = document.getElementById(this.dataset.subtab);
                     if(targetSub) targetSub.classList.add('active');
@@ -1301,7 +1251,6 @@
                         logoEl.innerHTML = `<i class="fas ${settings.brandLogo || 'fa-tshirt'}"></i> ${settings.brandName || 'HEDTRO JEANS'}`;
                     }
                 }
-
                 if (sideLogoEl) {
                     if (settings.brandIcon && (settings.brandIcon.startsWith('data:image') || settings.brandIcon.startsWith('http'))) {
                         sideLogoEl.innerHTML = `<img src="${settings.brandIcon}" style="height:24px;" alt="Icon" /> ${settings.brandName || 'HEDTRO'}`;
@@ -1309,10 +1258,53 @@
                         sideLogoEl.innerHTML = `<i class="fas ${settings.brandIcon || 'fa-tshirt'}"></i> ${settings.brandName || 'HEDTRO'}`;
                     }
                 }
+                if (settings.heroTitle) document.title = settings.heroTitle + ' · Admin';
+            }
 
-                if (settings.heroTitle) {
-                    document.title = settings.heroTitle + ' · Admin';
+            // PAGINATION BUILDER
+            function buildPagination(totalItems, currentPage, containerId, tabKey, renderFunc) {
+                const container = document.getElementById(containerId);
+                if (!container) return;
+                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                
+                if (totalItems === 0) {
+                    container.innerHTML = '';
+                    return;
                 }
+
+                let html = '';
+                html += `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}"><i class="fas fa-chevron-left"></i> Prev</button>`;
+                
+                let startP = Math.max(1, currentPage - 1);
+                let endP = Math.min(totalPages, currentPage + 1);
+                
+                if (startP > 1) {
+                    html += `<button class="page-btn" data-page="1">1</button>`;
+                    if (startP > 2) html += `<span style="font-size:0.8rem;color:#999;padding:0 4px;">...</span>`;
+                }
+
+                for (let i = startP; i <= endP; i++) {
+                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
+                }
+
+                if (endP < totalPages) {
+                    if (endP < totalPages - 1) html += `<span style="font-size:0.8rem;color:#999;padding:0 4px;">...</span>`;
+                    html += `<button class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
+                }
+                
+                html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">Next <i class="fas fa-chevron-right"></i></button>`;
+                
+                container.innerHTML = html;
+
+                container.querySelectorAll('.page-btn:not(:disabled)').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const newPage = parseInt(this.dataset.page);
+                        if(newPage && newPage !== currentPage) {
+                            statePage[tabKey] = newPage;
+                            renderFunc();
+                        }
+                    });
+                });
             }
 
             // RENDER DASHBOARD
@@ -1372,13 +1364,29 @@
                 });
             }
 
-            // RENDER MEMBERS
+            // RENDER MEMBERS + PAGINATION
             function renderAdminMembers() {
                 const tbody = document.getElementById('adminTableBody');
                 if (!tbody) return;
                 const users = loadUsers();
+                const totalItems = users.length;
+                
+                const totalEl = document.getElementById('totalMembers');
+                if (totalEl) totalEl.textContent = totalItems;
+
+                if (totalItems === 0) {
+                    tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;padding:20px;">Belum ada data member.</td></tr>`;
+                    document.getElementById('membersPagination').innerHTML = '';
+                    return;
+                }
+
+                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                statePage.members = Math.max(1, Math.min(statePage.members, totalPages));
+                const startIdx = (statePage.members - 1) * ITEMS_PER_PAGE;
+                const paginatedData = users.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
                 let html = '';
-                users.forEach(u => {
+                paginatedData.forEach(u => {
                     const isAdmin = u.email === 'admin@mlm.com' || u.role === 'admin';
                     const statusClass = 'badge-' + (u.status || 'free');
                     const addressStr = u.address || u.alamat || '-';
@@ -1400,8 +1408,7 @@
                     </tr>`;
                 });
                 tbody.innerHTML = html;
-                const totalEl = document.getElementById('totalMembers');
-                if (totalEl) totalEl.textContent = users.length;
+                buildPagination(totalItems, statePage.members, 'membersPagination', 'members', renderAdminMembers);
 
                 document.querySelectorAll('.edit-member-btn').forEach(btn => {
                     btn.addEventListener('click', function() { openMemberModal(parseInt(this.dataset.id)); });
@@ -1503,18 +1510,27 @@
             const addMemberBtn = document.getElementById('addMemberBtn');
             if(addMemberBtn) addMemberBtn.addEventListener('click', function() { openMemberModal(null); });
 
-            // RENDER VERIFICATION
+            // RENDER VERIFICATION + PAGINATION
             function renderVerification() {
                 const tbody = document.getElementById('verifTableBody');
                 if (!tbody) return;
                 const users = loadUsers();
                 const pendingUsers = users.filter(u => u.status === 'pending' || u.status === 'free');
-                if (pendingUsers.length === 0) {
+                
+                const totalItems = pendingUsers.length;
+                if (totalItems === 0) {
                     tbody.innerHTML = `<tr><td colspan="6" style="text-align:center;padding:20px;">✅ Semua member sudah terverifikasi.</td></tr>`;
+                    document.getElementById('verifPagination').innerHTML = '';
                     return;
                 }
+
+                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                statePage.verif = Math.max(1, Math.min(statePage.verif, totalPages));
+                const startIdx = (statePage.verif - 1) * ITEMS_PER_PAGE;
+                const paginatedData = pendingUsers.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
                 let html = '';
-                pendingUsers.forEach(u => {
+                paginatedData.forEach(u => {
                     html += `<tr>
                         <td data-label="ID Member">${u.id}</td>
                         <td data-label="Nama">${u.name || u.username}</td>
@@ -1530,6 +1546,7 @@
                     </tr>`;
                 });
                 tbody.innerHTML = html;
+                buildPagination(totalItems, statePage.verif, 'verifPagination', 'verif', renderVerification);
 
                 document.querySelectorAll('.verify-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
@@ -1563,13 +1580,26 @@
                 });
             }
 
-            // RENDER PRODUCTS
+            // RENDER PRODUCTS + PAGINATION
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
                 if (!tbody) return;
                 const products = loadProducts();
+                
+                const totalItems = products.length;
+                if (totalItems === 0) {
+                    tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;">Belum ada produk.</td></tr>`;
+                    document.getElementById('productsPagination').innerHTML = '';
+                    return;
+                }
+
+                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                statePage.products = Math.max(1, Math.min(statePage.products, totalPages));
+                const startIdx = (statePage.products - 1) * ITEMS_PER_PAGE;
+                const paginatedData = products.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
                 let html = '';
-                products.forEach((p, idx) => {
+                paginatedData.forEach((p, idx) => {
                     const sizes = (p.sizes || []).join(', ') || '-';
                     const colors = (p.colors || []).join(', ') || '-';
                     let imgHtml = `<i class="fas fa-tshirt" style="font-size:1.5rem;color:var(--denim-blue);"></i>`;
@@ -1577,7 +1607,7 @@
                         imgHtml = `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />`;
                     }
                     html += `<tr>
-                        <td data-label="#">${idx+1}</td>
+                        <td data-label="#">${startIdx + idx + 1}</td>
                         <td data-label="Gambar">${imgHtml}</td>
                         <td data-label="Nama Produk"><strong>${p.name}</strong></td>
                         <td data-label="Harga Member">Rp ${p.price.toLocaleString()}</td>
@@ -1595,6 +1625,7 @@
                     </tr>`;
                 });
                 tbody.innerHTML = html;
+                buildPagination(totalItems, statePage.products, 'productsPagination', 'products', renderAdminProducts);
 
                 document.querySelectorAll('.edit-product').forEach(btn => {
                     btn.addEventListener('click', function() { openEditProduct(parseInt(this.dataset.id)); });
@@ -1612,19 +1643,29 @@
                 });
             }
 
-            // RENDER ORDERS
+            // RENDER ORDERS + PAGINATION
             function renderOrders() {
                 const tbody = document.getElementById('ordersTableBody');
                 if (!tbody) return;
                 const orders = loadOrders();
                 const users = loadUsers();
-                if (orders.length === 0) {
+                
+                const totalItems = orders.length;
+                if (totalItems === 0) {
                     tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;">Belum ada pesanan.</td></tr>`;
+                    document.getElementById('ordersPagination').innerHTML = '';
                     return;
                 }
-                let html = '';
+
                 const sorted = [...orders].reverse();
-                sorted.forEach((o, idx) => {
+                
+                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                statePage.orders = Math.max(1, Math.min(statePage.orders, totalPages));
+                const startIdx = (statePage.orders - 1) * ITEMS_PER_PAGE;
+                const paginatedData = sorted.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+                let html = '';
+                paginatedData.forEach((o, idx) => {
                     const user = users.find(u => u.id === o.user_id);
                     const userName = user ? (user.name || user.username) : o.user_name || 'Unknown';
                     const userAddress = (user && (user.address || user.alamat)) ? (user.address || user.alamat) : (o.shipping_address || 'Belum diisi di profil');
@@ -1635,7 +1676,7 @@
                     const hasProof = o.proof_image || o.proof || false;
                     
                     html += `<tr>
-                        <td data-label="#">${idx+1}</td>
+                        <td data-label="#">${startIdx + idx + 1}</td>
                         <td data-label="Member"><strong>${userName}</strong></td>
                         <td data-label="Alamat Pengiriman">${userAddress}</td>
                         <td data-label="Tipe Order">${typeLabel}</td>
@@ -1653,6 +1694,7 @@
                     </tr>`;
                 });
                 tbody.innerHTML = html;
+                buildPagination(totalItems, statePage.orders, 'ordersPagination', 'orders', renderOrders);
 
                 document.querySelectorAll('.view-proof').forEach(btn => {
                     btn.addEventListener('click', function() {
@@ -2050,6 +2092,55 @@
             if (openIndexBtn) {
                 openIndexBtn.addEventListener('click', function() { window.open('index.html', '_blank'); });
             }
+
+            // REFRESH BUTTONS
+            document.getElementById('refreshBtn')?.addEventListener('click', function() {
+                renderAdminMembers(); renderAdminProducts(); renderVerification(); renderOrders(); renderDashboard(); loadSettingsToForm();
+                showToast('🔄 Data direfresh.', 'info');
+            });
+            document.getElementById('refreshVerifBtn')?.addEventListener('click', function() { renderVerification(); showToast('🔄 Direfresh.', 'info'); });
+            document.getElementById('refreshOrdersBtn')?.addEventListener('click', function() { renderOrders(); showToast('🔄 Direfresh.', 'info'); });
+            document.getElementById('refreshSlidesBtn')?.addEventListener('click', function() { renderSlides(); showToast('🔄 Direfresh.', 'info'); });
+            
+            document.getElementById('seedDemoBtn')?.addEventListener('click', function() {
+                let users = loadUsers();
+                const demoNames = ['Dewi Lestari', 'Eko Prasetyo', 'Rina Cahyani', 'Bambang S', 'Siti Rahayu', 'Budi Santoso', 'Adi Putra', 'Putri Ayu', 'Candra Wijaya', 'Sinta Melia', 'Reza Gunawan', 'Tina Rosa'];
+                let added = 0;
+                demoNames.forEach((name, i) => {
+                    if (!users.find(u => u.email === name.toLowerCase().replace(/ /g, '') + '@mail.com')) {
+                        const newUser = {
+                            id: getNextId(users), username: name.toLowerCase().replace(/ /g, ''), email: name.toLowerCase().replace(/ /g, '') + '@mail.com', password: 'demo123',
+                            name: name, address: `Jl. Sudirman No. ${10 + i}, Jakarta Pusat`, role: 'user', status: i < 3 ? 'verified' : 'free',
+                            wallet: Math.floor(Math.random() * 100000) + 10000, bonus_sponsor: Math.floor(Math.random() * 50), bonus_binary: Math.floor(Math.random() * 100),
+                            bonus_reward: Math.floor(Math.random() * 20), bonus_ro: Math.floor(Math.random() * 10),
+                            left: null, right: null, sponsor_id: 1, upline_id: 1, position: i % 2 === 0 ? 'left' : 'right',
+                            purchase_history: [], transactions: [], orders: [], proof_image: null, registeredAt: new Date().toISOString()
+                        };
+                        if (i === 0) { const admin = users.find(u => u.id === 1); if (admin) admin.left = newUser.id; }
+                        if (i === 1) { const admin = users.find(u => u.id === 1); if (admin) admin.right = newUser.id; }
+                        users.push(newUser); added++;
+                    }
+                });
+                saveUsers(users); renderAdminMembers(); renderVerification(); renderOrders(); renderDashboard();
+                showToast(`✅ ${added} member demo ditambahkan.`, 'success');
+            });
+
+            document.getElementById('resetAllBtn')?.addEventListener('click', function() {
+                if (!confirm('⚠️ Hapus SEMUA data (kecuali admin)?')) return;
+                let users = loadUsers();
+                const admin = users.find(u => u.role === 'admin' || u.email === 'admin@mlm.com');
+                if (admin) {
+                    admin.left = null; admin.right = null; admin.wallet = 0;
+                    admin.bonus_sponsor = 0; admin.bonus_binary = 0; admin.bonus_reward = 0; admin.bonus_ro = 0;
+                    admin.transactions = []; admin.orders = []; admin.purchase_history = [];
+                }
+                users = admin ? [admin] : [];
+                saveUsers(users); saveOrders([]); saveTransactions([]); saveProducts([]);
+                statePage = { members: 1, products: 1, verif: 1, orders: 1 };
+                renderAdminMembers(); renderVerification(); renderOrders(); renderAdminProducts(); renderDashboard();
+                showToast('✅ Semua data direset (kecuali admin).', 'info');
+            });
+
 
             // LOGIN OVERLAY & SESSION
             function showAdminLogin() { clearSession(); document.getElementById('loginOverlay')?.classList.remove('hidden'); document.getElementById('mainApp').style.display = 'none'; }
