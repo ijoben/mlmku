@@ -137,7 +137,6 @@
             padding: 20px 24px 40px;
             transition: margin-left 0.3s ease;
             max-width: calc(100% - var(--sidebar-width));
-            width: 100%;
         }
         .page-title {
             font-size:1.6rem; font-weight:700; color:var(--denim-dark);
@@ -243,7 +242,6 @@
             padding:20px; box-shadow:var(--shadow);
             border:1px solid #e2e8f0;
             margin-bottom:16px;
-            width: 100%;
         }
         .settings-card h4 {
             font-size:0.95rem; font-weight:700; margin-bottom:14px;
@@ -501,6 +499,7 @@
 
         /* ===== OPTIMASI LAYAR HP PERBAIKAN OFFSIDE & GRID CARD ===== */
         @media (max-width: 768px) {
+            body { overflow-x: hidden; }
             .navbar { padding: 10px 14px; }
             .navbar .logo { font-size: 1.1rem; }
             .navbar .logo i { font-size: 1.3rem; }
@@ -512,7 +511,14 @@
             .sidebar .sidebar-header .close-side { display:block; }
             .sidebar-overlay { display:block; }
 
-            .main-content { margin-left:0; max-width:100%; padding:14px 10px 30px; width:100%; overflow-x:hidden; }
+            .main-content { 
+                margin-left: 0; 
+                max-width: 100vw; 
+                width: 100%; 
+                padding: 16px 12px 30px; 
+                box-sizing: border-box; 
+                overflow-x: hidden; 
+            }
             .page-title { font-size: 1.25rem; margin-bottom: 12px; }
 
             .dashboard-banner { flex-direction: column; align-items: flex-start; gap: 10px; padding: 16px; }
@@ -530,61 +536,69 @@
             .stat-card .icon-bg { font-size: 2rem; right: 8px; bottom: 6px; }
 
             .settings-grid { grid-template-columns: 1fr; gap: 12px; }
-            .settings-card { padding: 14px; }
+            .settings-card { padding: 16px; width: 100%; box-sizing: border-box; }
             .level-grid { grid-template-columns: 1fr !important; }
             .slide-preview { grid-template-columns: 1fr !important; }
-            .modal-box { padding: 20px 16px 24px; border-radius: 20px; }
+            .modal-box { padding: 20px 16px 24px; border-radius: 20px; margin: 10px; width: calc(100% - 20px); }
 
-            .sub-tab-nav { padding-bottom: 8px; margin-bottom: 14px; width: 100%; }
-            .sub-tab-btn { padding: 6px 12px; font-size: 0.75rem; }
+            /* PERBAIKAN SUB-TAB MENU PENGATURAN HP AGAR BISA SCROLL RAPI */
+            .sub-tab-nav { 
+                padding-bottom: 8px; 
+                margin-bottom: 16px; 
+                width: 100%; 
+                flex-wrap: nowrap; 
+                overflow-x: auto; 
+                -webkit-overflow-scrolling: touch; 
+            }
+            .sub-tab-btn { padding: 6px 14px; font-size: 0.78rem; flex-shrink: 0; }
 
-            /* PERBAIKAN COMPACT GRID MOBILE SUPAYA TIDAK MELUAP / OFFSIDE */
+            /* ===== TABEL COMPACT GRID SUPER RAPI & TIDAK OFFSIDE ===== */
             .table-wrap {
-                background: transparent;
-                border: none;
-                box-shadow: none;
-                overflow-x: visible;
-                width: 100%;
+                background: transparent !important;
+                border: none !important;
+                box-shadow: none !important;
+                overflow-x: visible !important;
+                width: 100% !important;
+                padding: 0 !important;
             }
             table, thead, tbody, th, td, tr {
                 display: block;
                 width: 100%;
                 box-sizing: border-box;
             }
-            thead {
-                display: none; /* Sembunyikan Header Tabel di HP */
-            }
+            thead { display: none; }
             tbody {
                 display: flex;
                 flex-direction: column;
-                gap: 12px;
+                gap: 14px;
                 width: 100%;
             }
             tbody tr {
                 background: var(--white);
                 border: 1px solid #e2e8f0;
                 border-radius: var(--radius-sm);
-                padding: 14px;
-                box-shadow: var(--shadow);
+                padding: 16px;
+                box-shadow: 0 4px 12px rgba(0,0,0,0.04);
                 display: flex;
                 flex-direction: column;
                 gap: 8px;
                 width: 100%;
-                max-width: 100%;
-                box-sizing: border-box;
             }
             tbody td {
-                padding: 0;
-                border: none;
-                font-size: 0.82rem;
+                padding: 0 !important;
+                border: none !important;
+                font-size: 0.85rem !important;
                 display: flex;
                 justify-content: space-between;
-                align-items: center;
+                align-items: flex-start;
                 text-align: right;
-                width: 100%;
-                max-width: 100%;
-                overflow-wrap: anywhere;
+                width: 100% !important;
+                max-width: 100% !important; /* Paksa override inline style yang bikin offside */
+                white-space: normal !important; /* Paksa override nowrap */
+                overflow: visible !important;
                 word-break: break-word;
+                color: var(--denim-dark);
+                line-height: 1.4;
             }
             tbody td::before {
                 content: attr(data-label);
@@ -592,18 +606,21 @@
                 color: var(--denim-navy);
                 text-align: left;
                 font-size: 0.78rem;
-                padding-right: 10px;
+                padding-right: 12px;
                 flex-shrink: 0;
+                width: 40%;
+                max-width: 120px;
             }
-            
             tbody td:last-child {
-                margin-top: 6px;
-                padding-top: 8px;
-                border-top: 1px dashed #eef2f7;
+                margin-top: 8px;
+                padding-top: 12px;
+                border-top: 1px dashed #e2e8f0 !important;
                 justify-content: flex-end;
+                width: 100% !important;
             }
-            tbody td[data-label="Aksi"]::before {
-                display: none;
+            tbody td[data-label="Aksi"]::before { display: none; }
+            tbody td[data-label="Aksi"] > div {
+                width: 100%; display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap;
             }
         }
 
@@ -715,7 +732,6 @@
 
                 <h1 class="page-title" style="font-size: 1.2rem; margin-bottom: 12px;"><i class="fas fa-chart-pie"></i> Ringkasan Sistem</h1>
                 
-                <!-- CARD DASHBOARD 2 KOLOM RAPI DI HP -->
                 <div class="stats-grid" id="dashboardStats">
                     <div class="stat-card">
                         <i class="fas fa-users icon-bg"></i>
@@ -850,7 +866,6 @@
             <div class="tab-content" id="tabPageSettings">
                 <h1 class="page-title"><i class="fas fa-paint-brush"></i> Pengaturan Halaman Utama</h1>
                 
-                <!-- SLIDE CAROUSEL -->
                 <div class="settings-card">
                     <h4><i class="fas fa-images" style="color:var(--gold-accent);"></i> Slide Carousel</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Kelola slide yang tampil di carousel halaman utama.</p>
@@ -861,7 +876,6 @@
                     <div class="slide-preview" id="slideList"></div>
                 </div>
 
-                <!-- TENTANG KAMI -->
                 <div class="settings-card">
                     <h4><i class="fas fa-info-circle" style="color:var(--gold-accent);"></i> Tentang Kami</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Edit konten tentang kami.</p>
@@ -879,7 +893,6 @@
                     </div>
                 </div>
 
-                <!-- FAQ -->
                 <div class="settings-card">
                     <h4><i class="fas fa-question-circle" style="color:var(--gold-accent);"></i> FAQ</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Kelola pertanyaan yang sering diajukan.</p>
@@ -889,7 +902,6 @@
                     <div class="faq-list" id="faqList"></div>
                 </div>
 
-                <!-- KEUNGGULAN -->
                 <div class="settings-card">
                     <h4><i class="fas fa-star" style="color:var(--gold-accent);"></i> Keunggulan</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Kelola keunggulan produk yang ditampilkan.</p>
@@ -899,7 +911,6 @@
                     <div class="feature-list" id="featureList"></div>
                 </div>
 
-                <!-- FOOTER & SOSMED -->
                 <div class="settings-card">
                     <h4><i class="fas fa-copyright" style="color:var(--gold-accent);"></i> Footer & Sosial Media</h4>
                     <p class="text-muted" style="margin-bottom:12px;">Edit teks footer dan link sosial media.</p>
@@ -924,7 +935,6 @@
                     <button class="btn-sm btn-sm-primary" id="saveFooterBtn"><i class="fas fa-save"></i> Simpan Footer & Sosmed</button>
                 </div>
 
-                <!-- SYNC STATUS -->
                 <div class="settings-card" style="border-left:4px solid var(--gold-accent);">
                     <h4><i class="fas fa-sync-alt" style="color:var(--gold-accent);"></i> Sinkronisasi Data</h4>
                     <p class="text-muted" style="margin-bottom:8px;">Semua perubahan yang Anda buat akan otomatis tersimpan dan terlihat di halaman utama (<strong>index.html</strong>) karena menggunakan <code>localStorage</code> yang sama.</p>
@@ -935,7 +945,7 @@
                 </div>
             </div>
 
-            <!-- ===== SETTINGS METODE SUB TABS ===== -->
+            <!-- ===== PENGATURAN ===== -->
             <div class="tab-content" id="tabSettings">
                 <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan Sistem</h1>
                 
@@ -1003,7 +1013,6 @@
                         <div class="form-group"><label>Nama Brand</label><input type="text" id="setBrandName" /></div>
                         <div class="form-group"><label>Judul Halaman Web</label><input type="text" id="setHeroTitle" /></div>
                         
-                        <!-- LOGO UPLOADER -->
                         <div class="form-group">
                             <label>Logo Brand (Upload Gambar / FontAwesome Class)</label>
                             <div class="upload-box">
@@ -1013,7 +1022,6 @@
                             </div>
                         </div>
 
-                        <!-- ICON UPLOADER -->
                         <div class="form-group">
                             <label>Favicon / Small Icon (Upload Gambar / FontAwesome Class)</label>
                             <div class="upload-box">
@@ -1087,21 +1095,28 @@
             const FEATURES_KEY = 'hedtro_features';
             const FOOTER_KEY = 'hedtro_footer';
 
-            // FUNGSI PEMBANTU KONTEN DITARUH DIPALING ATAS SUPAYA TIDAK MISSING ERROR
+            // ============================================================
+            // FUNGSI PEMBANTU (DITARUH DI ATAS AGAR TIDAK ERROR SAAT RELOAD)
+            // ============================================================
             function loadSlides() { try { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); } catch(e) { return []; } }
             function saveSlides(s) { localStorage.setItem(SLIDES_KEY, JSON.stringify(s)); }
+            
             function loadAbout() { try { return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}'); } catch(e) { return {title:"Tentang Kami", content:""}; } }
             function saveAbout(a) { localStorage.setItem(ABOUT_KEY, JSON.stringify(a)); }
+            
             function loadFaq() { try { return JSON.parse(localStorage.getItem(FAQ_KEY) || '[]'); } catch(e) { return []; } }
             function saveFaq(f) { localStorage.setItem(FAQ_KEY, JSON.stringify(f)); }
+            
             function loadFeatures() { try { return JSON.parse(localStorage.getItem(FEATURES_KEY) || '[]'); } catch(e) { return []; } }
             function saveFeatures(f) { localStorage.setItem(FEATURES_KEY, JSON.stringify(f)); }
+            
             function loadFooter() { try { return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium...","copyright":"&copy; 2026 HEDTRO JEANS","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}'); } catch(e) { return {brand:"HEDTRO JEANS", desc:"", copyright:"", social:{}}; } }
             function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
 
             // FUNGSI DATABASE UTAMA
             function loadUsers() { try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch(e) { return []; } }
             function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
+            
             function loadProducts() { try { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); } catch(e) { return []; } }
             function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
             
@@ -1122,17 +1137,20 @@
                     return { ...defaultSet, ...saved };
                 } catch(e) { return defaultSet; }
             }
-
             function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
+            
             function loadOrders() { try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); } catch(e) { return []; } }
             function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
+            
             function loadTransactions() { try { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); } catch(e) { return []; } }
             function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
+            
             function loadBankInfo() {
                 try { return JSON.parse(localStorage.getItem(BANK_KEY) || '{"bank":"BCA","account":"1234567890","name":"HEDTRO JEANS"}'); }
                 catch(e) { return {bank:"BCA",account:"1234567890",name:"HEDTRO JEANS"}; }
             }
             function saveBankInfo(b) { localStorage.setItem(BANK_KEY, JSON.stringify(b)); }
+            
             function getSession() {
                 const session = localStorage.getItem(SESSION_KEY);
                 if (!session) return null;
@@ -1354,13 +1372,13 @@
                         <td data-label="ID Member">${u.id}</td>
                         <td data-label="Nama / User"><strong>${u.name || u.username}</strong><br><small class="text-muted">@${u.username || 'user'}</small> ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}</td>
                         <td data-label="Email">${u.email}</td>
-                        <td data-label="Alamat" style="max-width:180px; font-size:0.75rem;">${addressStr}</td>
+                        <td data-label="Alamat">${addressStr}</td>
                         <td data-label="Sponsor">${u.sponsor_id || '-'}</td>
                         <td data-label="Posisi">${u.position || '-'}</td>
                         <td data-label="Status"><span class="badge-status ${statusClass}">${(u.status || 'free').toUpperCase()}</span></td>
                         <td data-label="Saldo Wallet">Rp ${(u.wallet || 0).toLocaleString()}</td>
                         <td data-label="Aksi">
-                            <div style="display:flex; gap:4px;">
+                            <div>
                                 <button class="btn-sm btn-sm-warning edit-member-btn" data-id="${u.id}"><i class="fas fa-edit"></i> Edit</button>
                                 ${!isAdmin ? `<button class="btn-sm btn-sm-danger delete-member-btn" data-id="${u.id}"><i class="fas fa-trash"></i></button>` : ''}
                             </div>
@@ -1490,8 +1508,10 @@
                         <td data-label="Status"><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td>
                         <td data-label="Bukti Transfer">${u.proof_image ? '📷 Telah diupload' : '❌ Belum upload'}</td>
                         <td data-label="Aksi">
-                            ${u.status === 'pending' ? `<button class="btn-sm btn-sm-success verify-btn" data-id="${u.id}">✅ Verifikasi</button>` : ''}
-                            ${u.status === 'free' ? `<button class="btn-sm btn-sm-warning pending-btn" data-id="${u.id}">⏳ Jadikan Pending</button>` : ''}
+                            <div>
+                                ${u.status === 'pending' ? `<button class="btn-sm btn-sm-success verify-btn" data-id="${u.id}">✅ Verifikasi</button>` : ''}
+                                ${u.status === 'free' ? `<button class="btn-sm btn-sm-warning pending-btn" data-id="${u.id}">⏳ Jadikan Pending</button>` : ''}
+                            </div>
                         </td>
                     </tr>`;
                 });
@@ -1506,6 +1526,24 @@
                             user.status = 'verified'; saveUsers(users);
                             renderVerification(); renderAdminMembers(); renderOrders(); renderDashboard();
                             showToast(`✅ ${user.name} telah diverifikasi!`, 'success');
+                        }
+                    });
+                });
+
+                document.querySelectorAll('.pending-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        let users = loadUsers();
+                        const user = users.find(u => u.id === id);
+                        if (user) {
+                            const proof = prompt('Masukkan link/deskripsi bukti transfer:');
+                            if (proof !== null) {
+                                user.status = 'pending';
+                                user.proof_image = proof || 'Telah upload bukti';
+                                saveUsers(users);
+                                renderVerification(); renderAdminMembers();
+                                showToast(`⏳ ${user.name} sekarang pending verifikasi.`, 'info');
+                            }
                         }
                     });
                 });
@@ -1535,7 +1573,7 @@
                         <td data-label="Warna">${colors}</td>
                         <td data-label="Stok">${p.stock}</td>
                         <td data-label="Aksi">
-                            <div style="display:flex; gap:4px;">
+                            <div>
                                 <button class="btn-sm btn-sm-warning edit-product" data-id="${p.id}"><i class="fas fa-edit"></i> Edit</button>
                                 <button class="btn-sm btn-sm-danger delete-product" data-id="${p.id}"><i class="fas fa-trash"></i> Hapus</button>
                             </div>
@@ -1585,15 +1623,15 @@
                     html += `<tr>
                         <td data-label="#">${idx+1}</td>
                         <td data-label="Member"><strong>${userName}</strong></td>
-                        <td data-label="Alamat Pengiriman" style="max-width:200px; font-size:0.75rem;"><i class="fas fa-map-marker-alt" style="color:var(--gold-accent);"></i> ${userAddress}</td>
+                        <td data-label="Alamat Pengiriman">${userAddress}</td>
                         <td data-label="Tipe Order">${typeLabel}</td>
-                        <td data-label="Produk" style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${productNames}</td>
+                        <td data-label="Produk">${productNames}</td>
                         <td data-label="Total Bayar">Rp ${(o.total || 0).toLocaleString()}</td>
                         <td data-label="Status"><span class="badge-status ${statusClass}">${statusLabel}</span></td>
                         <td data-label="Tanggal">${new Date(o.createdAt || Date.now()).toLocaleDateString()}</td>
                         <td data-label="Bukti">${hasProof ? `<button class="btn-sm btn-sm-gold view-proof" data-id="${o.id}"><i class="fas fa-image"></i> Lihat</button>` : '<span style="color:#999;font-size:0.7rem;">Belum upload</span>'}</td>
                         <td data-label="Aksi">
-                            <div style="display:flex; gap:4px;">
+                            <div>
                                 ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
                                 ${o.status === 'processing' ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim</button>` : ''}
                             </div>
@@ -1601,6 +1639,242 @@
                     </tr>`;
                 });
                 tbody.innerHTML = html;
+
+                document.querySelectorAll('.view-proof').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        const orders = loadOrders();
+                        const order = orders.find(o => o.id === id);
+                        if (!order) return;
+                        const proof = order.proof_image || order.proof || '';
+                        const user = users.find(u => u.id === order.user_id);
+                        const userName = user ? (user.name || user.username) : 'Unknown';
+                        const userAddress = (user && (user.address || user.alamat)) ? (user.address || user.alamat) : 'Belum diisi di profil';
+                        let itemsHtml = '';
+                        if (order.items) {
+                            order.items.forEach(item => {
+                                itemsHtml += `<div class="item"><span>${item.name} x${item.qty}</span><span>Rp ${(item.price * item.qty).toLocaleString()}</span></div>`;
+                            });
+                        }
+                        let html = `
+                            <h3><i class="fas fa-receipt" style="color:var(--gold-accent);"></i> Detail Order & Alamat</h3>
+                            <p class="sub">${order.order_number || 'ORD-'+order.id}</p>
+                            <div class="order-detail">
+                                <div class="item"><strong>Member</strong><span>${userName}</span></div>
+                                <div class="item"><strong>Alamat Pengiriman</strong><span style="max-width:60%; text-align:right;">${userAddress}</span></div>
+                                <div class="item"><strong>Type</strong><span>${order.type || 'Regular'}</span></div>
+                                <div class="item"><strong>Status</strong><span>${order.status || 'Pending'}</span></div>
+                                <div class="item"><strong>Total</strong><span>Rp ${(order.total || 0).toLocaleString()}</span></div>
+                                <div style="margin-top:8px;border-top:1px solid #ddd;padding-top:8px;">
+                                    <strong>Produk:</strong>
+                                    ${itemsHtml || '<span class="text-muted">-</span>'}
+                                </div>
+                            </div>
+                            <div>
+                                <strong>Bukti Pembayaran:</strong>
+                                ${proof ? `<div class="proof-image"><img src="${proof}" alt="Bukti Pembayaran" /></div>` : '<p class="text-muted">Belum ada bukti pembayaran</p>'}
+                            </div>
+                            <button class="btn-submit" onclick="document.getElementById('modalClose').click();" style="margin-top:12px;">Tutup</button>
+                        `;
+                        openModal(html);
+                    });
+                });
+
+                document.querySelectorAll('.approve-order').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        let orders = loadOrders();
+                        const order = orders.find(o => o.id === id);
+                        if (!order) return;
+                        order.status = 'processing';
+                        saveOrders(orders);
+                        renderOrders(); renderDashboard();
+                        showToast(`✅ Order ${order.order_number || id} diproses.`, 'success');
+                    });
+                });
+
+                document.querySelectorAll('.ship-order').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        let orders = loadOrders();
+                        const order = orders.find(o => o.id === id);
+                        if (!order) return;
+                        order.status = 'shipped';
+                        saveOrders(orders);
+                        renderOrders(); renderDashboard();
+                        showToast(`🚚 Order ${order.order_number || id} dikirim.`, 'success');
+                    });
+                });
+            }
+
+            // ADD & EDIT PRODUK
+            const addProductBtn = document.getElementById('addProductBtn');
+            if (addProductBtn) {
+                addProductBtn.addEventListener('click', function() {
+                    let html = `
+                        <h3><i class="fas fa-plus-circle" style="color:var(--gold-accent);"></i> Tambah Produk</h3>
+                        <p class="sub">Isi data produk baru di bawah ini</p>
+                        <form id="addProductForm" onsubmit="return false;">
+                            <div class="form-group"><label>Nama Produk <span style="color:red;">*</span></label><input type="text" id="addName" placeholder="Nama produk" /></div>
+                            <div class="form-group"><label>Harga Member (Rp) <span style="color:red;">*</span></label><input type="number" id="addPrice" placeholder="250000" /></div>
+                            <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="addOriginal" placeholder="350000" /></div>
+                            <div class="form-group"><label>Tag/Badge</label><input type="text" id="addTag" placeholder="BEST SELLER" value="PRODUK" /></div>
+                            <div class="form-group"><label>Warna Badge (kode hex)</label><input type="color" id="addBadgeColor" value="#c9a84c" style="padding:4px;height:50px;" /></div>
+                            <div class="form-group"><label>Stok</label><input type="number" id="addStock" placeholder="0" value="10" /></div>
+                            <div class="form-group"><label>Ukuran (pisah dengan koma)</label><input type="text" id="addSizes" placeholder="28,29,30,31,32" value="28,29,30,31,32" /></div>
+                            <div class="form-group"><label>Warna (pisah dengan koma)</label><input type="text" id="addColors" placeholder="Indigo Blue, Black Stretch" value="Indigo Blue, Black Stretch" /></div>
+                            <div class="form-group"><label>Deskripsi</label><textarea id="addDesc" rows="3" placeholder="Deskripsi produk..."></textarea></div>
+                            <div class="form-group">
+                                <label>Upload Gambar</label>
+                                <div class="file-input-wrapper">
+                                    <input type="file" id="addImageFile" accept="image/*" />
+                                    <div class="file-label"><i class="fas fa-cloud-upload-alt"></i> <span id="addImageLabel">Upload gambar</span></div>
+                                </div>
+                                <div class="image-preview" id="addImagePreview"></div>
+                                <input type="hidden" id="addImageUrl" value="" />
+                            </div>
+                            <button type="submit" class="btn-submit" id="saveAddProduct"><i class="fas fa-plus"></i> Tambah Produk</button>
+                        </form>
+                    `;
+                    openModal(html);
+                    const fileInput = document.getElementById('addImageFile');
+                    const imagePreview = document.getElementById('addImagePreview');
+                    const imageLabel = document.getElementById('addImageLabel');
+                    if (fileInput) {
+                        fileInput.addEventListener('change', function(e) {
+                            const file = e.target.files[0];
+                            if (file) {
+                                const reader = new FileReader();
+                                reader.onload = function(event) {
+                                    imagePreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
+                                    imagePreview.classList.add('show');
+                                    document.getElementById('addImageUrl').value = event.target.result;
+                                    imageLabel.textContent = file.name;
+                                };
+                                reader.readAsDataURL(file);
+                            }
+                        });
+                    }
+                    const saveBtn = document.getElementById('saveAddProduct');
+                    if (saveBtn) {
+                        saveBtn.addEventListener('click', function() {
+                            const name = document.getElementById('addName').value.trim();
+                            const price = parseInt(document.getElementById('addPrice').value);
+                            const original = parseInt(document.getElementById('addOriginal').value) || 0;
+                            const tag = document.getElementById('addTag').value.trim() || 'PRODUK';
+                            const badgeColor = document.getElementById('addBadgeColor').value || '#c9a84c';
+                            const stock = parseInt(document.getElementById('addStock').value) || 0;
+                            const sizesStr = document.getElementById('addSizes').value.trim();
+                            const colorsStr = document.getElementById('addColors').value.trim();
+                            const desc = document.getElementById('addDesc').value.trim();
+                            const image = document.getElementById('addImageUrl').value.trim();
+                            
+                            if (!name) { showToast('⚠️ Nama produk wajib diisi!', 'error'); return; }
+                            if (isNaN(price) || price <= 0) { showToast('⚠️ Harga member harus diisi!', 'error'); return; }
+                            
+                            const sizes = sizesStr ? sizesStr.split(',').map(s => s.trim()).filter(s => s) : [];
+                            const colors = colorsStr ? colorsStr.split(',').map(c => c.trim()).filter(c => c) : [];
+                            
+                            let products = loadProducts();
+                            const newProd = {
+                                id: products.length ? Math.max(...products.map(p => p.id)) + 1 : 1,
+                                name, price, original, tag, badgeColor, icon: 'fa-tshirt', stock, sizes, colors,
+                                desc: desc || 'Deskripsi produk ini akan diisi oleh admin.',
+                                image: image || null, favorite: false,
+                                serial: 'HDT-SERI-' + String(products.length + 1).padStart(3, '0')
+                            };
+                            products.push(newProd);
+                            saveProducts(products); renderAdminProducts(); renderDashboard(); closeModal();
+                            showToast('✅ Produk berhasil ditambahkan!', 'success');
+                        });
+                    }
+                });
+            }
+
+            function openEditProduct(id) {
+                const products = loadProducts();
+                const p = products.find(x => x.id === id);
+                if (!p) return;
+
+                const sizesStr = (p.sizes || []).join(', ');
+                const colorsStr = (p.colors || []).join(', ');
+
+                let html = `
+                    <h3><i class="fas fa-edit" style="color:var(--gold-accent);"></i> Edit Produk</h3>
+                    <p class="sub">Ubah data produk di bawah ini</p>
+                    <form id="editProductForm" onsubmit="return false;">
+                        <div class="form-group"><label>Nama Produk <span style="color:red;">*</span></label><input type="text" id="editName" value="${p.name}" /></div>
+                        <div class="form-group"><label>Harga Member (Rp) <span style="color:red;">*</span></label><input type="number" id="editPrice" value="${p.price}" /></div>
+                        <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="editOriginal" value="${p.original || ''}" /></div>
+                        <div class="form-group"><label>Tag/Badge</label><input type="text" id="editTag" value="${p.tag || 'PRODUK'}" /></div>
+                        <div class="form-group"><label>Warna Badge (kode hex)</label><input type="color" id="editBadgeColor" value="${p.badgeColor || '#c9a84c'}" style="padding:4px;height:50px;" /></div>
+                        <div class="form-group"><label>Stok</label><input type="number" id="editStock" value="${p.stock || 0}" /></div>
+                        <div class="form-group"><label>Ukuran (pisah dengan koma)</label><input type="text" id="editSizes" value="${sizesStr}" placeholder="contoh: 28,29,30,31,32" /></div>
+                        <div class="form-group"><label>Warna (pisah dengan koma)</label><input type="text" id="editColors" value="${colorsStr}" placeholder="contoh: Indigo Blue, Black Stretch" /></div>
+                        <div class="form-group"><label>Deskripsi</label><textarea id="editDesc" rows="3">${p.desc || ''}</textarea></div>
+                        <div class="form-group">
+                            <label>Upload Gambar</label>
+                            <div class="file-input-wrapper">
+                                <input type="file" id="editImageFile" accept="image/*" />
+                                <div class="file-label"><i class="fas fa-cloud-upload-alt"></i> <span id="editImageLabel">${p.image ? 'Ganti gambar' : 'Upload gambar'}</span></div>
+                            </div>
+                            ${p.image ? `<div class="image-preview show" id="editImagePreview"><img src="${p.image}" alt="Preview" /></div>` : `<div class="image-preview" id="editImagePreview"></div>`}
+                            <input type="hidden" id="editImageUrl" value="${p.image || ''}" />
+                        </div>
+                        <button type="submit" class="btn-submit" id="saveEditProduct"><i class="fas fa-save"></i> Simpan Perubahan</button>
+                    </form>
+                `;
+                openModal(html);
+                const fileInput = document.getElementById('editImageFile');
+                const imagePreview = document.getElementById('editImagePreview');
+                const imageLabel = document.getElementById('editImageLabel');
+                if (fileInput) {
+                    fileInput.addEventListener('change', function(e) {
+                        const file = e.target.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(event) {
+                                imagePreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
+                                imagePreview.classList.add('show');
+                                document.getElementById('editImageUrl').value = event.target.result;
+                                imageLabel.textContent = file.name;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
+                }
+                const saveBtn = document.getElementById('saveEditProduct');
+                if (saveBtn) {
+                    saveBtn.addEventListener('click', function() {
+                        const name = document.getElementById('editName').value.trim();
+                        const price = parseInt(document.getElementById('editPrice').value);
+                        const original = parseInt(document.getElementById('editOriginal').value) || 0;
+                        const tag = document.getElementById('editTag').value.trim() || 'PRODUK';
+                        const badgeColor = document.getElementById('editBadgeColor').value || '#c9a84c';
+                        const stock = parseInt(document.getElementById('editStock').value) || 0;
+                        const sizesStr = document.getElementById('editSizes').value.trim();
+                        const colorsStr = document.getElementById('editColors').value.trim();
+                        const desc = document.getElementById('editDesc').value.trim();
+                        const image = document.getElementById('editImageUrl').value.trim();
+                        
+                        if (!name) { showToast('⚠️ Nama produk wajib diisi!', 'error'); return; }
+                        if (isNaN(price) || price <= 0) { showToast('⚠️ Harga member harus diisi!', 'error'); return; }
+                        
+                        const sizes = sizesStr ? sizesStr.split(',').map(s => s.trim()).filter(s => s) : [];
+                        const colors = colorsStr ? colorsStr.split(',').map(c => c.trim()).filter(c => c) : [];
+                        
+                        let products = loadProducts();
+                        const product = products.find(x => x.id === id);
+                        if (product) {
+                            product.name = name; product.price = price; product.original = original;
+                            product.tag = tag; product.badgeColor = badgeColor; product.stock = stock;
+                            product.sizes = sizes; product.colors = colors; product.desc = desc;
+                            if (image) product.image = image;
+                            saveProducts(products); renderAdminProducts(); renderDashboard(); closeModal();
+                            showToast('✅ Produk berhasil diupdate!', 'success');
+                        }
+                    });
+                }
             }
 
             function renderPageSettings() { renderSlides(); renderAbout(); renderFaq(); renderFeatures(); renderFooter(); }
@@ -1744,6 +2018,24 @@
                 settings.memberPrice = parseFloat(document.getElementById('setMemberPrice').value) || 550000;
                 saveSettings(settings); showToast('✅ Pengaturan toko disimpan!', 'success');
             });
+
+            const syncAllBtn = document.getElementById('syncAllBtn');
+            if (syncAllBtn) {
+                syncAllBtn.addEventListener('click', function() {
+                    saveUsers(loadUsers()); saveProducts(loadProducts()); saveSettings(loadSettings());
+                    saveOrders(loadOrders()); saveTransactions(loadTransactions()); saveBankInfo(loadBankInfo());
+                    saveSlides(loadSlides()); saveAbout(loadAbout()); saveFaq(loadFaq());
+                    saveFeatures(loadFeatures()); saveFooter(loadFooter());
+                    renderDashboard(); renderAdminMembers(); renderAdminProducts(); renderVerification();
+                    renderOrders(); renderPageSettings(); loadSettingsToForm();
+                    showToast('✅ Semua data berhasil disinkronkan!', 'success', 4000);
+                });
+            }
+
+            const openIndexBtn = document.getElementById('openIndexBtn');
+            if (openIndexBtn) {
+                openIndexBtn.addEventListener('click', function() { window.open('index.html', '_blank'); });
+            }
 
             // LOGIN OVERLAY & SESSION
             function showAdminLogin() { clearSession(); document.getElementById('loginOverlay')?.classList.remove('hidden'); document.getElementById('mainApp').style.display = 'none'; }
