@@ -118,6 +118,7 @@
             transition: var(--transition);
             font-family: inherit;
             margin-top: 4px;
+            cursor: pointer;
         }
 
         .btn-login:hover {
@@ -125,74 +126,9 @@
             transform: scale(0.98);
         }
 
-        .demo-section {
-            margin-top: 20px;
-            padding-top: 20px;
-            border-top: 1px solid var(--denim-light);
-        }
-
-        .demo-section .demo-label {
-            font-size: 0.75rem;
-            color: var(--denim-navy);
-            opacity: 0.6;
-            text-align: center;
-            margin-bottom: 12px;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .demo-buttons {
-            display: grid;
-            grid-template-columns: 1fr 1fr 1fr;
-            gap: 8px;
-        }
-
-        .demo-btn {
-            padding: 10px 12px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 0.75rem;
-            transition: var(--transition);
-            font-family: inherit;
-            border: 2px solid var(--denim-light);
-            background: var(--cream);
-            color: var(--denim-navy);
-            cursor: pointer;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 6px;
-            flex-direction: column;
-        }
-
-        .demo-btn:hover {
-            border-color: var(--gold-accent);
-            background: rgba(201, 168, 76, 0.05);
-        }
-
-        .demo-btn.admin {
-            border-color: var(--gold-accent);
-            background: rgba(201, 168, 76, 0.08);
-        }
-
-        .demo-btn.admin:hover {
-            background: rgba(201, 168, 76, 0.15);
-        }
-
-        .demo-btn i {
-            font-size: 1rem;
-            color: var(--gold-accent);
-        }
-
-        .demo-btn .demo-label-text {
-            font-size: 0.55rem;
-            opacity: 0.5;
-        }
-
         .login-footer {
             text-align: center;
-            margin-top: 18px;
+            margin-top: 24px;
             font-size: 0.85rem;
             color: var(--denim-navy);
         }
@@ -201,6 +137,7 @@
             color: var(--gold-accent);
             font-weight: 600;
             cursor: pointer;
+            text-decoration: none;
         }
 
         .login-footer a:hover {
@@ -232,26 +169,12 @@
             font-size: 0.8rem;
             opacity: 0.6;
             transition: var(--transition);
+            text-decoration: none;
         }
 
         .back-link:hover {
             opacity: 1;
             color: var(--gold-accent);
-        }
-
-        .admin-warning {
-            background: #fff3cd;
-            color: #856404;
-            padding: 10px 16px;
-            border-radius: var(--radius-sm);
-            font-size: 0.8rem;
-            text-align: center;
-            margin-top: 14px;
-            border: 1px solid #ffc107;
-        }
-
-        .admin-warning i {
-            margin-right: 6px;
         }
 
         @media (max-width: 480px) {
@@ -260,9 +183,6 @@
             }
             .login-card .logo h1 {
                 font-size: 1.4rem;
-            }
-            .demo-buttons {
-                grid-template-columns: 1fr 1fr;
             }
             .form-group input {
                 padding: 10px 14px;
@@ -293,33 +213,8 @@
                 <div class="msg" id="loginMsg"></div>
             </form>
 
-            <div class="demo-section">
-                <div class="demo-label"><i class="fas fa-bolt"></i> Login Demo 1 Klik</div>
-                <div class="demo-buttons">
-                    <button class="demo-btn" id="demoUser1Btn">
-                        <i class="fas fa-user"></i>
-                        <span>User</span>
-                        <span class="demo-label-text">budi@mail.com</span>
-                    </button>
-                    <button class="demo-btn" id="demoUser2Btn">
-                        <i class="fas fa-user"></i>
-                        <span>User 2</span>
-                        <span class="demo-label-text">citra@mail.com</span>
-                    </button>
-                    <button class="demo-btn admin" id="demoAdminBtn">
-                        <i class="fas fa-user-cog"></i>
-                        <span>Admin</span>
-                        <span class="demo-label-text">admin@mlm.com</span>
-                    </button>
-                </div>
-            </div>
-
             <div class="login-footer">
                 Belum punya akun? <a href="register.html">Daftar di sini</a>
-            </div>
-
-            <div class="admin-warning">
-                <i class="fas fa-info-circle"></i> Admin login melalui <strong>admin.html</strong>
             </div>
 
             <div style="text-align:center; margin-top:12px;">
@@ -328,58 +223,22 @@
         </div>
     </div>
 
+    <!-- ============================================================
+    JAVASCRIPT
+    ============================================================ -->
     <script>
         (function() {
             'use strict';
 
             const DB_KEY = 'hedtro_mlm_users';
-            const SESSION_KEY = 'mlm_session';
 
             // ============================================================
-            // DATABASE FUNCTIONS
-            // ============================================================
-            function loadUsers() { 
-                try {
-                    return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); 
-                } catch(e) {
-                    return [];
-                }
-            }
-            
-            function saveUsers(u) { 
-                localStorage.setItem(DB_KEY, JSON.stringify(u)); 
-            }
-            
-            function getSession() {
-                try {
-                    const session = localStorage.getItem(SESSION_KEY);
-                    if (!session) return null;
-                    return JSON.parse(session);
-                } catch (_) { 
-                    return null; 
-                }
-            }
-            
-            function saveSession(s) { 
-                localStorage.setItem(SESSION_KEY, JSON.stringify(s)); 
-            }
-            
-            function clearSession() { 
-                localStorage.removeItem(SESSION_KEY); 
-            }
-
-            // ============================================================
-            // INIT DEFAULT USERS (DENGAN DEMO USER VALID)
+            // INIT DATA DEFAULT (jika belum ada)
             // ============================================================
             function initUsers() {
-                let users = loadUsers();
-                
-                // Cek apakah sudah ada user admin
-                const hasAdmin = users.some(u => u.email === 'admin@mlm.com');
-                
-                if (!hasAdmin) {
-                    // Buat default users jika belum ada
-                    const defaultUsers = [{
+                let users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+                if (users.length === 0) {
+                    users = [{
                         id: 1,
                         username: 'admin',
                         name: 'Admin Utama',
@@ -392,15 +251,10 @@
                         bonus_binary: 0,
                         bonus_reward: 0,
                         bonus_ro: 0,
-                        left: null,
-                        right: null,
-                        sponsor_id: null,
-                        upline_id: null,
-                        position: null,
+                        binary_tree: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+                        reward_levels: [0, 0, 0, 0, 0],
                         purchase_history: [],
                         transactions: [],
-                        orders: [],
-                        proof_image: null,
                         registeredAt: new Date().toISOString()
                     }, {
                         id: 2,
@@ -415,15 +269,10 @@
                         bonus_binary: 120,
                         bonus_reward: 30,
                         bonus_ro: 12,
-                        left: null,
-                        right: null,
-                        sponsor_id: 1,
-                        upline_id: 1,
-                        position: 'left',
+                        binary_tree: [2, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                        reward_levels: [4, 2, 1, 0, 0],
                         purchase_history: [],
                         transactions: [],
-                        orders: [],
-                        proof_image: null,
                         registeredAt: new Date().toISOString()
                     }, {
                         id: 3,
@@ -432,44 +281,29 @@
                         email: 'citra@mail.com',
                         password: 'citra123',
                         role: 'user',
-                        status: 'pending',
+                        status: 'verified',
                         wallet: 80000,
                         bonus_sponsor: 30,
                         bonus_binary: 70,
                         bonus_reward: 15,
                         bonus_ro: 8,
-                        left: null,
-                        right: null,
-                        sponsor_id: 1,
-                        upline_id: 1,
-                        position: 'right',
+                        binary_tree: [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
+                        reward_levels: [3, 1, 0, 0, 0],
                         purchase_history: [],
                         transactions: [],
-                        orders: [],
-                        proof_image: 'https://via.placeholder.com/150',
                         registeredAt: new Date().toISOString()
                     }];
-                    
-                    // Set tree
-                    defaultUsers[0].left = 2;
-                    defaultUsers[0].right = 3;
-                    
-                    saveUsers(defaultUsers);
-                    users = defaultUsers;
+                    localStorage.setItem(DB_KEY, JSON.stringify(users));
                 }
-                
                 return users;
             }
 
             // ============================================================
-            // LOGIN - USER ONLY (TIDAK BISA LOGIN ADMIN)
+            // LOGIN FUNCTION
             // ============================================================
             function loginUser(email, password) {
-                const users = loadUsers();
-                const user = users.find(u => 
-                    (u.email === email || u.username === email) && 
-                    u.password === password
-                );
+                const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+                const user = users.find(u => (u.email === email || u.username === email) && u.password === password);
 
                 const msgEl = document.getElementById('loginMsg');
 
@@ -479,47 +313,18 @@
                     return;
                 }
 
-                // CEK: Jika user adalah admin, tolak akses dari sini
-                if (user.role === 'admin') {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '❌ Akses ditolak. Admin login melalui admin.html';
-                    return;
-                }
-
-                // Simpan session
-                saveSession({ id: user.id, role: user.role });
+                localStorage.setItem('mlm_session', JSON.stringify({ id: user.id }));
                 msgEl.className = 'msg success';
                 msgEl.innerText = '✅ Login berhasil! Mengarahkan...';
 
                 setTimeout(() => {
-                    window.location.href = 'dashboard.html';
+                    if (user.role === 'admin') {
+                        window.location.href = 'admin.html';
+                    } else {
+                        window.location.href = 'dashboard.html';
+                    }
                 }, 1000);
             }
-
-            // ============================================================
-            // DEMO BUTTONS - HANYA USER
-            // ============================================================
-            document.getElementById('demoUser1Btn').addEventListener('click', function() {
-                document.getElementById('loginEmail').value = 'budi@mail.com';
-                document.getElementById('loginPassword').value = 'budi123';
-                loginUser('budi@mail.com', 'budi123');
-            });
-
-            document.getElementById('demoUser2Btn').addEventListener('click', function() {
-                document.getElementById('loginEmail').value = 'citra@mail.com';
-                document.getElementById('loginPassword').value = 'citra123';
-                loginUser('citra@mail.com', 'citra123');
-            });
-
-            document.getElementById('demoAdminBtn').addEventListener('click', function() {
-                // Admin hanya redirect ke admin.html untuk login di sana
-                const msgEl = document.getElementById('loginMsg');
-                msgEl.className = 'msg info';
-                msgEl.innerText = '👑 Admin login melalui admin.html';
-                setTimeout(() => {
-                    window.location.href = 'admin.html';
-                }, 1000);
-            });
 
             // ============================================================
             // LOGIN FORM
@@ -541,45 +346,28 @@
             });
 
             // ============================================================
-            // CHECK SESSION - JIKA SUDAH LOGIN
+            // INIT
             // ============================================================
-            function checkSession() {
-                initUsers();
-                
-                const session = getSession();
-                if (session) {
-                    const users = loadUsers();
-                    const user = users.find(u => u.id === session.id);
+            initUsers();
+
+            // Cek session, jika sudah login redirect
+            const session = localStorage.getItem('mlm_session');
+            if (session) {
+                try {
+                    const { id } = JSON.parse(session);
+                    const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
+                    const user = users.find(u => u.id === id);
                     if (user) {
-                        // Jika user adalah admin, arahkan ke admin.html
                         if (user.role === 'admin') {
                             window.location.href = 'admin.html';
                         } else {
                             window.location.href = 'dashboard.html';
                         }
-                        return true;
+                        return;
                     } else {
-                        clearSession();
+                        localStorage.removeItem('mlm_session');
                     }
-                }
-                return false;
-            }
-
-            // ============================================================
-            // INIT
-            // ============================================================
-            // Inisialisasi database
-            initUsers();
-            
-            // Cek session
-            const isLoggedIn = checkSession();
-            
-            // Jika sudah login, tidak perlu tampilkan form
-            if (!isLoggedIn) {
-                console.log('🟦 HEDTRO JEANS · Login khusus User');
-                console.log('🔑 User 1: budi@mail.com / budi123 (VERIFIED)');
-                console.log('🔑 User 2: citra@mail.com / citra123 (PENDING)');
-                console.log('👑 Admin: login melalui admin.html');
+                } catch (_) { localStorage.removeItem('mlm_session'); }
             }
         })();
     </script>
