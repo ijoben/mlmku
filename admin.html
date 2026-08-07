@@ -22,6 +22,7 @@
         ::-webkit-scrollbar-track { background:var(--cream); }
         ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
+        /* ===== NAVBAR ===== */
         .navbar { position: fixed; top:0; left:0; right:0; z-index:1100; background: var(--denim-dark); padding: 12px 20px; display: flex; align-items:center; justify-content:space-between; border-bottom:3px solid var(--gold-accent); height:70px; }
         .navbar .logo { display:flex; align-items:center; gap:8px; color:var(--white); font-weight:800; font-size:1.4rem; }
         .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
@@ -61,9 +62,13 @@
         .tab-content { display:none; }
         .tab-content.active { display:block; }
 
+        /* ===== SUB TABS PENGATURAN ===== */
         .sub-tab-nav { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--denim-light); padding-bottom: 10px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; width: 100%; }
+        .sub-tab-nav::-webkit-scrollbar { display: none; }
         .sub-tab-btn { padding: 8px 16px; border-radius: 40px; font-size: 0.82rem; font-weight: 600; background: var(--white); color: var(--denim-navy); border: 1px solid #dde3ea; transition: var(--transition); flex-shrink: 0; }
+        .sub-tab-btn:hover { background: var(--denim-light); }
         .sub-tab-btn.active { background: var(--denim-dark); color: var(--gold-accent); border-color: var(--denim-dark); box-shadow: 0 4px 12px rgba(11,26,43,0.15); }
+
         .sub-tab-content { display: none; }
         .sub-tab-content.active { display: block; }
 
@@ -71,9 +76,13 @@
         .btn-sm-primary { background:var(--denim-blue); color:#fff; }
         .btn-sm-primary:hover { background:var(--denim-dark); }
         .btn-sm-success { background:#1f7a4b; color:#fff; }
+        .btn-sm-success:hover { background:#155d38; }
         .btn-sm-danger { background:#b13e3e; color:#fff; }
+        .btn-sm-danger:hover { background:#8f2f2f; }
         .btn-sm-warning { background:#d4a02b; color:#fff; }
+        .btn-sm-warning:hover { background:#b8891f; }
         .btn-sm-gold { background:var(--gold-accent); color:var(--denim-dark); }
+        .btn-sm-gold:hover { background:#b8963a; }
 
         .flex-row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:12px; }
 
@@ -85,6 +94,7 @@
 
         .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 16px; flex-wrap: wrap; width: 100%; }
         .page-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #dde3ea; background: var(--white); color: var(--denim-navy); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
+        .page-btn:hover:not(:disabled) { background: var(--denim-light); }
         .page-btn.active { background: var(--denim-dark); color: var(--gold-accent); border-color: var(--denim-dark); }
         .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
@@ -158,7 +168,7 @@
         .login-overlay .login-box .form-group label { display:block; font-weight:600; font-size:0.8rem; color:var(--denim-navy); margin-bottom:4px; }
         .login-overlay .login-box .form-group input { width:100%; padding:12px 16px; border:1.5px solid var(--denim-light); border-radius:60px; font-size:0.95rem; background:var(--cream); font-family:inherit; transition:var(--transition); outline:none; }
         .login-overlay .login-box .form-group input:focus { border-color:var(--gold-accent); box-shadow:0 0 0 4px rgba(201,168,76,0.08); }
-        .login-overlay .login-box .btn-login { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor: pointer; }
+        .login-overlay .login-box .btn-login { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor:pointer; }
         .login-overlay .login-box .btn-login:hover { background:#b8963a; transform:scale(0.98); }
         .login-overlay .login-box .msg { margin-top:12px; padding:8px; border-radius:var(--radius-sm); font-size:0.85rem; min-height:20px; }
         .login-overlay .login-box .msg.error { background:#fde8e8; color:#b13e3e; }
@@ -166,6 +176,8 @@
         .login-overlay .login-box .demo-hint { margin-top:16px; padding-top:16px; border-top:1px solid var(--denim-light); font-size:0.75rem; color:var(--denim-navy); opacity:0.6; }
         .login-overlay .login-box .demo-hint span { color:var(--gold-accent); font-weight:600; cursor:pointer; }
         .login-overlay .login-box .demo-hint span:hover { text-decoration:underline; }
+        .login-overlay .login-box .back-to-home { display:inline-block; margin-top:12px; color:var(--denim-blue); font-size:0.8rem; cursor:pointer; }
+        .login-overlay .login-box .back-to-home:hover { text-decoration:underline; }
         .login-overlay.hidden { display:none; }
 
         .modal-overlay { display:none; position:fixed; inset:0; z-index:9998; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px; }
@@ -180,9 +192,14 @@
         .modal-box .form-group label { display:block; font-weight:600; font-size:0.8rem; color:var(--denim-navy); margin-bottom:4px; }
         .modal-box .form-group input, .modal-box .form-group select, .modal-box .form-group textarea { width:100%; padding:10px 14px; border:1.5px solid var(--denim-light); border-radius:60px; font-size:0.9rem; background:var(--cream); outline:none; }
         .modal-box .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
-        .modal-box .btn-submit { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor: pointer;}
+        .modal-box .form-group input:focus, .modal-box .form-group select:focus, .modal-box .form-group textarea:focus { border-color:var(--gold-accent); box-shadow:0 0 0 4px rgba(201,168,76,0.08); }
+        .modal-box .btn-submit { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor:pointer; }
         .modal-box .btn-submit:hover { background:#b8963a; transform:scale(0.98); }
-        
+        .modal-box .order-detail { background:var(--cream); border-radius:var(--radius-sm); padding:14px 16px; margin:10px 0; }
+        .modal-box .order-detail .item { display:flex; justify-content:space-between; padding:4px 0; font-size:0.85rem; }
+        .modal-box .proof-image { max-width:200px; max-height:200px; border-radius:var(--radius-sm); border:1px solid var(--denim-light); margin:8px 0; }
+        .modal-box .proof-image img { width:100%; height:100%; object-fit:cover; }
+
         .slide-preview, .faq-list, .feature-list { display:flex; flex-direction:column; gap:12px; margin-bottom:16px; }
         .admin-list-item { background:var(--white); border-radius:var(--radius-sm); padding:12px 16px; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; box-shadow:var(--shadow); }
         .admin-list-item > div:first-child { flex:1; min-width:150px; }
@@ -203,7 +220,6 @@
             .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; margin-bottom: 20px; width: 100%; }
             .sub-tab-nav { padding-bottom: 8px; margin-bottom: 16px; width: 100%; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; }
             .sub-tab-btn { flex-shrink: 0; scroll-snap-align: start; }
-            /* Tabel Compact HP */
             .table-wrap { background: transparent !important; border: none !important; box-shadow: none !important; overflow-x: hidden !important; width: 100% !important; padding: 0 !important; }
             table { min-width: 0 !important; width: 100% !important; }
             table, thead, tbody, th, td, tr { display: block; width: 100%; box-sizing: border-box; }
@@ -216,7 +232,6 @@
             tbody td[data-label="Aksi"]::before { display: none; }
             tbody td[data-label="Aksi"] > div { width: 100%; display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
         }
-
         @media (min-width: 769px) {
             .burger-btn { display:none !important; }
             .sidebar { left:0 !important; }
@@ -234,6 +249,7 @@
             <div class="logo-icon"><i class="fas fa-tshirt"></i></div>
             <h2>Admin Panel</h2>
             <p class="sub">Masuk sebagai administrator</p>
+            <!-- BUTTON TYPE = BUTTON agar tidak auto submit reload form -->
             <form id="adminLoginForm">
                 <div class="form-group">
                     <label>Email atau Username</label>
@@ -246,12 +262,14 @@
                 <button type="button" class="btn-login" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
                 <div class="msg" id="adminLoginMsg"></div>
             </form>
-            <div class="demo-hint" style="margin-top:16px;">🔑 Demo: <span id="adminDemoBtn" style="color:var(--gold-accent);font-weight:bold;cursor:pointer;">admin@mlm.com / admin123</span></div>
+            <div class="demo-hint" style="margin-top:16px;">
+                🔑 Demo: <span id="adminDemoBtn" style="color:var(--gold-accent);font-weight:bold;cursor:pointer;">admin@mlm.com / admin123</span>
+            </div>
             <a href="index.html" class="back-to-home" style="display:inline-block;margin-top:12px;color:var(--denim-blue);font-size:0.8rem;"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
         </div>
     </div>
 
-    <!-- MODAL -->
+    <!-- MODAL GLOBAL -->
     <div class="modal-overlay" id="modalOverlay">
         <div class="modal-box" id="modalBox">
             <button class="modal-close" id="modalClose">&times;</button>
@@ -262,7 +280,7 @@
     <!-- TOAST -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- MAIN APP -->
+    <!-- MAIN APP ADMIN -->
     <div id="mainApp" style="display:none;">
         <header class="navbar">
             <div class="logo" id="brandLogo"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></div>
@@ -300,10 +318,10 @@
             <div class="tab-content active" id="tabDashboard">
                 <div class="dashboard-banner">
                     <div>
-                        <h2>Selamat Datang Kembali, Administrator! <i class="fas fa-crown" style="color:var(--gold-accent);"></i></h2>
+                        <h2>Selamat Datang, Administrator! <i class="fas fa-crown" style="color:var(--gold-accent);"></i></h2>
                         <p>Kelola performa penjualan, pesanan member, jaringan komisi, dan sistem HEDTRO JEANS di sini.</p>
                     </div>
-                    <div><span class="btn-sm btn-sm-gold" id="quickSyncBtn"><i class="fas fa-sync-alt"></i> Refresh Statistik</span></div>
+                    <div><button class="btn-sm btn-sm-gold" id="quickSyncBtn"><i class="fas fa-sync-alt"></i> Refresh Statistik</button></div>
                 </div>
 
                 <h1 class="page-title" style="font-size: 1.2rem; margin-bottom: 12px;"><i class="fas fa-chart-pie"></i> Ringkasan Sistem</h1>
@@ -326,8 +344,8 @@
             <div class="tab-content" id="tabMembers">
                 <h1 class="page-title"><i class="fas fa-users"></i> Member</h1>
                 <div class="flex-row">
-                    <button class="btn-sm btn-sm-success" onclick="openMemberModal()"><i class="fas fa-user-plus"></i> Tambah Member</button>
-                    <button class="btn-sm btn-sm-primary" onclick="renderAdminMembers()"><i class="fas fa-sync"></i> Refresh</button>
+                    <button class="btn-sm btn-sm-success" id="addMemberBtn"><i class="fas fa-user-plus"></i> Tambah Member</button>
+                    <button class="btn-sm btn-sm-primary" id="refreshBtn"><i class="fas fa-sync"></i> Refresh</button>
                 </div>
                 <div class="table-wrap">
                     <table>
@@ -343,11 +361,11 @@
             <div class="tab-content" id="tabProducts">
                 <h1 class="page-title"><i class="fas fa-boxes"></i> Produk</h1>
                 <div class="flex-row">
-                    <button class="btn-sm btn-sm-success" onclick="openProductModal()"><i class="fas fa-plus"></i> Tambah Produk</button>
+                    <button class="btn-sm btn-sm-success" id="addProductBtn"><i class="fas fa-plus"></i> Tambah Produk</button>
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>#</th><th>Gambar</th><th>Nama</th><th>Harga Member</th><th>Harga Normal</th><th>Tag</th><th>Ukuran</th><th>Warna</th><th>Stok</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>#</th><th>Gambar</th><th>Nama</th><th>Harga Member</th><th>Harga Normal</th><th>Tag</th><th>Stok</th><th>Aksi</th></tr></thead>
                         <tbody id="adminProductTableBody"></tbody>
                     </table>
                 </div>
@@ -371,7 +389,7 @@
                 <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Daftar Pesanan</h1>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>#</th><th>Member</th><th>Alamat Pengiriman</th><th>Type</th><th>Produk</th><th>Total</th><th>Status</th><th>Tanggal</th><th>Bukti</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>ID</th><th>Member</th><th>Alamat</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead>
                         <tbody id="ordersTableBody"></tbody>
                     </table>
                 </div>
@@ -383,7 +401,7 @@
                 <h1 class="page-title"><i class="fas fa-wallet"></i> Verifikasi Deposit</h1>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>ID Transaksi</th><th>Member</th><th>Metode</th><th>Nominal</th><th>Status</th><th>Tanggal</th><th>Bukti TF</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>ID Transaksi</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
                         <tbody id="depositTableBody"></tbody>
                     </table>
                 </div>
@@ -395,7 +413,7 @@
                 <h1 class="page-title"><i class="fas fa-money-bill-wave"></i> Verifikasi Withdraw</h1>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>ID Transaksi</th><th>Member</th><th>Rekening Tujuan</th><th>Nominal</th><th>Status</th><th>Tanggal</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>ID Transaksi</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
                         <tbody id="withdrawTableBody"></tbody>
                     </table>
                 </div>
@@ -408,7 +426,7 @@
                 
                 <div class="settings-card">
                     <h4><i class="fas fa-images" style="color:var(--gold-accent);"></i> Slide Carousel</h4>
-                    <div class="flex-row"><button class="btn-sm btn-sm-success" onclick="openSlideModal()"><i class="fas fa-plus"></i> Tambah Slide</button></div>
+                    <div class="flex-row"><button class="btn-sm btn-sm-success" id="addSlideBtn"><i class="fas fa-plus"></i> Tambah Slide</button></div>
                     <div class="slide-preview" id="slideList"></div>
                 </div>
 
@@ -423,13 +441,13 @@
 
                 <div class="settings-card">
                     <h4><i class="fas fa-question-circle" style="color:var(--gold-accent);"></i> FAQ</h4>
-                    <div class="flex-row"><button class="btn-sm btn-sm-success" onclick="openFaqModal()"><i class="fas fa-plus"></i> Tambah FAQ</button></div>
+                    <div class="flex-row"><button class="btn-sm btn-sm-success" id="addFaqBtn"><i class="fas fa-plus"></i> Tambah FAQ</button></div>
                     <div class="faq-list" id="faqList"></div>
                 </div>
 
                 <div class="settings-card">
                     <h4><i class="fas fa-star" style="color:var(--gold-accent);"></i> Keunggulan</h4>
-                    <div class="flex-row"><button class="btn-sm btn-sm-success" onclick="openFeatureModal()"><i class="fas fa-plus"></i> Tambah Keunggulan</button></div>
+                    <div class="flex-row"><button class="btn-sm btn-sm-success" id="addFeatureBtn"><i class="fas fa-plus"></i> Tambah Keunggulan</button></div>
                     <div class="feature-list" id="featureList"></div>
                 </div>
 
@@ -474,7 +492,7 @@
                 <div class="sub-tab-content" id="subBank">
                     <div class="settings-card">
                         <h4><i class="fas fa-university"></i> Rekening Pembayaran</h4>
-                        <div class="flex-row"><button class="btn-sm btn-sm-success" onclick="openBankModal()"><i class="fas fa-plus"></i> Tambah</button></div>
+                        <div class="flex-row"><button class="btn-sm btn-sm-success" id="addBankBtn"><i class="fas fa-plus"></i> Tambah</button></div>
                         <div class="table-wrap">
                             <table>
                                 <thead><tr><th>Bank</th><th>No. Rek</th><th>Atas Nama</th><th>Aksi</th></tr></thead>
@@ -537,8 +555,8 @@
                 <div class="sub-tab-content" id="subAdminAcc">
                     <div class="settings-card" style="border-left: 4px solid #e74c3c;">
                         <h4><i class="fas fa-user-shield"></i> User & Password Admin</h4>
-                        <div class="form-group"><label>Username / Email</label><input type="text" id="setAdminEmail" /></div>
-                        <div class="form-group"><label>Sandi Baru</label><input type="password" id="setAdminPassword" placeholder="Kosongkan jika tidak diubah" /></div>
+                        <div class="form-group"><label>Username / Email Admin</label><input type="text" id="setAdminEmail" /></div>
+                        <div class="form-group"><label>Kata Sandi Baru</label><input type="password" id="setAdminPassword" placeholder="Kosongkan jika tidak diubah" /></div>
                         <button class="btn-sm btn-sm-danger" id="saveAdminAccountSettings">Simpan Kredensial</button>
                     </div>
                 </div>
@@ -552,7 +570,7 @@
 
     </div>
 
-    <!-- JAVASCRIPT -->
+    <!-- JAVASCRIPT LENGKAP -->
     <script>
         (function() {
             'use strict';
@@ -586,6 +604,14 @@
             function saveOrders(o) { S(ORDER_KEY, o); }
             function loadTransactions() { return L(TRANSACTION_KEY, []); }
             function saveTransactions(t) { S(TRANSACTION_KEY, t); }
+            function loadSettings() {
+                return L(SETTINGS_KEY, {
+                    sponsorBonus: 10, binaryBonusLevels: [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5],
+                    rewardBonusLevels: [5, 4, 3, 2, 1], roBonus: 3, memberPrice: 550000,
+                    brandName: "HEDTRO JEANS", brandLogo: "fa-tshirt", brandIcon: "fa-tshirt", heroTitle: "HEDTRO JEANS · Premium Denim"
+                });
+            }
+            function saveSettings(s) { S(SETTINGS_KEY, s); }
             function loadBankInfo() { 
                 let b = L(BANK_KEY, null); 
                 if(!b) return [{id:1, bank:'BCA', account:'1234567890', name:'HEDTRO JEANS'}]; 
@@ -705,6 +731,7 @@
                 renderDashboard(); showToast(`Transaksi ${newStatus}.`, newStatus==='success'?'success':'warning');
             }
             window.delTx = function(id, type) {
+                if(!confirm('Hapus transaksi?')) return;
                 let txs = loadTransactions().filter(t => t.id !== id); saveTransactions(txs);
                 let users = loadUsers(); users.forEach(u => { if(u.transactions) u.transactions = u.transactions.filter(t => t.id !== id); }); saveUsers(users);
                 if (type === 'deposit') renderDeposit(); if (type === 'withdraw') renderWithdraw();
@@ -734,7 +761,8 @@
                     </div>`;
                 }).join('');
             }
-            document.getElementById('quickSyncBtn').onclick = () => { renderDashboard(); showToast('Diperbarui!', 'success'); };
+            if(document.getElementById('quickSyncBtn')) document.getElementById('quickSyncBtn').onclick = () => { renderDashboard(); showToast('Diperbarui!', 'success'); };
+            if(document.getElementById('refreshBtn')) document.getElementById('refreshBtn').onclick = () => { renderAdminMembers(); showToast('Direfresh!', 'info'); };
 
             // MEMBERS CRUD
             window.renderAdminMembers = function() {
@@ -785,6 +813,7 @@
                 if(!confirm('Hapus member?')) return;
                 saveUsers(loadUsers().filter(u => u.id !== id)); renderAdminMembers(); renderDashboard(); showToast('Dihapus', 'info');
             }
+            if(document.getElementById('addMemberBtn')) document.getElementById('addMemberBtn').onclick = () => openMemberModal();
 
             // PRODUCTS CRUD
             window.renderAdminProducts = function() {
@@ -824,6 +853,7 @@
                 if(!confirm('Hapus produk?')) return;
                 saveProducts(loadProducts().filter(x => x.id !== id)); renderAdminProducts(); showToast('Dihapus', 'info');
             }
+            if(document.getElementById('addProductBtn')) document.getElementById('addProductBtn').onclick = () => openProductModal();
 
             // VERIFICATION CRUD
             window.renderVerification = function() {
@@ -880,7 +910,7 @@
                 saveOrders(loadOrders().filter(x => x.id !== id)); renderOrders(); showToast('Order dihapus.', 'info');
             }
 
-            // DEPOSIT & WITHDRAW (Dipanggil di switchTab)
+            // DEPOSIT & WITHDRAW
             window.renderDeposit = function() {
                 const tbody = document.getElementById('depositTableBody'); const txs = loadTransactions().filter(t => t.type === 'deposit').reverse();
                 if(txs.length===0) { tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;">Kosong.</td></tr>`; document.getElementById('depositPagination').innerHTML=''; return; }
@@ -910,10 +940,19 @@
             window.renderPageSettings = function() {
                 renderSlides(); renderFaq(); renderFeatures();
                 const a = L(ABOUT_KEY, {title:'Tentang', content:''});
-                document.getElementById('aboutTitle').value = a.title||''; document.getElementById('aboutContent').value = a.content||'';
+                const elTitle = document.getElementById('aboutTitle'); if(elTitle) elTitle.value = a.title||''; 
+                const elContent = document.getElementById('aboutContent'); if(elContent) elContent.value = a.content||'';
+                
                 const f = L(FOOTER_KEY, {brand:'HEDTRO', desc:'', copyright:'', social:{}});
-                document.getElementById('footerBrand').value = f.brand||''; document.getElementById('footerDesc').value = f.desc||''; document.getElementById('footerCopyright').value = f.copyright||'';
-                document.getElementById('sosmedInstagram').value = f.social.instagram||''; document.getElementById('sosmedFacebook').value = f.social.facebook||''; document.getElementById('sosmedYoutube').value = f.social.youtube||''; document.getElementById('sosmedTiktok').value = f.social.tiktok||'';
+                const efb = document.getElementById('footerBrand'); if(efb) efb.value = f.brand||''; 
+                const efd = document.getElementById('footerDesc'); if(efd) efd.value = f.desc||''; 
+                const efc = document.getElementById('footerCopyright'); if(efc) efc.value = f.copyright||'';
+                if(f.social) {
+                    const si = document.getElementById('sosmedInstagram'); if(si) si.value = f.social.instagram||''; 
+                    const sf = document.getElementById('sosmedFacebook'); if(sf) sf.value = f.social.facebook||''; 
+                    const sy = document.getElementById('sosmedYoutube'); if(sy) sy.value = f.social.youtube||''; 
+                    const st = document.getElementById('sosmedTiktok'); if(st) st.value = f.social.tiktok||'';
+                }
             }
             
             // SLIDES CRUD
@@ -936,6 +975,7 @@
                 S(SLIDES_KEY, sl); closeModal(); renderSlides(); showToast('Tersimpan', 'success');
             }
             window.delSlide = function(id) { if(!confirm('Hapus slide?')) return; S(SLIDES_KEY, L(SLIDES_KEY,[]).filter(x=>x.id!==id)); renderSlides(); showToast('Dihapus','info'); }
+            if(document.getElementById('addSlideBtn')) document.getElementById('addSlideBtn').onclick = () => openSlideModal();
 
             // FAQ CRUD
             window.renderFaq = function() {
@@ -957,6 +997,7 @@
                 S(FAQ_KEY, fq); closeModal(); renderFaq(); showToast('Tersimpan', 'success');
             }
             window.delFaq = function(id) { if(!confirm('Hapus FAQ?')) return; S(FAQ_KEY, L(FAQ_KEY,[]).filter(x=>x.id!==id)); renderFaq(); showToast('Dihapus','info'); }
+            if(document.getElementById('addFaqBtn')) document.getElementById('addFaqBtn').onclick = () => openFaqModal();
 
             // FEATURE CRUD
             window.renderFeatures = function() {
@@ -978,26 +1019,38 @@
                 S(FEATURES_KEY, fs); closeModal(); renderFeatures(); showToast('Tersimpan', 'success');
             }
             window.delFeat = function(id) { if(!confirm('Hapus Feature?')) return; S(FEATURES_KEY, L(FEATURES_KEY,[]).filter(x=>x.id!==id)); renderFeatures(); showToast('Dihapus','info'); }
+            if(document.getElementById('addFeatureBtn')) document.getElementById('addFeatureBtn').onclick = () => openFeatModal();
 
             // PAGE SAVE BTNS
-            document.getElementById('saveAboutBtn').onclick = () => { S(ABOUT_KEY, {title:document.getElementById('aboutTitle').value, content:document.getElementById('aboutContent').value}); showToast('Tersimpan', 'success'); };
-            document.getElementById('saveFooterBtn').onclick = () => { S(FOOTER_KEY, {brand:document.getElementById('footerBrand').value, desc:document.getElementById('footerDesc').value, copyright:document.getElementById('footerCopyright').value, social:{instagram:document.getElementById('sosmedInstagram').value, facebook:document.getElementById('sosmedFacebook').value, youtube:document.getElementById('sosmedYoutube').value, tiktok:document.getElementById('sosmedTiktok').value}}); showToast('Tersimpan', 'success'); };
+            if(document.getElementById('saveAboutBtn')) document.getElementById('saveAboutBtn').onclick = () => { S(ABOUT_KEY, {title:document.getElementById('aboutTitle').value, content:document.getElementById('aboutContent').value}); showToast('Tersimpan', 'success'); };
+            if(document.getElementById('saveFooterBtn')) document.getElementById('saveFooterBtn').onclick = () => { S(FOOTER_KEY, {brand:document.getElementById('footerBrand').value, desc:document.getElementById('footerDesc').value, copyright:document.getElementById('footerCopyright').value, social:{instagram:document.getElementById('sosmedInstagram').value, facebook:document.getElementById('sosmedFacebook').value, youtube:document.getElementById('sosmedYoutube').value, tiktok:document.getElementById('sosmedTiktok').value}}); showToast('Tersimpan', 'success'); };
 
             // SETTINGS
             window.loadSettingsToForm = function() {
                 const set = loadSettings(); const users = loadUsers(); const admin = users.find(u => u.email === 'admin@mlm.com' || u.role === 'admin');
-                document.getElementById('setSponsorBonus').value = set.sponsorBonus || 10; document.getElementById('setRoBonus').value = set.roBonus || 3;
-                const bL = set.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5]; for(let i=1; i<=10; i++) { let el = document.getElementById(`setBinaryL${i}`); if(el) el.value = bL[i-1]!==undefined?bL[i-1]:0; }
-                const rL = set.rewardBonusLevels || [5, 4, 3, 2, 1]; for(let i=1; i<=5; i++) { let el = document.getElementById(`setRewardL${i}`); if(el) el.value = rL[i-1]!==undefined?rL[i-1]:0; }
-                document.getElementById('setMemberPrice').value = set.memberPrice || 550000;
-                document.getElementById('setBrandName').value = set.brandName || 'HEDTRO JEANS'; document.getElementById('setHeroTitle').value = set.heroTitle || 'HEDTRO JEANS · Premium Denim';
-                if(admin) document.getElementById('setAdminEmail').value = admin.email;
+                
+                const sb = document.getElementById('setSponsorBonus'); if(sb) sb.value = set.sponsorBonus || 10; 
+                const rb = document.getElementById('setRoBonus'); if(rb) rb.value = set.roBonus || 3;
+                
+                const bL = set.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5]; 
+                for(let i=1; i<=10; i++) { let el = document.getElementById(`setBinaryL${i}`); if(el) el.value = bL[i-1]!==undefined?bL[i-1]:0; }
+                
+                const rL = set.rewardBonusLevels || [5, 4, 3, 2, 1]; 
+                for(let i=1; i<=5; i++) { let el = document.getElementById(`setRewardL${i}`); if(el) el.value = rL[i-1]!==undefined?rL[i-1]:0; }
+                
+                const smp = document.getElementById('setMemberPrice'); if(smp) smp.value = set.memberPrice || 550000;
+                const sbn = document.getElementById('setBrandName'); if(sbn) sbn.value = set.brandName || 'HEDTRO JEANS'; 
+                const sht = document.getElementById('setHeroTitle'); if(sht) sht.value = set.heroTitle || 'HEDTRO JEANS · Premium Denim';
+                
+                const sae = document.getElementById('setAdminEmail'); if(admin && sae) sae.value = admin.email;
             }
+
             window.renderBankSettings = function() {
                 const banks = loadBankInfo(); const tbody = document.getElementById('bankTableBody'); if(!tbody) return;
                 if(banks.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Kosong.</td></tr>'; return; }
                 tbody.innerHTML = banks.map(b => `<tr><td data-label="Bank"><strong>${b.bank}</strong></td><td data-label="Rekening">${b.account}</td><td data-label="Nama">${b.name}</td><td data-label="Aksi"><div style="display:flex;gap:6px;"><button class="btn-sm btn-sm-warning" onclick="openBankModal(${b.id})">Edit</button> <button class="btn-sm btn-sm-danger" onclick="delBank(${b.id})">Hapus</button></div></td></tr>`).join('');
             }
+
             window.openBankModal = function(id = null) {
                 let bs = loadBankInfo(); let b = id ? bs.find(x => x.id === id) : null;
                 openModal(`<h3>${b?'Edit':'Tambah'} Bank</h3>
@@ -1014,32 +1067,56 @@
             }
             window.delBank = function(id) { if(!confirm('Hapus rekening?')) return; saveBankInfo(loadBankInfo().filter(x=>x.id!==id)); renderBankSettings(); showToast('Dihapus', 'info'); }
 
-            document.getElementById('saveBonusSettings').onclick = () => { let s = loadSettings(); s.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value)||0; s.roBonus = parseFloat(document.getElementById('setRoBonus').value)||0; saveSettings(s); showToast('Tersimpan', 'success'); };
-            document.getElementById('saveBinarySettings').onclick = () => { let s = loadSettings(); let b = []; for(let i=1; i<=10; i++) b.push(parseFloat(document.getElementById(`setBinaryL${i}`).value)||0); s.binaryBonusLevels = b; saveSettings(s); showToast('Tersimpan', 'success'); };
-            document.getElementById('saveRewardSettings').onclick = () => { let s = loadSettings(); let r = []; for(let i=1; i<=5; i++) r.push(parseFloat(document.getElementById(`setRewardL${i}`).value)||0); s.rewardBonusLevels = r; saveSettings(s); showToast('Tersimpan', 'success'); };
-            document.getElementById('saveAdminAccountSettings').onclick = () => { let email = document.getElementById('setAdminEmail').value.trim(); let pass = document.getElementById('setAdminPassword').value.trim(); let us = loadUsers(); let ad = us.find(u=>u.role==='admin'); if(ad) {ad.email=email; if(pass) ad.password=pass; saveUsers(us); showToast('Tersimpan', 'success');} };
-            document.getElementById('saveBrandSettings').onclick = () => { let s = loadSettings(); s.brandName = document.getElementById('setBrandName').value.trim(); s.heroTitle = document.getElementById('setHeroTitle').value.trim(); saveSettings(s); showToast('Tersimpan', 'success'); };
+            if(document.getElementById('addBankBtn')) document.getElementById('addBankBtn').onclick = () => openBankModal();
+            if(document.getElementById('saveBonusSettings')) document.getElementById('saveBonusSettings').onclick = () => { let s = loadSettings(); s.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value)||0; s.roBonus = parseFloat(document.getElementById('setRoBonus').value)||0; saveSettings(s); showToast('Tersimpan', 'success'); };
+            if(document.getElementById('saveBinarySettings')) document.getElementById('saveBinarySettings').onclick = () => { let s = loadSettings(); let b = []; for(let i=1; i<=10; i++) b.push(parseFloat(document.getElementById(`setBinaryL${i}`).value)||0); s.binaryBonusLevels = b; saveSettings(s); showToast('Tersimpan', 'success'); };
+            if(document.getElementById('saveRewardSettings')) document.getElementById('saveRewardSettings').onclick = () => { let s = loadSettings(); let r = []; for(let i=1; i<=5; i++) r.push(parseFloat(document.getElementById(`setRewardL${i}`).value)||0); s.rewardBonusLevels = r; saveSettings(s); showToast('Tersimpan', 'success'); };
+            if(document.getElementById('saveAdminAccountSettings')) document.getElementById('saveAdminAccountSettings').onclick = () => { let email = document.getElementById('setAdminEmail').value.trim(); let pass = document.getElementById('setAdminPassword').value.trim(); let us = loadUsers(); let ad = us.find(u=>u.role==='admin'); if(ad) {ad.email=email; if(pass) ad.password=pass; saveUsers(us); showToast('Tersimpan', 'success');} };
+            if(document.getElementById('saveBrandSettings')) document.getElementById('saveBrandSettings').onclick = () => { let s = loadSettings(); s.brandName = document.getElementById('setBrandName').value.trim(); s.heroTitle = document.getElementById('setHeroTitle').value.trim(); saveSettings(s); showToast('Tersimpan', 'success'); };
 
             // LOGIN
-            document.getElementById('adminLoginBtn').onclick = function(e) {
-                e.preventDefault();
-                const email = document.getElementById('adminLoginEmail').value.trim(); const pass = document.getElementById('adminLoginPassword').value.trim();
-                const users = loadUsers(); const admin = users.find(u => (u.email === email || u.username === email) && u.password === pass && u.role === 'admin');
-                if (admin || (email === 'admin@mlm.com' && pass === 'admin123')) {
-                    saveSession({ id: 1, role: 'admin' }); document.getElementById('loginOverlay').classList.add('hidden'); document.getElementById('mainApp').style.display = 'block';
-                    const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard'; switchTab(savedTab); showToast('Welcome Admin!', 'success');
-                } else { document.getElementById('adminLoginMsg').innerText = 'Akses ditolak.'; }
-            };
+            const adminLoginBtn = document.getElementById('adminLoginBtn');
+            if(adminLoginBtn) {
+                adminLoginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const email = document.getElementById('adminLoginEmail').value.trim();
+                    const pass = document.getElementById('adminLoginPassword').value.trim();
+                    const users = loadUsers();
+                    const admin = users.find(u => (u.email === email || u.username === email) && u.password === pass && u.role === 'admin');
+                    if (admin || (email === 'admin@mlm.com' && pass === 'admin123')) {
+                        saveSession({ id: 1, role: 'admin' });
+                        document.getElementById('loginOverlay').classList.add('hidden');
+                        document.getElementById('mainApp').style.display = 'block';
+                        const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
+                        switchTab(savedTab);
+                        showToast('Welcome Admin!', 'success');
+                    } else { document.getElementById('adminLoginMsg').innerText = 'Akses ditolak.'; }
+                });
+            }
 
-            document.getElementById('sideLogoutBtn').onclick = function() { clearSession(); window.location.reload(); };
+            const adminLoginPassword = document.getElementById('adminLoginPassword');
+            if(adminLoginPassword) {
+                adminLoginPassword.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('adminLoginBtn').click(); }
+                });
+            }
+
+            const adminLoginEmail = document.getElementById('adminLoginEmail');
+            if(adminLoginEmail) {
+                adminLoginEmail.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('adminLoginPassword').focus(); }
+                });
+            }
+
+            if(document.getElementById('sideLogoutBtn')) document.getElementById('sideLogoutBtn').onclick = function() { clearSession(); window.location.reload(); };
 
             // INIT
             let initUsers = loadUsers();
             if (initUsers.length === 0) { initUsers.push({ id: 1, username: 'admin', email: 'admin@mlm.com', password: 'admin123', role: 'admin', status: 'verified' }); saveUsers(initUsers); }
             const curSession = getSession();
             if (curSession && curSession.role === 'admin') { 
-                document.getElementById('loginOverlay').classList.add('hidden'); 
-                document.getElementById('mainApp').style.display = 'block'; 
+                const overlay = document.getElementById('loginOverlay'); if(overlay) overlay.classList.add('hidden'); 
+                const mainApp = document.getElementById('mainApp'); if(mainApp) mainApp.style.display = 'block'; 
                 const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
                 switchTab(savedTab);
                 const savedSubTab = sessionStorage.getItem('adminActiveSubTab');
