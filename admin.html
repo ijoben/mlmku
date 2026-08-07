@@ -3,298 +3,1202 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Daftar · HEDTRO JEANS</title>
+    <title>Admin · HEDTRO JEANS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        /* ===== RESET ===== */
+        * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2;
             --gold-accent: #c9a84c; --gold-light: #e8d5a3; --cream: #f7f4ef; --white: #ffffff;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08); --radius: 24px; --radius-sm: 12px; --transition: 0.3s ease;
+            --shadow: 0 4px 20px rgba(0,0,0,0.08); --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
+            --radius: 28px; --radius-sm: 14px; --transition: 0.3s cubic-bezier(0.4,0,0.2,1); --sidebar-width: 280px;
         }
-        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--cream); color: var(--denim-dark); min-height: 100vh; padding: 20px; padding-top: 80px; }
-        .register-wrapper { max-width: 1000px; margin: 0 auto; padding: 20px 0 40px; }
-        .register-header { text-align: center; margin-bottom: 24px; }
-        .register-header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--denim-dark); }
-        .register-header h1 i { color: var(--gold-accent); }
-        .register-header p { color: var(--denim-navy); font-size: 0.9rem; opacity: 0.7; }
-        .form-section { background: var(--white); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 14px; box-shadow: var(--shadow); border: 1px solid var(--denim-light); }
-        .form-section .section-title { font-size: 0.9rem; font-weight: 700; color: var(--denim-dark); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--denim-light); padding-bottom: 8px; }
-        .form-section .section-title i { color: var(--gold-accent); }
-        .form-section .section-title .badge-step { background: var(--gold-accent); color: var(--denim-dark); font-size: 0.55rem; padding: 1px 10px; border-radius: 40px; font-weight: 700; margin-left: auto; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
-        .form-group { margin-bottom: 6px; }
-        .form-group.full-width { grid-column: 1 / -1; }
-        .form-group label { display: block; font-weight: 600; color: var(--denim-navy); font-size: 0.75rem; margin-bottom: 3px; }
-        .form-group label .required { color: #e74c3c; margin-left: 2px; }
-        .form-group label .helper { font-weight: 400; color: var(--denim-blue); font-size: 0.6rem; opacity: 0.6; display: inline-block; margin-left: 4px; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 14px; border: 1.5px solid var(--denim-light); border-radius: var(--radius-sm); font-size: 0.85rem; background: var(--cream); color: var(--denim-dark); font-family: inherit; transition: var(--transition); }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold-accent); outline: none; background: var(--white); }
-        .form-group textarea { resize: vertical; min-height: 44px; }
-        .position-selector { display: flex; gap: 10px; margin-top: 2px; }
-        .position-option { flex: 1; padding: 8px 12px; border: 2px solid var(--denim-light); border-radius: var(--radius-sm); text-align: center; cursor: pointer; transition: var(--transition); background: var(--cream); font-weight: 600; font-size: 0.75rem; color: var(--denim-navy); }
-        .position-option.active { border-color: var(--gold-accent); background: rgba(201, 168, 76, 0.08); color: var(--denim-dark); }
-        .position-option i { display: block; font-size: 1.1rem; margin-bottom: 2px; color: var(--gold-accent); }
-        .btn-submit { width: 100%; padding: 14px; border: none; border-radius: 60px; background: var(--gold-accent); color: var(--denim-dark); font-weight: 700; font-size: 1rem; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 4px; cursor: pointer; }
-        .btn-submit:hover { background: #b8963a; transform: scale(0.98); }
-        .msg { margin-top: 10px; text-align: center; font-size: 0.85rem; min-height: 24px; padding: 8px 14px; border-radius: var(--radius-sm); }
-        .msg.error { background: #fde8e8; color: #b13e3e; }
-        .msg.success { background: #e8f5ed; color: #1f7a4b; }
-        .form-footer { text-align: center; margin-top: 12px; color: var(--denim-navy); font-size: 0.85rem; }
-        .form-footer a { color: var(--gold-accent); font-weight: 600; }
-        .back-link { display: inline-block; margin-top: 12px; color: var(--denim-navy); font-size: 0.8rem; opacity: 0.6; text-decoration: none; }
+        body, html { font-family: 'Inter', -apple-system, sans-serif; background: var(--cream); color: var(--denim-dark); padding-top: 35px; overflow-x: hidden; width: 100%; max-width: 100vw; }
+        a { text-decoration:none; color:inherit; }
+        button { cursor:pointer; font-family:inherit; border:none; background:none; outline:none; }
+        ::-webkit-scrollbar { width:6px; height:6px; }
+        ::-webkit-scrollbar-track { background:var(--cream); }
+        ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
+
+        /* ===== NAVBAR ===== */
+        .navbar { position: fixed; top:0; left:0; right:0; z-index:1100; background: var(--denim-dark); padding: 12px 20px; display: flex; align-items:center; justify-content:space-between; border-bottom:3px solid var(--gold-accent); height:70px; }
+        .navbar .logo { display:flex; align-items:center; gap:8px; color:var(--white); font-weight:800; font-size:1.4rem; }
+        .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
+        .navbar .logo img { height: 36px; width: auto; object-fit: contain; }
+        .navbar .logo span { font-weight:300; color:var(--gold-light); font-size:0.75rem; margin-left:2px; }
+        .nav-right { display:flex; align-items:center; gap:12px; }
+        .nav-right .user-badge { display:flex; align-items:center; gap:6px; color:var(--cream); font-size:0.8rem; background:rgba(255,255,255,0.08); padding:6px 14px; border-radius:60px; border:1px solid rgba(255,255,255,0.06); cursor:pointer; }
+        .nav-right .user-badge i { color:var(--gold-accent); }
+
+        .burger-btn { display:none; flex-direction:column; gap:5px; padding:8px 6px; background:transparent; border:none; cursor:pointer; z-index:1101; }
+        .burger-btn span { display:block; width:28px; height:3px; background:var(--cream); border-radius:4px; transition:var(--transition); transform-origin:center; }
+        .burger-btn.active span:nth-child(1) { transform:translateY(8px) rotate(45deg); }
+        .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
+        .burger-btn.active span:nth-child(3) { transform:translateY(-8px) rotate(-45deg); }
+
+        .sidebar-overlay { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1050; opacity:0; pointer-events:none; transition:var(--transition); }
+        .sidebar-overlay.active { opacity:1; pointer-events:all; }
+        .sidebar { position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-width); background:var(--denim-dark); z-index:1060; padding:24px 20px; overflow-y:auto; border-right:3px solid var(--gold-accent); display:flex; flex-direction:column; gap:4px; transition:left 0.3s ease; left:-320px; }
+        .sidebar.open { left:0; }
+        .sidebar .sidebar-header { display:flex; align-items:center; justify-content:space-between; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:12px; }
+        .sidebar .sidebar-header .logo-side { color:var(--white); font-weight:800; font-size:1.3rem; display: flex; align-items: center; gap: 8px; }
+        .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
+        .sidebar .sidebar-header .close-side { display:none; color:var(--cream); font-size:1.6rem; cursor:pointer; }
+        .sidebar .menu-item { display:flex; align-items:center; gap:14px; padding:12px 16px; border-radius:12px; color:var(--cream); font-weight:500; font-size:0.95rem; transition:var(--transition); cursor:pointer; }
+        .sidebar .menu-item:hover { background:rgba(255,255,255,0.08); }
+        .sidebar .menu-item i { width:24px; color:var(--gold-accent); }
+        .sidebar .menu-item.active { background:rgba(201,168,76,0.15); color:var(--gold-accent); }
+        .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:6px 0; }
+        .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
+        .sidebar .menu-item.logout i { color:#e74c3c; }
+
+        .main-content { margin-left: var(--sidebar-width); padding: 20px 24px 40px; transition: margin-left 0.3s ease; max-width: calc(100% - var(--sidebar-width)); width: 100%; }
+        body { padding-top: 70px; }
+        .page-title { font-size:1.6rem; font-weight:700; color:var(--denim-dark); margin-bottom:20px; display:flex; align-items:center; gap:12px; }
+        .page-title i { color:var(--gold-accent); }
+
+        .tab-content { display:none; }
+        .tab-content.active { display:block; }
+
+        /* ===== SUB TABS PENGATURAN ===== */
+        .sub-tab-nav { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--denim-light); padding-bottom: 10px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; width: 100%; }
+        .sub-tab-nav::-webkit-scrollbar { display: none; }
+        .sub-tab-btn { padding: 8px 16px; border-radius: 40px; font-size: 0.82rem; font-weight: 600; background: var(--white); color: var(--denim-navy); border: 1px solid #dde3ea; transition: var(--transition); flex-shrink: 0; }
+        .sub-tab-btn:hover { background: var(--denim-light); }
+        .sub-tab-btn.active { background: var(--denim-dark); color: var(--gold-accent); border-color: var(--denim-dark); box-shadow: 0 4px 12px rgba(11,26,43,0.15); }
+
+        .sub-tab-content { display: none; }
+        .sub-tab-content.active { display: block; }
+
+        .btn-sm { padding:8px 18px; border-radius:60px; font-weight:600; font-size:0.8rem; transition:var(--transition); font-family:inherit; display: inline-flex; align-items: center; justify-content: center; gap: 6px; }
+        .btn-sm-primary { background:var(--denim-blue); color:#fff; }
+        .btn-sm-primary:hover { background:var(--denim-dark); }
+        .btn-sm-success { background:#1f7a4b; color:#fff; }
+        .btn-sm-success:hover { background:#155d38; }
+        .btn-sm-danger { background:#b13e3e; color:#fff; }
+        .btn-sm-danger:hover { background:#8f2f2f; }
+        .btn-sm-warning { background:#d4a02b; color:#fff; }
+        .btn-sm-warning:hover { background:#b8891f; }
+        .btn-sm-gold { background:var(--gold-accent); color:var(--denim-dark); }
+        .btn-sm-gold:hover { background:#b8963a; }
+
+        .flex-row { display:flex; flex-wrap:wrap; gap:10px; align-items:center; margin-bottom:12px; }
+
+        /* TABEL DEFAULT DESKTOP */
+        .table-wrap { overflow-x:auto; border-radius:var(--radius-sm); border:1px solid #e2e8f0; background:var(--white); width: 100%; -webkit-overflow-scrolling: touch; box-shadow: var(--shadow); margin-bottom: 12px; }
+        table { width:100%; border-collapse:collapse; font-size:0.82rem; min-width:650px; }
+        thead { background:var(--denim-dark); color:var(--cream); }
+        th { padding:12px 14px; text-align:left; font-weight:600; white-space: nowrap; }
+        td { padding:10px 14px; border-bottom:1px solid #eef2f7; vertical-align: middle; }
+
+        /* ===== PAGINATION ===== */
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 6px; margin-top: 16px; flex-wrap: wrap; width: 100%; }
+        .page-btn { padding: 6px 14px; border-radius: 8px; border: 1px solid #dde3ea; background: var(--white); color: var(--denim-navy); font-size: 0.8rem; font-weight: 600; cursor: pointer; transition: var(--transition); }
+        .page-btn:hover:not(:disabled) { background: var(--denim-light); }
+        .page-btn.active { background: var(--denim-dark); color: var(--gold-accent); border-color: var(--denim-dark); }
+        .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+        .badge-admin { background:var(--gold-accent); color:var(--denim-dark); padding:1px 10px; border-radius:40px; font-size:0.6rem; font-weight:700; margin-left:4px; }
+        .badge-status { padding:2px 12px; border-radius:40px; font-size:0.7rem; font-weight:600; display: inline-block; white-space: nowrap; }
+        .badge-pending { background:#fff3cd; color:#856404; }
+        .badge-success { background:#d4edda; color:#155724; }
+        .badge-failed { background:#f8d7da; color:#721c24; }
+        .badge-free { background:#f8d7da; color:#721c24; }
+        .badge-verified { background:#d4edda; color:#155724; }
+
+        .text-muted { color:#6a7e9a; font-size:0.8rem; }
+        .mt-16 { margin-top:16px; }
+
+        .settings-card { background:var(--white); border-radius:var(--radius-sm); padding:20px; box-shadow:var(--shadow); border:1px solid #e2e8f0; margin-bottom:16px; width: 100%; }
+        .settings-card h4 { font-size:0.95rem; font-weight:700; margin-bottom:14px; display:flex; align-items:center; gap:8px; color: var(--denim-dark); }
+        .settings-card h4 i { color:var(--gold-accent); }
+        .settings-card .form-group { margin-bottom:14px; }
+        .settings-card .form-group label { display:block; font-weight:600; color:var(--denim-navy); font-size:0.8rem; margin-bottom:4px; }
+        .settings-card .form-group input, .settings-card .form-group select, .settings-card .form-group textarea { width:100%; padding:10px 14px; border:1.5px solid #dde3ea; border-radius:60px; font-size:0.9rem; background:#fafcff; font-family:inherit; transition:var(--transition); outline:none; }
+        .settings-card .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
+        .settings-card .form-group input:focus, .settings-card .form-group select:focus, .settings-card .form-group textarea:focus { border-color:var(--denim-blue); box-shadow:0 0 0 4px rgba(42,75,110,0.1); }
+
+        .upload-box { display: flex; flex-direction: column; gap: 8px; padding: 12px; border: 2px dashed #dde3ea; border-radius: var(--radius-sm); background: #fafcff; }
+        .upload-preview-img { max-height: 80px; width: auto; object-fit: contain; border-radius: 8px; background: #fff; padding: 4px; border: 1px solid #eee; display: none; }
+        .upload-preview-img.show { display: inline-block; }
+
+        .toast-container { position:fixed; top:100px; right:20px; z-index:9999; display:flex; flex-direction:column; gap:10px; max-width:360px; width:calc(100% - 40px); pointer-events:none; }
+        .toast-item { background:var(--denim-dark); color:var(--cream); padding:16px 20px; border-radius:var(--radius-sm); border-left:4px solid var(--gold-accent); box-shadow:var(--shadow-lg); animation:slideInRight 0.4s ease; pointer-events:all; display:flex; align-items:center; gap:12px; }
+        .toast-item.success { border-left-color:#2ecc71; }
+        .toast-item.error { border-left-color:#e74c3c; }
+        .toast-item.warning { border-left-color:#f39c12; }
+        .toast-item .toast-icon { font-size:1.2rem; flex-shrink:0; }
+        .toast-item .toast-msg { font-size:0.9rem; flex:1; }
+        .toast-item .toast-close { color:rgba(255,255,255,0.4); font-size:1.2rem; cursor:pointer; }
+        @keyframes slideInRight { from { opacity:0; transform:translateX(60px) scale(0.9); } to { opacity:1; transform:translateX(0) scale(1); } }
+        @keyframes slideOutRight { from { opacity:1; transform:translateX(0) scale(1); } to { opacity:0; transform:translateX(60px) scale(0.9); } }
+        .toast-item.removing { animation:slideOutRight 0.3s ease forwards; }
+
+        .footer { background:var(--denim-dark); color:var(--cream); padding:20px 24px; text-align:center; border-top:3px solid var(--gold-accent); margin-top:30px; font-size:0.8rem; }
+
+        .dashboard-banner { background: linear-gradient(135deg, var(--denim-dark) 0%, var(--denim-navy) 60%, var(--denim-blue) 100%); border-radius: var(--radius-sm); padding: 24px; color: var(--white); margin-bottom: 24px; box-shadow: var(--shadow); display: flex; align-items: center; justify-content: space-between; border-left: 5px solid var(--gold-accent); }
+        .dashboard-banner h2 { font-size: 1.4rem; font-weight: 700; color: var(--gold-light); }
+        .dashboard-banner p { font-size: 0.85rem; opacity: 0.9; margin-top: 4px; }
+        
+        .stats-grid { display:grid; grid-template-columns:repeat(auto-fit, minmax(200px,1fr)); gap:18px; margin-bottom:28px; }
+        .stat-card { background:var(--white); border-radius:var(--radius-sm); padding:20px; border-left:4px solid var(--gold-accent); box-shadow:var(--shadow); transition: var(--transition); position: relative; overflow: hidden; }
+        .stat-card:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        .stat-card .icon-bg { position: absolute; right: 15px; bottom: 10px; font-size: 3rem; color: var(--denim-light); opacity: 0.4; }
+        .stat-card .label { font-size:0.75rem; text-transform:uppercase; color:var(--denim-blue); font-weight:700; letter-spacing:0.5px; }
+        .stat-card .value { font-size:1.8rem; font-weight:800; color:var(--denim-dark); margin-top:6px; }
+        .stat-card .sub { font-size:0.75rem; color:#6a7e9a; margin-top:4px; font-weight: 500; }
+
+        .level-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
+
+        .history-card { background:var(--white); border-radius:var(--radius-sm); padding:18px 20px; box-shadow:var(--shadow); margin-top:12px; }
+        .history-card h3 { font-size:1rem; font-weight:600; margin-bottom:12px; display:flex; align-items:center; gap:8px; }
+        .history-card h3 i { color:var(--gold-accent); }
+        .history-item { display:flex; justify-content:space-between; padding:10px 0; border-bottom:1px solid #eee; font-size:0.9rem; }
+        .history-item:last-child { border-bottom:none; }
+        .history-item .amount { font-weight:700; }
+        .history-item .amount.plus { color:#1f7a4b; }
+        .history-item .amount.minus { color:#b13e3e; }
+
+        .login-overlay { position:fixed; inset:0; z-index:9999; background:rgba(0,0,0,0.7); backdrop-filter:blur(10px); display:flex; align-items:center; justify-content:center; padding:20px; }
+        .login-overlay .login-box { background:var(--white); max-width:420px; width:100%; border-radius:var(--radius); padding:32px 30px 36px; box-shadow:var(--shadow-lg); text-align:center; }
+        .login-overlay .login-box .logo-icon { font-size:3rem; color:var(--gold-accent); margin-bottom:8px; }
+        .login-overlay .login-box h2 { font-family:'Playfair Display',serif; font-size:1.6rem; font-weight:800; color:var(--denim-dark); margin-bottom:4px; }
+        .login-overlay .login-box p.sub { color:var(--denim-navy); opacity:0.6; font-size:0.85rem; margin-bottom:20px; }
+        .login-overlay .login-box .form-group { margin-bottom:14px; text-align:left; }
+        .login-overlay .login-box .form-group label { display:block; font-weight:600; font-size:0.8rem; color:var(--denim-navy); margin-bottom:4px; }
+        .login-overlay .login-box .form-group input { width:100%; padding:12px 16px; border:1.5px solid var(--denim-light); border-radius:60px; font-size:0.95rem; background:var(--cream); font-family:inherit; transition:var(--transition); outline:none; }
+        .login-overlay .login-box .form-group input:focus { border-color:var(--gold-accent); box-shadow:0 0 0 4px rgba(201,168,76,0.08); }
+        .login-overlay .login-box .btn-login { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor:pointer; }
+        .login-overlay .login-box .btn-login:hover { background:#b8963a; transform:scale(0.98); }
+        .login-overlay .login-box .msg { margin-top:12px; padding:8px; border-radius:var(--radius-sm); font-size:0.85rem; min-height:20px; }
+        .login-overlay .login-box .msg.error { background:#fde8e8; color:#b13e3e; }
+        .login-overlay .login-box .msg.success { background:#e8f5ed; color:#1f7a4b; }
+        .login-overlay .login-box .demo-hint { margin-top:16px; padding-top:16px; border-top:1px solid var(--denim-light); font-size:0.75rem; color:var(--denim-navy); opacity:0.6; }
+        .login-overlay .login-box .demo-hint span { color:var(--gold-accent); font-weight:600; cursor:pointer; }
+        .login-overlay .login-box .demo-hint span:hover { text-decoration:underline; }
+        .login-overlay .login-box .back-to-home { display:inline-block; margin-top:12px; color:var(--denim-blue); font-size:0.8rem; cursor:pointer; }
+        .login-overlay .login-box .back-to-home:hover { text-decoration:underline; }
+        .login-overlay.hidden { display:none; }
+
+        .modal-overlay { display:none; position:fixed; inset:0; z-index:9998; background:rgba(0,0,0,0.5); backdrop-filter:blur(8px); align-items:center; justify-content:center; padding:20px; }
+        .modal-overlay.show { display:flex; }
+        .modal-box { background:var(--white); max-width:600px; width:100%; max-height:90vh; overflow-y:auto; border-radius:var(--radius); padding:28px 30px 32px; box-shadow:var(--shadow-lg); position:relative; animation:modalIn 0.3s ease; }
+        @keyframes modalIn { from { transform:scale(0.9) translateY(20px); opacity:0; } to { transform:scale(1) translateY(0); opacity:1; } }
+        .modal-box .modal-close { position:absolute; top:14px; right:18px; font-size:1.6rem; color:var(--denim-navy); cursor:pointer; transition:var(--transition); }
+        .modal-box .modal-close:hover { color:var(--denim-dark); transform:rotate(90deg); }
+        .modal-box h3 { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:800; color:var(--denim-dark); margin-bottom:4px; }
+        .modal-box p.sub { color:var(--denim-navy); font-size:0.85rem; opacity:0.7; margin-bottom:16px; }
+        .modal-box .form-group { margin-bottom:14px; }
+        .modal-box .form-group label { display:block; font-weight:600; font-size:0.8rem; color:var(--denim-navy); margin-bottom:4px; }
+        .modal-box .form-group input, .modal-box .form-group select, .modal-box .form-group textarea { width:100%; padding:10px 14px; border:1.5px solid var(--denim-light); border-radius:60px; font-size:0.9rem; background:var(--cream); font-family:inherit; transition:var(--transition); outline:none; }
+        .modal-box .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
+        .modal-box .btn-submit { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor:pointer;}
+        .modal-box .btn-submit:hover { background:#b8963a; transform:scale(0.98); }
+        .modal-box .order-detail { background:var(--cream); border-radius:var(--radius-sm); padding:14px 16px; margin:10px 0; }
+        .modal-box .order-detail .item { display:flex; justify-content:space-between; padding:4px 0; font-size:0.85rem; }
+        .modal-box .proof-image { max-width:200px; max-height:200px; border-radius:var(--radius-sm); border:1px solid var(--denim-light); margin:8px 0; }
+        .modal-box .proof-image img { width:100%; height:100%; object-fit:cover; }
+
+        .slide-preview, .faq-list, .feature-list { display:flex; flex-direction:column; gap:12px; margin-bottom:16px; }
+        .admin-list-item { background:var(--white); border-radius:var(--radius-sm); padding:12px 16px; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; box-shadow:var(--shadow); }
+        .admin-list-item > div:first-child { flex:1; min-width:150px; }
+        .admin-list-item h4 { font-size: 0.95rem; margin-bottom: 4px; }
+        .admin-list-item p { font-size: 0.8rem; color: #666; }
+        .admin-list-item .actions { display:flex; gap:6px; flex-shrink:0; }
 
         @media (max-width: 768px) {
-            body { padding-top: 60px; padding: 12px; }
-            .form-row { grid-template-columns: 1fr; gap: 0; }
+            body { overflow-x: hidden !important; width: 100vw !important; max-width: 100vw !important; }
+            .navbar { padding: 10px 14px; }
+            .navbar .logo { font-size: 1.1rem; }
+            .burger-btn { display:flex; }
+            .sidebar { left:-320px; }
+            .sidebar.open { left:0; }
+            .sidebar .sidebar-header .close-side { display:block; }
+            .sidebar-overlay { display:block; }
+            .main-content { margin-left: 0; max-width: 100vw !important; width: 100% !important; padding: 16px 12px 30px; box-sizing: border-box; overflow-x: hidden !important; }
+            .stats-grid { grid-template-columns: repeat(2, 1fr) !important; gap: 10px; margin-bottom: 20px; width: 100%; }
+            .sub-tab-nav { padding-bottom: 8px; margin-bottom: 16px; width: 100%; flex-wrap: nowrap; overflow-x: auto; scroll-snap-type: x mandatory; }
+            .sub-tab-btn { flex-shrink: 0; scroll-snap-align: start; }
+            .table-wrap { background: transparent !important; border: none !important; box-shadow: none !important; overflow-x: hidden !important; width: 100% !important; padding: 0 !important; }
+            table { min-width: 0 !important; width: 100% !important; }
+            table, thead, tbody, th, td, tr { display: block; width: 100%; box-sizing: border-box; }
+            thead { display: none; }
+            tbody { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+            tbody tr { background: var(--white); border: 1px solid #e2e8f0; border-radius: var(--radius-sm); padding: 16px; box-shadow: 0 4px 12px rgba(0,0,0,0.04); display: flex; flex-direction: column; gap: 8px; width: 100%; max-width: 100%; box-sizing: border-box; }
+            tbody td { padding: 0 !important; border: none !important; font-size: 0.85rem !important; display: flex; justify-content: space-between; align-items: flex-start; text-align: right; width: 100% !important; max-width: 100% !important; white-space: normal !important; overflow-wrap: anywhere !important; word-break: break-word !important; color: var(--denim-dark); line-height: 1.4; }
+            tbody td::before { content: attr(data-label); font-weight: 700; color: var(--denim-navy); text-align: left; font-size: 0.78rem; padding-right: 12px; flex-shrink: 0; width: 40%; max-width: 120px; }
+            tbody td:last-child { margin-top: 8px; padding-top: 12px; border-top: 1px dashed #e2e8f0 !important; justify-content: flex-end; width: 100% !important; }
+            tbody td[data-label="Aksi"]::before { display: none; }
+            tbody td[data-label="Aksi"] > div { width: 100%; display: flex; justify-content: flex-end; gap: 8px; flex-wrap: wrap; }
+        }
+        @media (min-width: 769px) {
+            .burger-btn { display:none !important; }
+            .sidebar { left:0 !important; }
+            .sidebar-overlay { display:none !important; }
+            .sidebar .sidebar-header .close-side { display:none !important; }
+            .main-content { margin-left:var(--sidebar-width); }
         }
     </style>
 </head>
 <body>
 
-    <div class="register-wrapper">
-        <div class="register-header">
-            <h1><i class="fas fa-user-plus"></i> Daftar Member</h1>
-            <p>Lengkapi data diri untuk bergabung menjadi member HEDTRO JEANS</p>
+    <!-- OVERLAY LOGIN (Type dirubah agar tidak memicu form submit) -->
+    <div class="login-overlay" id="loginOverlay">
+        <div class="login-box">
+            <div class="logo-icon"><i class="fas fa-tshirt"></i></div>
+            <h2>Admin Panel</h2>
+            <p class="sub">Masuk sebagai administrator</p>
+            <form id="adminLoginForm">
+                <div class="form-group">
+                    <label>Email atau Username</label>
+                    <input type="text" id="adminLoginEmail" placeholder="admin@mlm.com" value="admin@mlm.com" />
+                </div>
+                <div class="form-group">
+                    <label>Kata Sandi</label>
+                    <input type="password" id="adminLoginPassword" placeholder="••••••••" value="admin123" />
+                </div>
+                <!-- Tombol button memanggil fungsi secara langsung -->
+                <button type="button" class="btn-login" onclick="doAdminLogin()"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+                <div class="msg" id="adminLoginMsg"></div>
+            </form>
+            <div class="demo-hint" style="margin-top:16px;">
+                🔑 Demo: <span onclick="fillAdminDemo()" style="color:var(--gold-accent);font-weight:bold;cursor:pointer;">admin@mlm.com / admin123</span>
+            </div>
+            <a href="index.html" class="back-to-home" style="display:inline-block;margin-top:12px;color:var(--denim-blue);font-size:0.8rem;"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
         </div>
-
-        <form id="registerForm">
-            <div class="form-section">
-                <div class="section-title"><i class="fas fa-lock"></i> Akun & Keamanan <span class="badge-step">1</span></div>
-                <div class="form-row">
-                    <div class="form-group"><label>Username <span class="required">*</span></label><input type="text" id="regUsername" placeholder="Username" /></div>
-                    <div class="form-group"><label>Email <span class="required">*</span></label><input type="email" id="regEmail" placeholder="Email aktif" /></div>
-                    <div class="form-group"><label>Kata Sandi <span class="required">*</span></label><input type="password" id="regPassword" placeholder="Min 6 karakter" /></div>
-                    <div class="form-group"><label>Konfirmasi Sandi <span class="required">*</span></label><input type="password" id="regConfirmPassword" placeholder="Ulangi sandi" /></div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-title"><i class="fas fa-id-card"></i> Identitas & Kontak <span class="badge-step">2</span></div>
-                <div class="form-row">
-                    <div class="form-group"><label>Nama Lengkap <span class="required">*</span></label><input type="text" id="regFullname" placeholder="Nama lengkap" /></div>
-                    <div class="form-group"><label>NIK (16 Digit) <span class="required">*</span></label><input type="text" id="regNik" placeholder="16 digit NIK" maxlength="16" /></div>
-                    <div class="form-group"><label>No. HP <span class="required">*</span></label><input type="text" id="regPhone" placeholder="No. HP" /></div>
-                    <div class="form-group"><label>No. WhatsApp <span class="required">*</span></label><input type="text" id="regWhatsapp" placeholder="No. WhatsApp aktif" /></div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-title"><i class="fas fa-university"></i> Rekening Bank <span class="badge-step">3</span></div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Nama Bank <span class="required">*</span></label>
-                        <select id="regBankName">
-                            <option value="BCA">BCA</option><option value="BNI">BNI</option><option value="BRI">BRI</option>
-                            <option value="Mandiri">Mandiri</option><option value="BSI">BSI</option><option value="Lainnya">Lainnya</option>
-                        </select>
-                    </div>
-                    <div class="form-group"><label>No. Rekening <span class="required">*</span></label><input type="text" id="regBankAccount" placeholder="No. rekening" /></div>
-                    <div class="form-group full-width"><label>Atas Nama <span class="required">*</span></label><input type="text" id="regBankHolder" placeholder="Atas nama..." /></div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-title"><i class="fas fa-map-pin"></i> Alamat Pengiriman <span class="badge-step">4</span></div>
-                <div class="form-row">
-                    <div class="form-group full-width"><label>Alamat Lengkap <span class="required">*</span></label><textarea id="regAddress" placeholder="Alamat rumah"></textarea></div>
-                    <div class="form-group full-width"><label>Kota & Provinsi <span class="required">*</span></label><input type="text" id="regCity" placeholder="Kota & provinsi" /></div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-title"><i class="fas fa-tshirt"></i> Spesifikasi Jeans <span class="badge-step">5</span></div>
-                <div class="form-row">
-                    <div class="form-group"><label>Nomor Seri <span class="required">*</span></label><input type="text" id="regSerial" placeholder="HDT-SERI-001" /></div>
-                    <div class="form-group">
-                        <label>Ukuran <span class="required">*</span></label>
-                        <select id="regJeansSize">
-                            <option value="28">Size 28</option><option value="30" selected>Size 30</option><option value="32">Size 32</option><option value="34">Size 34</option>
-                        </select>
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Warna <span class="required">*</span></label>
-                        <select id="regJeansColor">
-                            <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option><option value="Black Stretch">Black Stretch</option>
-                        </select>
-                    </div>
-                </div>
-            </div>
-
-            <div class="form-section">
-                <div class="section-title"><i class="fas fa-sitemap"></i> Penempatan Tim <span class="badge-step">6</span></div>
-                <div class="form-row">
-                    <div class="form-group"><label>Username Sponsor</label><input type="text" id="regSponsor" placeholder="Username sponsor" /></div>
-                    <div class="form-group"><label>Username Upline</label><input type="text" id="regUpline" placeholder="Username upline" /></div>
-                    <div class="form-group full-width">
-                        <label>Posisi Tim <span class="required">*</span></label>
-                        <div class="position-selector" id="positionSelector">
-                            <div class="position-option active" data-value="left"><i class="fas fa-arrow-left"></i> KIRI (L)</div>
-                            <div class="position-option" data-value="right"><i class="fas fa-arrow-right"></i> KANAN (R)</div>
-                        </div>
-                        <input type="hidden" id="regPosition" value="left" />
-                    </div>
-                </div>
-            </div>
-
-            <!-- type diubah menjadi button -->
-            <button type="button" class="btn-submit" id="registerBtn" onclick="doRegister()"><i class="fas fa-user-plus"></i> Daftar Member</button>
-
-            <div class="msg" id="regMsg"></div>
-
-            <div class="form-footer">Sudah punya akun? <a href="login.html">Login di sini</a></div>
-
-            <div style="text-align:center;"><a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a></div>
-        </form>
     </div>
 
+    <!-- MODAL GLOBAL -->
+    <div class="modal-overlay" id="modalOverlay">
+        <div class="modal-box" id="modalBox">
+            <button class="modal-close" onclick="closeModal()">&times;</button>
+            <div id="modalContent"></div>
+        </div>
+    </div>
+
+    <!-- TOAST -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- MAIN APP ADMIN -->
+    <div id="mainApp" style="display:none;">
+        <header class="navbar">
+            <div class="logo" id="brandLogo"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></div>
+            <div class="nav-right">
+                <div class="user-badge" id="navUserBadge"><i class="fas fa-user-cog"></i> <span id="navUserName">Admin</span></div>
+                <a href="index.html" class="user-badge" style="background:rgba(255,255,255,0.04);"><i class="fas fa-home"></i></a>
+                <button class="burger-btn" onclick="toggleSidebar()" aria-label="Toggle menu"><span></span><span></span><span></span></button>
+            </div>
+        </header>
+
+        <div class="sidebar-overlay" onclick="toggleSidebar(false)" id="sidebarOverlay"></div>
+
+        <nav class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="logo-side" id="sideBrandLogo"><i class="fas fa-tshirt"></i> HEDTRO</div>
+                <span class="close-side" onclick="toggleSidebar(false)">&times;</span>
+            </div>
+            <!-- Event click diletakkan di elemen HTML secara langsung -->
+            <div class="menu-item active" data-tab="dashboard" onclick="switchTab('dashboard')"><i class="fas fa-chart-line"></i> Dashboard</div>
+            <div class="menu-item" data-tab="members" onclick="switchTab('members')"><i class="fas fa-users"></i> Member</div>
+            <div class="menu-item" data-tab="products" onclick="switchTab('products')"><i class="fas fa-boxes"></i> Produk</div>
+            <div class="menu-item" data-tab="verification" onclick="switchTab('verification')"><i class="fas fa-check-double"></i> Verifikasi</div>
+            <div class="menu-item" data-tab="orders" onclick="switchTab('orders')"><i class="fas fa-shopping-cart"></i> Orders</div>
+            <div class="menu-item" data-tab="deposit" onclick="switchTab('deposit')"><i class="fas fa-wallet"></i> Deposit</div>
+            <div class="menu-item" data-tab="withdraw" onclick="switchTab('withdraw')"><i class="fas fa-money-bill-wave"></i> Withdraw</div>
+            <div class="menu-divider"></div>
+            <div class="menu-item" data-tab="page-settings" onclick="switchTab('page-settings')"><i class="fas fa-paint-brush"></i> Halaman Utama</div>
+            <div class="menu-divider"></div>
+            <div class="menu-item" data-tab="settings" onclick="switchTab('settings')"><i class="fas fa-sliders-h"></i> Pengaturan</div>
+            <div class="menu-divider"></div>
+            <div class="menu-item logout" onclick="clearSessionAndReload()"><i class="fas fa-sign-out-alt"></i> Keluar</div>
+        </nav>
+
+        <div class="main-content">
+            <!-- DASHBOARD -->
+            <div class="tab-content active" id="tabDashboard">
+                <div class="dashboard-banner">
+                    <div>
+                        <h2>Selamat Datang Kembali, Administrator! <i class="fas fa-crown" style="color:var(--gold-accent);"></i></h2>
+                        <p>Kelola performa penjualan, pesanan member, jaringan komisi, dan sistem HEDTRO JEANS di sini.</p>
+                    </div>
+                    <div><button type="button" class="btn-sm btn-sm-gold" onclick="quickSync()"><i class="fas fa-sync-alt"></i> Refresh Statistik</button></div>
+                </div>
+
+                <h1 class="page-title" style="font-size: 1.2rem; margin-bottom: 12px;"><i class="fas fa-chart-pie"></i> Ringkasan Sistem</h1>
+                <div class="stats-grid" id="dashboardStats">
+                    <div class="stat-card"><i class="fas fa-users icon-bg"></i><div class="label">Total Member</div><div class="value" id="statTotalMember">0</div><div class="sub">Terdaftar</div></div>
+                    <div class="stat-card" style="border-left-color: #2ecc71;"><i class="fas fa-user-check icon-bg"></i><div class="label">Verified Member</div><div class="value" id="statVerifiedMember">0</div><div class="sub">Aktif</div></div>
+                    <div class="stat-card" style="border-left-color: #3498db;"><i class="fas fa-shopping-bag icon-bg"></i><div class="label">Total Pesanan</div><div class="value" id="statTotalOrders">0</div><div class="sub">Semua order</div></div>
+                    <div class="stat-card" style="border-left-color: #e67e22;"><i class="fas fa-clock icon-bg"></i><div class="label">Pesanan Pending</div><div class="value" id="statPendingOrders">0</div><div class="sub">Menunggu</div></div>
+                    <div class="stat-card" style="border-left-color: #9b59b6;"><i class="fas fa-boxes icon-bg"></i><div class="label">Total Produk</div><div class="value" id="statTotalProducts">0</div><div class="sub">Di katalog</div></div>
+                    <div class="stat-card" style="border-left-color: #16a085;"><i class="fas fa-wallet icon-bg"></i><div class="label">Total Transaksi</div><div class="value" id="statTotalTransactions">Rp 0</div><div class="sub">Volume uang</div></div>
+                </div>
+
+                <div class="history-card">
+                    <h3><i class="fas fa-history"></i> Riwayat Transaksi Terbaru</h3>
+                    <div id="adminTransactionHistory"><p class="text-muted">Belum ada transaksi.</p></div>
+                </div>
+            </div>
+
+            <!-- MEMBERS -->
+            <div class="tab-content" id="tabMembers">
+                <h1 class="page-title"><i class="fas fa-users"></i> Member</h1>
+                <div class="flex-row">
+                    <button type="button" class="btn-sm btn-sm-success" onclick="openMemberModal()"><i class="fas fa-user-plus"></i> Tambah Member</button>
+                    <button type="button" class="btn-sm btn-sm-primary" onclick="renderAdminMembers(); showToast('Direfresh!', 'info')"><i class="fas fa-sync"></i> Refresh</button>
+                    <button type="button" class="btn-sm btn-sm-gold" onclick="seedDemo()"><i class="fas fa-database"></i> Seed Demo</button>
+                    <button type="button" class="btn-sm btn-sm-danger" onclick="resetAll()"><i class="fas fa-trash"></i> Reset Semua</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>ID</th><th>Nama / Username</th><th>Email</th><th>Alamat</th><th>Sponsor</th><th>Posisi</th><th>Status</th><th>Wallet</th><th>Aksi</th></tr></thead>
+                        <tbody id="adminTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="membersPagination"></div>
+                <div class="text-muted mt-16">Total member: <span id="totalMembers">0</span></div>
+            </div>
+
+            <!-- PRODUCTS -->
+            <div class="tab-content" id="tabProducts">
+                <h1 class="page-title"><i class="fas fa-boxes"></i> Produk</h1>
+                <div class="flex-row">
+                    <button type="button" class="btn-sm btn-sm-success" onclick="openProductModal()"><i class="fas fa-plus"></i> Tambah Produk</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>#</th><th>Gambar</th><th>Nama</th><th>Harga Member</th><th>Harga Normal</th><th>Tag</th><th>Stok</th><th>Aksi</th></tr></thead>
+                        <tbody id="adminProductTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="productsPagination"></div>
+            </div>
+
+            <!-- VERIFICATION -->
+            <div class="tab-content" id="tabVerification">
+                <h1 class="page-title"><i class="fas fa-check-double"></i> Verifikasi Member</h1>
+                <div class="flex-row">
+                    <button type="button" class="btn-sm btn-sm-primary" onclick="renderVerification(); showToast('Direfresh!', 'info')"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>ID</th><th>Nama</th><th>Email</th><th>Status</th><th>Bukti Transfer</th><th>Aksi</th></tr></thead>
+                        <tbody id="verifTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="verifPagination"></div>
+            </div>
+
+            <!-- ORDERS -->
+            <div class="tab-content" id="tabOrders">
+                <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Daftar Pesanan</h1>
+                <div class="flex-row">
+                    <button type="button" class="btn-sm btn-sm-primary" onclick="renderOrders(); showToast('Direfresh!', 'info')"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>ID</th><th>Member</th><th>Alamat</th><th>Total</th><th>Status</th><th>Aksi</th></tr></thead>
+                        <tbody id="ordersTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="ordersPagination"></div>
+            </div>
+
+            <!-- DEPOSIT -->
+            <div class="tab-content" id="tabDeposit">
+                <h1 class="page-title"><i class="fas fa-wallet"></i> Verifikasi Deposit</h1>
+                <div class="flex-row">
+                    <button type="button" class="btn-sm btn-sm-primary" onclick="renderDeposit(); showToast('Direfresh!', 'info')"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>ID Transaksi</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
+                        <tbody id="depositTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="depositPagination"></div>
+            </div>
+
+            <!-- WITHDRAW -->
+            <div class="tab-content" id="tabWithdraw">
+                <h1 class="page-title"><i class="fas fa-money-bill-wave"></i> Verifikasi Withdraw</h1>
+                <div class="flex-row">
+                    <button type="button" class="btn-sm btn-sm-primary" onclick="renderWithdraw(); showToast('Direfresh!', 'info')"><i class="fas fa-sync"></i> Refresh</button>
+                </div>
+                <div class="table-wrap">
+                    <table>
+                        <thead><tr><th>ID Transaksi</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
+                        <tbody id="withdrawTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="withdrawPagination"></div>
+            </div>
+
+            <!-- HALAMAN UTAMA (CMS) -->
+            <div class="tab-content" id="tabPageSettings">
+                <h1 class="page-title"><i class="fas fa-paint-brush"></i> Pengaturan Halaman Utama</h1>
+                
+                <div class="settings-card">
+                    <h4><i class="fas fa-images" style="color:var(--gold-accent);"></i> Slide Carousel</h4>
+                    <p class="text-muted" style="margin-bottom:12px;">Kelola slide yang tampil di carousel halaman utama.</p>
+                    <div class="flex-row">
+                        <button type="button" class="btn-sm btn-sm-success" onclick="openSlideModal()"><i class="fas fa-plus"></i> Tambah Slide</button>
+                    </div>
+                    <div class="slide-preview" id="slideList"></div>
+                </div>
+
+                <div class="settings-card">
+                    <h4><i class="fas fa-info-circle" style="color:var(--gold-accent);"></i> Tentang Kami</h4>
+                    <div id="aboutEditor">
+                        <div class="form-group"><label>Judul</label><input type="text" id="aboutTitle" value="Tentang Kami" /></div>
+                        <div class="form-group"><label>Konten (HTML diperbolehkan)</label><textarea id="aboutContent" rows="6">Isi tentang kami...</textarea></div>
+                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveAboutData()"><i class="fas fa-save"></i> Simpan Tentang Kami</button>
+                    </div>
+                </div>
+
+                <div class="settings-card">
+                    <h4><i class="fas fa-question-circle" style="color:var(--gold-accent);"></i> FAQ</h4>
+                    <p class="text-muted" style="margin-bottom:12px;">Kelola pertanyaan yang sering diajukan.</p>
+                    <div class="flex-row">
+                        <button type="button" class="btn-sm btn-sm-success" onclick="openFaqModal()"><i class="fas fa-plus"></i> Tambah FAQ</button>
+                    </div>
+                    <div class="faq-list" id="faqList"></div>
+                </div>
+
+                <div class="settings-card">
+                    <h4><i class="fas fa-star" style="color:var(--gold-accent);"></i> Keunggulan</h4>
+                    <p class="text-muted" style="margin-bottom:12px;">Kelola keunggulan produk yang ditampilkan.</p>
+                    <div class="flex-row">
+                        <button type="button" class="btn-sm btn-sm-success" onclick="openFeatModal()"><i class="fas fa-plus"></i> Tambah Keunggulan</button>
+                    </div>
+                    <div class="feature-list" id="featureList"></div>
+                </div>
+
+                <div class="settings-card">
+                    <h4><i class="fas fa-copyright" style="color:var(--gold-accent);"></i> Footer & Sosial Media</h4>
+                    <p class="text-muted" style="margin-bottom:12px;">Edit teks footer dan link sosial media.</p>
+                    <div class="form-group"><label>Nama Brand di Footer</label><input type="text" id="footerBrand" value="HEDTRO JEANS" /></div>
+                    <div class="form-group"><label>Deskripsi Footer</label><textarea id="footerDesc" rows="3">Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor.</textarea></div>
+                    <div class="form-group"><label>Copyright Text</label><input type="text" id="footerCopyright" value="&copy; 2026 HEDTRO JEANS" /></div>
+                    <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                        <div class="form-group"><label>Instagram</label><input type="text" id="sosmedInstagram" placeholder="https://instagram.com/..." /></div>
+                        <div class="form-group"><label>Facebook</label><input type="text" id="sosmedFacebook" placeholder="https://facebook.com/..." /></div>
+                        <div class="form-group"><label>YouTube</label><input type="text" id="sosmedYoutube" placeholder="https://youtube.com/..." /></div>
+                        <div class="form-group"><label>TikTok</label><input type="text" id="sosmedTiktok" placeholder="https://tiktok.com/..." /></div>
+                    </div>
+                    <button type="button" class="btn-sm btn-sm-primary" onclick="saveFooterData()"><i class="fas fa-save"></i> Simpan Footer & Sosmed</button>
+                </div>
+            </div>
+
+            <!-- PENGATURAN -->
+            <div class="tab-content" id="tabSettings">
+                <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan Sistem</h1>
+                
+                <div class="sub-tab-nav">
+                    <button class="sub-tab-btn active" data-subtab="subBrand" onclick="switchSubTab('subBrand', this)">Brand & Tampilan</button>
+                    <button class="sub-tab-btn" data-subtab="subBank" onclick="switchSubTab('subBank', this)">Rekening Bank</button>
+                    <button class="sub-tab-btn" data-subtab="subShop" onclick="switchSubTab('subShop', this)">Toko & Member</button>
+                    <button class="sub-tab-btn" data-subtab="subSponsor" onclick="switchSubTab('subSponsor', this)">Sponsor & RO</button>
+                    <button class="sub-tab-btn" data-subtab="subBinary" onclick="switchSubTab('subBinary', this)">Binary (10 Level)</button>
+                    <button class="sub-tab-btn" data-subtab="subReward" onclick="switchSubTab('subReward', this)">Reward (5 Level)</button>
+                    <button class="sub-tab-btn" data-subtab="subAdminAcc" onclick="switchSubTab('subAdminAcc', this)">Kredensial Admin</button>
+                </div>
+
+                <div class="sub-tab-content active" id="subBrand">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-paint-brush"></i> Brand & Tampilan Visual</h4>
+                        <div class="form-group"><label>Nama Brand</label><input type="text" id="setBrandName" /></div>
+                        <div class="form-group"><label>Judul Halaman Web</label><input type="text" id="setHeroTitle" /></div>
+                        <div class="form-group">
+                            <label>Logo Brand (Upload Gambar)</label>
+                            <input type="file" accept="image/*" onchange="previewImage(this, 'setBrandLogo', 'brandLogoPreview')" />
+                            <input type="hidden" id="setBrandLogo" />
+                            <img id="brandLogoPreview" style="max-height:80px; display:none; margin-top:8px; border-radius:8px;" />
+                        </div>
+                        <div class="form-group">
+                            <label>Favicon / Small Icon (Upload Gambar)</label>
+                            <input type="file" accept="image/*" onchange="previewImage(this, 'setBrandIcon', 'brandIconPreview')" />
+                            <input type="hidden" id="setBrandIcon" />
+                            <img id="brandIconPreview" style="max-height:80px; display:none; margin-top:8px; border-radius:8px;" />
+                        </div>
+                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveBrandData()">Simpan Brand</button>
+                    </div>
+                </div>
+
+                <div class="sub-tab-content" id="subBank">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-university"></i> Rekening Pembayaran</h4>
+                        <div class="flex-row"><button type="button" class="btn-sm btn-sm-success" onclick="openBankModal()"><i class="fas fa-plus"></i> Tambah Pembayaran</button></div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead><tr><th>Bank</th><th>No. Rek</th><th>Atas Nama</th><th>Aksi</th></tr></thead>
+                                <tbody id="bankTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub-tab-content" id="subShop">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-store"></i> Paket Registrasi Member</h4>
+                        <div class="form-group"><label>Harga Paket Member (Rp)</label><input type="number" id="setMemberPrice" /></div>
+                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveShopData()">Simpan Toko</button>
+                    </div>
+                </div>
+
+                <div class="sub-tab-content" id="subSponsor">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-percent"></i> Komisi Sponsor & RO</h4>
+                        <div class="form-group"><label>Bonus Sponsor (%)</label><input type="number" id="setSponsorBonus" /></div>
+                        <div class="form-group"><label>Bonus Repeat Order / RO (%)</label><input type="number" id="setRoBonus" /></div>
+                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveBonusData()">Simpan Sponsor & RO</button>
+                    </div>
+                </div>
+
+                <div class="sub-tab-content" id="subBinary">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-sitemap"></i> Komisi Binary (10 Level - %)</h4>
+                        <div class="level-grid">
+                            <div class="form-group"><label>L1 (%)</label><input type="number" id="setBinaryL1" step="0.1" /></div>
+                            <div class="form-group"><label>L2 (%)</label><input type="number" id="setBinaryL2" step="0.1" /></div>
+                            <div class="form-group"><label>L3 (%)</label><input type="number" id="setBinaryL3" step="0.1" /></div>
+                            <div class="form-group"><label>L4 (%)</label><input type="number" id="setBinaryL4" step="0.1" /></div>
+                            <div class="form-group"><label>L5 (%)</label><input type="number" id="setBinaryL5" step="0.1" /></div>
+                            <div class="form-group"><label>L6 (%)</label><input type="number" id="setBinaryL6" step="0.1" /></div>
+                            <div class="form-group"><label>L7 (%)</label><input type="number" id="setBinaryL7" step="0.1" /></div>
+                            <div class="form-group"><label>L8 (%)</label><input type="number" id="setBinaryL8" step="0.1" /></div>
+                            <div class="form-group"><label>L9 (%)</label><input type="number" id="setBinaryL9" step="0.1" /></div>
+                            <div class="form-group"><label>L10 (%)</label><input type="number" id="setBinaryL10" step="0.1" /></div>
+                        </div>
+                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveBinaryData()">Simpan Komisi</button>
+                    </div>
+                </div>
+
+                <div class="sub-tab-content" id="subReward">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-trophy"></i> Bonus Reward (5 Level - %)</h4>
+                        <div class="level-grid">
+                            <div class="form-group"><label>L1 (%)</label><input type="number" id="setRewardL1" step="0.1" /></div>
+                            <div class="form-group"><label>L2 (%)</label><input type="number" id="setRewardL2" step="0.1" /></div>
+                            <div class="form-group"><label>L3 (%)</label><input type="number" id="setRewardL3" step="0.1" /></div>
+                            <div class="form-group"><label>L4 (%)</label><input type="number" id="setRewardL4" step="0.1" /></div>
+                            <div class="form-group"><label>L5 (%)</label><input type="number" id="setRewardL5" step="0.1" /></div>
+                        </div>
+                        <button type="button" class="btn-sm btn-sm-primary" onclick="saveRewardData()">Simpan Reward</button>
+                    </div>
+                </div>
+
+                <div class="sub-tab-content" id="subAdminAcc">
+                    <div class="settings-card" style="border-left: 4px solid #e74c3c;">
+                        <h4><i class="fas fa-user-shield"></i> User & Password Admin</h4>
+                        <div class="form-group"><label>Username / Email</label><input type="text" id="setAdminEmail" /></div>
+                        <div class="form-group"><label>Sandi Baru</label><input type="password" id="setAdminPassword" placeholder="Kosongkan jika tidak diubah" /></div>
+                        <button type="button" class="btn-sm btn-sm-danger" onclick="saveAdminData()">Simpan Kredensial</button>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+
+        <footer class="footer">
+            <p><i class="fas fa-tshirt"></i> HEDTRO JEANS · Admin Panel</p>
+        </footer>
+
+    </div>
+
+    <!-- SCRIPT JS -->
     <script>
         (function() {
             'use strict';
 
+            // DB KEYS
             const DB_KEY = 'hedtro_mlm_users';
-            const ORDER_KEY = 'hedtro_orders';
             const PRODUCT_KEY = 'hedtro_products';
+            const SETTINGS_KEY = 'hedtro_settings';
+            const ORDER_KEY = 'hedtro_orders';
             const TRANSACTION_KEY = 'hedtro_transactions';
+            const BANK_KEY = 'hedtro_bank_info'; 
+            const SESSION_KEY = 'mlm_session';
+            const SLIDES_KEY = 'hedtro_slides';
+            const ABOUT_KEY = 'hedtro_about';
+            const FAQ_KEY = 'hedtro_faq';
+            const FEATURES_KEY = 'hedtro_features';
+            const FOOTER_KEY = 'hedtro_footer';
 
-            function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
-            function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-            function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
-            function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-            function loadOrders() { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); }
-            function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
-            function loadTransactions() { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); }
-            function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
-            function getNextId(arr) { return arr && arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
+            let statePage = { members: 1, products: 1, verif: 1, orders: 1, deposit: 1, withdraw: 1 };
+            const ITEMS_PER_PAGE = 10;
 
-            const urlParams = new URLSearchParams(window.location.search);
-            const refParam = urlParams.get('ref');
-            const uplineParam = urlParams.get('upline');
-            const posParam = urlParams.get('pos');
-
-            if (refParam) document.getElementById('regSponsor').value = refParam;
-            if (uplineParam) document.getElementById('regUpline').value = uplineParam;
-            if (posParam && (posParam === 'left' || posParam === 'right')) {
-                document.getElementById('regPosition').value = posParam;
-                document.querySelectorAll('.position-option').forEach(o => {
-                    o.classList.toggle('active', o.dataset.value === posParam);
+            // HELPER LOAD & SAVE
+            function L(k,d) { try{ return JSON.parse(localStorage.getItem(k))||d; }catch(e){return d;} }
+            function S(k,v) { localStorage.setItem(k, JSON.stringify(v)); }
+            
+            function loadUsers() { return L(DB_KEY, []); }
+            function saveUsers(u) { S(DB_KEY, u); }
+            function loadProducts() { return L(PRODUCT_KEY, []); }
+            function saveProducts(p) { S(PRODUCT_KEY, p); }
+            function loadOrders() { return L(ORDER_KEY, []); }
+            function saveOrders(o) { S(ORDER_KEY, o); }
+            function loadTransactions() { return L(TRANSACTION_KEY, []); }
+            function saveTransactions(t) { S(TRANSACTION_KEY, t); }
+            function loadSettings() {
+                return L(SETTINGS_KEY, {
+                    sponsorBonus: 10, binaryBonusLevels: [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5],
+                    rewardBonusLevels: [5, 4, 3, 2, 1], roBonus: 3, memberPrice: 550000,
+                    brandName: "HEDTRO JEANS", brandLogo: "fa-tshirt", brandIcon: "fa-tshirt", heroTitle: "HEDTRO JEANS · Premium Denim"
                 });
             }
+            function saveSettings(s) { S(SETTINGS_KEY, s); }
+            function loadBankInfo() { 
+                let b = L(BANK_KEY, null); 
+                if(!b) return [{id:1, bank:'BCA', account:'1234567890', name:'HEDTRO JEANS'}]; 
+                if(!Array.isArray(b)) return [{id:1, bank:b.bank, account:b.account, name:b.name}]; 
+                return b; 
+            }
+            function saveBankInfo(b) { S(BANK_KEY, b); }
 
-            document.querySelectorAll('.position-option').forEach(opt => {
-                opt.addEventListener('click', function() {
-                    document.querySelectorAll('.position-option').forEach(o => o.classList.remove('active'));
-                    this.classList.add('active');
-                    document.getElementById('regPosition').value = this.dataset.value;
-                });
-            });
+            function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
-            window.doRegister = function() {
-                const username = document.getElementById('regUsername').value.trim();
-                const email = document.getElementById('regEmail').value.trim();
-                const password = document.getElementById('regPassword').value.trim();
-                const confirmPassword = document.getElementById('regConfirmPassword').value.trim();
-                const fullname = document.getElementById('regFullname').value.trim();
-                const nik = document.getElementById('regNik').value.trim();
-                const phone = document.getElementById('regPhone').value.trim();
-                const whatsapp = document.getElementById('regWhatsapp').value.trim();
-                const bankName = document.getElementById('regBankName').value;
-                const bankAccount = document.getElementById('regBankAccount').value.trim();
-                const bankHolder = document.getElementById('regBankHolder').value.trim();
-                const address = document.getElementById('regAddress').value.trim();
-                const city = document.getElementById('regCity').value.trim();
-                const serial = document.getElementById('regSerial').value.trim();
-                const jeansSize = document.getElementById('regJeansSize').value;
-                const jeansColor = document.getElementById('regJeansColor').value;
-                const sponsor = document.getElementById('regSponsor').value.trim();
-                const upline = document.getElementById('regUpline').value.trim();
-                const position = document.getElementById('regPosition').value;
-                const msgEl = document.getElementById('regMsg');
+            // TOAST & MODAL
+            window.showToast = function(msg, type = 'info') {
+                const c = document.getElementById('toastContainer');
+                if (!c) return;
+                const i = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
+                const t = document.createElement('div');
+                t.className = `toast-item ${type}`;
+                t.innerHTML = `<span class="toast-icon"><i class="fas ${i[type]}"></i></span><span class="toast-msg">${msg}</span><span class="toast-close" onclick="this.parentElement.remove()">&times;</span>`;
+                c.appendChild(t);
+                setTimeout(() => { if(t.parentElement) t.remove() }, 3000);
+            }
 
-                if (!username || !email || !password || !confirmPassword || !fullname || !nik || !phone || !whatsapp || !bankAccount || !bankHolder || !address || !city || !serial) {
-                    msgEl.className = 'msg error'; msgEl.innerText = '⚠️ Semua field wajib diisi.'; return;
+            const modalOverlay = document.getElementById('modalOverlay');
+            const modalContent = document.getElementById('modalContent');
+            window.openModal = function(html) { modalContent.innerHTML = html; modalOverlay.classList.add('show'); document.body.style.overflow = 'hidden'; }
+            window.closeModal = function() { modalOverlay.classList.remove('show'); document.body.style.overflow = ''; }
+
+            window.previewImage = function(input, targetValId, targetImgId) {
+                if (input.files && input.files[0]) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        const img = document.getElementById(targetImgId);
+                        if(img) { img.src = e.target.result; img.style.display = 'inline-block'; }
+                        const val = document.getElementById(targetValId);
+                        if(val) val.value = e.target.result;
+                    };
+                    reader.readAsDataURL(input.files[0]);
                 }
-                if (password !== confirmPassword) {
-                    msgEl.className = 'msg error'; msgEl.innerText = '⚠️ Password tidak sama.'; return;
-                }
+            };
 
+            // SIDEBAR
+            window.toggleSidebar = function(open) {
+                const sidebar = document.getElementById('sidebar');
+                const sidebarOverlay = document.getElementById('sidebarOverlay');
+                const burgerBtn = document.getElementById('burgerBtn');
+                if(!sidebar) return;
+                const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
+                sidebar.classList.toggle('open', isOpen);
+                sidebarOverlay.classList.toggle('active', isOpen);
+                if(burgerBtn) burgerBtn.classList.toggle('active', isOpen);
+                document.body.style.overflow = isOpen && window.innerWidth <= 768 ? 'hidden' : '';
+            }
+
+            // PAGINATION
+            function buildPagination(totalItems, currentPage, containerId, tabKey, renderFunc) {
+                const c = document.getElementById(containerId);
+                if (!c) return;
+                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                if (totalItems === 0) { c.innerHTML = ''; return; }
+                let html = `<button class="page-btn" ${currentPage===1?'disabled':''} onclick="changePage('${tabKey}', ${currentPage-1}, ${renderFunc.name})">Prev</button>`;
+                let startP = Math.max(1, currentPage - 1); let endP = Math.min(totalPages, currentPage + 1);
+                if (startP > 1) html += `<button class="page-btn" onclick="changePage('${tabKey}', 1, ${renderFunc.name})">1</button><span>...</span>`;
+                for (let i = startP; i <= endP; i++) html += `<button class="page-btn ${i===currentPage?'active':''}" onclick="changePage('${tabKey}', ${i}, ${renderFunc.name})">${i}</button>`;
+                if (endP < totalPages) html += `<span>...</span><button class="page-btn" onclick="changePage('${tabKey}', ${totalPages}, ${renderFunc.name})">${totalPages}</button>`;
+                html += `<button class="page-btn" ${currentPage===totalPages?'disabled':''} onclick="changePage('${tabKey}', ${currentPage+1}, ${renderFunc.name})">Next</button>`;
+                c.innerHTML = html;
+            }
+
+            window.changePage = function(tabKey, newPage, renderFunc) {
+                if(newPage) { statePage[tabKey] = newPage; renderFunc(); }
+            }
+
+            // TABS
+            window.switchTab = function(tabId) {
+                document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
+                let targetId = 'tab' + tabId.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('');
+                const tabContent = document.getElementById(targetId);
+                if (tabContent) tabContent.classList.add('active');
+
+                document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(el => el.classList.remove('active'));
+                const activeMenu = document.querySelector(`.sidebar .menu-item[data-tab="${tabId}"]`);
+                if (activeMenu) activeMenu.classList.add('active');
+
+                if (tabId === 'dashboard') renderDashboard();
+                if (tabId === 'members') renderAdminMembers();
+                if (tabId === 'products') renderAdminProducts();
+                if (tabId === 'verification') renderVerification();
+                if (tabId === 'orders') renderOrders();
+                if (tabId === 'deposit') renderDeposit();
+                if (tabId === 'withdraw') renderWithdraw();
+                if (tabId === 'page-settings') renderPageSettings();
+                if (tabId === 'settings') { loadSettingsToForm(); renderBankSettings(); }
+                
+                sessionStorage.setItem('adminActiveTab', tabId);
+                toggleSidebar(false);
+            }
+
+            window.switchSubTab = function(subTabId, btnEl) {
+                document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
+                if(btnEl) btnEl.classList.add('active');
+                const targetSub = document.getElementById(subTabId);
+                if(targetSub) targetSub.classList.add('active');
+                sessionStorage.setItem('adminActiveSubTab', subTabId);
+            }
+
+            // GLOBAL ACTIONS
+            window.quickSync = function() { renderDashboard(); showToast('Statistik diperbarui!', 'success'); }
+            window.clearSessionAndReload = function() { localStorage.removeItem(SESSION_KEY); window.location.reload(); }
+            window.seedDemo = function() {
                 let users = loadUsers();
-                if (users.find(u => u.username === username || u.email === email)) {
-                    msgEl.className = 'msg error'; msgEl.innerText = '⚠️ Username atau Email sudah terdaftar.'; return;
-                }
-
-                let sponsorId = null;
-                if (sponsor) {
-                    const sp = users.find(u => u.username === sponsor);
-                    if (sp) sponsorId = sp.id;
-                }
-
-                let uplineId = null;
-                if (upline) {
-                    const up = users.find(u => u.username === upline);
-                    if (up) uplineId = up.id;
-                }
-
-                const newUser = {
-                    id: getNextId(users),
-                    username, email, password, name: fullname, fullname, nik, phone, whatsapp,
-                    bankName, bankAccount, bankHolder, address, city, serialNumber: serial,
-                    jeansSize, jeansColor, sponsor_id: sponsorId, upline_id: uplineId,
-                    position: position || 'left', left: null, right: null, role: 'user',
-                    status: 'free', wallet: 0, bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0,
-                    purchase_history: [], transactions: [], orders: [], proof_image: null,
-                    registeredAt: new Date().toISOString()
-                };
-
-                users.push(newUser);
-                saveUsers(users);
-
-                if (sponsorId) {
-                    const sp = users.find(u => u.id === sponsorId);
-                    if (sp) {
-                        if (position === 'left') sp.left = newUser.id;
-                        else sp.right = newUser.id;
-                        saveUsers(users);
+                const demoNames = ['Budi', 'Siti', 'Agus', 'Rina'];
+                let added = 0;
+                demoNames.forEach((n,i) => {
+                    let email = n.toLowerCase()+'@mail.com';
+                    if (!users.find(u => u.email === email)) {
+                        users.push({ id: getNextId(users), username: n.toLowerCase(), email: email, password: '123', name: n, role: 'user', status: i%2===0?'verified':'free', wallet: 10000, transactions:[], purchase_history:[], orders:[], registeredAt: new Date().toISOString() });
+                        added++;
                     }
-                }
-
-                const products = loadProducts();
-                const firstProduct = products.length > 0 ? products[0] : { id: 1, name: 'Paket Member Hedtro', price: 550000 };
-                
-                const orders = loadOrders();
-                const ordId = Date.now();
-                const ordNum = 'FIRST-' + ordId.toString().slice(-6);
-                
-                const newOrder = {
-                    id: ordId, order_number: ordNum, user_id: newUser.id, user_name: fullname,
-                    shipping_address: address + ', ' + city,
-                    items: [{ product_id: firstProduct.id, name: firstProduct.name, price: firstProduct.price, qty: 1, size: jeansSize, color: jeansColor }],
-                    total: firstProduct.price, status: 'pending', type: 'first_order', createdAt: new Date().toISOString(), proof_image: null
-                };
-                orders.push(newOrder); saveOrders(orders);
-
-                const txs = loadTransactions();
-                txs.push({
-                    id: ordId, user_id: newUser.id, type: 'order', amount: firstProduct.price,
-                    status: 'pending', date: new Date().toISOString(), note: `Order Awal ${ordNum}`
                 });
-                saveTransactions(txs);
-
-                msgEl.className = 'msg success';
-                msgEl.innerText = '✅ Pendaftaran berhasil! Silakan login untuk mengonfirmasi / upload bukti.';
-
-                setTimeout(() => { window.location.replace('login.html'); }, 2000);
+                saveUsers(users); renderAdminMembers(); showToast(`✅ ${added} member demo ditambahkan.`, 'success');
+            }
+            window.resetAll = function() {
+                if(!confirm('⚠️ Hapus SEMUA data (kecuali admin)?')) return;
+                let users = loadUsers(); const admin = users.find(u => u.role === 'admin' || u.email === 'admin@mlm.com');
+                users = admin ? [admin] : [];
+                saveUsers(users); saveOrders([]); saveTransactions([]); saveProducts([]);
+                statePage = { members:1, products:1, verif:1, orders:1, deposit:1, withdraw:1 };
+                renderAdminMembers(); renderAdminProducts(); renderDashboard(); showToast('Semua data direset.', 'info');
             }
 
-            document.querySelectorAll('#registerForm input, #registerForm select, #registerForm textarea').forEach(el => {
-                el.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        doRegister();
-                    }
-                });
-            });
+            // GLOBALS (CRUD)
+            window.processTx = function(id, newStatus, type) {
+                let txs = loadTransactions(); let tx = txs.find(t => t.id === id); if (!tx) return;
+                let users = loadUsers(); let user = users.find(u => u.id === tx.user_id);
+                if (user) {
+                    if (type === 'deposit' && newStatus === 'success' && tx.status === 'pending') user.wallet = (user.wallet||0) + (tx.originalAmount||tx.amount);
+                    else if (type === 'withdraw' && newStatus === 'failed' && tx.status === 'pending') user.wallet = (user.wallet||0) + tx.amount;
+                    if (user.transactions) { let utx = user.transactions.find(t => t.id === id); if(utx) utx.status = newStatus; }
+                    saveUsers(users);
+                }
+                tx.status = newStatus; saveTransactions(txs);
+                if (type === 'deposit') renderDeposit(); if (type === 'withdraw') renderWithdraw();
+                renderDashboard(); showToast(`Transaksi ${newStatus}.`, newStatus==='success'?'success':'warning');
+            }
+            window.delTx = function(id, type) {
+                if(!confirm('Hapus transaksi?')) return;
+                let txs = loadTransactions().filter(t => t.id !== id); saveTransactions(txs);
+                let users = loadUsers(); users.forEach(u => { if(u.transactions) u.transactions = u.transactions.filter(t => t.id !== id); }); saveUsers(users);
+                if (type === 'deposit') renderDeposit(); if (type === 'withdraw') renderWithdraw();
+                renderDashboard(); showToast('Transaksi dihapus.', 'info');
+            }
+
+            // DASHBOARD
+            window.renderDashboard = function() {
+                const users = loadUsers(); const orders = loadOrders(); const products = loadProducts(); const transactions = loadTransactions();
+                document.getElementById('statTotalMember').textContent = users.length;
+                document.getElementById('statVerifiedMember').textContent = users.filter(u => u.status === 'verified').length;
+                document.getElementById('statTotalOrders').textContent = orders.length;
+                document.getElementById('statPendingOrders').textContent = orders.filter(o => o.status === 'pending').length;
+                document.getElementById('statTotalProducts').textContent = products.length;
+                document.getElementById('statTotalTransactions').textContent = 'Rp ' + transactions.reduce((s, t) => s + (t.amount||t.price||0), 0).toLocaleString();
+
+                const container = document.getElementById('adminTransactionHistory');
+                const sorted = [...transactions].reverse().slice(0, 10);
+                if (sorted.length === 0) { container.innerHTML = '<p class="text-muted">Kosong.</p>'; return; }
+                container.innerHTML = sorted.map(t => {
+                    const u = users.find(x => x.id === t.user_id);
+                    let actionBtn = (t.status === 'pending' && (t.type === 'deposit' || t.type === 'withdraw')) 
+                        ? `<button type="button" class="btn-sm btn-sm-success" onclick="processTx(${t.id},'success','${t.type}')" style="margin-left:6px;padding:4px 8px;font-size:0.7rem;">Approve</button>` : '';
+                    if (t.status === 'pending' && t.proof_image) actionBtn += `<button type="button" class="btn-sm btn-sm-gold" onclick="viewProof('${t.proof_image}')" style="margin-left:4px;padding:4px 8px;font-size:0.7rem;">Bukti</button>`;
+                    return `<div class="history-item" style="flex-wrap:wrap;gap:8px;">
+                        <span style="flex:1;"><strong>${u?u.name||u.username:'Guest'}</strong> · ${(t.type||'').toUpperCase()} (${t.status}) <small class="text-muted">${new Date(t.date||t.createdAt||Date.now()).toLocaleDateString()}</small></span>
+                        <span class="amount ${['deposit','order','ro_purchase'].includes(t.type)?'plus':'minus'}" style="display:flex;align-items:center;">Rp ${(t.amount||0).toLocaleString()} ${actionBtn}</span>
+                    </div>`;
+                }).join('');
+            }
+
+            // MEMBERS CRUD
+            window.renderAdminMembers = function() {
+                const tbody = document.getElementById('adminTableBody');
+                if(!tbody) return;
+                const users = loadUsers(); const total = users.length;
+                document.getElementById('totalMembers').textContent = total;
+                if (total === 0) { tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">Kosong.</td></tr>`; document.getElementById('membersPagination').innerHTML=''; return; }
+                statePage.members = Math.max(1, Math.min(statePage.members, Math.ceil(total/ITEMS_PER_PAGE)||1));
+                const paginated = users.slice((statePage.members - 1)*ITEMS_PER_PAGE, statePage.members*ITEMS_PER_PAGE);
+                tbody.innerHTML = paginated.map(u => `<tr>
+                    <td data-label="ID">${u.id}</td><td data-label="Nama"><strong>${u.name||u.username}</strong></td><td data-label="Email">${u.email}</td>
+                    <td data-label="Alamat">${u.address||'-'}</td><td data-label="Sponsor">${u.sponsor_id||'-'}</td><td data-label="Posisi">${u.position||'-'}</td>
+                    <td data-label="Status"><span class="badge-status badge-${u.status||'free'}">${(u.status||'free').toUpperCase()}</span></td>
+                    <td data-label="Wallet">Rp ${(u.wallet||0).toLocaleString()}</td>
+                    <td data-label="Aksi"><div style="display:flex;gap:6px;justify-content:flex-end;">
+                        <button type="button" class="btn-sm btn-sm-warning" onclick="openMemberModal(${u.id})">Edit</button>
+                        ${u.role!=='admin' ? `<button type="button" class="btn-sm btn-sm-danger" onclick="delMember(${u.id})">Hapus</button>` : ''}
+                    </div></td></tr>`).join('');
+                buildPagination(total, statePage.members, 'membersPagination', 'members', renderAdminMembers);
+            }
+            window.openMemberModal = function(id = null) {
+                let users = loadUsers(); let user = id ? users.find(u => u.id === id) : null;
+                openModal(`<h3>${user ? 'Edit Member' : 'Tambah Member'}</h3>
+                    <div class="form-group"><label>Nama</label><input type="text" id="mName" value="${user?user.name||'':''}"></div>
+                    <div class="form-group"><label>Username</label><input type="text" id="mUsername" value="${user?user.username||'':''}"></div>
+                    <div class="form-group"><label>Email</label><input type="text" id="mEmail" value="${user?user.email||'':''}"></div>
+                    <div class="form-group"><label>Sandi Baru</label><input type="password" id="mPass" placeholder="${user?'Kosongkan jika tidak diubah':'Wajib diisi'}"></div>
+                    <div class="form-group"><label>Status</label><select id="mStatus"><option value="free" ${user&&user.status==='free'?'selected':''}>Free</option><option value="verified" ${user&&user.status==='verified'?'selected':''}>Verified</option></select></div>
+                    <div class="form-group"><label>Wallet</label><input type="number" id="mWallet" value="${user?user.wallet||0:0}"></div>
+                    <button type="button" class="btn-submit" onclick="saveMember(${id})">Simpan</button>`);
+            }
+            window.saveMember = function(id) {
+                let users = loadUsers();
+                let name = document.getElementById('mName').value.trim(); let username = document.getElementById('mUsername').value.trim();
+                let email = document.getElementById('mEmail').value.trim(); let pass = document.getElementById('mPass').value;
+                let status = document.getElementById('mStatus').value; let wallet = parseInt(document.getElementById('mWallet').value)||0;
+                if(!name || !username || !email) return showToast('Harap isi dengan benar', 'error');
+                if(id) {
+                    let u = users.find(x => x.id === id);
+                    if(u) { u.name=name; u.username=username; u.email=email; u.status=status; u.wallet=wallet; if(pass) u.password=pass; }
+                } else {
+                    if(!pass) return showToast('Sandi wajib diisi', 'error');
+                    users.push({ id: getNextId(users), name, username, email, password:pass, status, wallet, role:'user', transactions:[], purchase_history:[], orders:[], registeredAt: new Date().toISOString() });
+                }
+                saveUsers(users); closeModal(); renderAdminMembers(); renderDashboard(); showToast('Tersimpan', 'success');
+            }
+            window.delMember = function(id) {
+                if(!confirm('Hapus member?')) return;
+                saveUsers(loadUsers().filter(u => u.id !== id)); renderAdminMembers(); renderDashboard(); showToast('Dihapus', 'info');
+            }
+
+            // PRODUCTS CRUD
+            window.renderAdminProducts = function() {
+                const tbody = document.getElementById('adminProductTableBody');
+                if(!tbody) return;
+                const products = loadProducts(); const total = products.length;
+                if(total===0) { tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;">Kosong.</td></tr>`; document.getElementById('productsPagination').innerHTML=''; return; }
+                statePage.products = Math.max(1, Math.min(statePage.products, Math.ceil(total/ITEMS_PER_PAGE)||1));
+                const paginated = products.slice((statePage.products-1)*ITEMS_PER_PAGE, statePage.products*ITEMS_PER_PAGE);
+                tbody.innerHTML = paginated.map((p,i) => `<tr><td data-label="#">${(statePage.products-1)*ITEMS_PER_PAGE+i+1}</td>
+                    <td data-label="Gambar"><img src="${p.image||''}" style="height:30px; ${p.image?'':'display:none;'}"><i class="fas ${p.icon||'fa-tshirt'}" style="${p.image?'display:none;':''}"></i></td>
+                    <td data-label="Nama">${p.name}</td>
+                    <td data-label="Harga">Rp ${(p.price||0).toLocaleString()}</td><td data-label="Normal">Rp ${(p.original||0).toLocaleString()}</td>
+                    <td data-label="Tag">${p.tag||'-'}</td><td data-label="Stok">${p.stock||0}</td>
+                    <td data-label="Aksi"><div style="display:flex;gap:6px;justify-content:flex-end;"><button type="button" class="btn-sm btn-sm-warning" onclick="openProductModal(${p.id})">Edit</button> <button type="button" class="btn-sm btn-sm-danger" onclick="delProduct(${p.id})">Hapus</button></div></td></tr>`).join('');
+                buildPagination(total, statePage.products, 'productsPagination', 'products', renderAdminProducts);
+            }
+            window.openProductModal = function(id = null) {
+                let prods = loadProducts(); let p = id ? prods.find(x => x.id === id) : null;
+                openModal(`<h3>${p ? 'Edit Produk' : 'Tambah Produk'}</h3>
+                    <div class="form-group"><label>Nama Produk</label><input type="text" id="pName" value="${p?p.name:''}"></div>
+                    <div class="form-group"><label>Harga Member</label><input type="number" id="pPrice" value="${p?p.price:''}"></div>
+                    <div class="form-group"><label>Harga Normal</label><input type="number" id="pOriginal" value="${p?p.original||'':''}"></div>
+                    <div class="form-group"><label>Stok</label><input type="number" id="pStock" value="${p?p.stock||0:0}"></div>
+                    <div class="form-group"><label>Tag (Badge)</label><input type="text" id="pTag" value="${p?p.tag||'PRODUK':''}"></div>
+                    <div class="form-group">
+                        <label>Gambar Produk</label>
+                        <input type="file" accept="image/*" onchange="previewImage(this, 'pImgUrl', 'pImgPreview')">
+                        <input type="hidden" id="pImgUrl" value="${p?p.image||'':''}">
+                        <br><img id="pImgPreview" src="${p?p.image||'':''}" style="max-height:80px; margin-top:8px; border-radius:8px; ${p&&p.image?'':'display:none;'}">
+                    </div>
+                    <button type="button" class="btn-submit" onclick="saveProduct(${id})">Simpan</button>`);
+            }
+            window.saveProduct = function(id) {
+                let prods = loadProducts();
+                let name = document.getElementById('pName').value.trim(); let price = parseInt(document.getElementById('pPrice').value)||0;
+                let orig = parseInt(document.getElementById('pOriginal').value)||0; let stock = parseInt(document.getElementById('pStock').value)||0;
+                let tag = document.getElementById('pTag').value.trim() || 'PRODUK'; let img = document.getElementById('pImgUrl').value;
+                if(!name || price <= 0) return showToast('Nama & Harga wajib', 'error');
+                if(id) {
+                    let p = prods.find(x => x.id === id);
+                    if(p) { p.name=name; p.price=price; p.original=orig; p.stock=stock; p.tag=tag; p.image=img; }
+                } else { prods.push({ id: getNextId(prods), name, price, original:orig, stock, tag:tag, image:img, sizes:['30','32'], colors:['Raw'], icon:'fa-tshirt' }); }
+                saveProducts(prods); closeModal(); renderAdminProducts(); showToast('Tersimpan', 'success');
+            }
+            window.delProduct = function(id) {
+                if(!confirm('Hapus produk?')) return;
+                saveProducts(loadProducts().filter(x => x.id !== id)); renderAdminProducts(); showToast('Dihapus', 'info');
+            }
+
+            // VERIFICATION CRUD
+            window.renderVerification = function() {
+                const tbody = document.getElementById('verifTableBody');
+                if(!tbody) return;
+                const users = loadUsers().filter(u => u.status === 'pending' || u.status === 'free');
+                if(users.length===0){ tbody.innerHTML=`<tr><td colspan="6" style="text-align:center;">Semua terverifikasi.</td></tr>`; document.getElementById('verifPagination').innerHTML=''; return; }
+                statePage.verif = Math.max(1, Math.min(statePage.verif, Math.ceil(users.length/ITEMS_PER_PAGE)||1));
+                tbody.innerHTML = users.slice((statePage.verif-1)*ITEMS_PER_PAGE, statePage.verif*ITEMS_PER_PAGE).map(u => `<tr>
+                    <td data-label="ID">${u.id}</td><td data-label="Nama">${u.name||u.username}</td><td data-label="Email">${u.email}</td>
+                    <td data-label="Status"><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td>
+                    <td data-label="Bukti">${u.proof_image ? `<button type="button" class="btn-sm btn-sm-gold" onclick="viewProof('${u.proof_image}')">Lihat</button>` : 'Belum'}</td>
+                    <td data-label="Aksi"><div style="display:flex;gap:6px;justify-content:flex-end;">
+                        <button type="button" class="btn-sm btn-sm-success" onclick="verifyUser(${u.id}, 'verified')">Terima</button>
+                        <button type="button" class="btn-sm btn-sm-warning" onclick="verifyUser(${u.id}, 'free')">Tolak</button>
+                        <button type="button" class="btn-sm btn-sm-danger" onclick="delMember(${u.id})">Hapus</button>
+                    </div></td></tr>`).join('');
+                buildPagination(users.length, statePage.verif, 'verifPagination', 'verif', renderVerification);
+            }
+            window.verifyUser = function(id, status) {
+                let users = loadUsers(); let u = users.find(x => x.id === id);
+                if(!u) return; u.status = status; if(status==='free') u.proof_image = null;
+                saveUsers(users); renderVerification(); renderAdminMembers(); renderDashboard(); showToast(`Member di-${status==='verified'?'terima':'tolak'}.`, 'success');
+            }
+            window.viewProof = function(url) {
+                openModal(`<h3>Bukti</h3><div class="proof-image" style="max-width:100%;"><img src="${url}" style="width:100%;border-radius:10px;" /></div><button type="button" class="btn-submit" onclick="closeModal()">Tutup</button>`);
+            }
+
+            // ORDERS CRUD
+            window.renderOrders = function() {
+                const tbody = document.getElementById('ordersTableBody');
+                if(!tbody) return;
+                const orders = loadOrders(); const total = orders.length;
+                if(total===0) { tbody.innerHTML=`<tr><td colspan="10" style="text-align:center;">Kosong.</td></tr>`; document.getElementById('ordersPagination').innerHTML=''; return; }
+                statePage.orders = Math.max(1, Math.min(statePage.orders, Math.ceil(total/ITEMS_PER_PAGE)||1));
+                const paginated = [...orders].reverse().slice((statePage.orders-1)*ITEMS_PER_PAGE, statePage.orders*ITEMS_PER_PAGE);
+                tbody.innerHTML = paginated.map(o => `<tr><td data-label="ID">${o.id}</td><td data-label="Nama">${o.user_name}</td>
+                    <td data-label="Alamat">${o.shipping_address||'-'}</td><td data-label="Total">Rp ${(o.total||0).toLocaleString()}</td>
+                    <td data-label="Status"><span class="badge-status badge-${o.status||'pending'}">${(o.status||'pending').toUpperCase()}</span></td>
+                    <td data-label="Aksi"><div style="display:flex;gap:6px;justify-content:flex-end;">
+                        ${o.status==='pending' ? `<button type="button" class="btn-sm btn-sm-success" onclick="updateOrder(${o.id},'processing')">Approve</button>` : ''}
+                        ${o.status==='processing' ? `<button type="button" class="btn-sm btn-sm-primary" onclick="updateOrder(${o.id},'shipped')">Kirim</button>` : ''}
+                        <button type="button" class="btn-sm btn-sm-danger" onclick="delOrder(${o.id})">Hapus</button>
+                    </div></td></tr>`).join('');
+                buildPagination(total, statePage.orders, 'ordersPagination', 'orders', renderOrders);
+            }
+            window.updateOrder = function(id, st) {
+                let orders = loadOrders(); let o = orders.find(x => x.id === id); if(!o) return; o.status = st; saveOrders(orders);
+                let txs = loadTransactions(); let tx = txs.find(t => t.id === id); if(tx) { tx.status = st==='processing'?'success':st; saveTransactions(txs); }
+                let users = loadUsers(); let u = users.find(x => x.id === o.user_id);
+                if(u && u.orders) { let uo = u.orders.find(x=>x.id===id); if(uo) uo.status = st; saveUsers(users); }
+                renderOrders(); renderDashboard(); showToast(`Order ${st}.`, 'success');
+            }
+            window.delOrder = function(id) {
+                if(!confirm('Hapus order?')) return;
+                saveOrders(loadOrders().filter(x => x.id !== id)); renderOrders(); showToast('Order dihapus.', 'info');
+            }
+
+            // DEPOSIT & WITHDRAW
+            window.renderDeposit = function() {
+                const tbody = document.getElementById('depositTableBody'); if(!tbody) return;
+                const txs = loadTransactions().filter(t => t.type === 'deposit').reverse();
+                if(txs.length===0) { tbody.innerHTML=`<tr><td colspan="8" style="text-align:center;">Kosong.</td></tr>`; document.getElementById('depositPagination').innerHTML=''; return; }
+                statePage.deposit = Math.max(1, Math.min(statePage.deposit, Math.ceil(txs.length/ITEMS_PER_PAGE)||1));
+                tbody.innerHTML = txs.slice((statePage.deposit-1)*ITEMS_PER_PAGE, statePage.deposit*ITEMS_PER_PAGE).map(t => `<tr>
+                    <td data-label="ID">${t.id}</td><td data-label="Nominal">Rp ${(t.amount||0).toLocaleString()}</td><td data-label="Status"><span class="badge-status badge-${t.status}">${t.status.toUpperCase()}</span></td>
+                    <td data-label="Aksi"><div style="display:flex;gap:6px;justify-content:flex-end;">
+                        ${t.status==='pending' ? `<button type="button" class="btn-sm btn-sm-success" onclick="processTx(${t.id},'success','deposit')">Approve</button> <button type="button" class="btn-sm btn-sm-warning" onclick="processTx(${t.id},'failed','deposit')">Reject</button>` : ''}
+                        <button type="button" class="btn-sm btn-sm-danger" onclick="delTx(${t.id}, 'deposit')">Hapus</button>
+                    </div></td></tr>`).join('');
+                buildPagination(txs.length, statePage.deposit, 'depositPagination', 'deposit', renderDeposit);
+            }
+            window.renderWithdraw = function() {
+                const tbody = document.getElementById('withdrawTableBody'); if(!tbody) return;
+                const txs = loadTransactions().filter(t => t.type === 'withdraw').reverse();
+                if(txs.length===0) { tbody.innerHTML=`<tr><td colspan="7" style="text-align:center;">Kosong.</td></tr>`; document.getElementById('withdrawPagination').innerHTML=''; return; }
+                statePage.withdraw = Math.max(1, Math.min(statePage.withdraw, Math.ceil(txs.length/ITEMS_PER_PAGE)||1));
+                tbody.innerHTML = txs.slice((statePage.withdraw-1)*ITEMS_PER_PAGE, statePage.withdraw*ITEMS_PER_PAGE).map(t => `<tr>
+                    <td data-label="ID">${t.id}</td><td data-label="Nominal">Rp ${(t.amount||0).toLocaleString()}</td><td data-label="Status"><span class="badge-status badge-${t.status}">${t.status.toUpperCase()}</span></td>
+                    <td data-label="Aksi"><div style="display:flex;gap:6px;justify-content:flex-end;">
+                        ${t.status==='pending' ? `<button type="button" class="btn-sm btn-sm-success" onclick="processTx(${t.id},'success','withdraw')">Approve</button> <button type="button" class="btn-sm btn-sm-warning" onclick="processTx(${t.id},'failed','withdraw')">Reject</button>` : ''}
+                        <button type="button" class="btn-sm btn-sm-danger" onclick="delTx(${t.id}, 'withdraw')">Hapus</button>
+                    </div></td></tr>`).join('');
+                buildPagination(txs.length, statePage.withdraw, 'withdrawPagination', 'withdraw', renderWithdraw);
+            }
+
+            // PAGE SETTINGS (CMS)
+            window.renderPageSettings = function() {
+                renderSlides(); renderFaq(); renderFeatures();
+                const a = L(ABOUT_KEY, {title:'Tentang', content:''});
+                const elTitle = document.getElementById('aboutTitle'); if(elTitle) elTitle.value = a.title||''; 
+                const elContent = document.getElementById('aboutContent'); if(elContent) elContent.value = a.content||'';
+                
+                const f = L(FOOTER_KEY, {brand:'HEDTRO', desc:'', copyright:'', social:{}});
+                const efb = document.getElementById('footerBrand'); if(efb) efb.value = f.brand||''; 
+                const efd = document.getElementById('footerDesc'); if(efd) efd.value = f.desc||''; 
+                const efc = document.getElementById('footerCopyright'); if(efc) efc.value = f.copyright||'';
+                if(f.social) {
+                    const si = document.getElementById('sosmedInstagram'); if(si) si.value = f.social.instagram||''; 
+                    const sf = document.getElementById('sosmedFacebook'); if(sf) sf.value = f.social.facebook||''; 
+                    const sy = document.getElementById('sosmedYoutube'); if(sy) sy.value = f.social.youtube||''; 
+                    const st = document.getElementById('sosmedTiktok'); if(st) st.value = f.social.tiktok||'';
+                }
+            }
+            
+            // SLIDES CRUD
+            window.renderSlides = function() {
+                const slides = L(SLIDES_KEY, []); const c = document.getElementById('slideList'); if(!c) return;
+                if(slides.length===0) { c.innerHTML = '<p class="text-muted">Kosong.</p>'; return; }
+                c.innerHTML = slides.map(s => `<div class="admin-list-item"><div><h4>${s.title}</h4><p>${s.subtitle}</p></div><div class="actions"><button type="button" class="btn-sm btn-sm-warning" onclick="openSlideModal(${s.id})">Edit</button> <button type="button" class="btn-sm btn-sm-danger" onclick="delSlide(${s.id})">Hapus</button></div></div>`).join('');
+            }
+            window.openSlideModal = function(id=null) {
+                let sl = L(SLIDES_KEY, []); let s = id ? sl.find(x => x.id===id) : null;
+                openModal(`<h3>${s?'Edit':'Tambah'} Slide</h3>
+                    <div class="form-group"><label>Judul</label><input type="text" id="sTitle" value="${s?s.title||'':''}"></div>
+                    <div class="form-group"><label>Sub Judul</label><input type="text" id="sSub" value="${s?s.subtitle||'':''}"></div>
+                    <button type="button" class="btn-submit" onclick="saveSlide(${id})">Simpan</button>`);
+            }
+            window.saveSlide = function(id) {
+                let sl = L(SLIDES_KEY, []); let t = document.getElementById('sTitle').value; let sub = document.getElementById('sSub').value;
+                if(!t) return showToast('Judul wajib', 'error');
+                if(id) { let s = sl.find(x=>x.id===id); if(s) {s.title=t; s.subtitle=sub;} } else { sl.push({id:Date.now(), title:t, subtitle:sub, bg:'linear-gradient(135deg, #0b1a2b, #2a4b6e)'}); }
+                S(SLIDES_KEY, sl); closeModal(); renderSlides(); showToast('Tersimpan', 'success');
+            }
+            window.delSlide = function(id) { if(!confirm('Hapus slide?')) return; S(SLIDES_KEY, L(SLIDES_KEY,[]).filter(x=>x.id!==id)); renderSlides(); showToast('Dihapus','info'); }
+
+            // FAQ CRUD
+            window.renderFaq = function() {
+                const faqs = L(FAQ_KEY, []); const c = document.getElementById('faqList'); if(!c) return;
+                if(faqs.length===0) { c.innerHTML = '<p class="text-muted">Kosong.</p>'; return; }
+                c.innerHTML = faqs.map(f => `<div class="admin-list-item"><div><h4>${f.question}</h4><p>${f.answer}</p></div><div class="actions"><button type="button" class="btn-sm btn-sm-warning" onclick="openFaqModal(${f.id})">Edit</button> <button type="button" class="btn-sm btn-sm-danger" onclick="delFaq(${f.id})">Hapus</button></div></div>`).join('');
+            }
+            window.openFaqModal = function(id=null) {
+                let fq = L(FAQ_KEY, []); let f = id ? fq.find(x => x.id===id) : null;
+                openModal(`<h3>${f?'Edit':'Tambah'} FAQ</h3>
+                    <div class="form-group"><label>Tanya</label><input type="text" id="fQ" value="${f?f.question||'':''}"></div>
+                    <div class="form-group"><label>Jawab</label><textarea id="fA" rows="3">${f?f.answer||'':''}</textarea></div>
+                    <button type="button" class="btn-submit" onclick="saveFaqData(${id})">Simpan</button>`);
+            }
+            window.saveFaqData = function(id) {
+                let fq = L(FAQ_KEY, []); let q = document.getElementById('fQ').value; let a = document.getElementById('fA').value;
+                if(!q || !a) return showToast('Wajib isi', 'error');
+                if(id) { let f = fq.find(x=>x.id===id); if(f) {f.question=q; f.answer=a;} } else { fq.push({id:Date.now(), question:q, answer:a}); }
+                S(FAQ_KEY, fq); closeModal(); renderFaq(); showToast('Tersimpan', 'success');
+            }
+            window.delFaq = function(id) { if(!confirm('Hapus FAQ?')) return; S(FAQ_KEY, L(FAQ_KEY,[]).filter(x=>x.id!==id)); renderFaq(); showToast('Dihapus','info'); }
+
+            // FEATURE CRUD
+            window.renderFeatures = function() {
+                const feats = L(FEATURES_KEY, []); const c = document.getElementById('featureList'); if(!c) return;
+                if(feats.length===0) { c.innerHTML = '<p class="text-muted">Kosong.</p>'; return; }
+                c.innerHTML = feats.map(f => `<div class="admin-list-item"><div><h4>${f.title}</h4><p>${f.desc}</p></div><div class="actions"><button type="button" class="btn-sm btn-sm-warning" onclick="openFeatModal(${f.id})">Edit</button> <button type="button" class="btn-sm btn-sm-danger" onclick="delFeat(${f.id})">Hapus</button></div></div>`).join('');
+            }
+            window.openFeatModal = function(id=null) {
+                let fs = L(FEATURES_KEY, []); let f = id ? fs.find(x => x.id===id) : null;
+                openModal(`<h3>${f?'Edit':'Tambah'} Keunggulan</h3>
+                    <div class="form-group"><label>Judul</label><input type="text" id="ftT" value="${f?f.title||'':''}"></div>
+                    <div class="form-group"><label>Deskripsi</label><input type="text" id="ftD" value="${f?f.desc||'':''}"></div>
+                    <button type="button" class="btn-submit" onclick="saveFeat(${id})">Simpan</button>`);
+            }
+            window.saveFeat = function(id) {
+                let fs = L(FEATURES_KEY, []); let t = document.getElementById('ftT').value; let d = document.getElementById('ftD').value;
+                if(!t) return showToast('Judul wajib', 'error');
+                if(id) { let f = fs.find(x=>x.id===id); if(f) {f.title=t; f.desc=d;} } else { fs.push({id:Date.now(), title:t, desc:d, icon:'fa-check-circle'}); }
+                S(FEATURES_KEY, fs); closeModal(); renderFeatures(); showToast('Tersimpan', 'success');
+            }
+            window.delFeat = function(id) { if(!confirm('Hapus Feature?')) return; S(FEATURES_KEY, L(FEATURES_KEY,[]).filter(x=>x.id!==id)); renderFeatures(); showToast('Dihapus','info'); }
+
+            // PAGE SAVE BTNS
+            window.saveAboutData = function() { S(ABOUT_KEY, {title:document.getElementById('aboutTitle').value, content:document.getElementById('aboutContent').value}); showToast('Tersimpan', 'success'); };
+            window.saveFooterData = function() { S(FOOTER_KEY, {brand:document.getElementById('footerBrand').value, desc:document.getElementById('footerDesc').value, copyright:document.getElementById('footerCopyright').value, social:{instagram:document.getElementById('sosmedInstagram').value, facebook:document.getElementById('sosmedFacebook').value, youtube:document.getElementById('sosmedYoutube').value, tiktok:document.getElementById('sosmedTiktok').value}}); showToast('Tersimpan', 'success'); };
+
+            // SETTINGS
+            window.loadSettingsToForm = function() {
+                const set = loadSettings(); const users = loadUsers(); const admin = users.find(u => u.email === 'admin@mlm.com' || u.role === 'admin');
+                
+                const sb = document.getElementById('setSponsorBonus'); if(sb) sb.value = set.sponsorBonus || 10; 
+                const rb = document.getElementById('setRoBonus'); if(rb) rb.value = set.roBonus || 3;
+                
+                const bL = set.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5]; 
+                for(let i=1; i<=10; i++) { let el = document.getElementById(`setBinaryL${i}`); if(el) el.value = bL[i-1]!==undefined?bL[i-1]:0; }
+                
+                const rL = set.rewardBonusLevels || [5, 4, 3, 2, 1]; 
+                for(let i=1; i<=5; i++) { let el = document.getElementById(`setRewardL${i}`); if(el) el.value = rL[i-1]!==undefined?rL[i-1]:0; }
+                
+                const smp = document.getElementById('setMemberPrice'); if(smp) smp.value = set.memberPrice || 550000;
+                const sbn = document.getElementById('setBrandName'); if(sbn) sbn.value = set.brandName || 'HEDTRO JEANS'; 
+                const sht = document.getElementById('setHeroTitle'); if(sht) sht.value = set.heroTitle || 'HEDTRO JEANS · Premium Denim';
+                
+                const sae = document.getElementById('setAdminEmail'); if(admin && sae) sae.value = admin.email;
+            }
+
+            window.renderBankSettings = function() {
+                const banks = loadBankInfo(); const tbody = document.getElementById('bankTableBody'); if(!tbody) return;
+                if(banks.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Kosong.</td></tr>'; return; }
+                tbody.innerHTML = banks.map(b => `<tr><td data-label="Bank"><strong>${b.bank}</strong></td><td data-label="Rekening">${b.account}</td><td data-label="Nama">${b.name}</td><td data-label="Aksi"><div style="display:flex;gap:6px;"><button type="button" class="btn-sm btn-sm-warning" onclick="openBankModal(${b.id})">Edit</button> <button type="button" class="btn-sm btn-sm-danger" onclick="delBank(${b.id})">Hapus</button></div></td></tr>`).join('');
+            }
+
+            window.openBankModal = function(id = null) {
+                let bs = loadBankInfo(); let b = id ? bs.find(x => x.id === id) : null;
+                openModal(`<h3>${b?'Edit':'Tambah'} Bank</h3>
+                    <div class="form-group"><label>Bank/E-Wallet</label><input type="text" id="mBankName" value="${b?b.bank:''}"></div>
+                    <div class="form-group"><label>No. Rekening</label><input type="text" id="mBankAcc" value="${b?b.account:''}"></div>
+                    <div class="form-group"><label>Atas Nama</label><input type="text" id="mBankHolder" value="${b?b.name:''}"></div>
+                    <button type="button" class="btn-submit" onclick="saveBank(${id})">Simpan</button>`);
+            }
+            window.saveBank = function(id) {
+                let bs = loadBankInfo(); let bank = document.getElementById('mBankName').value; let acc = document.getElementById('mBankAcc').value; let name = document.getElementById('mBankHolder').value;
+                if(!bank||!acc) return showToast('Wajib diisi', 'error');
+                if(id) { let b = bs.find(x=>x.id===id); if(b) {b.bank=bank; b.account=acc; b.name=name;} } else { bs.push({id:Date.now(), bank, account:acc, name}); }
+                saveBankInfo(bs); renderBankSettings(); closeModal(); showToast('Tersimpan', 'success');
+            }
+            window.delBank = function(id) { if(!confirm('Hapus rekening?')) return; saveBankInfo(loadBankInfo().filter(x=>x.id!==id)); renderBankSettings(); showToast('Dihapus', 'info'); }
+
+            window.saveBonusData = function() { let s = loadSettings(); s.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value)||0; s.roBonus = parseFloat(document.getElementById('setRoBonus').value)||0; saveSettings(s); showToast('Tersimpan', 'success'); };
+            window.saveBinaryData = function() { let s = loadSettings(); let b = []; for(let i=1; i<=10; i++) b.push(parseFloat(document.getElementById(`setBinaryL${i}`).value)||0); s.binaryBonusLevels = b; saveSettings(s); showToast('Tersimpan', 'success'); };
+            window.saveRewardData = function() { let s = loadSettings(); let r = []; for(let i=1; i<=5; i++) r.push(parseFloat(document.getElementById(`setRewardL${i}`).value)||0); s.rewardBonusLevels = r; saveSettings(s); showToast('Tersimpan', 'success'); };
+            window.saveAdminData = function() { const newEmail = document.getElementById('setAdminEmail').value.trim(); const newPass = document.getElementById('setAdminPassword').value.trim(); let us = loadUsers(); let ad = us.find(u=>u.role==='admin'); if(ad) {ad.email=newEmail; if(newPass) ad.password=newPass; saveUsers(us); showToast('Tersimpan', 'success');} };
+            window.saveBrandData = function() { 
+                let s = loadSettings(); s.brandName = document.getElementById('setBrandName').value.trim() || 'HEDTRO JEANS';
+                let logoInput = document.getElementById('setBrandLogo'); if(logoInput && logoInput.value) s.brandLogo = logoInput.value;
+                let iconInput = document.getElementById('setBrandIcon'); if(iconInput && iconInput.value) s.brandIcon = iconInput.value;
+                s.heroTitle = document.getElementById('setHeroTitle').value.trim() || 'HEDTRO JEANS · Premium Denim'; saveSettings(s); showToast('Tersimpan', 'success'); 
+            };
+            window.saveShopData = function() { let s = loadSettings(); s.memberPrice = parseFloat(document.getElementById('setMemberPrice').value)||550000; saveSettings(s); showToast('Tersimpan', 'success'); };
+
+            // PENGENDALI LOGIN EKSPLISIT (WINDOW FUNCTION)
+            window.doAdminLogin = function() {
+                const email = document.getElementById('adminLoginEmail').value.trim();
+                const pass = document.getElementById('adminLoginPassword').value.trim();
+                const users = loadUsers();
+                const admin = users.find(u => (u.email === email || u.username === email) && u.password === pass && u.role === 'admin');
+                if (admin || (email === 'admin@mlm.com' && pass === 'admin123')) {
+                    saveSession({ id: admin ? admin.id : 1, role: 'admin' });
+                    document.getElementById('loginOverlay').classList.add('hidden');
+                    document.getElementById('mainApp').style.display = 'block';
+                    const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
+                    switchTab(savedTab);
+                    showToast('Welcome Admin!', 'success');
+                } else { 
+                    document.getElementById('adminLoginMsg').innerText = '❌ Akses ditolak. Email/Password salah.';
+                    document.getElementById('adminLoginMsg').className = 'msg error';
+                }
+            };
+
+            window.fillAdminDemo = function() {
+                document.getElementById('adminLoginEmail').value = 'admin@mlm.com';
+                document.getElementById('adminLoginPassword').value = 'admin123';
+                doAdminLogin();
+            };
+
+            // Tangani tombol enter pada form password
+            const pwdInput = document.getElementById('adminLoginPassword');
+            if(pwdInput) pwdInput.onkeydown = function(e) { if(e.key === 'Enter') { e.preventDefault(); doAdminLogin(); } };
+
+            const emailInput = document.getElementById('adminLoginEmail');
+            if(emailInput) emailInput.onkeydown = function(e) { if(e.key === 'Enter') { e.preventDefault(); document.getElementById('adminLoginPassword').focus(); } };
+
+            // INIT
+            let initUsers = loadUsers();
+            if (initUsers.length === 0) { initUsers.push({ id: 1, username: 'admin', email: 'admin@mlm.com', password: 'admin123', role: 'admin', status: 'verified' }); saveUsers(initUsers); }
+            
+            const curSession = getSession();
+            if (curSession && curSession.role === 'admin') { 
+                const overlay = document.getElementById('loginOverlay'); if(overlay) overlay.classList.add('hidden'); 
+                const mainApp = document.getElementById('mainApp'); if(mainApp) mainApp.style.display = 'block'; 
+                const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
+                switchTab(savedTab);
+                const savedSubTab = sessionStorage.getItem('adminActiveSubTab');
+                if(savedSubTab) { const btn = document.querySelector(`.sub-tab-btn[data-subtab="${savedSubTab}"]`); if(btn) btn.click(); }
+            }
+
         })();
     </script>
 </body>
