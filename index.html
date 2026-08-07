@@ -31,6 +31,7 @@
         }
         .navbar .logo { display: flex; align-items: center; gap: 8px; color: var(--white); font-weight: 800; font-size: 1.4rem; flex-shrink: 0; }
         .navbar .logo i { color: var(--gold-accent); font-size: 1.6rem; }
+        .navbar .logo img { height: 40px; width: auto; object-fit: contain; }
         .navbar .logo span { font-weight: 300; color: var(--gold-light); font-size: 0.75rem; margin-left: 2px; }
         .nav-menu { display: flex; align-items: center; gap: 4px; list-style: none; }
         .nav-menu li a { color: var(--cream); font-size: 0.78rem; font-weight: 500; padding: 8px 14px; border-radius: 60px; transition: var(--transition); display: flex; align-items: center; gap: 6px; }
@@ -61,7 +62,8 @@
         .sidebar { display: none; position: fixed; top: 0; left: -320px; width: 300px; height: 100%; background: var(--denim-dark); z-index: 1000; padding: 24px 20px; transition: var(--transition); overflow-y: auto; border-right: 3px solid var(--gold-accent); flex-direction: column; gap: 4px; }
         .sidebar.open { left: 0; }
         .sidebar .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 10px; }
-        .sidebar .sidebar-header .logo-side { color: var(--white); font-weight: 800; font-size: 1.2rem; }
+        .sidebar .sidebar-header .logo-side { color: var(--white); font-weight: 800; font-size: 1.2rem; display:flex; align-items:center; gap:8px; }
+        .sidebar .sidebar-header .logo-side img { height:32px; width:auto; object-fit:contain; }
         .sidebar .sidebar-header .logo-side i { color: var(--gold-accent); }
         .sidebar .sidebar-header .close-side { color: var(--cream); font-size: 1.6rem; cursor: pointer; }
         .sidebar .menu-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 12px; color: var(--cream); font-weight: 500; font-size: 0.9rem; transition: var(--transition); cursor: pointer; }
@@ -303,9 +305,9 @@
         <div class="popup-box">
             <button class="close-popup" id="closeTrackPopup">&times;</button>
             <h3><i class="fas fa-truck" style="color:var(--gold-accent);"></i> Lacak Pesanan</h3>
-            <p class="sub">Masukkan nomor pesanan Anda</p>
+            <p class="sub">Masukkan nomor pesanan atau resi</p>
             <div class="popup-form">
-                <input type="text" id="trackInputPopup" placeholder="Contoh: ORD-123456" />
+                <input type="text" id="trackInputPopup" placeholder="Contoh: ORD-123456 atau resi..." />
                 <button id="trackBtnPopup"><i class="fas fa-search"></i> Lacak</button>
             </div>
             <div class="popup-result" id="trackResultPopup"></div>
@@ -441,18 +443,28 @@
                 const settings = loadSettings();
                 const brandName = settings.brandName || 'HEDTRO JEANS';
                 const brandLogo = settings.brandLogo || 'fa-tshirt';
+                const isImage = brandLogo && brandLogo.startsWith('data:image');
+                
                 document.querySelectorAll('#headerLogo, #sidebarLogo').forEach(el => {
                     if (el) {
-                        const icon = el.querySelector('i');
-                        if (icon) icon.className = 'fas ' + brandLogo;
-                        const textSpan = el.querySelector('span') || el;
-                        if (textSpan && textSpan.tagName === 'SPAN') textSpan.innerText = brandName.replace('HEDTRO', '').trim();
-                        else if (el.tagName === 'DIV' && !el.querySelector('span')) {
-                            el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
+                        if (isImage) {
+                            el.innerHTML = `<img src="${brandLogo}" alt="${brandName}" style="height:40px;width:auto;object-fit:contain;" />`;
+                        } else {
+                            const icon = el.querySelector('i');
+                            if (icon) icon.className = 'fas ' + brandLogo;
+                            const textSpan = el.querySelector('span');
+                            if (textSpan && textSpan.tagName === 'SPAN') {
+                                textSpan.innerText = brandName.replace('HEDTRO', '').trim();
+                            }
+                            if (!el.querySelector('span')) {
+                                el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
+                            }
                         }
                     }
                 });
-                document.querySelectorAll('.logo i').forEach(el => el.className = 'fas ' + brandLogo);
+                document.querySelectorAll('.logo i').forEach(el => {
+                    if (!isImage) el.className = 'fas ' + brandLogo;
+                });
             }
 
             function loadUsers() { try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch(e) { return []; } }
@@ -526,7 +538,6 @@
                 });
             }
 
-            // CEK VERIFIKASI SEBELUM BELI
             function checkVerificationAndBuy(product, size, color) {
                 const session = getSession();
                 if (!session) {
@@ -558,6 +569,7 @@
                 let users = loadUsers();
                 if (session) { user = users.find(u => u.id === session.id); }
                 if (!user) { showToast('Login dulu untuk checkout.', 'error'); return; }
+                if (user.status !== 'verified') { showToast('Akun belum verified!', 'error'); return; }
 
                 const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const orderNum = 'ORD-' + Date.now().toString().slice(-6);
@@ -577,7 +589,8 @@
                     total: totalAmount,
                     status: 'pending',
                     createdAt: new Date().toISOString(),
-                    proof_image: null
+                    proof_image: null,
+                    resi: null
                 };
 
                 orders.push(newOrder);
@@ -617,18 +630,31 @@
                 showToast(`✅ Pesanan ${orderNum} berhasil dibuat! Total: Rp ${totalAmount.toLocaleString()}.`, 'success', 5000);
             });
 
+            // TRACK ORDER with RESI
             document.getElementById('trackBtnPopup').addEventListener('click', function() {
                 const input = document.getElementById('trackInputPopup').value.trim().toUpperCase();
                 const resultEl = document.getElementById('trackResultPopup');
-                if (!input) { resultEl.innerHTML = '⚠️ Masukkan nomor pesanan.'; resultEl.style.color = '#b13e3e'; return; }
+                if (!input) { resultEl.innerHTML = '⚠️ Masukkan nomor pesanan atau resi.'; resultEl.style.color = '#b13e3e'; return; }
                 const orders = loadOrders();
-                const order = orders.find(o => (o.order_number && o.order_number.toUpperCase() === input) || ('ORD-' + o.id) === input);
+                let order = orders.find(o => 
+                    (o.order_number && o.order_number.toUpperCase() === input) || 
+                    ('ORD-' + o.id) === input ||
+                    (o.resi && o.resi.toUpperCase() === input)
+                );
                 if (order) {
-                    const statusText = order.status === 'pending' ? '⏳ Menunggu Konfirmasi / Pembayaran' : (order.status === 'processing' ? '📦 Pesanan Diproses' : (order.status === 'shipped' ? '🚚 Pesanan Dikirim' : '✅ Selesai'));
-                    resultEl.innerHTML = `✅ <strong>${order.order_number || ('ORD-' + order.id)}</strong><br>Pemesan: ${order.user_name}<br>Status: ${statusText}<br>Total: Rp ${(order.total||0).toLocaleString()}`;
+                    const statusMap = {
+                        'pending': '⏳ Menunggu Konfirmasi / Pembayaran',
+                        'processing': '📦 Pesanan Diproses',
+                        'shipped': '🚚 Pesanan Dikirim',
+                        'success': '✅ Selesai',
+                        'verified': '✅ Selesai'
+                    };
+                    const statusText = statusMap[order.status] || order.status;
+                    let resiHtml = order.resi ? `<br><strong>Resi:</strong> ${order.resi}` : '';
+                    resultEl.innerHTML = `✅ <strong>${order.order_number || ('ORD-' + order.id)}</strong><br>Pemesan: ${order.user_name}<br>Status: ${statusText}${resiHtml}<br>Total: Rp ${(order.total||0).toLocaleString()}`;
                     resultEl.style.color = '#1f7a4b';
                 } else {
-                    resultEl.innerHTML = '❌ Nomor pesanan tidak ditemukan.';
+                    resultEl.innerHTML = '❌ Pesanan tidak ditemukan.';
                     resultEl.style.color = '#b13e3e';
                 }
             });
@@ -780,13 +806,11 @@
                         const id = parseInt(this.dataset.id);
                         const product = allProducts.find(p => p.id === id);
                         if (product) {
-                            // Cek verifikasi dulu
                             const session = getSession();
                             if (!session) { showToast('Silakan login terlebih dahulu.', 'error'); window.location.href='login.html'; return; }
                             const users = loadUsers();
                             const user = users.find(u => u.id === session.id);
                             if (!user || user.status !== 'verified') { showToast('Akun Anda belum terverifikasi. Silakan verifikasi di dashboard.', 'error'); return; }
-                            // langsung buka detail atau beli?
                             openProductDetail(id);
                         }
                     };
@@ -804,7 +828,6 @@
                 document.getElementById('detailStock').textContent = product.stock || 0;
 
                 const imgContainer = document.getElementById('detailImage');
-                const iconWrap = document.getElementById('detailIconWrap');
                 if (product.image) {
                     imgContainer.innerHTML = `<img src="${product.image}" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;" /><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>`;
                 } else {
@@ -832,6 +855,7 @@
             document.getElementById('cartHp').onclick = () => { updateCartUI(); document.getElementById('cartPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
             document.getElementById('closeCartPopup').onclick = () => { document.getElementById('cartPopup').classList.remove('show'); document.body.style.overflow = ''; };
             document.getElementById('navTrackBtn').onclick = (e) => { e.preventDefault(); document.getElementById('trackPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
+            document.getElementById('sideTrackBtn').onclick = () => { document.getElementById('trackPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
             document.getElementById('closeTrackPopup').onclick = () => { document.getElementById('trackPopup').classList.remove('show'); document.body.style.overflow = ''; };
             document.getElementById('searchIconHp').onclick = () => { document.getElementById('searchPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
             document.getElementById('closeSearchPopup').onclick = () => { document.getElementById('searchPopup').classList.remove('show'); document.body.style.overflow = ''; };
