@@ -44,8 +44,7 @@
                 <p>Masuk ke akun member Anda</p>
             </div>
 
-            <!-- Form diubah agar tidak submit otomatis -->
-            <form id="loginForm">
+            <div id="adminLoginForm">
                 <div class="form-group">
                     <label>Email atau Username</label>
                     <input type="text" id="loginEmail" placeholder="email@domain.com" />
@@ -54,10 +53,9 @@
                     <label>Kata Sandi</label>
                     <input type="password" id="loginPassword" placeholder="••••••••" />
                 </div>
-                <!-- type diubah menjadi button -->
                 <button type="button" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
                 <div class="msg" id="loginMsg"></div>
-            </form>
+            </div>
 
             <div class="login-footer">
                 Belum punya akun? <a href="register.html">Daftar di sini</a>
@@ -76,11 +74,19 @@
             const DB_KEY = 'hedtro_mlm_users';
             const SESSION_KEY = 'mlm_session';
 
-            function loginUser(email, password) {
+            function doLogin() {
+                const email = document.getElementById('loginEmail').value.trim();
+                const password = document.getElementById('loginPassword').value.trim();
+                const msgEl = document.getElementById('loginMsg');
+
+                if (!email || !password) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ Isi email/username dan password.';
+                    return;
+                }
+
                 const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
                 const user = users.find(u => (u.email === email || u.username === email) && u.password === password);
-
-                const msgEl = document.getElementById('loginMsg');
 
                 if (!user) {
                     msgEl.className = 'msg error';
@@ -103,22 +109,13 @@
 
             document.getElementById('loginBtn').addEventListener('click', function(e) {
                 e.preventDefault();
-                const email = document.getElementById('loginEmail').value.trim();
-                const password = document.getElementById('loginPassword').value.trim();
-                if (!email || !password) {
-                    const msgEl = document.getElementById('loginMsg');
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Isi email/username dan password.';
-                    return;
-                }
-                loginUser(email, password);
+                doLogin();
             });
 
-            // Handle enter key secara manual agar tidak memicu form refresh
             document.getElementById('loginPassword').addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
-                    e.preventDefault(); 
-                    document.getElementById('loginBtn').click();
+                    e.preventDefault();
+                    doLogin();
                 }
             });
 
@@ -129,7 +126,6 @@
                 }
             });
 
-            // Cek jika sudah login
             const session = localStorage.getItem(SESSION_KEY);
             if (session) {
                 try {
