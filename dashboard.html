@@ -121,12 +121,16 @@
     .stat-card .label { font-size: 0.8rem; text-transform: uppercase; color: #718096; font-weight: 700; letter-spacing: 0.5px; }
     .stat-card .value { font-size: 1.7rem; font-weight: 800; color: var(--denim-dark); margin-top: 4px; letter-spacing: -0.5px; }
 
+    /* DASHBOARD HISTORY DESKTOP */
     .history-card { background: var(--white); border-radius: var(--radius-sm); padding: 24px; box-shadow: 0 10px 30px rgba(11,26,43,0.05); border: 1px solid rgba(0,0,0,0.03); margin-bottom: 24px; }
     .history-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; color: var(--denim-dark); }
     .history-card h3 i { color: var(--gold-accent); }
-    .history-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #edf2f7; font-size: 0.95rem; font-weight: 600; }
+    .history-item { display: flex; flex-direction: column; gap: 8px; padding: 16px 0; border-bottom: 1px dashed #e2e8f0; }
     .history-item:last-child { border-bottom: none; }
-    .history-item .amount { font-weight: 800; font-size: 1.05rem; }
+    .history-item .hist-row { display: flex; justify-content: space-between; align-items: center; width: 100%; }
+    .history-item .hist-title { font-weight: 800; color: var(--denim-dark); font-size: 0.95rem; }
+    .history-item .hist-date { font-size: 0.8rem; color: #718096; display: flex; align-items: center; gap: 6px; }
+    .history-item .amount { font-weight: 800; font-size: 1.15rem; }
     .history-item .amount.plus { color: #2e7d32; }
     .history-item .amount.minus { color: #e53e3e; }
 
@@ -168,20 +172,23 @@
     .product-card .body .price { font-weight: 800; color: var(--denim-blue); font-size: 1.05rem; margin-bottom: 4px; }
     .product-card .body .btn-sm { margin-top: auto; width: 100%; justify-content: center; }
 
+    /* BASIC TABLE FOR DESKTOP */
     .table-container { background: var(--white); border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 24px; }
     table { width: 100%; border-collapse: collapse; min-width: 600px; }
     th, td { padding: 14px 20px; text-align: left; border-bottom: 1px solid #edf2f7; vertical-align: middle;}
     th { background: #f8fafc; color: #718096; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; }
     td { font-size: 0.9rem; color: var(--denim-dark); font-weight: 500; }
 
-    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
+    .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; display: inline-block; letter-spacing: 0.5px; text-transform: uppercase; }
     .status-pending { background: #feebc8; color: #dd6b20; }
     .status-success, .status-verified { background: #c6f6d5; color: #2f855a; }
     .status-failed, .status-free { background: #fed7d7; color: #c53030; }
 
     .pagination { display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 12px 20px; border-top: 1px solid #edf2f7; }
     .page-btn { padding: 6px 12px; border: 1px solid #e2e8f0; background: var(--white); border-radius: 6px; cursor: pointer; font-size: 0.85rem; color: var(--denim-navy); }
+    .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
+    /* MODAL */
     .custom-modal-overlay { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 26, 43, 0.7); backdrop-filter: blur(6px); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: var(--transition); }
     .custom-modal-overlay.active { opacity: 1; pointer-events: all; }
     .custom-modal { background: var(--white); border-radius: var(--radius); width: 100%; max-width: 440px; box-shadow: var(--shadow-lg); overflow: hidden; transform: translateY(20px); transition: var(--transition); border: 1px solid rgba(212,175,55,0.3); }
@@ -199,7 +206,9 @@
     .section-content.active { display: block; }
     @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-    /* CSS RESPONSIVE KHUSUS TABEL & JARINGAN MODE HP (1 BARIS 2 KOLOM) */
+    /* =======================================================
+       CSS RESPONSIVE KHUSUS MODE HP (GRID TABEL & JARINGAN)
+       ======================================================= */
     @media (max-width: 768px) {
       .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
       .wallet-card { padding: 24px 20px; flex-direction: column; align-items: stretch; }
@@ -207,30 +216,33 @@
       .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
       .form-row { grid-template-columns: 1fr; gap: 0; }
       
-      /* TABEL 1 BARIS 2 KOLOM UNTUK SEMUA TABEL RIWAYAT DI HP */
-      .table-container { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; }
-      .table-container table, .table-container thead, .table-container tbody, .table-container th, .table-container td, .table-container tr { display: block; width: 100%; box-sizing: border-box; }
-      .table-container thead { display: none; }
-      .table-container tbody tr {
-          display: grid; grid-template-columns: 1fr 1fr; gap: 12px 8px; padding: 16px;
-          border: 1px solid #e2e8f0; border-radius: var(--radius-sm); margin-bottom: 12px; background: var(--white);
+      /* TABEL 1 BARIS 2 KOLOM (COMPACT GRID) */
+      .table-container { background: transparent !important; border: none !important; box-shadow: none !important; padding: 0 !important; overflow-x: hidden !important; }
+      table { min-width: 0 !important; width: 100% !important; }
+      table, thead, tbody, th, td, tr { display: block; width: 100%; box-sizing: border-box; }
+      thead { display: none; }
+      tbody { display: flex; flex-direction: column; gap: 14px; width: 100%; }
+      tbody tr {
+          display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px 10px; padding: 16px;
+          border: 1px solid #e2e8f0; border-radius: var(--radius-sm); background: var(--white);
           box-shadow: 0 4px 12px rgba(0,0,0,0.04);
       }
-      .table-container tbody td {
-          padding: 0 !important; border: none !important; text-align: left !important;
+      tbody td {
+          padding: 0 !important; border: none !important; text-align: left !important; font-size: 0.85rem;
           display: flex; flex-direction: column; align-items: flex-start; justify-content: flex-start;
+          word-break: break-word; overflow-wrap: anywhere;
       }
-      .table-container tbody td::before {
-          content: attr(data-label); font-size: 0.65rem; color: var(--denim-navy); text-transform: uppercase; font-weight: 700; margin-bottom: 4px; opacity: 0.8;
+      tbody td::before {
+          content: attr(data-label); font-size: 0.65rem; color: var(--denim-navy); text-transform: uppercase; font-weight: 700; margin-bottom: 6px; opacity: 0.8;
       }
-      .table-container tbody td[data-label="Aksi"] {
-          grid-column: 1 / -1; margin-top: 4px; padding-top: 12px !important; border-top: 1px dashed #e2e8f0 !important;
+      tbody td[data-label="Aksi"] {
+          grid-column: 1 / -1; margin-top: 8px; padding-top: 12px !important; border-top: 1px dashed #e2e8f0 !important;
           flex-direction: row; justify-content: flex-end; align-items: center; gap: 8px;
       }
-      .table-container tbody td[data-label="Aksi"]::before { display: none; }
+      tbody td[data-label="Aksi"]::before { display: none; }
 
       /* PENYESUAIAN POHON BINARY (HP) */
-      .tree-wrapper { padding: 20px 10px; border:none; box-shadow:none; }
+      .tree-wrapper { padding: 20px 10px; border:none; box-shadow:none; overflow-x: auto; }
     }
   </style>
 </head>
@@ -276,7 +288,7 @@
 
   <div class="main-content" id="mainContent">
 
-    <!-- DASHBOARD -->
+    <!-- TAB DASHBOARD -->
     <div class="section-content active" id="sec-dashboard">
       <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
       
@@ -292,6 +304,7 @@
           </div>
         </div>
         <div style="display:flex; gap:12px; flex-wrap:wrap; z-index:2; align-items: flex-start;">
+          <!-- Tombol Card Diperbaiki -->
           <button class="btn-sm btn-sm-gold" id="depositBtnCard" onclick="window.showSection('deposit')"><i class="fas fa-plus-circle"></i> Deposit</button>
           <button class="btn-sm btn-sm-primary" id="withdrawBtnCard" onclick="window.showSection('withdraw')"><i class="fas fa-minus-circle"></i> Withdraw</button>
         </div>
@@ -315,13 +328,13 @@
       </div>
     </div>
 
-    <!-- TOKO ONLINE -->
+    <!-- TAB TOKO ONLINE -->
     <div class="section-content" id="sec-products">
       <h1 class="page-title"><i class="fas fa-store"></i> Toko Online</h1>
       <div class="product-grid" id="productGridDashboard"></div>
     </div>
     
-    <!-- RIWAYAT RO -->
+    <!-- TAB RIWAYAT RO -->
     <div class="section-content" id="sec-ro-history">
       <h1 class="page-title"><i class="fas fa-box"></i> Riwayat Pembelian RO</h1>
       <div class="table-container">
@@ -333,13 +346,13 @@
       </div>
     </div>
 
-    <!-- JARINGAN BINARY -->
+    <!-- TAB JARINGAN BINARY -->
     <div class="section-content" id="sec-network">
       <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary (2 Kaki)</h1>
       <div style="background:#fffaf0; padding:12px 16px; border-radius:var(--radius-sm); border-left:4px solid #dd6b20; margin-bottom: 12px;">
           <p style="font-size: 0.85rem; color: #dd6b20; margin: 0;"><i class="fas fa-lightbulb"></i> <strong>Tips:</strong> Klik kotak kosong bertuliskan <strong>"Tambah"</strong> untuk mendaftarkan member baru secara otomatis.</p>
       </div>
-      <!-- Tombol Zoom -->
+      <!-- Tombol Zoom untuk HP -->
       <div style="display:flex; justify-content:flex-end; gap:8px; margin-bottom:12px;">
           <button class="btn-sm btn-sm-primary" id="zoomOutBtn"><i class="fas fa-search-minus"></i> Zoom Out</button>
           <button class="btn-sm btn-sm-primary" id="zoomInBtn"><i class="fas fa-search-plus"></i> Zoom In</button>
@@ -347,7 +360,7 @@
       <div class="tree-wrapper" id="treeContainer"></div>
     </div>
 
-    <!-- DOWNLINE -->
+    <!-- TAB DOWNLINE -->
     <div class="section-content" id="sec-downline">
       <h1 class="page-title"><i class="fas fa-users"></i> Downline Saya</h1>
       <div class="form-section-card" style="margin-bottom: 24px;"><p>Total Downline Disponsori: <strong id="totalDownlineCount" style="font-size: 1.2rem; color: var(--denim-blue);">0</strong></p></div>
@@ -360,17 +373,20 @@
       </div>
     </div>
 
-    <!-- DEPOSIT -->
+    <!-- TAB DEPOSIT -->
     <div class="section-content" id="sec-deposit">
       <h1 class="page-title"><i class="fas fa-plus-circle"></i> Deposit</h1>
       <div class="form-section-card" style="max-width:500px;">
         <div class="form-group"><label>Nominal Deposit (Rp)</label><input type="number" id="depositAmount" placeholder="Masukkan nominal" min="10000" /></div>
+        
+        <!-- Pilihan Bank Ditambahkan Sesuai Arahan -->
         <div class="form-group">
             <label>Pilih Metode Pembayaran / Bank</label>
             <select id="depositMethod">
                 <!-- Akan diisi otomatis dari database admin -->
             </select>
         </div>
+
         <button class="btn-sm btn-sm-success" id="submitDeposit" style="width:100%; padding:14px; justify-content:center;">Buat Deposit</button>
         <p class="text-muted mt-16">Minimal deposit Rp 10.000</p>
       </div>
@@ -385,7 +401,7 @@
       </div>
     </div>
 
-    <!-- WITHDRAW -->
+    <!-- TAB WITHDRAW -->
     <div class="section-content" id="sec-withdraw">
       <h1 class="page-title"><i class="fas fa-minus-circle"></i> Withdraw</h1>
       <div style="background:#fffaf0; padding:12px 16px; border-radius:var(--radius-sm); border-left:4px solid #dd6b20; margin-bottom: 20px; max-width: 500px;">
@@ -412,7 +428,7 @@
       </div>
     </div>
 
-    <!-- RIWAYAT TRANSAKSI -->
+    <!-- TAB RIWAYAT TRANSAKSI -->
     <div class="section-content" id="sec-history">
       <h1 class="page-title"><i class="fas fa-history"></i> Riwayat Transaksi</h1>
       <div class="table-container">
@@ -424,7 +440,7 @@
       </div>
     </div>
 
-    <!-- PROFIL -->
+    <!-- TAB PROFIL -->
     <div class="section-content" id="sec-profile">
       <h1 class="page-title"><i class="fas fa-id-card"></i> Profil Saya</h1>
       <div style="max-width: 850px;">
@@ -571,7 +587,7 @@
       let users = loadUsers();
       let products = loadProducts();
 
-      const session = localStorage.getItem(SESSION_KEY);
+      const session = localStorage.getItem('mlm_session');
       let currentUser = null;
       if (session) {
         try {
@@ -585,8 +601,7 @@
       let downlineData = [], downlineCurrentPage = 1;
       let dashPage = 1, dpPage = 1, wdPage = 1, roPage = 1;
       let uploadTxId = null, uploadType = null;
-      
-      // State Zoom Jaringan Binary untuk HP
+
       let currentZoom = window.innerWidth <= 768 ? 0.6 : 1;
 
       // UPDATE STATUS MEMBER GLOBAL
@@ -601,10 +616,8 @@
           }
           document.getElementById('sideWalletAmount').textContent = 'Rp ' + (currentUser.wallet || 0).toLocaleString();
       }
-      // Panggil di awal agar langsung ter-update tanpa perlu refresh menu
       updateGlobalUserUI();
 
-      // Ekspos showSection ke global (window) agar onclick HTML bisa memanggilnya
       window.showSection = showSection;
 
       window.copyRefLink = function() {
@@ -690,7 +703,7 @@
       });
 
       document.getElementById('sideLogoutBtn').addEventListener('click', function() {
-        localStorage.removeItem(SESSION_KEY); window.location.href = 'index.html';
+        localStorage.removeItem('mlm_session'); window.location.href = 'index.html';
       });
 
       function populateDepositBanks() {
@@ -731,7 +744,18 @@
           const colorClass = isPlus ? 'plus' : 'minus';
           const sign = isPlus ? '+' : '-';
           let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' || t.status === 'verified' ? 'status-success' : 'status-failed');
-          html += `<div class="history-item"><span>${(t.type||'').toUpperCase()} <span class="status-badge ${badge}">${t.status||'pending'}</span></span><span class="amount ${colorClass}">${sign} Rp ${(t.amount||0).toLocaleString()}</span></div>`;
+          const date = new Date(t.date || t.createdAt || Date.now()).toLocaleDateString('id-ID');
+          
+          html += `<div class="history-item" style="display:flex; flex-direction:column; padding:16px 0; border-bottom:1px solid #edf2f7; gap:8px;">
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <span style="font-weight:800; color:var(--denim-dark); font-size:0.95rem;">${(t.type||'').toUpperCase()}</span>
+                <span class="status-badge ${badge}">${t.status||'pending'}</span>
+            </div>
+            <div style="display:flex; justify-content:space-between; align-items:center; width:100%;">
+                <span style="font-size:0.8rem; color:#718096;"><i class="far fa-clock"></i> ${date}</span>
+                <span class="amount ${colorClass}" style="font-weight:800; font-size:1.1rem;">${sign} Rp ${(t.amount||0).toLocaleString()}</span>
+            </div>
+          </div>`;
         });
         container.innerHTML = html;
         
@@ -743,7 +767,6 @@
       document.getElementById('prevDashHistoryBtn').addEventListener('click', () => { if(dashPage > 1) { dashPage--; renderDashboardHistory(); } });
       document.getElementById('nextDashHistoryBtn').addEventListener('click', () => { const max = Math.ceil((currentUser.transactions||[]).length/5)||1; if(dashPage < max) { dashPage++; renderDashboardHistory(); } });
 
-      // ================= LOGIKA ZOOM BINARY TREE =================
       function applyTreeZoom() {
           const tree = document.querySelector('.binary-tree');
           if (tree) {
@@ -757,7 +780,7 @@
         const container = document.getElementById('treeContainer');
         const treeData = buildBinaryTree(currentUser.id, 0, 3, null, null);
         container.innerHTML = `<div class="binary-tree">${renderBinaryTreeHTML(treeData)}</div>`;
-        applyTreeZoom(); // Panggil zoom di akhir rendering
+        applyTreeZoom();
       }
 
       function buildBinaryTree(nodeId, level, maxDepth, parentUplineUsername, position) {
@@ -776,7 +799,7 @@
         if (!node) return '';
         if (node.empty) {
             const baseUrl = window.location.origin + window.location.pathname.replace('dashboard.html', '');
-            const refUrl = `${baseUrl}register.html?ref=${currentUser.username}&upline=${node.parentUpline}&pos=${node.position}`;
+            const refUrl = `${baseUrl}/register.html?ref=${currentUser.username}&upline=${node.parentUpline}&pos=${node.position}`;
             const posText = node.position === 'left' ? 'Kiri' : 'Kanan';
             return `<a href="${refUrl}" class="tree-node-card empty" style="display:block; text-decoration:none;" title="Daftarkan member baru di posisi ini">
                 <div class="avatar"><i class="fas fa-plus"></i></div><div class="node-name">TAMBAH ${posText.toUpperCase()}</div></a>`;
@@ -801,7 +824,6 @@
               const date = new Date(t.date || Date.now()).toLocaleDateString('id-ID');
               let sign = (t.type === 'deposit' || t.type === 'bonus') ? '+' : '-';
               let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' || t.status === 'verified' ? 'status-success' : 'status-failed');
-              // Modifikasi dengan data-label untuk mobile responsif
               html += `<tr><td data-label="Tanggal">${date}</td><td data-label="Jenis Transaksi"><strong>${(t.type||'').toUpperCase()}</strong></td><td data-label="Detail">${t.note || t.method || '-'}</td><td data-label="Nominal" style="font-weight:700;">${sign} Rp ${(t.amount||0).toLocaleString()}</td><td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td></tr>`;
           });
           tbody.innerHTML = html;
@@ -1145,7 +1167,7 @@
       function refreshUserData() {
         users = loadUsers(); currentUser = users.find(u => u.id === currentUser.id);
         if (currentUser) {
-          localStorage.setItem(SESSION_KEY, JSON.stringify({ id: currentUser.id }));
+          localStorage.setItem(SESSION_KEY, JSON.stringify({ id: currentUser.id, role: currentUser.role }));
           updateGlobalUserUI();
           const activeSec = document.querySelector('.sidebar .menu-item.active')?.dataset.section || 'dashboard';
           if (activeSec === 'dashboard') renderDashboard();
