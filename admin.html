@@ -52,6 +52,7 @@
             color:var(--white); font-weight:800; font-size:1.4rem;
         }
         .navbar .logo i { color:var(--gold-accent); font-size:1.6rem; }
+        .navbar .logo img { height: 36px; width: auto; object-fit: contain; }
         .navbar .logo span { font-weight:300; color:var(--gold-light); font-size:0.75rem; margin-left:2px; }
         .nav-right {
             display:flex; align-items:center; gap:12px;
@@ -110,6 +111,7 @@
         }
         .sidebar .sidebar-header .logo-side {
             color:var(--white); font-weight:800; font-size:1.3rem;
+            display: flex; align-items: center; gap: 8px;
         }
         .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
         .sidebar .sidebar-header .close-side {
@@ -143,6 +145,33 @@
 
         .tab-content { display:none; }
         .tab-content.active { display:block; }
+
+        /* ===== SUB TABS UNTUK PENGATURAN ===== */
+        .sub-tab-nav {
+            display: flex; flex-wrap: wrap; gap: 8px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid var(--denim-light);
+            padding-bottom: 10px;
+        }
+        .sub-tab-btn {
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.82rem; font-weight: 600;
+            background: var(--white);
+            color: var(--denim-navy);
+            border: 1px solid #dde3ea;
+            transition: var(--transition);
+        }
+        .sub-tab-btn:hover { background: var(--denim-light); }
+        .sub-tab-btn.active {
+            background: var(--denim-dark);
+            color: var(--gold-accent);
+            border-color: var(--denim-dark);
+            box-shadow: 0 4px 12px rgba(11,26,43,0.15);
+        }
+
+        .sub-tab-content { display: none; }
+        .sub-tab-content.active { display: block; }
 
         .btn-sm {
             padding:8px 18px; border-radius:60px;
@@ -198,23 +227,20 @@
         .text-muted { color:#6a7e9a; font-size:0.8rem; }
         .mt-16 { margin-top:16px; }
 
-        .settings-grid {
-            display:grid; grid-template-columns:1fr 1fr; gap:20px;
-        }
         .settings-card {
             background:var(--white); border-radius:var(--radius-sm);
-            padding:18px 20px; box-shadow:var(--shadow);
+            padding:20px; box-shadow:var(--shadow);
             border:1px solid #e2e8f0;
             margin-bottom:16px;
         }
         .settings-card h4 {
-            font-size:0.9rem; font-weight:600; margin-bottom:14px;
-            display:flex; align-items:center; gap:8px;
+            font-size:0.95rem; font-weight:700; margin-bottom:14px;
+            display:flex; align-items:center; gap:8px; color: var(--denim-dark);
         }
         .settings-card h4 i { color:var(--gold-accent); }
-        .settings-card .form-group { margin-bottom:12px; }
+        .settings-card .form-group { margin-bottom:14px; }
         .settings-card .form-group label {
-            display:block; font-weight:500; color:var(--denim-navy);
+            display:block; font-weight:600; color:var(--denim-navy);
             font-size:0.8rem; margin-bottom:4px;
         }
         .settings-card .form-group input,
@@ -232,6 +258,18 @@
             border-color:var(--denim-blue); outline:none;
             box-shadow:0 0 0 4px rgba(42,75,110,0.1);
         }
+
+        .upload-box {
+            display: flex; flex-direction: column; gap: 8px;
+            padding: 12px; border: 2px dashed #dde3ea;
+            border-radius: var(--radius-sm); background: #fafcff;
+        }
+        .upload-preview-img {
+            max-height: 80px; width: auto; object-fit: contain;
+            border-radius: 8px; background: #fff; padding: 4px;
+            border: 1px solid #eee; display: none;
+        }
+        .upload-preview-img.show { display: inline-block; }
 
         .toast-container {
             position:fixed; top:100px; right:20px; z-index:9999;
@@ -267,17 +305,12 @@
             margin-top:30px; font-size:0.8rem;
         }
 
-        /* ===== ENHANCED DASHBOARD ===== */
         .dashboard-banner {
             background: linear-gradient(135deg, var(--denim-dark) 0%, var(--denim-navy) 60%, var(--denim-blue) 100%);
             border-radius: var(--radius-sm);
-            padding: 24px;
-            color: var(--white);
-            margin-bottom: 24px;
-            box-shadow: var(--shadow);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding: 24px; color: var(--white);
+            margin-bottom: 24px; box-shadow: var(--shadow);
+            display: flex; align-items: center; justify-content: space-between;
             border-left: 5px solid var(--gold-accent);
         }
         .dashboard-banner h2 { font-size: 1.4rem; font-weight: 700; color: var(--gold-light); }
@@ -311,7 +344,7 @@
         }
 
         .level-grid {
-            display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px;
+            display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px;
         }
 
         .history-card {
@@ -342,308 +375,118 @@
             padding:20px;
         }
         .login-overlay .login-box {
-            background:var(--white);
-            max-width:420px; width:100%;
-            border-radius:var(--radius);
-            padding:32px 30px 36px;
-            box-shadow:var(--shadow-lg);
-            text-align:center;
+            background:var(--white); max-width:420px; width:100%;
+            border-radius:var(--radius); padding:32px 30px 36px;
+            box-shadow:var(--shadow-lg); text-align:center;
         }
         .login-overlay .login-box .logo-icon {
-            font-size:3rem; color:var(--gold-accent);
-            margin-bottom:8px;
+            font-size:3rem; color:var(--gold-accent); margin-bottom:8px;
         }
         .login-overlay .login-box h2 {
             font-family:'Playfair Display',serif;
-            font-size:1.6rem; font-weight:800;
-            color:var(--denim-dark);
+            font-size:1.6rem; font-weight:800; color:var(--denim-dark);
             margin-bottom:4px;
         }
         .login-overlay .login-box p.sub {
-            color:var(--denim-navy);
-            opacity:0.6; font-size:0.85rem;
-            margin-bottom:20px;
+            color:var(--denim-navy); opacity:0.6; font-size:0.85rem; margin-bottom:20px;
         }
-        .login-overlay .login-box .form-group {
-            margin-bottom:14px;
-            text-align:left;
-        }
+        .login-overlay .login-box .form-group { margin-bottom:14px; text-align:left; }
         .login-overlay .login-box .form-group label {
             display:block; font-weight:600; font-size:0.8rem;
             color:var(--denim-navy); margin-bottom:4px;
         }
         .login-overlay .login-box .form-group input {
-            width:100%; padding:12px 16px;
-            border:1.5px solid var(--denim-light);
-            border-radius:60px; font-size:0.95rem;
-            background:var(--cream);
-            font-family:inherit; transition:var(--transition);
-            outline:none;
+            width:100%; padding:12px 16px; border:1.5px solid var(--denim-light);
+            border-radius:60px; font-size:0.95rem; background:var(--cream);
+            font-family:inherit; transition:var(--transition); outline:none;
         }
         .login-overlay .login-box .form-group input:focus {
-            border-color:var(--gold-accent);
-            box-shadow:0 0 0 4px rgba(201,168,76,0.08);
+            border-color:var(--gold-accent); box-shadow:0 0 0 4px rgba(201,168,76,0.08);
         }
         .login-overlay .login-box .btn-login {
-            width:100%; padding:14px;
-            background:var(--gold-accent); color:var(--denim-dark);
-            border:none; border-radius:60px;
-            font-weight:700; font-size:1rem;
-            transition:var(--transition); font-family:inherit;
-            margin-top:4px;
+            width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark);
+            border:none; border-radius:60px; font-weight:700; font-size:1rem;
+            transition:var(--transition); font-family:inherit; margin-top:4px;
         }
-        .login-overlay .login-box .btn-login:hover {
-            background:#b8963a; transform:scale(0.98);
-        }
+        .login-overlay .login-box .btn-login:hover { background:#b8963a; transform:scale(0.98); }
         .login-overlay .login-box .msg {
-            margin-top:12px; padding:8px;
-            border-radius:var(--radius-sm);
+            margin-top:12px; padding:8px; border-radius:var(--radius-sm);
             font-size:0.85rem; min-height:20px;
         }
-        .login-overlay .login-box .msg.error {
-            background:#fde8e8; color:#b13e3e;
-        }
-        .login-overlay .login-box .msg.success {
-            background:#e8f5ed; color:#1f7a4b;
-        }
+        .login-overlay .login-box .msg.error { background:#fde8e8; color:#b13e3e; }
+        .login-overlay .login-box .msg.success { background:#e8f5ed; color:#1f7a4b; }
         .login-overlay .login-box .demo-hint {
-            margin-top:16px; padding-top:16px;
-            border-top:1px solid var(--denim-light);
-            font-size:0.75rem; color:var(--denim-navy);
-            opacity:0.6;
+            margin-top:16px; padding-top:16px; border-top:1px solid var(--denim-light);
+            font-size:0.75rem; color:var(--denim-navy); opacity:0.6;
         }
-        .login-overlay .login-box .demo-hint span {
-            color:var(--gold-accent); font-weight:600;
-            cursor:pointer;
-        }
-        .login-overlay .login-box .demo-hint span:hover {
-            text-decoration:underline;
-        }
-        .login-overlay .login-box .back-to-home {
-            display:inline-block; margin-top:12px;
-            color:var(--denim-blue); font-size:0.8rem;
-            cursor:pointer;
-        }
-        .login-overlay .login-box .back-to-home:hover {
-            text-decoration:underline;
-        }
+        .login-overlay .login-box .demo-hint span { color:var(--gold-accent); font-weight:600; cursor:pointer; }
+        .login-overlay .login-box .demo-hint span:hover { text-decoration:underline; }
+        .login-overlay .login-box .back-to-home { display:inline-block; margin-top:12px; color:var(--denim-blue); font-size:0.8rem; cursor:pointer; }
+        .login-overlay .login-box .back-to-home:hover { text-decoration:underline; }
         .login-overlay.hidden { display:none; }
 
         .modal-overlay {
-            display:none;
-            position:fixed; inset:0; z-index:9998;
-            background:rgba(0,0,0,0.5);
-            backdrop-filter:blur(8px);
-            align-items:center; justify-content:center;
-            padding:20px;
+            display:none; position:fixed; inset:0; z-index:9998;
+            background:rgba(0,0,0,0.5); backdrop-filter:blur(8px);
+            align-items:center; justify-content:center; padding:20px;
         }
         .modal-overlay.show { display:flex; }
         .modal-box {
-            background:var(--white);
-            max-width:600px; width:100%;
-            max-height:90vh;
-            overflow-y:auto;
-            border-radius:var(--radius);
-            padding:28px 30px 32px;
-            box-shadow:var(--shadow-lg);
-            position:relative;
-            animation:modalIn 0.3s ease;
+            background:var(--white); max-width:600px; width:100%; max-height:90vh;
+            overflow-y:auto; border-radius:var(--radius); padding:28px 30px 32px;
+            box-shadow:var(--shadow-lg); position:relative; animation:modalIn 0.3s ease;
         }
         @keyframes modalIn {
             from { transform:scale(0.9) translateY(20px); opacity:0; }
             to { transform:scale(1) translateY(0); opacity:1; }
         }
         .modal-box .modal-close {
-            position:absolute; top:14px; right:18px;
-            font-size:1.6rem; color:var(--denim-navy);
+            position:absolute; top:14px; right:18px; font-size:1.6rem; color:var(--denim-navy);
             cursor:pointer; transition:var(--transition);
         }
-        .modal-box .modal-close:hover {
-            color:var(--denim-dark); transform:rotate(90deg);
-        }
-        .modal-box h3 {
-            font-family:'Playfair Display',serif;
-            font-size:1.3rem; font-weight:800;
-            color:var(--denim-dark); margin-bottom:4px;
-        }
-        .modal-box p.sub {
-            color:var(--denim-navy); font-size:0.85rem;
-            opacity:0.7; margin-bottom:16px;
-        }
+        .modal-box .modal-close:hover { color:var(--denim-dark); transform:rotate(90deg); }
+        .modal-box h3 { font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:800; color:var(--denim-dark); margin-bottom:4px; }
+        .modal-box p.sub { color:var(--denim-navy); font-size:0.85rem; opacity:0.7; margin-bottom:16px; }
         .modal-box .form-group { margin-bottom:14px; }
-        .modal-box .form-group label {
-            display:block; font-weight:600; font-size:0.8rem;
-            color:var(--denim-navy); margin-bottom:4px;
-        }
+        .modal-box .form-group label { display:block; font-weight:600; font-size:0.8rem; color:var(--denim-navy); margin-bottom:4px; }
         .modal-box .form-group input,
         .modal-box .form-group select,
         .modal-box .form-group textarea {
-            width:100%; padding:10px 14px;
-            border:1.5px solid var(--denim-light);
-            border-radius:60px; font-size:0.9rem;
-            background:var(--cream);
-            font-family:inherit; transition:var(--transition);
-            outline:none;
+            width:100%; padding:10px 14px; border:1.5px solid var(--denim-light);
+            border-radius:60px; font-size:0.9rem; background:var(--cream);
+            font-family:inherit; transition:var(--transition); outline:none;
         }
-        .modal-box .form-group textarea {
-            border-radius:var(--radius-sm); resize:vertical; min-height:50px;
-        }
+        .modal-box .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
         .modal-box .form-group input:focus,
         .modal-box .form-group select:focus,
-        .modal-box .form-group textarea:focus {
-            border-color:var(--gold-accent);
-            box-shadow:0 0 0 4px rgba(201,168,76,0.08);
-        }
-        .modal-box .form-group .file-input-wrapper {
-            position:relative;
-            display:inline-block;
-            width:100%;
-        }
-        .modal-box .form-group .file-input-wrapper input[type="file"] {
-            position:absolute; left:0; top:0; opacity:0;
-            width:100%; height:100%; cursor:pointer;
-        }
-        .modal-box .form-group .file-input-wrapper .file-label {
-            display:flex; align-items:center; gap:10px;
-            padding:10px 16px;
-            border:2px dashed var(--denim-light);
-            border-radius:60px;
-            background:var(--cream);
-            color:var(--denim-navy);
-            font-size:0.85rem;
-            transition:var(--transition);
-            cursor:pointer;
-        }
-        .modal-box .form-group .file-input-wrapper .file-label:hover {
-            border-color:var(--gold-accent);
-        }
-        .modal-box .form-group .file-input-wrapper .file-label i {
-            color:var(--gold-accent);
-            font-size:1.2rem;
-        }
-        .modal-box .form-group .image-preview {
-            margin-top:8px;
-            max-width:150px; max-height:150px;
-            border-radius:var(--radius-sm);
-            overflow:hidden;
-            border:1px solid var(--denim-light);
-            display:none;
-        }
-        .modal-box .form-group .image-preview img {
-            width:100%; height:100%; object-fit:cover;
-        }
-        .modal-box .form-group .image-preview.show { display:block; }
+        .modal-box .form-group textarea:focus { border-color:var(--gold-accent); box-shadow:0 0 0 4px rgba(201,168,76,0.08); }
+        
         .modal-box .btn-submit {
-            width:100%; padding:14px;
-            background:var(--gold-accent); color:var(--denim-dark);
-            border:none; border-radius:60px;
-            font-weight:700; font-size:1rem;
-            transition:var(--transition); font-family:inherit;
-            margin-top:4px;
+            width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark);
+            border:none; border-radius:60px; font-weight:700; font-size:1rem;
+            transition:var(--transition); font-family:inherit; margin-top:4px;
         }
-        .modal-box .btn-submit:hover {
-            background:#b8963a; transform:scale(0.98);
-        }
-        .modal-box .order-detail {
-            background:var(--cream);
-            border-radius:var(--radius-sm);
-            padding:14px 16px;
-            margin:10px 0;
-        }
-        .modal-box .order-detail .item {
-            display:flex; justify-content:space-between;
-            padding:4px 0; font-size:0.85rem;
-        }
-        .modal-box .proof-image {
-            max-width:200px; max-height:200px;
-            border-radius:var(--radius-sm);
-            border:1px solid var(--denim-light);
-            margin:8px 0;
-        }
-        .modal-box .proof-image img {
-            width:100%; height:100%; object-fit:cover;
-        }
+        .modal-box .btn-submit:hover { background:#b8963a; transform:scale(0.98); }
+        .modal-box .order-detail { background:var(--cream); border-radius:var(--radius-sm); padding:14px 16px; margin:10px 0; }
+        .modal-box .order-detail .item { display:flex; justify-content:space-between; padding:4px 0; font-size:0.85rem; }
+        .modal-box .proof-image { max-width:200px; max-height:200px; border-radius:var(--radius-sm); border:1px solid var(--denim-light); margin:8px 0; }
+        .modal-box .proof-image img { width:100%; height:100%; object-fit:cover; }
 
-        /* ===== SLIDE PREVIEW ===== */
-        .slide-preview {
-            display:grid;
-            grid-template-columns:repeat(auto-fill, minmax(250px,1fr));
-            gap:16px;
-            margin-bottom:16px;
-        }
-        .slide-preview .slide-item {
-            background:var(--white);
-            border-radius:var(--radius-sm);
-            overflow:hidden;
-            border:1px solid #e2e8f0;
-            box-shadow:var(--shadow);
-            position:relative;
-        }
-        .slide-preview .slide-item .slide-img {
-            height:150px;
-            background:var(--denim-light);
-            display:flex;
-            align-items:center;
-            justify-content:center;
-            overflow:hidden;
-        }
-        .slide-preview .slide-item .slide-img img {
-            width:100%; height:100%; object-fit:cover;
-        }
-        .slide-preview .slide-item .slide-img i {
-            font-size:3rem;
-            color:var(--denim-blue);
-        }
-        .slide-preview .slide-item .slide-body {
-            padding:12px 14px;
-        }
-        .slide-preview .slide-item .slide-body h4 {
-            font-size:0.9rem; font-weight:600; margin-bottom:4px;
-        }
-        .slide-preview .slide-item .slide-body p {
-            font-size:0.8rem; color:#6a7e9a;
-            display:-webkit-box;
-            -webkit-line-clamp:2; -webkit-box-orient:vertical;
-            overflow:hidden;
-        }
-        .slide-preview .slide-item .slide-actions {
-            padding:8px 14px;
-            border-top:1px solid #eef2f7;
-            display:flex;
-            gap:8px;
-            flex-wrap:wrap;
-        }
+        .slide-preview { display:grid; grid-template-columns:repeat(auto-fill, minmax(250px,1fr)); gap:16px; margin-bottom:16px; }
+        .slide-preview .slide-item { background:var(--white); border-radius:var(--radius-sm); overflow:hidden; border:1px solid #e2e8f0; box-shadow:var(--shadow); position:relative; }
+        .slide-preview .slide-item .slide-img { height:150px; background:var(--denim-light); display:flex; align-items:center; justify-content:center; overflow:hidden; }
+        .slide-preview .slide-item .slide-img img { width:100%; height:100%; object-fit:cover; }
+        .slide-preview .slide-item .slide-img i { font-size:3rem; color:var(--denim-blue); }
+        .slide-preview .slide-item .slide-body { padding:12px 14px; }
+        .slide-preview .slide-item .slide-body h4 { font-size:0.9rem; font-weight:600; margin-bottom:4px; }
+        .slide-preview .slide-item .slide-body p { font-size:0.8rem; color:#6a7e9a; display:-webkit-box; -webkit-line-clamp:2; -webkit-box-orient:vertical; overflow:hidden; }
+        .slide-preview .slide-item .slide-actions { padding:8px 14px; border-top:1px solid #eef2f7; display:flex; gap:8px; flex-wrap:wrap; }
 
-        .faq-list, .feature-list {
-            display:flex;
-            flex-direction:column;
-            gap:8px;
-            margin-bottom:12px;
-        }
-        .faq-item-admin, .feature-item-admin {
-            background:var(--white);
-            border-radius:var(--radius-sm);
-            padding:12px 16px;
-            border:1px solid #e2e8f0;
-            display:flex;
-            justify-content:space-between;
-            align-items:center;
-            flex-wrap:wrap;
-            gap:8px;
-        }
-        .faq-item-admin > div:first-child,
-        .feature-item-admin > div:first-child {
-            flex:1;
-            min-width:150px;
-        }
-        .faq-item-admin .faq-actions,
-        .feature-item-admin .feature-actions {
-            display:flex;
-            gap:6px;
-            flex-shrink:0;
-        }
+        .faq-list, .feature-list { display:flex; flex-direction:column; gap:8px; margin-bottom:12px; }
+        .faq-item-admin, .feature-item-admin { background:var(--white); border-radius:var(--radius-sm); padding:12px 16px; border:1px solid #e2e8f0; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:8px; }
+        .faq-item-admin > div:first-child, .feature-item-admin > div:first-child { flex:1; min-width:150px; }
+        .faq-item-admin .faq-actions, .feature-item-admin .feature-actions { display:flex; gap:6px; flex-shrink:0; }
 
-        /* ===== OPTIMASI LAYAR HP ===== */
         @media (max-width: 768px) {
             .navbar { padding: 10px 14px; }
             .navbar .logo { font-size: 1.1rem; }
@@ -656,44 +499,19 @@
             .sidebar .sidebar-header .close-side { display:block; }
             .sidebar-overlay { display:block; }
 
-            .main-content { 
-                margin-left:0; 
-                max-width:100%; 
-                padding:16px 12px 30px; 
-            }
+            .main-content { margin-left:0; max-width:100%; padding:16px 12px 30px; }
             .page-title { font-size: 1.3rem; margin-bottom: 14px; }
 
             .dashboard-banner { flex-direction: column; align-items: flex-start; gap: 10px; }
-
             .stats-grid { grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
             .stat-card { padding: 12px 14px; }
             .stat-card .value { font-size: 1.3rem; }
 
             .settings-grid { grid-template-columns: 1fr; gap: 12px; }
             .settings-card { padding: 14px; }
-            
-            .slide-preview { grid-template-columns: 1fr !important; }
-            .slide-preview .slide-item .slide-img { height: 120px !important; }
-            
-            .modal-box { padding: 20px 16px 24px; border-radius: 20px; }
-            
-            .faq-item-admin, .feature-item-admin { 
-                flex-direction: column; 
-                align-items: stretch; 
-            }
-            .faq-item-admin .faq-actions,
-            .feature-item-admin .feature-actions { 
-                justify-content: flex-end; 
-                margin-top: 4px;
-            }
-
-            .flex-row { gap: 8px !important; }
-            .btn-sm { padding: 8px 14px !important; font-size: 0.75rem !important; }
-            
-            .settings-card div[style*="grid-template-columns"] {
-                grid-template-columns: 1fr !important;
-            }
             .level-grid { grid-template-columns: 1fr !important; }
+            .slide-preview { grid-template-columns: 1fr !important; }
+            .modal-box { padding: 20px 16px 24px; border-radius: 20px; }
         }
 
         @media (min-width: 769px) {
@@ -773,7 +591,7 @@
 
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
+                <div class="logo-side" id="sideBrandLogo"><i class="fas fa-tshirt"></i> HEDTRO</div>
                 <span class="close-side" id="closeSidebar">&times;</span>
             </div>
             <div class="menu-item active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
@@ -1020,36 +838,38 @@
                         <button class="btn-sm btn-sm-success" id="syncAllBtn"><i class="fas fa-database"></i> Sinkronisasi Semua Data</button>
                         <button class="btn-sm btn-sm-primary" id="openIndexBtn"><i class="fas fa-external-link-alt"></i> Buka Halaman Utama</button>
                     </div>
-                    <div style="margin-top:10px; padding:8px 14px; background:var(--cream); border-radius:8px; font-size:0.8rem; color:var(--denim-navy);">
-                        <i class="fas fa-info-circle" style="color:var(--gold-accent);"></i> Key data yang disinkronkan: Slide, Tentang Kami, FAQ, Keunggulan, Footer, Sosmed, Produk, Member, Orders, Pengaturan
-                    </div>
                 </div>
             </div>
 
-            <!-- ===== SETTINGS ===== -->
+            <!-- ===== SETTINGS METODE SUB TABS ===== -->
             <div class="tab-content" id="tabSettings">
-                <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan</h1>
-                <div class="settings-grid">
-                    
-                    <!-- KOMISI SPONSOR & RO -->
+                <h1 class="page-title"><i class="fas fa-sliders-h"></i> Pengaturan Sistem</h1>
+                
+                <!-- SUB-TAB NAVIGATION -->
+                <div class="sub-tab-nav">
+                    <button class="sub-tab-btn active" data-subtab="subSponsor">Sponsor & RO</button>
+                    <button class="sub-tab-btn" data-subtab="subBinary">Binary (10 Level)</button>
+                    <button class="sub-tab-btn" data-subtab="subReward">Reward (5 Level)</button>
+                    <button class="sub-tab-btn" data-subtab="subBrand">Brand & Tampilan</button>
+                    <button class="sub-tab-btn" data-subtab="subAdminAcc">Kredensial Admin</button>
+                    <button class="sub-tab-btn" data-subtab="subBank">Rekening Bank</button>
+                    <button class="sub-tab-btn" data-subtab="subShop">Toko & Member</button>
+                </div>
+
+                <!-- 1. SPONSOR & RO -->
+                <div class="sub-tab-content active" id="subSponsor">
                     <div class="settings-card">
-                        <h4><i class="fas fa-percent"></i> Komisi Sponsor & RO</h4>
+                        <h4><i class="fas fa-percent"></i> Komisi Sponsor & Repeat Order (RO)</h4>
                         <div class="form-group"><label>Bonus Sponsor (%)</label><input type="number" id="setSponsorBonus" /></div>
                         <div class="form-group"><label>Bonus Repeat Order / RO (%)</label><input type="number" id="setRoBonus" /></div>
                         <button class="btn-sm btn-sm-primary" id="saveBonusSettings">Simpan Sponsor & RO</button>
                     </div>
+                </div>
 
-                    <!-- ADMIN ACCOUNT SETTINGS -->
-                    <div class="settings-card" style="border-left: 4px solid #e74c3c;">
-                        <h4><i class="fas fa-user-shield"></i> User & Password Admin</h4>
-                        <div class="form-group"><label>Username / Email Admin</label><input type="text" id="setAdminEmail" /></div>
-                        <div class="form-group"><label>Kata Sandi Baru</label><input type="password" id="setAdminPassword" placeholder="Kosongkan jika tidak diubah" /></div>
-                        <button class="btn-sm btn-sm-danger" id="saveAdminAccountSettings">Simpan Kredensial Admin</button>
-                    </div>
-
-                    <!-- KOMISI BINARY 10 LEVEL -->
-                    <div class="settings-card" style="grid-column: span 2;">
-                        <h4><i class="fas fa-sitemap"></i> Pengaturan Komisi Binary (10 Level - %)</h4>
+                <!-- 2. BINARY 10 LEVEL -->
+                <div class="sub-tab-content" id="subBinary">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-sitemap"></i> Komisi Binary (10 Level - %)</h4>
                         <p class="text-muted" style="margin-bottom:12px;">Atur persentase komisi binary dari Level 1 sampai Level 10.</p>
                         <div class="level-grid">
                             <div class="form-group"><label>Binary Level 1 (%)</label><input type="number" id="setBinaryL1" step="0.1" /></div>
@@ -1065,12 +885,14 @@
                         </div>
                         <button class="btn-sm btn-sm-primary" id="saveBinarySettings">Simpan Komisi Binary</button>
                     </div>
+                </div>
 
-                    <!-- BONUS REWARD 5 LEVEL -->
-                    <div class="settings-card" style="grid-column: span 2;">
-                        <h4><i class="fas fa-trophy"></i> Pengaturan Bonus Reward (5 Level - %)</h4>
+                <!-- 3. REWARD 5 LEVEL -->
+                <div class="sub-tab-content" id="subReward">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-trophy"></i> Bonus Reward (5 Level - %)</h4>
                         <p class="text-muted" style="margin-bottom:12px;">Atur persentase bonus reward dari Level 1 sampai Level 5.</p>
-                        <div class="level-grid" style="grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));">
+                        <div class="level-grid">
                             <div class="form-group"><label>Reward Level 1 (%)</label><input type="number" id="setRewardL1" step="0.1" /></div>
                             <div class="form-group"><label>Reward Level 2 (%)</label><input type="number" id="setRewardL2" step="0.1" /></div>
                             <div class="form-group"><label>Reward Level 3 (%)</label><input type="number" id="setRewardL3" step="0.1" /></div>
@@ -1079,30 +901,69 @@
                         </div>
                         <button class="btn-sm btn-sm-primary" id="saveRewardSettings">Simpan Bonus Reward</button>
                     </div>
+                </div>
 
+                <!-- 4. BRAND & TAMPILAN (UPLOAD LOGO & ICON) -->
+                <div class="sub-tab-content" id="subBrand">
                     <div class="settings-card">
-                        <h4><i class="fas fa-paint-brush"></i> Brand & Tampilan</h4>
+                        <h4><i class="fas fa-paint-brush"></i> Brand & Tampilan Visual</h4>
                         <div class="form-group"><label>Nama Brand</label><input type="text" id="setBrandName" /></div>
-                        <div class="form-group"><label>Logo (icon Font Awesome)</label><input type="text" id="setBrandLogo" placeholder="fa-tshirt" /></div>
-                        <div class="form-group"><label>Judul Halaman</label><input type="text" id="setHeroTitle" /></div>
-                        <button class="btn-sm btn-sm-primary" id="saveBrandSettings">Simpan Tampilan</button>
-                    </div>
+                        <div class="form-group"><label>Judul Halaman Web</label><input type="text" id="setHeroTitle" /></div>
+                        
+                        <!-- LOGO UPLOADER -->
+                        <div class="form-group">
+                            <label>Logo Brand (Upload Gambar / FontAwesome Class)</label>
+                            <div class="upload-box">
+                                <input type="file" id="setBrandLogoFile" accept="image/*" />
+                                <input type="text" id="setBrandLogo" placeholder="Contoh: fa-tshirt atau URL Gambar" />
+                                <img id="brandLogoPreview" class="upload-preview-img" alt="Logo Preview" />
+                            </div>
+                        </div>
 
+                        <!-- ICON UPLOADER -->
+                        <div class="form-group">
+                            <label>Favicon / Small Icon (Upload Gambar / FontAwesome Class)</label>
+                            <div class="upload-box">
+                                <input type="file" id="setBrandIconFile" accept="image/*" />
+                                <input type="text" id="setBrandIcon" placeholder="Contoh: fa-gem atau URL Gambar" />
+                                <img id="brandIconPreview" class="upload-preview-img" alt="Icon Preview" />
+                            </div>
+                        </div>
+
+                        <button class="btn-sm btn-sm-primary" id="saveBrandSettings">Simpan Tampilan Brand</button>
+                    </div>
+                </div>
+
+                <!-- 5. KREDENSIAL ADMIN -->
+                <div class="sub-tab-content" id="subAdminAcc">
+                    <div class="settings-card" style="border-left: 4px solid #e74c3c;">
+                        <h4><i class="fas fa-user-shield"></i> User & Password Admin</h4>
+                        <div class="form-group"><label>Username / Email Admin</label><input type="text" id="setAdminEmail" /></div>
+                        <div class="form-group"><label>Kata Sandi Baru</label><input type="password" id="setAdminPassword" placeholder="Kosongkan jika tidak diubah" /></div>
+                        <button class="btn-sm btn-sm-danger" id="saveAdminAccountSettings">Simpan Kredensial Admin</button>
+                    </div>
+                </div>
+
+                <!-- 6. REKENING BANK -->
+                <div class="sub-tab-content" id="subBank">
                     <div class="settings-card">
-                        <h4><i class="fas fa-university"></i> Rekening Admin</h4>
+                        <h4><i class="fas fa-university"></i> Rekening Bank Admin</h4>
                         <div class="form-group"><label>Nama Bank</label><input type="text" id="setBankName" /></div>
                         <div class="form-group"><label>No. Rekening</label><input type="text" id="setBankAccount" /></div>
                         <div class="form-group"><label>Atas Nama</label><input type="text" id="setBankHolder" /></div>
                         <button class="btn-sm btn-sm-primary" id="saveBankSettings">Simpan Rekening</button>
                     </div>
+                </div>
 
-                    <div class="settings-card" style="grid-column: span 2;">
-                        <h4><i class="fas fa-store"></i> Toko & Member</h4>
+                <!-- 7. TOKO & MEMBER -->
+                <div class="sub-tab-content" id="subShop">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-store"></i> Paket Registrasi Member</h4>
                         <div class="form-group"><label>Harga Paket Member (Rp)</label><input type="number" id="setMemberPrice" /></div>
                         <button class="btn-sm btn-sm-primary" id="saveShopSettings">Simpan Toko</button>
                     </div>
-
                 </div>
+
             </div>
 
         </div>
@@ -1118,9 +979,7 @@
         (function() {
             'use strict';
 
-            // ============================================================
             // DATABASE KEYS
-            // ============================================================
             const DB_KEY = 'hedtro_mlm_users';
             const PRODUCT_KEY = 'hedtro_products';
             const SETTINGS_KEY = 'hedtro_settings';
@@ -1135,9 +994,7 @@
             const FEATURES_KEY = 'hedtro_features';
             const FOOTER_KEY = 'hedtro_footer';
 
-            // ============================================================
             // FUNGSI DATABASE
-            // ============================================================
             function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
             function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
             function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
@@ -1152,6 +1009,7 @@
                     memberPrice: 550000,
                     brandName: "HEDTRO JEANS",
                     brandLogo: "fa-tshirt",
+                    brandIcon: "fa-tshirt",
                     heroTitle: "HEDTRO JEANS · Premium Denim"
                 };
                 const saved = JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}');
@@ -1177,41 +1035,18 @@
 
             function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
-            // ============================================================
-            // KONTEN FUNCTIONS
-            // ============================================================
-            function loadSlides() { 
-                try { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); } catch(e) { return []; }
-            }
+            function loadSlides() { try { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); } catch(e) { return []; } }
             function saveSlides(s) { localStorage.setItem(SLIDES_KEY, JSON.stringify(s)); }
-            
-            function loadAbout() { 
-                try { 
-                    return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}');
-                } catch(e) { return {title:"Tentang Kami", content:""}; }
-            }
+            function loadAbout() { try { return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}'); } catch(e) { return {title:"Tentang Kami", content:""}; } }
             function saveAbout(a) { localStorage.setItem(ABOUT_KEY, JSON.stringify(a)); }
-            
-            function loadFaq() { 
-                try { return JSON.parse(localStorage.getItem(FAQ_KEY) || '[]'); } catch(e) { return []; }
-            }
+            function loadFaq() { try { return JSON.parse(localStorage.getItem(FAQ_KEY) || '[]'); } catch(e) { return []; } }
             function saveFaq(f) { localStorage.setItem(FAQ_KEY, JSON.stringify(f)); }
-            
-            function loadFeatures() { 
-                try { return JSON.parse(localStorage.getItem(FEATURES_KEY) || '[]'); } catch(e) { return []; }
-            }
+            function loadFeatures() { try { return JSON.parse(localStorage.getItem(FEATURES_KEY) || '[]'); } catch(e) { return []; } }
             function saveFeatures(f) { localStorage.setItem(FEATURES_KEY, JSON.stringify(f)); }
-            
-            function loadFooter() { 
-                try { 
-                    return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium...","copyright":"&copy; 2026 HEDTRO JEANS","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}');
-                } catch(e) { return {brand:"HEDTRO JEANS", desc:"", copyright:"", social:{}}; }
-            }
+            function loadFooter() { try { return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium...","copyright":"&copy; 2026 HEDTRO JEANS","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}'); } catch(e) { return {brand:"HEDTRO JEANS", desc:"", copyright:"", social:{}}; } }
             function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
 
-            // ============================================================
             // TOAST
-            // ============================================================
             function showToast(message, type = 'info', duration = 3000) {
                 const container = document.getElementById('toastContainer');
                 if (!container) return;
@@ -1237,9 +1072,7 @@
                 }, duration);
             }
 
-            // ============================================================
             // MODAL
-            // ============================================================
             const modalOverlay = document.getElementById('modalOverlay');
             const modalBox = document.getElementById('modalBox');
             const modalClose = document.getElementById('modalClose');
@@ -1265,9 +1098,7 @@
                 });
             }
 
-            // ============================================================
             // SIDEBAR TOGGLE
-            // ============================================================
             const burgerBtn = document.getElementById('burgerBtn');
             const sidebar = document.getElementById('sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -1282,28 +1113,18 @@
                 document.body.style.overflow = isOpen ? 'hidden' : '';
             }
 
-            if (burgerBtn) {
-                burgerBtn.addEventListener('click', function(e) {
-                    e.stopPropagation();
-                    toggleSidebar();
-                });
-            }
-
+            if (burgerBtn) burgerBtn.addEventListener('click', function(e) { e.stopPropagation(); toggleSidebar(); });
             if (closeSidebar) closeSidebar.addEventListener('click', function() { toggleSidebar(false); });
             if (sidebarOverlay) sidebarOverlay.addEventListener('click', function() { toggleSidebar(false); });
 
-            // ============================================================
             // TAB NAVIGATION
-            // ============================================================
             function switchTab(tabId) {
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 
                 let targetId = 'tab' + tabId.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
                 const tabContent = document.getElementById(targetId);
                 
-                if (tabContent) {
-                    tabContent.classList.add('active');
-                }
+                if (tabContent) tabContent.classList.add('active');
 
                 document.querySelectorAll('.sidebar .menu-item[data-tab]').forEach(el => el.classList.remove('active'));
                 const activeMenuItem = document.querySelector(`.sidebar .menu-item[data-tab="${tabId}"]`);
@@ -1326,31 +1147,46 @@
                 });
             });
 
-            // ============================================================
+            // SUB TABS DI MENU PENGATURAN
+            document.querySelectorAll('.sub-tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.sub-tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    const targetSub = document.getElementById(this.dataset.subtab);
+                    if(targetSub) targetSub.classList.add('active');
+                });
+            });
+
             // APPLY SETTINGS
-            // ============================================================
             function applySettings() {
                 const settings = loadSettings();
                 const logoEl = document.getElementById('brandLogo');
+                const sideLogoEl = document.getElementById('sideBrandLogo');
+
                 if (logoEl) {
-                    if (settings.brandLogo && settings.brandLogo.startsWith('http')) {
-                        logoEl.innerHTML =
-                            `<img src="${settings.brandLogo}" alt="Logo" style="height:40px;width:auto;object-fit:contain;" /> <span>HEDTRO<span>JEANS</span></span>`;
-                    } else if (settings.brandLogo) {
-                        logoEl.innerHTML =
-                            `<i class="fas ${settings.brandLogo}"></i> HEDTRO<span>JEANS</span>`;
+                    if (settings.brandLogo && (settings.brandLogo.startsWith('data:image') || settings.brandLogo.startsWith('http'))) {
+                        logoEl.innerHTML = `<img src="${settings.brandLogo}" alt="Logo" /> <span>${settings.brandName || 'HEDTRO'}</span>`;
+                    } else {
+                        logoEl.innerHTML = `<i class="fas ${settings.brandLogo || 'fa-tshirt'}"></i> ${settings.brandName || 'HEDTRO JEANS'}`;
                     }
                 }
+
+                if (sideLogoEl) {
+                    if (settings.brandIcon && (settings.brandIcon.startsWith('data:image') || settings.brandIcon.startsWith('http'))) {
+                        sideLogoEl.innerHTML = `<img src="${settings.brandIcon}" style="height:24px;" alt="Icon" /> ${settings.brandName || 'HEDTRO'}`;
+                    } else {
+                        sideLogoEl.innerHTML = `<i class="fas ${settings.brandIcon || 'fa-tshirt'}"></i> ${settings.brandName || 'HEDTRO'}`;
+                    }
+                }
+
                 if (settings.heroTitle) {
                     document.title = settings.heroTitle + ' · Admin';
                 }
-                const nameEl = document.getElementById('navUserName');
-                if (nameEl) nameEl.textContent = 'Admin';
             }
 
-            // ============================================================
             // RENDER DASHBOARD
-            // ============================================================
             function renderDashboard() {
                 const users = loadUsers();
                 const orders = loadOrders();
@@ -1407,9 +1243,7 @@
                 });
             }
 
-            // ============================================================
-            // RENDER MEMBERS (LENGKAP CRUD)
-            // ============================================================
+            // RENDER MEMBERS
             function renderAdminMembers() {
                 const tbody = document.getElementById('adminTableBody');
                 if (!tbody) return;
@@ -1440,15 +1274,10 @@
                 const totalEl = document.getElementById('totalMembers');
                 if (totalEl) totalEl.textContent = users.length;
 
-                // EDIT MEMBER
                 document.querySelectorAll('.edit-member-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        openMemberModal(id);
-                    });
+                    btn.addEventListener('click', function() { openMemberModal(parseInt(this.dataset.id)); });
                 });
 
-                // DELETE MEMBER
                 document.querySelectorAll('.delete-member-btn').forEach(btn => {
                     btn.addEventListener('click', function() {
                         const id = parseInt(this.dataset.id);
@@ -1463,7 +1292,6 @@
                 });
             }
 
-            // MODAL ADD / EDIT MEMBER
             function openMemberModal(id = null) {
                 const users = loadUsers();
                 const user = id ? users.find(u => u.id === id) : null;
@@ -1515,49 +1343,29 @@
                         const status = document.getElementById('mStatus').value;
                         const wallet = parseFloat(document.getElementById('mWallet').value) || 0;
 
-                        if(!name || !username || !email) {
-                            showToast('⚠️ Nama, Username, dan Email wajib diisi!', 'error');
-                            return;
-                        }
+                        if(!name || !username || !email) { showToast('⚠️ Nama, Username, dan Email wajib diisi!', 'error'); return; }
 
                         let users = loadUsers();
-
                         if(isEdit) {
                             const uObj = users.find(u => u.id === id);
                             if(uObj) {
-                                uObj.name = name;
-                                uObj.username = username;
-                                uObj.email = email;
+                                uObj.name = name; uObj.username = username; uObj.email = email;
                                 if(password) uObj.password = password;
-                                uObj.address = address;
-                                uObj.alamat = address;
-                                uObj.sponsor_id = sponsor_id;
-                                uObj.position = position;
-                                uObj.status = status;
-                                uObj.wallet = wallet;
+                                uObj.address = address; uObj.alamat = address; uObj.sponsor_id = sponsor_id;
+                                uObj.position = position; uObj.status = status; uObj.wallet = wallet;
                             }
                         } else {
-                            if(!password) {
-                                showToast('⚠️ Password wajib diisi untuk member baru!', 'error');
-                                return;
-                            }
+                            if(!password) { showToast('⚠️ Password wajib diisi untuk member baru!', 'error'); return; }
                             const newUser = {
-                                id: getNextId(users),
-                                name, username, email, password,
-                                address, alamat: address,
-                                sponsor_id, position, status, wallet,
-                                role: 'user',
+                                id: getNextId(users), name, username, email, password, address, alamat: address,
+                                sponsor_id, position, status, wallet, role: 'user',
                                 bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0,
-                                left: null, right: null,
-                                registeredAt: new Date().toISOString()
+                                left: null, right: null, registeredAt: new Date().toISOString()
                             };
                             users.push(newUser);
                         }
 
-                        saveUsers(users);
-                        renderAdminMembers();
-                        renderDashboard();
-                        closeModal();
+                        saveUsers(users); renderAdminMembers(); renderDashboard(); closeModal();
                         showToast(`✅ Data member berhasil ${isEdit ? 'diperbarui' : 'ditambahkan'}!`, 'success');
                     });
                 }
@@ -1566,9 +1374,7 @@
             const addMemberBtn = document.getElementById('addMemberBtn');
             if(addMemberBtn) addMemberBtn.addEventListener('click', function() { openMemberModal(null); });
 
-            // ============================================================
             // RENDER VERIFICATION
-            // ============================================================
             function renderVerification() {
                 const tbody = document.getElementById('verifTableBody');
                 if (!tbody) return;
@@ -1600,40 +1406,15 @@
                         let users = loadUsers();
                         const user = users.find(u => u.id === id);
                         if (user) {
-                            user.status = 'verified';
-                            saveUsers(users);
-                            renderVerification();
-                            renderAdminMembers();
-                            renderOrders();
-                            renderDashboard();
+                            user.status = 'verified'; saveUsers(users);
+                            renderVerification(); renderAdminMembers(); renderOrders(); renderDashboard();
                             showToast(`✅ ${user.name} telah diverifikasi!`, 'success');
-                        }
-                    });
-                });
-
-                document.querySelectorAll('.pending-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        let users = loadUsers();
-                        const user = users.find(u => u.id === id);
-                        if (user) {
-                            const proof = prompt('Masukkan link/deskripsi bukti transfer:');
-                            if (proof !== null) {
-                                user.status = 'pending';
-                                user.proof_image = proof || 'Telah upload bukti';
-                                saveUsers(users);
-                                renderVerification();
-                                renderAdminMembers();
-                                showToast(`⏳ ${user.name} sekarang pending verifikasi.`, 'info');
-                            }
                         }
                     });
                 });
             }
 
-            // ============================================================
             // RENDER PRODUCTS
-            // ============================================================
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
                 if (!tbody) return;
@@ -1665,9 +1446,7 @@
                 tbody.innerHTML = html;
 
                 document.querySelectorAll('.edit-product').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        openEditProduct(parseInt(this.dataset.id));
-                    });
+                    btn.addEventListener('click', function() { openEditProduct(parseInt(this.dataset.id)); });
                 });
 
                 document.querySelectorAll('.delete-product').forEach(btn => {
@@ -1676,198 +1455,13 @@
                         if (!confirm('Hapus produk ini?')) return;
                         let products = loadProducts();
                         products = products.filter(x => x.id !== id);
-                        saveProducts(products);
-                        renderAdminProducts();
-                        renderDashboard();
+                        saveProducts(products); renderAdminProducts(); renderDashboard();
                         showToast('✅ Produk dihapus.', 'info');
                     });
                 });
             }
 
-            // ============================================================
-            // EDIT PRODUCT
-            // ============================================================
-            function openEditProduct(id) {
-                const products = loadProducts();
-                const p = products.find(x => x.id === id);
-                if (!p) return;
-
-                const sizesStr = (p.sizes || []).join(', ');
-                const colorsStr = (p.colors || []).join(', ');
-
-                let html = `
-                    <h3><i class="fas fa-edit" style="color:var(--gold-accent);"></i> Edit Produk</h3>
-                    <p class="sub">Ubah data produk di bawah ini</p>
-                    <form id="editProductForm" onsubmit="return false;">
-                        <div class="form-group"><label>Nama Produk <span style="color:red;">*</span></label><input type="text" id="editName" value="${p.name}" /></div>
-                        <div class="form-group"><label>Harga Member (Rp) <span style="color:red;">*</span></label><input type="number" id="editPrice" value="${p.price}" /></div>
-                        <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="editOriginal" value="${p.original || ''}" /></div>
-                        <div class="form-group"><label>Tag/Badge</label><input type="text" id="editTag" value="${p.tag || 'PRODUK'}" /></div>
-                        <div class="form-group"><label>Warna Badge (kode hex)</label><input type="color" id="editBadgeColor" value="${p.badgeColor || '#c9a84c'}" style="padding:4px;height:50px;" /></div>
-                        <div class="form-group"><label>Stok</label><input type="number" id="editStock" value="${p.stock || 0}" /></div>
-                        <div class="form-group"><label>Ukuran (pisah dengan koma)</label><input type="text" id="editSizes" value="${sizesStr}" placeholder="contoh: 28,29,30,31,32" /></div>
-                        <div class="form-group"><label>Warna (pisah dengan koma)</label><input type="text" id="editColors" value="${colorsStr}" placeholder="contoh: Indigo Blue, Black Stretch" /></div>
-                        <div class="form-group"><label>Deskripsi</label><textarea id="editDesc" rows="3">${p.desc || ''}</textarea></div>
-                        <div class="form-group">
-                            <label>Upload Gambar</label>
-                            <div class="file-input-wrapper">
-                                <input type="file" id="editImageFile" accept="image/*" />
-                                <div class="file-label"><i class="fas fa-cloud-upload-alt"></i> <span id="editImageLabel">${p.image ? 'Ganti gambar' : 'Upload gambar'}</span></div>
-                            </div>
-                            ${p.image ? `<div class="image-preview show" id="editImagePreview"><img src="${p.image}" alt="Preview" /></div>` : `<div class="image-preview" id="editImagePreview"></div>`}
-                            <input type="hidden" id="editImageUrl" value="${p.image || ''}" />
-                        </div>
-                        <button type="submit" class="btn-submit" id="saveEditProduct"><i class="fas fa-save"></i> Simpan Perubahan</button>
-                    </form>
-                `;
-                openModal(html);
-                const fileInput = document.getElementById('editImageFile');
-                const imagePreview = document.getElementById('editImagePreview');
-                const imageLabel = document.getElementById('editImageLabel');
-                if (fileInput) {
-                    fileInput.addEventListener('change', function(e) {
-                        const file = e.target.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = function(event) {
-                                imagePreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
-                                imagePreview.classList.add('show');
-                                document.getElementById('editImageUrl').value = event.target.result;
-                                imageLabel.textContent = file.name;
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    });
-                }
-                const saveBtn = document.getElementById('saveEditProduct');
-                if (saveBtn) {
-                    saveBtn.addEventListener('click', function() {
-                        const name = document.getElementById('editName').value.trim();
-                        const price = parseInt(document.getElementById('editPrice').value);
-                        const original = parseInt(document.getElementById('editOriginal').value) || 0;
-                        const tag = document.getElementById('editTag').value.trim() || 'PRODUK';
-                        const badgeColor = document.getElementById('editBadgeColor').value || '#c9a84c';
-                        const stock = parseInt(document.getElementById('editStock').value) || 0;
-                        const sizesStr = document.getElementById('editSizes').value.trim();
-                        const colorsStr = document.getElementById('editColors').value.trim();
-                        const desc = document.getElementById('editDesc').value.trim();
-                        const image = document.getElementById('editImageUrl').value.trim();
-                        if (!name) { showToast('⚠️ Nama produk wajib diisi!', 'error'); return; }
-                        if (isNaN(price) || price <= 0) { showToast('⚠️ Harga member harus diisi!', 'error'); return; }
-                        const sizes = sizesStr ? sizesStr.split(',').map(s => s.trim()).filter(s => s) : [];
-                        const colors = colorsStr ? colorsStr.split(',').map(c => c.trim()).filter(c => c) : [];
-                        let products = loadProducts();
-                        const product = products.find(x => x.id === id);
-                        if (product) {
-                            product.name = name;
-                            product.price = price;
-                            product.original = original;
-                            product.tag = tag;
-                            product.badgeColor = badgeColor;
-                            product.stock = stock;
-                            product.sizes = sizes;
-                            product.colors = colors;
-                            product.desc = desc;
-                            if (image) product.image = image;
-                            saveProducts(products);
-                            renderAdminProducts();
-                            renderDashboard();
-                            closeModal();
-                            showToast('✅ Produk berhasil diupdate!', 'success');
-                        }
-                    });
-                }
-            }
-
-            // ============================================================
-            // ADD PRODUCT
-            // ============================================================
-            const addProductBtn = document.getElementById('addProductBtn');
-            if (addProductBtn) {
-                addProductBtn.addEventListener('click', function() {
-                    let html = `
-                        <h3><i class="fas fa-plus-circle" style="color:var(--gold-accent);"></i> Tambah Produk</h3>
-                        <p class="sub">Isi data produk baru di bawah ini</p>
-                        <form id="addProductForm" onsubmit="return false;">
-                            <div class="form-group"><label>Nama Produk <span style="color:red;">*</span></label><input type="text" id="addName" placeholder="Nama produk" /></div>
-                            <div class="form-group"><label>Harga Member (Rp) <span style="color:red;">*</span></label><input type="number" id="addPrice" placeholder="250000" /></div>
-                            <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="addOriginal" placeholder="350000" /></div>
-                            <div class="form-group"><label>Tag/Badge</label><input type="text" id="addTag" placeholder="BEST SELLER" value="PRODUK" /></div>
-                            <div class="form-group"><label>Warna Badge (kode hex)</label><input type="color" id="addBadgeColor" value="#c9a84c" style="padding:4px;height:50px;" /></div>
-                            <div class="form-group"><label>Stok</label><input type="number" id="addStock" placeholder="0" value="10" /></div>
-                            <div class="form-group"><label>Ukuran (pisah dengan koma)</label><input type="text" id="addSizes" placeholder="28,29,30,31,32" value="28,29,30,31,32" /></div>
-                            <div class="form-group"><label>Warna (pisah dengan koma)</label><input type="text" id="addColors" placeholder="Indigo Blue, Black Stretch" value="Indigo Blue, Black Stretch" /></div>
-                            <div class="form-group"><label>Deskripsi</label><textarea id="addDesc" rows="3" placeholder="Deskripsi produk..."></textarea></div>
-                            <div class="form-group">
-                                <label>Upload Gambar</label>
-                                <div class="file-input-wrapper">
-                                    <input type="file" id="addImageFile" accept="image/*" />
-                                    <div class="file-label"><i class="fas fa-cloud-upload-alt"></i> <span id="addImageLabel">Upload gambar</span></div>
-                                </div>
-                                <div class="image-preview" id="addImagePreview"></div>
-                                <input type="hidden" id="addImageUrl" value="" />
-                            </div>
-                            <button type="submit" class="btn-submit" id="saveAddProduct"><i class="fas fa-plus"></i> Tambah Produk</button>
-                        </form>
-                    `;
-                    openModal(html);
-                    const fileInput = document.getElementById('addImageFile');
-                    const imagePreview = document.getElementById('addImagePreview');
-                    const imageLabel = document.getElementById('addImageLabel');
-                    if (fileInput) {
-                        fileInput.addEventListener('change', function(e) {
-                            const file = e.target.files[0];
-                            if (file) {
-                                const reader = new FileReader();
-                                reader.onload = function(event) {
-                                    imagePreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
-                                    imagePreview.classList.add('show');
-                                    document.getElementById('addImageUrl').value = event.target.result;
-                                    imageLabel.textContent = file.name;
-                                };
-                                reader.readAsDataURL(file);
-                            }
-                        });
-                    }
-                    const saveBtn = document.getElementById('saveAddProduct');
-                    if (saveBtn) {
-                        saveBtn.addEventListener('click', function() {
-                            const name = document.getElementById('addName').value.trim();
-                            const price = parseInt(document.getElementById('addPrice').value);
-                            const original = parseInt(document.getElementById('addOriginal').value) || 0;
-                            const tag = document.getElementById('addTag').value.trim() || 'PRODUK';
-                            const badgeColor = document.getElementById('addBadgeColor').value || '#c9a84c';
-                            const stock = parseInt(document.getElementById('addStock').value) || 0;
-                            const sizesStr = document.getElementById('addSizes').value.trim();
-                            const colorsStr = document.getElementById('addColors').value.trim();
-                            const desc = document.getElementById('addDesc').value.trim();
-                            const image = document.getElementById('addImageUrl').value.trim();
-                            if (!name) { showToast('⚠️ Nama produk wajib diisi!', 'error'); return; }
-                            if (isNaN(price) || price <= 0) { showToast('⚠️ Harga member harus diisi!', 'error'); return; }
-                            const sizes = sizesStr ? sizesStr.split(',').map(s => s.trim()).filter(s => s) : [];
-                            const colors = colorsStr ? colorsStr.split(',').map(c => c.trim()).filter(c => c) : [];
-                            let products = loadProducts();
-                            const newProd = {
-                                id: products.length ? Math.max(...products.map(p => p.id)) + 1 : 1,
-                                name, price, original, tag, badgeColor, icon: 'fa-tshirt', stock, sizes, colors,
-                                desc: desc || 'Deskripsi produk ini akan diisi oleh admin.',
-                                image: image || null, favorite: false,
-                                serial: 'HDT-SERI-' + String(products.length + 1).padStart(3, '0')
-                            };
-                            products.push(newProd);
-                            saveProducts(products);
-                            renderAdminProducts();
-                            renderDashboard();
-                            closeModal();
-                            showToast('✅ Produk berhasil ditambahkan!', 'success');
-                        });
-                    }
-                });
-            }
-
-            // ============================================================
-            // RENDER ORDERS (DENGAN ALAMAT PENGIRIMAN DARI PROFIL)
-            // ============================================================
+            // RENDER ORDERS
             function renderOrders() {
                 const tbody = document.getElementById('ordersTableBody');
                 if (!tbody) return;
@@ -1906,885 +1500,207 @@
                     </tr>`;
                 });
                 tbody.innerHTML = html;
-
-                document.querySelectorAll('.view-proof').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        const orders = loadOrders();
-                        const order = orders.find(o => o.id === id);
-                        if (!order) return;
-                        const proof = order.proof_image || order.proof || '';
-                        const user = users.find(u => u.id === order.user_id);
-                        const userName = user ? (user.name || user.username) : 'Unknown';
-                        const userAddress = (user && (user.address || user.alamat)) ? (user.address || user.alamat) : 'Belum diisi di profil';
-                        let itemsHtml = '';
-                        if (order.items) {
-                            order.items.forEach(item => {
-                                itemsHtml += `<div class="item"><span>${item.name} x${item.qty}</span><span>Rp ${(item.price * item.qty).toLocaleString()}</span></div>`;
-                            });
-                        }
-                        let html = `
-                            <h3><i class="fas fa-receipt" style="color:var(--gold-accent);"></i> Detail Order & Alamat</h3>
-                            <p class="sub">${order.order_number || 'ORD-'+order.id}</p>
-                            <div class="order-detail">
-                                <div class="item"><strong>Member</strong><span>${userName}</span></div>
-                                <div class="item"><strong>Alamat Pengiriman</strong><span style="max-width:60%; text-align:right;">${userAddress}</span></div>
-                                <div class="item"><strong>Type</strong><span>${order.type || 'Regular'}</span></div>
-                                <div class="item"><strong>Status</strong><span>${order.status || 'Pending'}</span></div>
-                                <div class="item"><strong>Total</strong><span>Rp ${(order.total || 0).toLocaleString()}</span></div>
-                                <div style="margin-top:8px;border-top:1px solid #ddd;padding-top:8px;">
-                                    <strong>Produk:</strong>
-                                    ${itemsHtml || '<span class="text-muted">-</span>'}
-                                </div>
-                            </div>
-                            <div>
-                                <strong>Bukti Pembayaran:</strong>
-                                ${proof ? `<div class="proof-image"><img src="${proof}" alt="Bukti Pembayaran" /></div>` : '<p class="text-muted">Belum ada bukti pembayaran</p>'}
-                            </div>
-                            <button class="btn-submit" onclick="document.getElementById('modalClose').click();" style="margin-top:12px;">Tutup</button>
-                        `;
-                        openModal(html);
-                    });
-                });
-
-                document.querySelectorAll('.approve-order').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        let orders = loadOrders();
-                        const order = orders.find(o => o.id === id);
-                        if (!order) return;
-                        order.status = 'processing';
-                        saveOrders(orders);
-                        renderOrders();
-                        renderDashboard();
-                        showToast(`✅ Order ${order.order_number || id} diproses.`, 'success');
-                    });
-                });
-
-                document.querySelectorAll('.ship-order').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        let orders = loadOrders();
-                        const order = orders.find(o => o.id === id);
-                        if (!order) return;
-                        order.status = 'shipped';
-                        saveOrders(orders);
-                        renderOrders();
-                        renderDashboard();
-                        showToast(`🚚 Order ${order.order_number || id} dikirim.`, 'success');
-                    });
-                });
             }
 
-            // ============================================================
-            // PAGE SETTINGS - SLIDES, ABOUT, FAQ, FEATURES, FOOTER
-            // ============================================================
-            function renderPageSettings() {
-                renderSlides();
-                renderAbout();
-                renderFaq();
-                renderFeatures();
-                renderFooter();
-            }
+            function renderPageSettings() { renderSlides(); renderAbout(); renderFaq(); renderFeatures(); renderFooter(); }
 
-            // SLIDES
-            function renderSlides() {
-                const container = document.getElementById('slideList');
-                if (!container) return;
-                const slides = loadSlides();
-                if (slides.length === 0) {
-                    container.innerHTML = '<p class="text-muted">Belum ada slide. Klik "Tambah Slide" untuk menambahkan.</p>';
-                    return;
-                }
-                let html = '';
-                slides.forEach((slide, index) => {
-                    const imgHtml = slide.image ? `<img src="${slide.image}" />` : `<i class="fas fa-image"></i>`;
-                    html += `
-                        <div class="slide-item">
-                            <div class="slide-img">${imgHtml}</div>
-                            <div class="slide-body">
-                                <h4>${slide.title || 'Slide ' + (index+1)}</h4>
-                                <p>${slide.subtitle || ''}</p>
-                                <p style="font-size:0.7rem;color:#999;margin-top:4px;">Urutan: ${index + 1}</p>
-                            </div>
-                            <div class="slide-actions">
-                                <button class="btn-sm btn-sm-warning edit-slide" data-id="${slide.id}"><i class="fas fa-edit"></i> Edit</button>
-                                <button class="btn-sm btn-sm-danger delete-slide" data-id="${slide.id}"><i class="fas fa-trash"></i> Hapus</button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-
-                document.querySelectorAll('.edit-slide').forEach(btn => {
-                    btn.addEventListener('click', function() { openSlideModal(parseInt(this.dataset.id)); });
-                });
-
-                document.querySelectorAll('.delete-slide').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        if (!confirm('Hapus slide ini?')) return;
-                        let slides = loadSlides();
-                        slides = slides.filter(s => s.id !== id);
-                        saveSlides(slides);
-                        renderSlides();
-                        showToast('✅ Slide dihapus.', 'info');
-                    });
-                });
-            }
-
-            function openSlideModal(id) {
-                const slides = loadSlides();
-                const slide = id ? slides.find(s => s.id === id) : null;
-                const isEdit = !!slide;
-
-                let html = `
-                    <h3><i class="fas fa-image" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit' : 'Tambah'} Slide</h3>
-                    <p class="sub">${isEdit ? 'Ubah data slide' : 'Isi data slide baru'}</p>
-                    <form id="slideForm" onsubmit="return false;">
-                        <div class="form-group"><label>Judul <span style="color:red;">*</span></label><input type="text" id="slideTitle" value="${slide ? slide.title : ''}" placeholder="Judul slide" /></div>
-                        <div class="form-group"><label>Subtitle / Deskripsi</label><input type="text" id="slideSubtitle" value="${slide ? slide.subtitle : ''}" placeholder="Deskripsi slide" /></div>
-                        <div class="form-group"><label>Tombol Text</label><input type="text" id="slideBtnText" value="${slide ? slide.btnText : 'Lihat Koleksi'}" placeholder="Tombol" /></div>
-                        <div class="form-group"><label>Link Tombol</label><input type="text" id="slideBtnLink" value="${slide ? slide.btnLink : '#'}" placeholder="Link" /></div>
-                        <div class="form-group"><label>Warna Background (gradient)</label><input type="text" id="slideBg" value="${slide ? slide.bg : 'linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%)'}" placeholder="linear-gradient(...)" /></div>
-                        <div class="form-group"><label>Icon (Font Awesome)</label><input type="text" id="slideIcon" value="${slide ? slide.icon : 'fa-tshirt'}" placeholder="fa-tshirt" /></div>
-                        <div class="form-group">
-                            <label>Upload Gambar</label>
-                            <div class="file-input-wrapper">
-                                <input type="file" id="slideImageFile" accept="image/*" />
-                                <div class="file-label"><i class="fas fa-cloud-upload-alt"></i> <span id="slideImageLabel">${slide && slide.image ? 'Ganti gambar' : 'Upload gambar'}</span></div>
-                            </div>
-                            ${slide && slide.image ? `<div class="image-preview show" id="slideImagePreview"><img src="${slide.image}" alt="Preview" /></div>` : `<div class="image-preview" id="slideImagePreview"></div>`}
-                            <input type="hidden" id="slideImageUrl" value="${slide ? slide.image || '' : ''}" />
-                        </div>
-                        <button type="submit" class="btn-submit" id="saveSlideBtn"><i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Tambah'} Slide</button>
-                    </form>
-                `;
-                openModal(html);
-
-                const fileInput = document.getElementById('slideImageFile');
-                const imagePreview = document.getElementById('slideImagePreview');
-                const imageLabel = document.getElementById('slideImageLabel');
-
-                if (fileInput) {
-                    fileInput.addEventListener('change', function(e) {
-                        const file = e.target.files[0];
-                        if (file) {
-                            const reader = new FileReader();
-                            reader.onload = function(event) {
-                                imagePreview.innerHTML = `<img src="${event.target.result}" alt="Preview" />`;
-                                imagePreview.classList.add('show');
-                                document.getElementById('slideImageUrl').value = event.target.result;
-                                imageLabel.textContent = file.name;
-                            };
-                            reader.readAsDataURL(file);
-                        }
-                    });
-                }
-
-                const saveBtn = document.getElementById('saveSlideBtn');
-                if (saveBtn) {
-                    saveBtn.addEventListener('click', function() {
-                        const title = document.getElementById('slideTitle').value.trim();
-                        const subtitle = document.getElementById('slideSubtitle').value.trim();
-                        const btnText = document.getElementById('slideBtnText').value.trim() || 'Lihat Koleksi';
-                        const btnLink = document.getElementById('slideBtnLink').value.trim() || '#';
-                        const bg = document.getElementById('slideBg').value.trim() || 'linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%)';
-                        const icon = document.getElementById('slideIcon').value.trim() || 'fa-tshirt';
-                        const image = document.getElementById('slideImageUrl').value.trim();
-
-                        if (!title) { showToast('⚠️ Judul slide wajib diisi!', 'error'); return; }
-
-                        let slides = loadSlides();
-                        if (isEdit) {
-                            const idx = slides.findIndex(s => s.id === id);
-                            if (idx !== -1) slides[idx] = { ...slides[idx], title, subtitle, btnText, btnLink, bg, icon, image };
-                        } else {
-                            slides.push({ id: getNextId(slides), title, subtitle, btnText, btnLink, bg, icon, image });
-                        }
-                        saveSlides(slides);
-                        renderSlides();
-                        closeModal();
-                        showToast(`✅ Slide ${isEdit ? 'diupdate' : 'ditambahkan'}!`, 'success');
-                    });
-                }
-            }
-
-            const addSlideBtn = document.getElementById('addSlideBtn');
-            if (addSlideBtn) addSlideBtn.addEventListener('click', function() { openSlideModal(null); });
-
-            const refreshSlidesBtn = document.getElementById('refreshSlidesBtn');
-            if (refreshSlidesBtn) refreshSlidesBtn.addEventListener('click', function() { renderSlides(); });
-
-            // ABOUT
-            function renderAbout() {
-                const about = loadAbout();
-                const titleEl = document.getElementById('aboutTitle');
-                const contentEl = document.getElementById('aboutContent');
-                if (titleEl) titleEl.value = about.title || 'Tentang Kami';
-                if (contentEl) contentEl.value = about.content || '';
-            }
-
-            const saveAboutBtn = document.getElementById('saveAboutBtn');
-            if (saveAboutBtn) {
-                saveAboutBtn.addEventListener('click', function() {
-                    const titleEl = document.getElementById('aboutTitle');
-                    const contentEl = document.getElementById('aboutContent');
-                    const title = titleEl ? titleEl.value.trim() : 'Tentang Kami';
-                    const content = contentEl ? contentEl.value.trim() : '';
-                    if (!content) { showToast('⚠️ Konten tentang kami wajib diisi!', 'error'); return; }
-                    saveAbout({ title, content });
-                    showToast('✅ Tentang Kami berhasil disimpan!', 'success');
-                });
-            }
-
-            const previewAboutBtn = document.getElementById('previewAboutBtn');
-            if (previewAboutBtn) {
-                previewAboutBtn.addEventListener('click', function() {
-                    window.open('index.html#about', '_blank');
-                });
-            }
-
-            // FAQ
-            function renderFaq() {
-                const container = document.getElementById('faqList');
-                if (!container) return;
-                const faqs = loadFaq();
-                if (faqs.length === 0) {
-                    container.innerHTML = '<p class="text-muted">Belum ada FAQ. Klik "Tambah FAQ" untuk menambahkan.</p>';
-                    return;
-                }
-                let html = '';
-                faqs.forEach((faq) => {
-                    html += `
-                        <div class="faq-item-admin">
-                            <div>
-                                <strong>${faq.question}</strong>
-                                <p style="font-size:0.8rem;color:#6a7e9a;margin-top:2px;">${faq.answer}</p>
-                            </div>
-                            <div class="faq-actions">
-                                <button class="btn-sm btn-sm-warning edit-faq" data-id="${faq.id}"><i class="fas fa-edit"></i></button>
-                                <button class="btn-sm btn-sm-danger delete-faq" data-id="${faq.id}"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-
-                document.querySelectorAll('.edit-faq').forEach(btn => {
-                    btn.addEventListener('click', function() { openFaqModal(parseInt(this.dataset.id)); });
-                });
-
-                document.querySelectorAll('.delete-faq').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        if (!confirm('Hapus FAQ ini?')) return;
-                        let faqs = loadFaq();
-                        faqs = faqs.filter(f => f.id !== id);
-                        saveFaq(faqs);
-                        renderFaq();
-                        showToast('✅ FAQ dihapus.', 'info');
-                    });
-                });
-            }
-
-            function openFaqModal(id) {
-                const faqs = loadFaq();
-                const faq = id ? faqs.find(f => f.id === id) : null;
-                const isEdit = !!faq;
-                let html = `
-                    <h3><i class="fas fa-question-circle" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit' : 'Tambah'} FAQ</h3>
-                    <p class="sub">${isEdit ? 'Ubah data FAQ' : 'Isi data FAQ baru'}</p>
-                    <form id="faqForm" onsubmit="return false;">
-                        <div class="form-group"><label>Pertanyaan <span style="color:red;">*</span></label><input type="text" id="faqQuestion" value="${faq ? faq.question : ''}" placeholder="Pertanyaan" /></div>
-                        <div class="form-group"><label>Jawaban <span style="color:red;">*</span></label><textarea id="faqAnswer" rows="3" placeholder="Jawaban">${faq ? faq.answer : ''}</textarea></div>
-                        <button type="submit" class="btn-submit" id="saveFaqBtn"><i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Tambah'} FAQ</button>
-                    </form>
-                `;
-                openModal(html);
-                const saveBtn = document.getElementById('saveFaqBtn');
-                if (saveBtn) {
-                    saveBtn.addEventListener('click', function() {
-                        const question = document.getElementById('faqQuestion').value.trim();
-                        const answer = document.getElementById('faqAnswer').value.trim();
-                        if (!question) { showToast('⚠️ Pertanyaan wajib diisi!', 'error'); return; }
-                        if (!answer) { showToast('⚠️ Jawaban wajib diisi!', 'error'); return; }
-                        let faqs = loadFaq();
-                        if (isEdit) {
-                            const idx = faqs.findIndex(f => f.id === id);
-                            if (idx !== -1) faqs[idx] = { ...faqs[idx], question, answer };
-                        } else {
-                            faqs.push({ id: getNextId(faqs), question, answer });
-                        }
-                        saveFaq(faqs);
-                        renderFaq();
-                        closeModal();
-                        showToast(`✅ FAQ ${isEdit ? 'diupdate' : 'ditambahkan'}!`, 'success');
-                    });
-                }
-            }
-
-            const addFaqBtn = document.getElementById('addFaqBtn');
-            if (addFaqBtn) addFaqBtn.addEventListener('click', function() { openFaqModal(null); });
-
-            // FEATURES
-            function renderFeatures() {
-                const container = document.getElementById('featureList');
-                if (!container) return;
-                const features = loadFeatures();
-                if (features.length === 0) {
-                    container.innerHTML = '<p class="text-muted">Belum ada keunggulan. Klik "Tambah Keunggulan" untuk menambahkan.</p>';
-                    return;
-                }
-                let html = '';
-                features.forEach((feature) => {
-                    html += `
-                        <div class="feature-item-admin">
-                            <div>
-                                <strong><i class="fas ${feature.icon || 'fa-check-circle'}" style="color:var(--gold-accent);"></i> ${feature.title}</strong>
-                                <p style="font-size:0.8rem;color:#6a7e9a;margin-top:2px;">${feature.desc}</p>
-                            </div>
-                            <div class="feature-actions">
-                                <button class="btn-sm btn-sm-warning edit-feature" data-id="${feature.id}"><i class="fas fa-edit"></i></button>
-                                <button class="btn-sm btn-sm-danger delete-feature" data-id="${feature.id}"><i class="fas fa-trash"></i></button>
-                            </div>
-                        </div>
-                    `;
-                });
-                container.innerHTML = html;
-
-                document.querySelectorAll('.edit-feature').forEach(btn => {
-                    btn.addEventListener('click', function() { openFeatureModal(parseInt(this.dataset.id)); });
-                });
-
-                document.querySelectorAll('.delete-feature').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        if (!confirm('Hapus keunggulan ini?')) return;
-                        let features = loadFeatures();
-                        features = features.filter(f => f.id !== id);
-                        saveFeatures(features);
-                        renderFeatures();
-                        showToast('✅ Keunggulan dihapus.', 'info');
-                    });
-                });
-            }
-
-            function openFeatureModal(id) {
-                const features = loadFeatures();
-                const feature = id ? features.find(f => f.id === id) : null;
-                const isEdit = !!feature;
-                let html = `
-                    <h3><i class="fas fa-star" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit' : 'Tambah'} Keunggulan</h3>
-                    <p class="sub">${isEdit ? 'Ubah data keunggulan' : 'Isi data keunggulan baru'}</p>
-                    <form id="featureForm" onsubmit="return false;">
-                        <div class="form-group"><label>Icon (Font Awesome) <span style="color:red;">*</span></label><input type="text" id="featureIcon" value="${feature ? feature.icon : 'fa-check-circle'}" placeholder="fa-check-circle" /></div>
-                        <div class="form-group"><label>Judul <span style="color:red;">*</span></label><input type="text" id="featureTitle" value="${feature ? feature.title : ''}" placeholder="Judul keunggulan" /></div>
-                        <div class="form-group"><label>Deskripsi <span style="color:red;">*</span></label><input type="text" id="featureDesc" value="${feature ? feature.desc : ''}" placeholder="Deskripsi" /></div>
-                        <button type="submit" class="btn-submit" id="saveFeatureBtn"><i class="fas fa-save"></i> ${isEdit ? 'Update' : 'Tambah'} Keunggulan</button>
-                    </form>
-                `;
-                openModal(html);
-                const saveBtn = document.getElementById('saveFeatureBtn');
-                if (saveBtn) {
-                    saveBtn.addEventListener('click', function() {
-                        const icon = document.getElementById('featureIcon').value.trim() || 'fa-check-circle';
-                        const title = document.getElementById('featureTitle').value.trim();
-                        const desc = document.getElementById('featureDesc').value.trim();
-                        if (!title) { showToast('⚠️ Judul wajib diisi!', 'error'); return; }
-                        if (!desc) { showToast('⚠️ Deskripsi wajib diisi!', 'error'); return; }
-                        let features = loadFeatures();
-                        if (isEdit) {
-                            const idx = features.findIndex(f => f.id === id);
-                            if (idx !== -1) features[idx] = { ...features[idx], icon, title, desc };
-                        } else {
-                            features.push({ id: getNextId(features), icon, title, desc });
-                        }
-                        saveFeatures(features);
-                        renderFeatures();
-                        closeModal();
-                        showToast(`✅ Keunggulan ${isEdit ? 'diupdate' : 'ditambahkan'}!`, 'success');
-                    });
-                }
-            }
-
-            const addFeatureBtn = document.getElementById('addFeatureBtn');
-            if (addFeatureBtn) addFeatureBtn.addEventListener('click', function() { openFeatureModal(null); });
-
-            // FOOTER & SOSMED
-            function renderFooter() {
-                const footer = loadFooter();
-                const brandEl = document.getElementById('footerBrand');
-                const descEl = document.getElementById('footerDesc');
-                const copyEl = document.getElementById('footerCopyright');
-                const igEl = document.getElementById('sosmedInstagram');
-                const fbEl = document.getElementById('sosmedFacebook');
-                const ytEl = document.getElementById('sosmedYoutube');
-                const ttEl = document.getElementById('sosmedTiktok');
-
-                if (brandEl) brandEl.value = footer.brand || 'HEDTRO JEANS';
-                if (descEl) descEl.value = footer.desc || '';
-                if (copyEl) copyEl.value = footer.copyright || '&copy; 2026 HEDTRO JEANS · All Rights Reserved';
-                if (igEl) igEl.value = footer.social?.instagram || '';
-                if (fbEl) fbEl.value = footer.social?.facebook || '';
-                if (ytEl) ytEl.value = footer.social?.youtube || '';
-                if (ttEl) ttEl.value = footer.social?.tiktok || '';
-            }
-
-            const saveFooterBtn = document.getElementById('saveFooterBtn');
-            if (saveFooterBtn) {
-                saveFooterBtn.addEventListener('click', function() {
-                    const footer = {
-                        brand: document.getElementById('footerBrand') ? document.getElementById('footerBrand').value.trim() || 'HEDTRO JEANS' : 'HEDTRO JEANS',
-                        desc: document.getElementById('footerDesc') ? document.getElementById('footerDesc').value.trim() : '',
-                        copyright: document.getElementById('footerCopyright') ? document.getElementById('footerCopyright').value.trim() || '&copy; 2026 HEDTRO JEANS · All Rights Reserved' : '&copy; 2026 HEDTRO JEANS · All Rights Reserved',
-                        social: {
-                            instagram: document.getElementById('sosmedInstagram') ? document.getElementById('sosmedInstagram').value.trim() : '',
-                            facebook: document.getElementById('sosmedFacebook') ? document.getElementById('sosmedFacebook').value.trim() : '',
-                            youtube: document.getElementById('sosmedYoutube') ? document.getElementById('sosmedYoutube').value.trim() : '',
-                            tiktok: document.getElementById('sosmedTiktok') ? document.getElementById('sosmedTiktok').value.trim() : ''
-                        }
-                    };
-                    saveFooter(footer);
-                    showToast('✅ Footer & Sosmed berhasil disimpan!', 'success');
-                });
-            }
-
-            // ============================================================
-            // SYNC ALL DATA
-            // ============================================================
-            const syncAllBtn = document.getElementById('syncAllBtn');
-            if (syncAllBtn) {
-                syncAllBtn.addEventListener('click', function() {
-                    saveUsers(loadUsers());
-                    saveProducts(loadProducts());
-                    saveSettings(loadSettings());
-                    saveOrders(loadOrders());
-                    saveTransactions(loadTransactions());
-                    saveBankInfo(loadBankInfo());
-                    saveSlides(loadSlides());
-                    saveAbout(loadAbout());
-                    saveFaq(loadFaq());
-                    saveFeatures(loadFeatures());
-                    saveFooter(loadFooter());
-
-                    renderDashboard();
-                    renderAdminMembers();
-                    renderAdminProducts();
-                    renderVerification();
-                    renderOrders();
-                    renderPageSettings();
-                    loadSettingsToForm();
-
-                    showToast('✅ Semua data berhasil disinkronkan!', 'success', 4000);
-                });
-            }
-
-            const openIndexBtn = document.getElementById('openIndexBtn');
-            if (openIndexBtn) {
-                openIndexBtn.addEventListener('click', function() {
-                    window.open('index.html', '_blank');
-                });
-            }
-
-            // ============================================================
-            // SETTINGS
-            // ============================================================
+            // LOAD FORM PENGATURAN
             function loadSettingsToForm() {
                 const settings = loadSettings();
                 const bankInfo = loadBankInfo();
                 const users = loadUsers();
                 const adminUser = users.find(u => u.email === 'admin@mlm.com' || u.role === 'admin');
 
-                const elSponsor = document.getElementById('setSponsorBonus');
-                if (elSponsor) elSponsor.value = settings.sponsorBonus || 10;
-                
-                const elRo = document.getElementById('setRoBonus');
-                if (elRo) elRo.value = settings.roBonus || 3;
+                document.getElementById('setSponsorBonus').value = settings.sponsorBonus || 10;
+                document.getElementById('setRoBonus').value = settings.roBonus || 3;
 
-                // Load 10 Levels Binary
                 const bLevels = settings.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
                 for(let i = 1; i <= 10; i++) {
                     const elB = document.getElementById(`setBinaryL${i}`);
                     if(elB) elB.value = bLevels[i-1] !== undefined ? bLevels[i-1] : 0;
                 }
 
-                // Load 5 Levels Reward
                 const rLevels = settings.rewardBonusLevels || [5, 4, 3, 2, 1];
                 for(let i = 1; i <= 5; i++) {
                     const elR = document.getElementById(`setRewardL${i}`);
                     if(elR) elR.value = rLevels[i-1] !== undefined ? rLevels[i-1] : 0;
                 }
                 
-                const elMemberPrice = document.getElementById('setMemberPrice');
-                if (elMemberPrice) elMemberPrice.value = settings.memberPrice || 550000;
+                document.getElementById('setMemberPrice').value = settings.memberPrice || 550000;
+                document.getElementById('setBrandName').value = settings.brandName || 'HEDTRO JEANS';
+                document.getElementById('setBrandLogo').value = settings.brandLogo || 'fa-tshirt';
+                document.getElementById('setBrandIcon').value = settings.brandIcon || 'fa-tshirt';
+                document.getElementById('setHeroTitle').value = settings.heroTitle || 'HEDTRO JEANS · Premium Denim';
                 
-                const elBrandName = document.getElementById('setBrandName');
-                if (elBrandName) elBrandName.value = settings.brandName || 'HEDTRO JEANS';
-                
-                const elBrandLogo = document.getElementById('setBrandLogo');
-                if (elBrandLogo) elBrandLogo.value = settings.brandLogo || 'fa-tshirt';
-                
-                const elHeroTitle = document.getElementById('setHeroTitle');
-                if (elHeroTitle) elHeroTitle.value = settings.heroTitle || 'HEDTRO JEANS · Premium Denim';
-                
-                const elBankName = document.getElementById('setBankName');
-                if (elBankName) elBankName.value = bankInfo.bank || 'BCA';
-                
-                const elBankAccount = document.getElementById('setBankAccount');
-                if (elBankAccount) elBankAccount.value = bankInfo.account || '1234567890';
-                
-                const elBankHolder = document.getElementById('setBankHolder');
-                if (elBankHolder) elBankHolder.value = bankInfo.name || 'HEDTRO JEANS';
+                document.getElementById('setBankName').value = bankInfo.bank || 'BCA';
+                document.getElementById('setBankAccount').value = bankInfo.account || '1234567890';
+                document.getElementById('setBankHolder').value = bankInfo.name || 'HEDTRO JEANS';
 
-                // Admin Account
-                const elAdminEmail = document.getElementById('setAdminEmail');
-                if(elAdminEmail) elAdminEmail.value = adminUser ? adminUser.email : 'admin@mlm.com';
+                document.getElementById('setAdminEmail').value = adminUser ? adminUser.email : 'admin@mlm.com';
+
+                // Setup Image Previews
+                const bPreview = document.getElementById('brandLogoPreview');
+                if(settings.brandLogo && (settings.brandLogo.startsWith('data:image') || settings.brandLogo.startsWith('http'))) {
+                    bPreview.src = settings.brandLogo; bPreview.classList.add('show');
+                } else { bPreview.classList.remove('show'); }
+
+                const iPreview = document.getElementById('brandIconPreview');
+                if(settings.brandIcon && (settings.brandIcon.startsWith('data:image') || settings.brandIcon.startsWith('http'))) {
+                    iPreview.src = settings.brandIcon; iPreview.classList.add('show');
+                } else { iPreview.classList.remove('show'); }
             }
 
-            // SIMPAN SPONSOR & RO
-            const saveBonusBtn = document.getElementById('saveBonusSettings');
-            if (saveBonusBtn) {
-                saveBonusBtn.addEventListener('click', function() {
-                    let settings = loadSettings();
-                    settings.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value) || 0;
-                    settings.roBonus = parseFloat(document.getElementById('setRoBonus').value) || 0;
-                    saveSettings(settings);
-                    showToast('✅ Pengaturan sponsor & RO disimpan!', 'success');
-                });
-            }
-
-            // SIMPAN BINARY 10 LEVEL
-            const saveBinaryBtn = document.getElementById('saveBinarySettings');
-            if(saveBinaryBtn) {
-                saveBinaryBtn.addEventListener('click', function() {
-                    let settings = loadSettings();
-                    let bLevels = [];
-                    for(let i = 1; i <= 10; i++) {
-                        const val = parseFloat(document.getElementById(`setBinaryL${i}`).value) || 0;
-                        bLevels.push(val);
-                    }
-                    settings.binaryBonusLevels = bLevels;
-                    saveSettings(settings);
-                    showToast('✅ Pengaturan Komisi Binary 10 Level disimpan!', 'success');
-                });
-            }
-
-            // SIMPAN REWARD 5 LEVEL
-            const saveRewardBtn = document.getElementById('saveRewardSettings');
-            if(saveRewardBtn) {
-                saveRewardBtn.addEventListener('click', function() {
-                    let settings = loadSettings();
-                    let rLevels = [];
-                    for(let i = 1; i <= 5; i++) {
-                        const val = parseFloat(document.getElementById(`setRewardL${i}`).value) || 0;
-                        rLevels.push(val);
-                    }
-                    settings.rewardBonusLevels = rLevels;
-                    saveSettings(settings);
-                    showToast('✅ Pengaturan Bonus Reward 5 Level disimpan!', 'success');
-                });
-            }
-
-            // SIMPAN ACCOUNT ADMIN
-            const saveAdminAccBtn = document.getElementById('saveAdminAccountSettings');
-            if(saveAdminAccBtn) {
-                saveAdminAccBtn.addEventListener('click', function() {
-                    const newEmail = document.getElementById('setAdminEmail').value.trim();
-                    const newPass = document.getElementById('setAdminPassword').value.trim();
-
-                    if(!newEmail) {
-                        showToast('⚠️ Username/Email admin wajib diisi!', 'error');
-                        return;
-                    }
-
-                    let users = loadUsers();
-                    let adminUser = users.find(u => u.role === 'admin' || u.email === 'admin@mlm.com');
-                    if(adminUser) {
-                        adminUser.email = newEmail;
-                        adminUser.username = newEmail.split('@')[0] || 'admin';
-                        if(newPass) {
-                            adminUser.password = newPass;
-                        }
-                        saveUsers(users);
-                        document.getElementById('setAdminPassword').value = '';
-                        showToast('✅ Data kredensial admin berhasil diperbarui!', 'success');
+            // FILE UPLOAD LOGO & ICON BRAND
+            const logoFileInput = document.getElementById('setBrandLogoFile');
+            if(logoFileInput) {
+                logoFileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if(file) {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            document.getElementById('setBrandLogo').value = evt.target.result;
+                            const prev = document.getElementById('brandLogoPreview');
+                            prev.src = evt.target.result; prev.classList.add('show');
+                        };
+                        reader.readAsDataURL(file);
                     }
                 });
             }
 
-            const saveBrandBtn = document.getElementById('saveBrandSettings');
-            if (saveBrandBtn) {
-                saveBrandBtn.addEventListener('click', function() {
-                    let settings = loadSettings();
-                    settings.brandName = document.getElementById('setBrandName').value.trim() || 'HEDTRO JEANS';
-                    settings.brandLogo = document.getElementById('setBrandLogo').value.trim() || 'fa-tshirt';
-                    settings.heroTitle = document.getElementById('setHeroTitle').value.trim() || 'HEDTRO JEANS · Premium Denim';
-                    saveSettings(settings);
-                    applySettings();
-                    showToast('✅ Pengaturan brand disimpan!', 'success');
-                });
-            }
-
-            const saveBankBtn = document.getElementById('saveBankSettings');
-            if (saveBankBtn) {
-                saveBankBtn.addEventListener('click', function() {
-                    const bankInfo = {
-                        bank: document.getElementById('setBankName').value.trim() || 'BCA',
-                        account: document.getElementById('setBankAccount').value.trim() || '1234567890',
-                        name: document.getElementById('setBankHolder').value.trim() || 'HEDTRO JEANS'
-                    };
-                    saveBankInfo(bankInfo);
-                    showToast('✅ Rekening admin disimpan!', 'success');
-                });
-            }
-
-            const saveShopBtn = document.getElementById('saveShopSettings');
-            if (saveShopBtn) {
-                saveShopBtn.addEventListener('click', function() {
-                    let settings = loadSettings();
-                    settings.memberPrice = parseFloat(document.getElementById('setMemberPrice').value) || 550000;
-                    saveSettings(settings);
-                    showToast('✅ Pengaturan toko disimpan!', 'success');
-                });
-            }
-
-            // ============================================================
-            // SEED & RESET
-            // ============================================================
-            const seedDemoBtn = document.getElementById('seedDemoBtn');
-            if (seedDemoBtn) {
-                seedDemoBtn.addEventListener('click', function() {
-                    let users = loadUsers();
-                    const demoNames = ['Dewi Lestari', 'Eko Prasetyo', 'Rina Cahyani', 'Bambang S', 'Siti Rahayu'];
-                    let added = 0;
-                    demoNames.forEach((name, i) => {
-                        if (!users.find(u => u.email === name.toLowerCase().replace(/ /g, '') + '@mail.com')) {
-                            const newUser = {
-                                id: getNextId(users),
-                                username: name.toLowerCase().replace(/ /g, ''),
-                                email: name.toLowerCase().replace(/ /g, '') + '@mail.com',
-                                password: 'demo123',
-                                name: name,
-                                address: `Jl. Sudirman No. ${10 + i}, Jakarta Pusat`,
-                                role: 'user',
-                                status: i < 2 ? 'verified' : 'free',
-                                wallet: Math.floor(Math.random() * 100000) + 10000,
-                                bonus_sponsor: Math.floor(Math.random() * 50),
-                                bonus_binary: Math.floor(Math.random() * 100),
-                                bonus_reward: Math.floor(Math.random() * 20),
-                                bonus_ro: Math.floor(Math.random() * 10),
-                                left: null, right: null, sponsor_id: 1, upline_id: 1,
-                                position: i % 2 === 0 ? 'left' : 'right',
-                                purchase_history: [], transactions: [], orders: [], proof_image: null,
-                                registeredAt: new Date().toISOString()
-                            };
-                            if (i === 0) { const admin = users.find(u => u.id === 1); if (admin) admin.left = newUser.id; }
-                            if (i === 1) { const admin = users.find(u => u.id === 1); if (admin) admin.right = newUser.id; }
-                            users.push(newUser);
-                            added++;
-                        }
-                    });
-                    saveUsers(users);
-                    renderAdminMembers();
-                    renderVerification();
-                    renderOrders();
-                    renderDashboard();
-                    showToast(`✅ ${added} member demo ditambahkan.`, 'success');
-                });
-            }
-
-            const resetAllBtn = document.getElementById('resetAllBtn');
-            if (resetAllBtn) {
-                resetAllBtn.addEventListener('click', function() {
-                    if (!confirm('⚠️ Hapus SEMUA data (kecuali admin)?')) return;
-                    let users = loadUsers();
-                    const admin = users.find(u => u.role === 'admin' || u.email === 'admin@mlm.com');
-                    if (admin) {
-                        admin.left = null; admin.right = null; admin.wallet = 0;
-                        admin.bonus_sponsor = 0; admin.bonus_binary = 0; admin.bonus_reward = 0; admin.bonus_ro = 0;
-                        admin.transactions = []; admin.orders = []; admin.purchase_history = [];
+            const iconFileInput = document.getElementById('setBrandIconFile');
+            if(iconFileInput) {
+                iconFileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if(file) {
+                        const reader = new FileReader();
+                        reader.onload = function(evt) {
+                            document.getElementById('setBrandIcon').value = evt.target.result;
+                            const prev = document.getElementById('brandIconPreview');
+                            prev.src = evt.target.result; prev.classList.add('show');
+                        };
+                        reader.readAsDataURL(file);
                     }
-                    users = admin ? [admin] : [];
-                    saveUsers(users); saveOrders([]); saveTransactions([]); saveProducts([]);
-                    renderAdminMembers(); renderVerification(); renderOrders(); renderAdminProducts(); renderDashboard();
-                    showToast('✅ Semua data direset (kecuali admin).', 'info');
                 });
             }
 
-            const refreshBtn = document.getElementById('refreshBtn');
-            if (refreshBtn) {
-                refreshBtn.addEventListener('click', function() {
-                    renderAdminMembers(); renderAdminProducts(); renderVerification(); renderOrders(); renderDashboard(); loadSettingsToForm();
-                    showToast('🔄 Data direfresh.', 'info');
+            // SIMPAN SETTINGS
+            document.getElementById('saveBonusSettings')?.addEventListener('click', function() {
+                let settings = loadSettings();
+                settings.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value) || 0;
+                settings.roBonus = parseFloat(document.getElementById('setRoBonus').value) || 0;
+                saveSettings(settings); showToast('✅ Pengaturan sponsor & RO disimpan!', 'success');
+            });
+
+            document.getElementById('saveBinarySettings')?.addEventListener('click', function() {
+                let settings = loadSettings(); let bLevels = [];
+                for(let i = 1; i <= 10; i++) bLevels.push(parseFloat(document.getElementById(`setBinaryL${i}`).value) || 0);
+                settings.binaryBonusLevels = bLevels; saveSettings(settings);
+                showToast('✅ Pengaturan Komisi Binary 10 Level disimpan!', 'success');
+            });
+
+            document.getElementById('saveRewardSettings')?.addEventListener('click', function() {
+                let settings = loadSettings(); let rLevels = [];
+                for(let i = 1; i <= 5; i++) rLevels.push(parseFloat(document.getElementById(`setRewardL${i}`).value) || 0);
+                settings.rewardBonusLevels = rLevels; saveSettings(settings);
+                showToast('✅ Pengaturan Bonus Reward 5 Level disimpan!', 'success');
+            });
+
+            document.getElementById('saveAdminAccountSettings')?.addEventListener('click', function() {
+                const newEmail = document.getElementById('setAdminEmail').value.trim();
+                const newPass = document.getElementById('setAdminPassword').value.trim();
+                if(!newEmail) { showToast('⚠️ Username/Email admin wajib diisi!', 'error'); return; }
+
+                let users = loadUsers();
+                let adminUser = users.find(u => u.role === 'admin' || u.email === 'admin@mlm.com');
+                if(adminUser) {
+                    adminUser.email = newEmail; adminUser.username = newEmail.split('@')[0] || 'admin';
+                    if(newPass) adminUser.password = newPass;
+                    saveUsers(users); document.getElementById('setAdminPassword').value = '';
+                    showToast('✅ Data kredensial admin berhasil diperbarui!', 'success');
+                }
+            });
+
+            document.getElementById('saveBrandSettings')?.addEventListener('click', function() {
+                let settings = loadSettings();
+                settings.brandName = document.getElementById('setBrandName').value.trim() || 'HEDTRO JEANS';
+                settings.brandLogo = document.getElementById('setBrandLogo').value.trim() || 'fa-tshirt';
+                settings.brandIcon = document.getElementById('setBrandIcon').value.trim() || 'fa-tshirt';
+                settings.heroTitle = document.getElementById('setHeroTitle').value.trim() || 'HEDTRO JEANS · Premium Denim';
+                saveSettings(settings); applySettings();
+                showToast('✅ Tampilan Brand & Logo berhasil disimpan!', 'success');
+            });
+
+            document.getElementById('saveBankSettings')?.addEventListener('click', function() {
+                saveBankInfo({
+                    bank: document.getElementById('setBankName').value.trim() || 'BCA',
+                    account: document.getElementById('setBankAccount').value.trim() || '1234567890',
+                    name: document.getElementById('setBankHolder').value.trim() || 'HEDTRO JEANS'
                 });
-            }
+                showToast('✅ Rekening admin disimpan!', 'success');
+            });
 
-            const refreshVerifBtn = document.getElementById('refreshVerifBtn');
-            if (refreshVerifBtn) refreshVerifBtn.addEventListener('click', function() { renderVerification(); });
+            document.getElementById('saveShopSettings')?.addEventListener('click', function() {
+                let settings = loadSettings();
+                settings.memberPrice = parseFloat(document.getElementById('setMemberPrice').value) || 550000;
+                saveSettings(settings); showToast('✅ Pengaturan toko disimpan!', 'success');
+            });
 
-            const refreshOrdersBtn = document.getElementById('refreshOrdersBtn');
-            if (refreshOrdersBtn) refreshOrdersBtn.addEventListener('click', function() { renderOrders(); });
-
-            const navUserBadge = document.getElementById('navUserBadge');
-            if (navUserBadge) {
-                navUserBadge.addEventListener('click', function() {
-                    renderDashboard();
-                    switchTab('dashboard');
-                });
-            }
-
-            const sideLogoutBtn = document.getElementById('sideLogoutBtn');
-            if (sideLogoutBtn) {
-                sideLogoutBtn.addEventListener('click', function() {
-                    clearSession();
-                    window.location.reload();
-                });
-            }
-
-            // ============================================================
-            // LOGIN OVERLAY
-            // ============================================================
-            const loginOverlay = document.getElementById('loginOverlay');
-            const mainApp = document.getElementById('mainApp');
-
-            function showAdminLogin() {
-                clearSession();
-                if (loginOverlay) loginOverlay.classList.remove('hidden');
-                if (mainApp) mainApp.style.display = 'none';
-            }
-
-            function hideAdminLogin() {
-                if (loginOverlay) loginOverlay.classList.add('hidden');
-                if (mainApp) mainApp.style.display = 'block';
-            }
+            // LOGIN OVERLAY & SESSION
+            function showAdminLogin() { clearSession(); document.getElementById('loginOverlay')?.classList.remove('hidden'); document.getElementById('mainApp').style.display = 'none'; }
+            function hideAdminLogin() { document.getElementById('loginOverlay')?.classList.add('hidden'); document.getElementById('mainApp').style.display = 'block'; }
 
             function adminLogin(email, password) {
                 const users = loadUsers();
                 const user = users.find(u => (u.email === email || u.username === email) && u.password === password);
                 const msgEl = document.getElementById('adminLoginMsg');
 
-                if (!user) {
-                    if (msgEl) {
-                        msgEl.className = 'msg error';
-                        msgEl.innerText = '❌ Email/Username atau password salah.';
-                    }
+                if (!user || user.role !== 'admin') {
+                    if (msgEl) { msgEl.className = 'msg error'; msgEl.innerText = '❌ Akses ditolak. Email atau Password salah.'; }
                     return;
                 }
 
-                if (user.role !== 'admin') {
-                    if (msgEl) {
-                        msgEl.className = 'msg error';
-                        msgEl.innerText = '❌ Akses ditolak. Bukan akun admin.';
-                    }
-                    return;
-                }
-
-                clearSession();
                 saveSession({ id: user.id, role: user.role });
-                if (msgEl) {
-                    msgEl.className = 'msg success';
-                    msgEl.innerText = '✅ Login berhasil!';
-                }
+                if (msgEl) { msgEl.className = 'msg success'; msgEl.innerText = '✅ Login berhasil!'; }
 
                 setTimeout(() => {
-                    hideAdminLogin();
-                    renderDashboard();
-                    renderAdminMembers();
-                    renderAdminProducts();
-                    renderVerification();
-                    renderOrders();
-                    renderPageSettings();
-                    loadSettingsToForm();
-                    applySettings();
+                    hideAdminLogin(); renderDashboard(); renderAdminMembers(); renderAdminProducts(); renderVerification(); renderOrders(); renderPageSettings(); loadSettingsToForm(); applySettings();
                     showToast('👋 Selamat datang Admin!', 'success');
                 }, 500);
             }
 
-            const adminLoginBtn = document.getElementById('adminLoginBtn');
-            if (adminLoginBtn) {
-                adminLoginBtn.addEventListener('click', function() {
-                    const email = document.getElementById('adminLoginEmail').value.trim();
-                    const password = document.getElementById('adminLoginPassword').value.trim();
-                    if (!email || !password) {
-                        const msgEl = document.getElementById('adminLoginMsg');
-                        if (msgEl) {
-                            msgEl.className = 'msg error';
-                            msgEl.innerText = '⚠️ Isi email dan password.';
-                        }
-                        return;
-                    }
-                    adminLogin(email, password);
-                });
-            }
+            document.getElementById('adminLoginBtn')?.addEventListener('click', function() {
+                adminLogin(document.getElementById('adminLoginEmail').value.trim(), document.getElementById('adminLoginPassword').value.trim());
+            });
 
-            const adminLoginPass = document.getElementById('adminLoginPassword');
-            if (adminLoginPass) {
-                adminLoginPass.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        const btn = document.getElementById('adminLoginBtn');
-                        if (btn) btn.click();
-                    }
-                });
-            }
+            document.getElementById('adminDemoBtn')?.addEventListener('click', function() {
+                const admin = loadUsers().find(u => u.role === 'admin') || { email: 'admin@mlm.com', password: 'admin123' };
+                document.getElementById('adminLoginEmail').value = admin.email;
+                document.getElementById('adminLoginPassword').value = admin.password;
+                adminLogin(admin.email, admin.password);
+            });
 
-            const adminDemoBtn = document.getElementById('adminDemoBtn');
-            if (adminDemoBtn) {
-                adminDemoBtn.addEventListener('click', function() {
-                    const users = loadUsers();
-                    const admin = users.find(u => u.role === 'admin');
-                    const adminEmail = admin ? admin.email : 'admin@mlm.com';
-                    const adminPass = admin ? admin.password : 'admin123';
-                    
-                    const emailEl = document.getElementById('adminLoginEmail');
-                    const passEl = document.getElementById('adminLoginPassword');
-                    if (emailEl) emailEl.value = adminEmail;
-                    if (passEl) passEl.value = adminPass;
-                    adminLogin(adminEmail, adminPass);
-                });
-            }
+            document.getElementById('sideLogoutBtn')?.addEventListener('click', function() { clearSession(); window.location.reload(); });
 
-            // CHECK SESSION
             function checkSession() {
                 const session = getSession();
                 if (session) {
-                    const users = loadUsers();
-                    const user = users.find(u => u.id === session.id);
+                    const user = loadUsers().find(u => u.id === session.id);
                     if (user && user.role === 'admin') {
-                        hideAdminLogin();
-                        renderDashboard();
-                        renderAdminMembers();
-                        renderAdminProducts();
-                        renderVerification();
-                        renderOrders();
-                        renderPageSettings();
-                        loadSettingsToForm();
-                        applySettings();
+                        hideAdminLogin(); renderDashboard(); renderAdminMembers(); renderAdminProducts(); renderVerification(); renderOrders(); renderPageSettings(); loadSettingsToForm(); applySettings();
                         return true;
-                    } else {
-                        clearSession();
                     }
                 }
-                showAdminLogin();
-                return false;
+                showAdminLogin(); return false;
             }
 
-            // INIT
+            // INIT DATA
             try {
                 let users = loadUsers();
                 if (users.length === 0) {
                     users = [{
-                        id: 1,
-                        username: 'admin',
-                        name: 'Admin Utama',
-                        email: 'admin@mlm.com',
-                        password: 'admin123',
-                        address: 'Kantor Pusat HEDTRO JEANS, Jakarta',
-                        role: 'admin',
-                        status: 'verified',
-                        wallet: 0, bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0,
-                        left: null, right: null, sponsor_id: null, upline_id: null, position: null,
-                        purchase_history: [], transactions: [], orders: [], proof_image: null,
+                        id: 1, username: 'admin', name: 'Admin Utama', email: 'admin@mlm.com', password: 'admin123',
+                        address: 'Kantor Pusat HEDTRO JEANS, Jakarta', role: 'admin', status: 'verified', wallet: 0,
+                        bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0, left: null, right: null,
                         registeredAt: new Date().toISOString()
                     }];
                     saveUsers(users);
@@ -2792,35 +1708,16 @@
 
                 let products = loadProducts();
                 if (products.length === 0) {
-                    const defaultProducts = [
-                        { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', badgeColor: '#c9a84c', icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', desc: 'Celana jeans premium dengan potongan slim-fit modern.', sizes: ['28', '29', '30', '31', '32'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'], image: null },
-                        { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', badgeColor: '#2a4b6e', icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', desc: 'Model straight cut klasik legendaris.', sizes: ['30', '32', '34'], colors: ['Raw Denim', 'Dark Navy'], image: null },
-                        { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', badgeColor: '#b13e3e', icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', desc: 'Warna hitam legam pekat yang elegan.', sizes: ['29', '30', '31', '32'], colors: ['Black Stretch', 'Grey Stone'], image: null }
-                    ];
-                    saveProducts(defaultProducts);
+                    saveProducts([
+                        { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', badgeColor: '#c9a84c', stock: 45, serial: 'HDT-SERI-001', desc: 'Celana jeans premium.', sizes: ['28', '29', '30'], colors: ['Indigo Blue Raw Denim'], image: null },
+                        { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', badgeColor: '#2a4b6e', stock: 30, serial: 'HDT-SERI-002', desc: 'Straight cut klasik.', sizes: ['30', '32'], colors: ['Raw Denim'], image: null }
+                    ]);
                 }
 
-                const isLoggedIn = checkSession();
-
-                if (isLoggedIn) {
-                    setInterval(() => {
-                        const activeTab = document.querySelector('.sidebar .menu-item.active')?.dataset.tab;
-                        if (activeTab === 'dashboard') renderDashboard();
-                        if (activeTab === 'members') renderAdminMembers();
-                        if (activeTab === 'verification') renderVerification();
-                        if (activeTab === 'orders') renderOrders();
-                        if (activeTab === 'products') renderAdminProducts();
-                        if (activeTab === 'page-settings') renderPageSettings();
-                    }, 15000);
-                }
-
+                checkSession();
             } catch (error) {
-                console.error('Error pada admin panel:', error);
-                const app = document.getElementById('mainApp');
-                const login = document.getElementById('loginOverlay');
-                if (app) app.style.display = 'block';
-                if (login) login.classList.add('hidden');
-                showToast('Terjadi error, silakan refresh halaman.', 'error');
+                console.error('Error init admin:', error);
+                showToast('Terjadi kesalahan, silakan muat ulang.', 'error');
             }
 
         })();
