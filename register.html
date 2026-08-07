@@ -59,7 +59,7 @@
             <p>Lengkapi data diri untuk bergabung menjadi member HEDTRO JEANS</p>
         </div>
 
-        <form id="registerForm">
+        <div id="registerForm">
 
             <div class="form-section">
                 <div class="section-title"><i class="fas fa-lock"></i> Akun & Keamanan <span class="badge-step">1</span></div>
@@ -139,7 +139,6 @@
                 </div>
             </div>
 
-            <!-- type diubah menjadi button -->
             <button type="button" class="btn-submit" id="registerBtn"><i class="fas fa-user-plus"></i> Daftar Member</button>
 
             <div class="msg" id="regMsg"></div>
@@ -147,7 +146,7 @@
             <div class="form-footer">Sudah punya akun? <a href="login.html">Login di sini</a></div>
 
             <div style="text-align:center;"><a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a></div>
-        </form>
+        </div>
     </div>
 
     <script>
@@ -191,7 +190,7 @@
                 });
             });
 
-            function registerUser() {
+            function doRegister() {
                 const username = document.getElementById('regUsername').value.trim();
                 const email = document.getElementById('regEmail').value.trim();
                 const password = document.getElementById('regPassword').value.trim();
@@ -290,7 +289,16 @@
 
             document.getElementById('registerBtn').addEventListener('click', function(e) {
                 e.preventDefault();
-                registerUser();
+                doRegister();
+            });
+
+            document.querySelectorAll('#registerForm input, #registerForm select, #registerForm textarea').forEach(el => {
+                el.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        doRegister();
+                    }
+                });
             });
         })();
     </script>
