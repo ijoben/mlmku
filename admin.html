@@ -17,7 +17,7 @@
         }
         body, html { font-family: 'Inter', -apple-system, sans-serif; background: var(--cream); color: var(--denim-dark); padding-top: 35px; overflow-x: hidden; width: 100%; max-width: 100vw; }
         a { text-decoration:none; color:inherit; }
-        button { cursor:pointer; font-family:inherit; border:none; background:none; }
+        button { cursor:pointer; font-family:inherit; border:none; background:none; outline: none; }
         ::-webkit-scrollbar { width:6px; height:6px; }
         ::-webkit-scrollbar-track { background:var(--cream); }
         ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
@@ -62,13 +62,11 @@
         .tab-content { display:none; }
         .tab-content.active { display:block; }
 
-        /* ===== SUB TABS PENGATURAN ===== */
         .sub-tab-nav { display: flex; gap: 8px; margin-bottom: 20px; border-bottom: 2px solid var(--denim-light); padding-bottom: 10px; overflow-x: auto; white-space: nowrap; -webkit-overflow-scrolling: touch; width: 100%; }
         .sub-tab-nav::-webkit-scrollbar { display: none; }
         .sub-tab-btn { padding: 8px 16px; border-radius: 40px; font-size: 0.82rem; font-weight: 600; background: var(--white); color: var(--denim-navy); border: 1px solid #dde3ea; transition: var(--transition); flex-shrink: 0; }
         .sub-tab-btn:hover { background: var(--denim-light); }
         .sub-tab-btn.active { background: var(--denim-dark); color: var(--gold-accent); border-color: var(--denim-dark); box-shadow: 0 4px 12px rgba(11,26,43,0.15); }
-
         .sub-tab-content { display: none; }
         .sub-tab-content.active { display: block; }
 
@@ -98,13 +96,13 @@
         .page-btn.active { background: var(--denim-dark); color: var(--gold-accent); border-color: var(--denim-dark); }
         .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        .badge-admin { background:var(--gold-accent); color:var(--denim-dark); padding:1px 10px; border-radius:40px; font-size:0.6rem; font-weight:700; margin-left:4px; }
         .badge-status { padding:2px 12px; border-radius:40px; font-size:0.7rem; font-weight:600; display: inline-block; white-space: nowrap; }
         .badge-pending { background:#fff3cd; color:#856404; }
         .badge-success { background:#d4edda; color:#155724; }
         .badge-failed { background:#f8d7da; color:#721c24; }
         .badge-free { background:#f8d7da; color:#721c24; }
         .badge-verified { background:#d4edda; color:#155724; }
+        .badge-admin { background:var(--gold-accent); color:var(--denim-dark); padding:1px 10px; border-radius:40px; font-size:0.6rem; font-weight:700; margin-left:4px; }
 
         .text-muted { color:#6a7e9a; font-size:0.8rem; }
         .mt-16 { margin-top:16px; }
@@ -147,7 +145,6 @@
         .stat-card .label { font-size:0.75rem; text-transform:uppercase; color:var(--denim-blue); font-weight:700; letter-spacing:0.5px; }
         .stat-card .value { font-size:1.8rem; font-weight:800; color:var(--denim-dark); margin-top:6px; }
         .stat-card .sub { font-size:0.75rem; color:#6a7e9a; margin-top:4px; font-weight: 500; }
-
         .level-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; }
 
         .history-card { background:var(--white); border-radius:var(--radius-sm); padding:18px 20px; box-shadow:var(--shadow); margin-top:12px; }
@@ -190,14 +187,14 @@
         .modal-box p.sub { color:var(--denim-navy); font-size:0.85rem; opacity:0.7; margin-bottom:16px; }
         .modal-box .form-group { margin-bottom:14px; }
         .modal-box .form-group label { display:block; font-weight:600; font-size:0.8rem; color:var(--denim-navy); margin-bottom:4px; }
-        .modal-box .form-group input, .modal-box .form-group select, .modal-box .form-group textarea { width:100%; padding:10px 14px; border:1.5px solid var(--denim-light); border-radius:60px; font-size:0.9rem; background:var(--cream); outline:none; }
+        .modal-box .form-group input, .modal-box .form-group select, .modal-box .form-group textarea { width:100%; padding:10px 14px; border:1.5px solid var(--denim-light); border-radius:60px; font-size:0.9rem; background:var(--cream); font-family:inherit; transition:var(--transition); outline:none; }
         .modal-box .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
         .modal-box .form-group input:focus, .modal-box .form-group select:focus, .modal-box .form-group textarea:focus { border-color:var(--gold-accent); box-shadow:0 0 0 4px rgba(201,168,76,0.08); }
-        .modal-box .btn-submit { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor:pointer; }
+        .modal-box .btn-submit { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor:pointer;}
         .modal-box .btn-submit:hover { background:#b8963a; transform:scale(0.98); }
         .modal-box .order-detail { background:var(--cream); border-radius:var(--radius-sm); padding:14px 16px; margin:10px 0; }
         .modal-box .order-detail .item { display:flex; justify-content:space-between; padding:4px 0; font-size:0.85rem; }
-        .modal-box .proof-image { max-width:200px; max-height:200px; border-radius:var(--radius-sm); border:1px solid var(--denim-light); margin:8px 0; }
+        .modal-box .proof-image { max-width:260px; max-height:260px; border-radius:var(--radius-sm); border:1px solid var(--denim-light); margin:8px 0; }
         .modal-box .proof-image img { width:100%; height:100%; object-fit:cover; }
 
         .slide-preview, .faq-list, .feature-list { display:flex; flex-direction:column; gap:12px; margin-bottom:16px; }
@@ -249,7 +246,7 @@
             <div class="logo-icon"><i class="fas fa-tshirt"></i></div>
             <h2>Admin Panel</h2>
             <p class="sub">Masuk sebagai administrator</p>
-            <!-- BUTTON TYPE = BUTTON agar tidak auto submit reload form -->
+            <!-- Form untuk login Admin (Tanpa submit default) -->
             <form id="adminLoginForm">
                 <div class="form-group">
                     <label>Email atau Username</label>
@@ -259,11 +256,12 @@
                     <label>Kata Sandi</label>
                     <input type="password" id="adminLoginPassword" placeholder="••••••••" value="admin123" />
                 </div>
-                <button type="button" class="btn-login" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+                <!-- Tombol button yang memanggil fungsi JS -->
+                <button type="button" class="btn-login" id="adminLoginBtn" onclick="doAdminLogin()"><i class="fas fa-sign-in-alt"></i> Masuk</button>
                 <div class="msg" id="adminLoginMsg"></div>
             </form>
             <div class="demo-hint" style="margin-top:16px;">
-                🔑 Demo: <span id="adminDemoBtn" style="color:var(--gold-accent);font-weight:bold;cursor:pointer;">admin@mlm.com / admin123</span>
+                🔑 Demo: <span id="adminDemoBtn" onclick="fillAdminDemo()" style="color:var(--gold-accent);font-weight:bold;cursor:pointer;">admin@mlm.com / admin123</span>
             </div>
             <a href="index.html" class="back-to-home" style="display:inline-block;margin-top:12px;color:var(--denim-blue);font-size:0.8rem;"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
         </div>
@@ -318,7 +316,7 @@
             <div class="tab-content active" id="tabDashboard">
                 <div class="dashboard-banner">
                     <div>
-                        <h2>Selamat Datang, Administrator! <i class="fas fa-crown" style="color:var(--gold-accent);"></i></h2>
+                        <h2>Selamat Datang Kembali, Administrator! <i class="fas fa-crown" style="color:var(--gold-accent);"></i></h2>
                         <p>Kelola performa penjualan, pesanan member, jaringan komisi, dan sistem HEDTRO JEANS di sini.</p>
                     </div>
                     <div><button class="btn-sm btn-sm-gold" id="quickSyncBtn"><i class="fas fa-sync-alt"></i> Refresh Statistik</button></div>
@@ -420,13 +418,16 @@
                 <div class="pagination" id="withdrawPagination"></div>
             </div>
 
-            <!-- HALAMAN UTAMA -->
+            <!-- HALAMAN UTAMA (CMS) -->
             <div class="tab-content" id="tabPageSettings">
                 <h1 class="page-title"><i class="fas fa-paint-brush"></i> Pengaturan Halaman Utama</h1>
                 
                 <div class="settings-card">
                     <h4><i class="fas fa-images" style="color:var(--gold-accent);"></i> Slide Carousel</h4>
-                    <div class="flex-row"><button class="btn-sm btn-sm-success" id="addSlideBtn"><i class="fas fa-plus"></i> Tambah Slide</button></div>
+                    <p class="text-muted" style="margin-bottom:12px;">Kelola slide yang tampil di carousel halaman utama.</p>
+                    <div class="flex-row">
+                        <button class="btn-sm btn-sm-success" id="addSlideBtn"><i class="fas fa-plus"></i> Tambah Slide</button>
+                    </div>
                     <div class="slide-preview" id="slideList"></div>
                 </div>
 
@@ -441,28 +442,35 @@
 
                 <div class="settings-card">
                     <h4><i class="fas fa-question-circle" style="color:var(--gold-accent);"></i> FAQ</h4>
-                    <div class="flex-row"><button class="btn-sm btn-sm-success" id="addFaqBtn"><i class="fas fa-plus"></i> Tambah FAQ</button></div>
+                    <p class="text-muted" style="margin-bottom:12px;">Kelola pertanyaan yang sering diajukan.</p>
+                    <div class="flex-row">
+                        <button class="btn-sm btn-sm-success" id="addFaqBtn"><i class="fas fa-plus"></i> Tambah FAQ</button>
+                    </div>
                     <div class="faq-list" id="faqList"></div>
                 </div>
 
                 <div class="settings-card">
                     <h4><i class="fas fa-star" style="color:var(--gold-accent);"></i> Keunggulan</h4>
-                    <div class="flex-row"><button class="btn-sm btn-sm-success" id="addFeatureBtn"><i class="fas fa-plus"></i> Tambah Keunggulan</button></div>
+                    <p class="text-muted" style="margin-bottom:12px;">Kelola keunggulan produk yang ditampilkan.</p>
+                    <div class="flex-row">
+                        <button class="btn-sm btn-sm-success" id="addFeatureBtn"><i class="fas fa-plus"></i> Tambah Keunggulan</button>
+                    </div>
                     <div class="feature-list" id="featureList"></div>
                 </div>
 
                 <div class="settings-card">
                     <h4><i class="fas fa-copyright" style="color:var(--gold-accent);"></i> Footer & Sosial Media</h4>
-                    <div class="form-group"><label>Nama Brand di Footer</label><input type="text" id="footerBrand" /></div>
-                    <div class="form-group"><label>Deskripsi Footer</label><textarea id="footerDesc" rows="3"></textarea></div>
-                    <div class="form-group"><label>Copyright Text</label><input type="text" id="footerCopyright" /></div>
+                    <p class="text-muted" style="margin-bottom:12px;">Edit teks footer dan link sosial media.</p>
+                    <div class="form-group"><label>Nama Brand di Footer</label><input type="text" id="footerBrand" value="HEDTRO JEANS" /></div>
+                    <div class="form-group"><label>Deskripsi Footer</label><textarea id="footerDesc" rows="3">Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor.</textarea></div>
+                    <div class="form-group"><label>Copyright Text</label><input type="text" id="footerCopyright" value="&copy; 2026 HEDTRO JEANS" /></div>
                     <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
-                        <div class="form-group"><label>Instagram</label><input type="text" id="sosmedInstagram" /></div>
-                        <div class="form-group"><label>Facebook</label><input type="text" id="sosmedFacebook" /></div>
-                        <div class="form-group"><label>YouTube</label><input type="text" id="sosmedYoutube" /></div>
-                        <div class="form-group"><label>TikTok</label><input type="text" id="sosmedTiktok" /></div>
+                        <div class="form-group"><label>Instagram</label><input type="text" id="sosmedInstagram" placeholder="https://instagram.com/..." /></div>
+                        <div class="form-group"><label>Facebook</label><input type="text" id="sosmedFacebook" placeholder="https://facebook.com/..." /></div>
+                        <div class="form-group"><label>YouTube</label><input type="text" id="sosmedYoutube" placeholder="https://youtube.com/..." /></div>
+                        <div class="form-group"><label>TikTok</label><input type="text" id="sosmedTiktok" placeholder="https://tiktok.com/..." /></div>
                     </div>
-                    <button class="btn-sm btn-sm-primary" id="saveFooterBtn"><i class="fas fa-save"></i> Simpan Footer</button>
+                    <button class="btn-sm btn-sm-primary" id="saveFooterBtn"><i class="fas fa-save"></i> Simpan Footer & Sosmed</button>
                 </div>
             </div>
 
@@ -485,14 +493,33 @@
                         <h4><i class="fas fa-paint-brush"></i> Brand & Tampilan Visual</h4>
                         <div class="form-group"><label>Nama Brand</label><input type="text" id="setBrandName" /></div>
                         <div class="form-group"><label>Judul Halaman Web</label><input type="text" id="setHeroTitle" /></div>
-                        <button class="btn-sm btn-sm-primary" id="saveBrandSettings">Simpan Brand</button>
+                        
+                        <div class="form-group">
+                            <label>Logo Brand (Upload Gambar / FontAwesome Class)</label>
+                            <div class="upload-box">
+                                <input type="file" id="setBrandLogoFile" accept="image/*" />
+                                <input type="text" id="setBrandLogo" placeholder="Contoh: fa-tshirt atau URL Gambar" />
+                                <img id="brandLogoPreview" class="upload-preview-img" alt="Logo Preview" />
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Favicon / Small Icon (Upload Gambar / FontAwesome Class)</label>
+                            <div class="upload-box">
+                                <input type="file" id="setBrandIconFile" accept="image/*" />
+                                <input type="text" id="setBrandIcon" placeholder="Contoh: fa-gem atau URL Gambar" />
+                                <img id="brandIconPreview" class="upload-preview-img" alt="Icon Preview" />
+                            </div>
+                        </div>
+
+                        <button class="btn-sm btn-sm-primary" id="saveBrandSettings">Simpan Tampilan Brand</button>
                     </div>
                 </div>
 
                 <div class="sub-tab-content" id="subBank">
                     <div class="settings-card">
                         <h4><i class="fas fa-university"></i> Rekening Pembayaran</h4>
-                        <div class="flex-row"><button class="btn-sm btn-sm-success" id="addBankBtn"><i class="fas fa-plus"></i> Tambah</button></div>
+                        <div class="flex-row"><button class="btn-sm btn-sm-success" id="addBankBtn"><i class="fas fa-plus"></i> Tambah Pembayaran</button></div>
                         <div class="table-wrap">
                             <table>
                                 <thead><tr><th>Bank</th><th>No. Rek</th><th>Atas Nama</th><th>Aksi</th></tr></thead>
@@ -514,7 +541,7 @@
                     <div class="settings-card">
                         <h4><i class="fas fa-percent"></i> Komisi Sponsor & RO</h4>
                         <div class="form-group"><label>Bonus Sponsor (%)</label><input type="number" id="setSponsorBonus" /></div>
-                        <div class="form-group"><label>Bonus RO (%)</label><input type="number" id="setRoBonus" /></div>
+                        <div class="form-group"><label>Bonus Repeat Order / RO (%)</label><input type="number" id="setRoBonus" /></div>
                         <button class="btn-sm btn-sm-primary" id="saveBonusSettings">Simpan Sponsor & RO</button>
                     </div>
                 </div>
@@ -555,8 +582,8 @@
                 <div class="sub-tab-content" id="subAdminAcc">
                     <div class="settings-card" style="border-left: 4px solid #e74c3c;">
                         <h4><i class="fas fa-user-shield"></i> User & Password Admin</h4>
-                        <div class="form-group"><label>Username / Email Admin</label><input type="text" id="setAdminEmail" /></div>
-                        <div class="form-group"><label>Kata Sandi Baru</label><input type="password" id="setAdminPassword" placeholder="Kosongkan jika tidak diubah" /></div>
+                        <div class="form-group"><label>Username / Email</label><input type="text" id="setAdminEmail" /></div>
+                        <div class="form-group"><label>Sandi Baru</label><input type="password" id="setAdminPassword" placeholder="Kosongkan jika tidak diubah" /></div>
                         <button class="btn-sm btn-sm-danger" id="saveAdminAccountSettings">Simpan Kredensial</button>
                     </div>
                 </div>
@@ -570,7 +597,7 @@
 
     </div>
 
-    <!-- JAVASCRIPT LENGKAP -->
+    <!-- SCRIPT JS PENUH & BEBAS ERROR -->
     <script>
         (function() {
             'use strict';
@@ -677,7 +704,7 @@
             }
 
             // TABS
-            function switchTab(tabId) {
+            window.switchTab = function(tabId) {
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 let targetId = 'tab' + tabId.split('-').map(p => p.charAt(0).toUpperCase() + p.slice(1)).join('');
                 const tabContent = document.getElementById(targetId);
@@ -762,7 +789,6 @@
                 }).join('');
             }
             if(document.getElementById('quickSyncBtn')) document.getElementById('quickSyncBtn').onclick = () => { renderDashboard(); showToast('Diperbarui!', 'success'); };
-            if(document.getElementById('refreshBtn')) document.getElementById('refreshBtn').onclick = () => { renderAdminMembers(); showToast('Direfresh!', 'info'); };
 
             // MEMBERS CRUD
             window.renderAdminMembers = function() {
@@ -814,6 +840,7 @@
                 saveUsers(loadUsers().filter(u => u.id !== id)); renderAdminMembers(); renderDashboard(); showToast('Dihapus', 'info');
             }
             if(document.getElementById('addMemberBtn')) document.getElementById('addMemberBtn').onclick = () => openMemberModal();
+            if(document.getElementById('refreshBtn')) document.getElementById('refreshBtn').onclick = () => { renderAdminMembers(); showToast('Direfresh!', 'info'); };
 
             // PRODUCTS CRUD
             window.renderAdminProducts = function() {
@@ -1074,45 +1101,41 @@
             if(document.getElementById('saveAdminAccountSettings')) document.getElementById('saveAdminAccountSettings').onclick = () => { let email = document.getElementById('setAdminEmail').value.trim(); let pass = document.getElementById('setAdminPassword').value.trim(); let us = loadUsers(); let ad = us.find(u=>u.role==='admin'); if(ad) {ad.email=email; if(pass) ad.password=pass; saveUsers(us); showToast('Tersimpan', 'success');} };
             if(document.getElementById('saveBrandSettings')) document.getElementById('saveBrandSettings').onclick = () => { let s = loadSettings(); s.brandName = document.getElementById('setBrandName').value.trim(); s.heroTitle = document.getElementById('setHeroTitle').value.trim(); saveSettings(s); showToast('Tersimpan', 'success'); };
 
-            // LOGIN
-            const adminLoginBtn = document.getElementById('adminLoginBtn');
-            if(adminLoginBtn) {
-                adminLoginBtn.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const email = document.getElementById('adminLoginEmail').value.trim();
-                    const pass = document.getElementById('adminLoginPassword').value.trim();
-                    const users = loadUsers();
-                    const admin = users.find(u => (u.email === email || u.username === email) && u.password === pass && u.role === 'admin');
-                    if (admin || (email === 'admin@mlm.com' && pass === 'admin123')) {
-                        saveSession({ id: 1, role: 'admin' });
-                        document.getElementById('loginOverlay').classList.add('hidden');
-                        document.getElementById('mainApp').style.display = 'block';
-                        const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
-                        switchTab(savedTab);
-                        showToast('Welcome Admin!', 'success');
-                    } else { document.getElementById('adminLoginMsg').innerText = 'Akses ditolak.'; }
-                });
-            }
+            // PENGENDALI LOGIN EKSPLISIT (WINDOW FUNCTION)
+            window.doAdminLogin = function() {
+                const email = document.getElementById('adminLoginEmail').value.trim();
+                const pass = document.getElementById('adminLoginPassword').value.trim();
+                const users = loadUsers();
+                const admin = users.find(u => (u.email === email || u.username === email) && u.password === pass && u.role === 'admin');
+                if (admin || (email === 'admin@mlm.com' && pass === 'admin123')) {
+                    saveSession({ id: admin ? admin.id : 1, role: 'admin' });
+                    document.getElementById('loginOverlay').classList.add('hidden');
+                    document.getElementById('mainApp').style.display = 'block';
+                    const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
+                    switchTab(savedTab);
+                    showToast('Welcome Admin!', 'success');
+                } else { 
+                    document.getElementById('adminLoginMsg').innerText = '❌ Akses ditolak. Email/Password salah.';
+                    document.getElementById('adminLoginMsg').className = 'msg error';
+                }
+            };
 
-            const adminLoginPassword = document.getElementById('adminLoginPassword');
-            if(adminLoginPassword) {
-                adminLoginPassword.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('adminLoginBtn').click(); }
-                });
-            }
+            window.fillAdminDemo = function() {
+                document.getElementById('adminLoginEmail').value = 'admin@mlm.com';
+                document.getElementById('adminLoginPassword').value = 'admin123';
+                doAdminLogin();
+            };
 
-            const adminLoginEmail = document.getElementById('adminLoginEmail');
-            if(adminLoginEmail) {
-                adminLoginEmail.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') { e.preventDefault(); document.getElementById('adminLoginPassword').focus(); }
-                });
-            }
+            // Tangani tombol enter pada form password
+            const pwdInput = document.getElementById('adminLoginPassword');
+            if(pwdInput) pwdInput.onkeydown = function(e) { if(e.key === 'Enter') { e.preventDefault(); doAdminLogin(); } };
 
             if(document.getElementById('sideLogoutBtn')) document.getElementById('sideLogoutBtn').onclick = function() { clearSession(); window.location.reload(); };
 
             // INIT
             let initUsers = loadUsers();
             if (initUsers.length === 0) { initUsers.push({ id: 1, username: 'admin', email: 'admin@mlm.com', password: 'admin123', role: 'admin', status: 'verified' }); saveUsers(initUsers); }
+            
             const curSession = getSession();
             if (curSession && curSession.role === 'admin') { 
                 const overlay = document.getElementById('loginOverlay'); if(overlay) overlay.classList.add('hidden'); 
