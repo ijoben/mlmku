@@ -44,7 +44,8 @@
                 <p>Masuk ke akun member Anda</p>
             </div>
 
-            <form id="loginForm" onsubmit="return false;">
+            <!-- Form diubah agar tidak submit otomatis -->
+            <form id="loginForm">
                 <div class="form-group">
                     <label>Email atau Username</label>
                     <input type="text" id="loginEmail" placeholder="email@domain.com" />
@@ -53,7 +54,8 @@
                     <label>Kata Sandi</label>
                     <input type="password" id="loginPassword" placeholder="••••••••" />
                 </div>
-                <button type="submit" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+                <!-- type diubah menjadi button -->
+                <button type="button" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
                 <div class="msg" id="loginMsg"></div>
             </form>
 
@@ -92,14 +94,15 @@
 
                 setTimeout(() => {
                     if (user.role === 'admin') {
-                        window.location.href = 'admin.html';
+                        window.location.replace('admin.html');
                     } else {
-                        window.location.href = 'dashboard.html';
+                        window.location.replace('dashboard.html');
                     }
                 }, 1000);
             }
 
-            document.getElementById('loginBtn').addEventListener('click', function() {
+            document.getElementById('loginBtn').addEventListener('click', function(e) {
+                e.preventDefault();
                 const email = document.getElementById('loginEmail').value.trim();
                 const password = document.getElementById('loginPassword').value.trim();
                 if (!email || !password) {
@@ -111,10 +114,22 @@
                 loginUser(email, password);
             });
 
+            // Handle enter key secara manual agar tidak memicu form refresh
             document.getElementById('loginPassword').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') document.getElementById('loginBtn').click();
+                if (e.key === 'Enter') {
+                    e.preventDefault(); 
+                    document.getElementById('loginBtn').click();
+                }
             });
 
+            document.getElementById('loginEmail').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    document.getElementById('loginPassword').focus();
+                }
+            });
+
+            // Cek jika sudah login
             const session = localStorage.getItem(SESSION_KEY);
             if (session) {
                 try {
@@ -122,12 +137,11 @@
                     const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
                     const user = users.find(u => u.id === id);
                     if (user) {
-                        window.location.href = (role === 'admin' || user.role === 'admin') ? 'admin.html' : 'dashboard.html';
+                        window.location.replace((role === 'admin' || user.role === 'admin') ? 'admin.html' : 'dashboard.html');
                     }
                 } catch (_) { localStorage.removeItem(SESSION_KEY); }
             }
         })();
     </script>
-
 </body>
 </html>
