@@ -7,1811 +7,222 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
-        /* ============================================================
-           RESET & ROOT
-           ============================================================ */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --denim-dark: #0b1a2b;
-            --denim-navy: #1a2e44;
-            --denim-blue: #2a4b6e;
-            --denim-light: #e8edf2;
-            --gold-accent: #c9a84c;
-            --gold-light: #e8d5a3;
-            --cream: #f7f4ef;
-            --white: #ffffff;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
-            --radius: 24px;
-            --radius-sm: 12px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2;
+            --gold-accent: #c9a84c; --gold-light: #e8d5a3; --cream: #f7f4ef; --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08); --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --radius: 24px; --radius-sm: 12px; --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
+        html { scroll-behavior: smooth; }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--cream); color: var(--denim-dark); overflow-x: hidden; padding-top: 80px; }
+        .app-container { max-width: 1280px; margin: 0 auto; padding: 0 20px; }
+        a { text-decoration: none; color: inherit; }
+        button { cursor: pointer; font-family: inherit; border: none; background: none; }
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: var(--cream); }
+        ::-webkit-scrollbar-thumb { background: var(--denim-blue); border-radius: 10px; }
 
-        html {
-            scroll-behavior: smooth;
-        }
-
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--cream);
-            color: var(--denim-dark);
-            overflow-x: hidden;
-            padding-top: 80px;
-        }
-
-        .app-container {
-            max-width: 1280px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        a {
-            text-decoration: none;
-            color: inherit;
-        }
-        button {
-            cursor: pointer;
-            font-family: inherit;
-            border: none;
-            background: none;
-        }
-
-        ::-webkit-scrollbar {
-            width: 6px;
-        }
-        ::-webkit-scrollbar-track {
-            background: var(--cream);
-        }
-        ::-webkit-scrollbar-thumb {
-            background: var(--denim-blue);
-            border-radius: 10px;
-        }
-
-        /* ============================================================
-           NAVBAR
-           ============================================================ */
         .navbar {
-            position: fixed;
-            top: 0;
-            left: 0;
-            right: 0;
-            z-index: 1000;
-            background: var(--denim-dark);
-            padding: 10px 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            border-bottom: 3px solid var(--gold-accent);
-            height: 80px;
-            width: 100%;
-            overflow: visible;
-        }
-
-        .navbar .logo {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            color: var(--white);
-            font-weight: 800;
-            font-size: 1.4rem;
-            flex-shrink: 0;
-        }
-
-        .navbar .logo i {
-            color: var(--gold-accent);
-            font-size: 1.6rem;
-        }
-
-        .navbar .logo span {
-            font-weight: 300;
-            color: var(--gold-light);
-            font-size: 0.75rem;
-            margin-left: 2px;
-        }
-
-        .nav-menu {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            list-style: none;
-        }
-
-        .nav-menu li a {
-            color: var(--cream);
-            font-size: 0.78rem;
-            font-weight: 500;
-            padding: 8px 14px;
-            border-radius: 60px;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            gap: 6px;
-        }
-
-        .nav-menu li a:hover,
-        .nav-menu li a.active {
-            background: rgba(201, 168, 76, 0.12);
-            color: var(--gold-accent);
-        }
-
-        .nav-menu li a i {
-            font-size: 0.85rem;
-        }
-
-        .nav-actions {
-            display: flex;
-            align-items: center;
-            gap: 6px;
-            flex-shrink: 0;
-        }
-
-        .nav-actions .search-box {
-            display: flex;
-            align-items: center;
-            background: rgba(255, 255, 255, 0.06);
-            border-radius: 60px;
-            padding: 4px 6px 4px 16px;
-            border: 1px solid rgba(255, 255, 255, 0.06);
-            transition: var(--transition);
-        }
-
-        .nav-actions .search-box:focus-within {
-            border-color: var(--gold-accent);
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .nav-actions .search-box input {
-            background: transparent;
-            border: none;
-            color: var(--cream);
-            font-size: 0.8rem;
-            padding: 6px 0;
-            width: 130px;
-            outline: none;
-        }
-
-        .nav-actions .search-box input::placeholder {
-            color: rgba(255, 255, 255, 0.3);
-        }
-
-        .nav-actions .search-box button {
-            color: rgba(255, 255, 255, 0.4);
-            padding: 6px 12px;
-            transition: var(--transition);
-            font-size: 0.9rem;
-        }
-
-        .nav-actions .search-box button:hover {
-            color: var(--gold-accent);
-        }
-
-        .nav-actions .cart-btn {
-            color: var(--cream);
-            font-size: 1.1rem;
-            padding: 8px 12px;
-            border-radius: 60px;
-            transition: var(--transition);
-            position: relative;
-        }
-
-        .nav-actions .cart-btn .badge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            font-size: 0.6rem;
-            font-weight: 700;
-            width: 18px;
-            height: 18px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .nav-right {
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            flex-shrink: 0;
-        }
-
-        .btn-nav {
-            padding: 8px 18px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 0.8rem;
-            transition: var(--transition);
-            flex-shrink: 0;
-        }
-
-        .btn-nav-outline {
-            background: transparent;
-            border: 1.5px solid rgba(255, 255, 255, 0.2);
-            color: var(--cream);
-        }
-
-        .btn-nav-outline:hover {
-            background: rgba(255, 255, 255, 0.1);
-        }
-
-        .btn-nav-gold {
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-        }
-
-        .btn-nav-gold:hover {
-            background: #b8963a;
-            transform: scale(0.97);
-        }
-
-        /* ============================================================
-           BURGER & SIDEBAR
-           ============================================================ */
-        .burger-btn {
-            display: none !important;
-            flex-direction: column;
-            gap: 4px;
-            padding: 6px;
-            background: transparent;
-            border: none;
-            cursor: pointer;
-            z-index: 1001;
-        }
-
-        .burger-btn span {
-            display: block;
-            width: 24px;
-            height: 2.5px;
-            background: var(--cream);
-            border-radius: 4px;
-            transition: var(--transition);
-            transform-origin: center;
-        }
-
-        .burger-btn.active span:nth-child(1) {
-            transform: translateY(6.5px) rotate(45deg);
-        }
-        .burger-btn.active span:nth-child(2) {
-            opacity: 0;
-            transform: scaleX(0);
-        }
-        .burger-btn.active span:nth-child(3) {
-            transform: translateY(-6.5px) rotate(-45deg);
-        }
-
-        .sidebar-overlay {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.5);
-            z-index: 999;
-            opacity: 0;
-            pointer-events: none;
-            transition: var(--transition);
-        }
-
-        .sidebar-overlay.active {
-            opacity: 1;
-            pointer-events: all;
-        }
-
-        .sidebar {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: -320px;
-            width: 300px;
-            height: 100%;
-            background: var(--denim-dark);
-            z-index: 1000;
-            padding: 24px 20px;
-            transition: var(--transition);
-            overflow-y: auto;
-            border-right: 3px solid var(--gold-accent);
-            flex-direction: column;
-            gap: 4px;
-        }
-
-        .sidebar.open {
-            left: 0;
-        }
-
-        .sidebar .sidebar-header {
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
-            padding-bottom: 16px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-            margin-bottom: 10px;
-        }
-
-        .sidebar .sidebar-header .logo-side {
-            color: var(--white);
-            font-weight: 800;
-            font-size: 1.2rem;
-        }
-
-        .sidebar .sidebar-header .logo-side i {
-            color: var(--gold-accent);
-        }
-
-        .sidebar .sidebar-header .close-side {
-            color: var(--cream);
-            font-size: 1.6rem;
-            cursor: pointer;
-        }
-
-        .sidebar .menu-item {
-            display: flex;
-            align-items: center;
-            gap: 14px;
-            padding: 12px 16px;
-            border-radius: 12px;
-            color: var(--cream);
-            font-weight: 500;
-            font-size: 0.9rem;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .sidebar .menu-item:hover {
-            background: rgba(255, 255, 255, 0.08);
-        }
-
-        .sidebar .menu-item i {
-            width: 22px;
-            color: var(--gold-accent);
-        }
-
-        .sidebar .menu-item.active {
-            background: rgba(201, 168, 76, 0.15);
-            color: var(--gold-accent);
-        }
-
-        .sidebar .menu-divider {
-            height: 1px;
-            background: rgba(255, 255, 255, 0.06);
-            margin: 6px 0;
-        }
-
-        .search-icon-hp {
-            display: none;
-            color: var(--cream);
-            font-size: 1.1rem;
-            padding: 8px 10px;
-            border-radius: 60px;
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .search-icon-hp:hover {
-            color: var(--gold-accent);
-            background: rgba(201, 168, 76, 0.08);
-        }
-
-        .cart-hp {
-            display: none;
-            color: var(--cream);
-            font-size: 1.1rem;
-            padding: 8px 10px;
-            border-radius: 60px;
-            transition: var(--transition);
-            position: relative;
-            cursor: pointer;
-        }
-
-        .cart-hp .badge {
-            position: absolute;
-            top: 0;
-            right: 0;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            font-size: 0.55rem;
-            font-weight: 700;
-            width: 16px;
-            height: 16px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        /* ============================================================
-           POPUP OVERLAY
-           ============================================================ */
-        .popup-overlay {
-            display: none;
-            position: fixed;
-            inset: 0;
-            background: rgba(0, 0, 0, 0.5);
-            backdrop-filter: blur(8px);
-            z-index: 2000;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-        }
-
-        .popup-overlay.show {
-            display: flex;
-        }
-
-        .popup-overlay .popup-box {
-            background: var(--white);
-            max-width: 560px;
-            width: 100%;
-            max-height: 85vh;
-            overflow-y: auto;
-            border-radius: var(--radius);
-            padding: 28px 30px 32px;
-            box-shadow: var(--shadow-lg);
-            position: relative;
-            animation: popupIn 0.3s ease;
-        }
-
-        @keyframes popupIn {
-            from {
-                transform: scale(0.9) translateY(20px);
-                opacity: 0;
-            }
-            to {
-                transform: scale(1) translateY(0);
-                opacity: 1;
-            }
-        }
-
-        .popup-overlay .popup-box .close-popup {
-            position: absolute;
-            top: 14px;
-            right: 18px;
-            font-size: 1.6rem;
-            color: var(--denim-navy);
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .popup-overlay .popup-box .close-popup:hover {
-            color: var(--denim-dark);
-            transform: rotate(90deg);
-        }
-
-        .popup-overlay .popup-box h3 {
-            font-family: 'Playfair Display', serif;
-            font-size: 1.4rem;
-            font-weight: 800;
-            color: var(--denim-dark);
-            margin-bottom: 4px;
-        }
-
-        .popup-overlay .popup-box p.sub {
-            color: var(--denim-navy);
-            font-size: 0.85rem;
-            opacity: 0.7;
-            margin-bottom: 16px;
-        }
-
-        .popup-overlay .popup-box .popup-form {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-        }
-
-        .popup-overlay .popup-box .popup-form input {
-            padding: 12px 18px;
-            border: 1.5px solid var(--denim-light);
-            border-radius: 60px;
-            font-size: 0.95rem;
-            background: var(--cream);
-            color: var(--denim-dark);
-            font-family: inherit;
-            outline: none;
-            transition: var(--transition);
-        }
-
-        .popup-overlay .popup-box .popup-form input:focus {
-            border-color: var(--gold-accent);
-        }
-
-        .popup-overlay .popup-box .popup-form button {
-            padding: 14px;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1rem;
-            transition: var(--transition);
-            font-family: inherit;
-        }
-
-        .popup-overlay .popup-box .popup-form button:hover {
-            background: #b8963a;
-            transform: scale(0.98);
-        }
-
-        .popup-overlay .popup-box .popup-result {
-            margin-top: 14px;
-            font-size: 0.9rem;
-            color: var(--denim-navy);
-        }
-
-        /* ============================================================
-           PRODUCT DETAIL POPUP
-           ============================================================ */
-        .product-detail-popup .popup-box {
-            max-width: 700px;
-        }
-
-        .product-detail-popup .popup-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-top: 8px;
-        }
-
-        .product-detail-popup .popup-image {
-            background: var(--denim-light);
-            border-radius: var(--radius-sm);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 5rem;
-            color: var(--denim-blue);
-            min-height: 260px;
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            user-select: none;
-        }
-
-        .product-detail-popup .popup-image .popup-icon-wrap {
-            transition: transform 0.3s ease;
-            font-size: 5rem;
-        }
-
-        .product-detail-popup .popup-image.zoomed .popup-icon-wrap {
-            transform: scale(1.8);
-        }
-
-        .product-detail-popup .popup-image .zoom-hint {
-            position: absolute;
-            bottom: 12px;
-            right: 12px;
-            background: rgba(0, 0, 0, 0.5);
-            color: #fff;
-            padding: 4px 12px;
-            border-radius: 40px;
-            font-size: 0.7rem;
-            backdrop-filter: blur(4px);
-        }
-
-        .product-detail-popup .popup-info h2 {
-            font-size: 1.2rem;
-            font-weight: 700;
-            color: var(--denim-dark);
-            margin-bottom: 4px;
-        }
-
-        .product-detail-popup .popup-info .popup-tag {
-            display: inline-block;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            font-size: 0.6rem;
-            font-weight: 700;
-            padding: 2px 14px;
-            border-radius: 40px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 8px;
-        }
-
-        .product-detail-popup .popup-info .popup-price {
-            font-size: 1.3rem;
-            font-weight: 700;
-            color: var(--denim-blue);
-        }
-
-        .product-detail-popup .popup-info .popup-price del {
-            color: #8a9aa8;
-            font-weight: 400;
-            font-size: 1rem;
-            margin-left: 10px;
-        }
-
-        .product-detail-popup .popup-info .popup-desc {
-            color: var(--denim-navy);
-            line-height: 1.7;
-            font-size: 0.9rem;
-            margin: 10px 0;
-        }
-
-        .product-detail-popup .popup-info .popup-specs {
-            background: var(--cream);
-            border-radius: var(--radius-sm);
-            padding: 10px 14px;
-            margin: 10px 0;
-            font-size: 0.8rem;
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 4px 16px;
-        }
-
-        .product-detail-popup .popup-info .popup-specs span {
-            padding: 2px 0;
-        }
-
-        .product-detail-popup .popup-info .popup-specs .label {
-            color: var(--denim-navy);
-            opacity: 0.6;
-            font-weight: 500;
-        }
-
-        .product-detail-popup .popup-info .popup-stock {
-            font-size: 0.85rem;
-            color: #1f7a4b;
-            margin-top: 4px;
-        }
-
-        .product-detail-popup .popup-info .popup-stock.out {
-            color: #b13e3e;
-        }
-
-        .product-detail-popup .popup-info .popup-options {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px;
-            margin: 10px 0;
-        }
-
-        .product-detail-popup .popup-info .popup-options select {
-            padding: 8px 12px;
-            border: 1.5px solid var(--denim-light);
-            border-radius: 60px;
-            font-size: 0.85rem;
-            background: var(--cream);
-            color: var(--denim-dark);
-            font-family: inherit;
-            outline: none;
-            width: 100%;
-        }
-
-        .product-detail-popup .popup-info .popup-options select:focus {
-            border-color: var(--gold-accent);
-        }
-
-        .product-detail-popup .popup-info .btn-buy-large {
-            width: 100%;
-            padding: 14px;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1rem;
-            transition: var(--transition);
-            margin-top: 10px;
-            font-family: inherit;
-        }
-
-        .product-detail-popup .popup-info .btn-buy-large:hover {
-            background: #b8963a;
-            transform: scale(0.98);
-        }
-
-        /* ============================================================
-           TOAST NOTIFICATION
-           ============================================================ */
-        .toast-container {
-            position: fixed;
-            top: 100px;
-            right: 20px;
-            z-index: 9999;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-            max-width: 360px;
-            width: 100%;
-            pointer-events: none;
-        }
-
-        .toast-item {
-            background: var(--denim-dark);
-            color: var(--cream);
-            padding: 16px 20px;
-            border-radius: var(--radius-sm);
-            border-left: 4px solid var(--gold-accent);
-            box-shadow: var(--shadow-lg);
-            animation: slideInRight 0.4s ease;
-            pointer-events: all;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .toast-item.success {
-            border-left-color: #2ecc71;
-        }
-        .toast-item.error {
-            border-left-color: #e74c3c;
-        }
-        .toast-item.info {
-            border-left-color: var(--gold-accent);
-        }
-
-        .toast-item .toast-icon {
-            font-size: 1.2rem;
-            flex-shrink: 0;
-        }
-
-        .toast-item .toast-msg {
-            font-size: 0.9rem;
-            flex: 1;
-        }
-
-        .toast-item .toast-close {
-            color: rgba(255, 255, 255, 0.4);
-            font-size: 1.2rem;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        @keyframes slideInRight {
-            from {
-                opacity: 0;
-                transform: translateX(60px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
-        }
-
-        @keyframes slideOutRight {
-            from {
-                opacity: 1;
-                transform: translateX(0) scale(1);
-            }
-            to {
-                opacity: 0;
-                transform: translateX(60px) scale(0.9);
-            }
-        }
-
-        .toast-item.removing {
-            animation: slideOutRight 0.3s ease forwards;
-        }
-
-        /* ============================================================
-           CAROUSEL - FULL WIDTH
-           ============================================================ */
-        .carousel-section {
-            position: relative;
-            width: 100%;
-            height: 70vh;
-            min-height: 400px;
-            overflow: hidden;
-            background: var(--denim-dark);
-            border-radius: var(--radius);
-            margin-bottom: 20px;
-            margin-top: 8px;
-            touch-action: pan-y;
-            user-select: none;
-            -webkit-user-select: none;
-        }
+            position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+            background: var(--denim-dark); padding: 10px 28px;
+            display: flex; align-items: center; justify-content: space-between;
+            border-bottom: 3px solid var(--gold-accent); height: 80px; width: 100%; overflow: visible;
+        }
+        .navbar .logo { display: flex; align-items: center; gap: 8px; color: var(--white); font-weight: 800; font-size: 1.4rem; flex-shrink: 0; }
+        .navbar .logo i { color: var(--gold-accent); font-size: 1.6rem; }
+        .navbar .logo span { font-weight: 300; color: var(--gold-light); font-size: 0.75rem; margin-left: 2px; }
+        .nav-menu { display: flex; align-items: center; gap: 4px; list-style: none; }
+        .nav-menu li a { color: var(--cream); font-size: 0.78rem; font-weight: 500; padding: 8px 14px; border-radius: 60px; transition: var(--transition); display: flex; align-items: center; gap: 6px; }
+        .nav-menu li a:hover, .nav-menu li a.active { background: rgba(201, 168, 76, 0.12); color: var(--gold-accent); }
+        .nav-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+        .nav-actions .search-box { display: flex; align-items: center; background: rgba(255, 255, 255, 0.06); border-radius: 60px; padding: 4px 6px 4px 16px; border: 1px solid rgba(255, 255, 255, 0.06); transition: var(--transition); }
+        .nav-actions .search-box:focus-within { border-color: var(--gold-accent); background: rgba(255, 255, 255, 0.1); }
+        .nav-actions .search-box input { background: transparent; border: none; color: var(--cream); font-size: 0.8rem; padding: 6px 0; width: 130px; outline: none; }
+        .nav-actions .search-box input::placeholder { color: rgba(255, 255, 255, 0.3); }
+        .nav-actions .search-box button { color: rgba(255, 255, 255, 0.4); padding: 6px 12px; transition: var(--transition); font-size: 0.9rem; }
+        .nav-actions .search-box button:hover { color: var(--gold-accent); }
+        .nav-actions .cart-btn { color: var(--cream); font-size: 1.1rem; padding: 8px 12px; border-radius: 60px; transition: var(--transition); position: relative; }
+        .nav-actions .cart-btn .badge { position: absolute; top: 0; right: 0; background: var(--gold-accent); color: var(--denim-dark); font-size: 0.6rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+        .nav-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
+        .btn-nav { padding: 8px 18px; border-radius: 60px; font-weight: 600; font-size: 0.8rem; transition: var(--transition); flex-shrink: 0; }
+        .btn-nav-outline { background: transparent; border: 1.5px solid rgba(255, 255, 255, 0.2); color: var(--cream); }
+        .btn-nav-outline:hover { background: rgba(255, 255, 255, 0.1); }
+        .btn-nav-gold { background: var(--gold-accent); color: var(--denim-dark); }
+        .btn-nav-gold:hover { background: #b8963a; transform: scale(0.97); }
+
+        .burger-btn { display: none !important; flex-direction: column; gap: 4px; padding: 6px; background: transparent; border: none; cursor: pointer; z-index: 1001; }
+        .burger-btn span { display: block; width: 24px; height: 2.5px; background: var(--cream); border-radius: 4px; transition: var(--transition); transform-origin: center; }
+        .burger-btn.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
+        .burger-btn.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+        .burger-btn.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999; opacity: 0; pointer-events: none; transition: var(--transition); }
+        .sidebar-overlay.active { opacity: 1; pointer-events: all; }
+        .sidebar { display: none; position: fixed; top: 0; left: -320px; width: 300px; height: 100%; background: var(--denim-dark); z-index: 1000; padding: 24px 20px; transition: var(--transition); overflow-y: auto; border-right: 3px solid var(--gold-accent); flex-direction: column; gap: 4px; }
+        .sidebar.open { left: 0; }
+        .sidebar .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 10px; }
+        .sidebar .sidebar-header .logo-side { color: var(--white); font-weight: 800; font-size: 1.2rem; }
+        .sidebar .sidebar-header .logo-side i { color: var(--gold-accent); }
+        .sidebar .sidebar-header .close-side { color: var(--cream); font-size: 1.6rem; cursor: pointer; }
+        .sidebar .menu-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 12px; color: var(--cream); font-weight: 500; font-size: 0.9rem; transition: var(--transition); cursor: pointer; }
+        .sidebar .menu-item:hover { background: rgba(255, 255, 255, 0.08); }
+        .sidebar .menu-item i { width: 22px; color: var(--gold-accent); }
+        .sidebar .menu-item.active { background: rgba(201, 168, 76, 0.15); color: var(--gold-accent); }
+        .sidebar .menu-divider { height: 1px; background: rgba(255, 255, 255, 0.06); margin: 6px 0; }
+        .search-icon-hp { display: none; color: var(--cream); font-size: 1.1rem; padding: 8px 10px; border-radius: 60px; transition: var(--transition); cursor: pointer; }
+        .cart-hp { display: none; color: var(--cream); font-size: 1.1rem; padding: 8px 10px; border-radius: 60px; transition: var(--transition); position: relative; cursor: pointer; }
+        .cart-hp .badge { position: absolute; top: 0; right: 0; background: var(--gold-accent); color: var(--denim-dark); font-size: 0.55rem; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
+
+        .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .popup-overlay.show { display: flex; }
+        .popup-overlay .popup-box { background: var(--white); max-width: 560px; width: 100%; max-height: 85vh; overflow-y: auto; border-radius: var(--radius); padding: 28px 30px 32px; box-shadow: var(--shadow-lg); position: relative; animation: popupIn 0.3s ease; }
+        @keyframes popupIn { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
+        .popup-overlay .popup-box .close-popup { position: absolute; top: 14px; right: 18px; font-size: 1.6rem; color: var(--denim-navy); cursor: pointer; transition: var(--transition); }
+        .popup-overlay .popup-box .close-popup:hover { color: var(--denim-dark); transform: rotate(90deg); }
+        .popup-overlay .popup-box h3 { font-family: 'Playfair Display', serif; font-size: 1.4rem; font-weight: 800; color: var(--denim-dark); margin-bottom: 4px; }
+        .popup-overlay .popup-box p.sub { color: var(--denim-navy); font-size: 0.85rem; opacity: 0.7; margin-bottom: 16px; }
+        .popup-overlay .popup-box .popup-form { display: flex; flex-direction: column; gap: 12px; }
+        .popup-overlay .popup-box .popup-form input { padding: 12px 18px; border: 1.5px solid var(--denim-light); border-radius: 60px; font-size: 0.95rem; background: var(--cream); color: var(--denim-dark); font-family: inherit; outline: none; transition: var(--transition); }
+        .popup-overlay .popup-box .popup-form input:focus { border-color: var(--gold-accent); }
+        .popup-overlay .popup-box .popup-form button { padding: 14px; background: var(--gold-accent); color: var(--denim-dark); border-radius: 60px; font-weight: 700; font-size: 1rem; transition: var(--transition); font-family: inherit; }
+        .popup-overlay .popup-box .popup-form button:hover { background: #b8963a; transform: scale(0.98); }
+        .popup-overlay .popup-box .popup-result { margin-top: 14px; font-size: 0.9rem; color: var(--denim-navy); }
+
+        .product-detail-popup .popup-box { max-width: 700px; }
+        .product-detail-popup .popup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 8px; }
+        .product-detail-popup .popup-image { background: var(--denim-light); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--denim-blue); min-height: 260px; position: relative; overflow: hidden; cursor: pointer; user-select: none; }
+        .product-detail-popup .popup-image .popup-icon-wrap { transition: transform 0.3s ease; font-size: 5rem; }
+        .product-detail-popup .popup-image.zoomed .popup-icon-wrap { transform: scale(1.8); }
+        .product-detail-popup .popup-image .zoom-hint { position: absolute; bottom: 12px; right: 12px; background: rgba(0, 0, 0, 0.5); color: #fff; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; backdrop-filter: blur(4px); }
+        .product-detail-popup .popup-info h2 { font-size: 1.2rem; font-weight: 700; color: var(--denim-dark); margin-bottom: 4px; }
+        .product-detail-popup .popup-info .popup-tag { display: inline-block; background: var(--gold-accent); color: var(--denim-dark); font-size: 0.6rem; font-weight: 700; padding: 2px 14px; border-radius: 40px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
+        .product-detail-popup .popup-info .popup-price { font-size: 1.3rem; font-weight: 700; color: var(--denim-blue); }
+        .product-detail-popup .popup-info .popup-price del { color: #8a9aa8; font-weight: 400; font-size: 1rem; margin-left: 10px; }
+        .product-detail-popup .popup-info .popup-desc { color: var(--denim-navy); line-height: 1.7; font-size: 0.9rem; margin: 10px 0; }
+        .product-detail-popup .popup-info .popup-specs { background: var(--cream); border-radius: var(--radius-sm); padding: 10px 14px; margin: 10px 0; font-size: 0.8rem; display: grid; grid-template-columns: 1fr 1fr; gap: 4px 16px; }
+        .product-detail-popup .popup-info .popup-specs .label { color: var(--denim-navy); opacity: 0.6; font-weight: 500; }
+        .product-detail-popup .popup-info .popup-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
+        .product-detail-popup .popup-info .popup-options select { padding: 8px 12px; border: 1.5px solid var(--denim-light); border-radius: 60px; font-size: 0.85rem; background: var(--cream); color: var(--denim-dark); font-family: inherit; outline: none; width: 100%; }
+        .product-detail-popup .popup-info .btn-buy-large { width: 100%; padding: 14px; background: var(--gold-accent); color: var(--denim-dark); border-radius: 60px; font-weight: 700; font-size: 1rem; transition: var(--transition); margin-top: 10px; font-family: inherit; }
+        .product-detail-popup .popup-info .btn-buy-large:hover { background: #b8963a; transform: scale(0.98); }
+
+        .toast-container { position: fixed; top: 100px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; max-width: 360px; width: 100%; pointer-events: none; }
+        .toast-item { background: var(--denim-dark); color: var(--cream); padding: 16px 20px; border-radius: var(--radius-sm); border-left: 4px solid var(--gold-accent); box-shadow: var(--shadow-lg); animation: slideInRight 0.4s ease; pointer-events: all; display: flex; align-items: center; gap: 12px; }
+        .toast-item.success { border-left-color: #2ecc71; }
+        .toast-item.error { border-left-color: #e74c3c; }
+        .toast-item.info { border-left-color: var(--gold-accent); }
+        .toast-item .toast-icon { font-size: 1.2rem; flex-shrink: 0; }
+        .toast-item .toast-msg { font-size: 0.9rem; flex: 1; }
+        .toast-item .toast-close { color: rgba(255, 255, 255, 0.4); font-size: 1.2rem; cursor: pointer; transition: var(--transition); }
+        @keyframes slideInRight { from { opacity: 0; transform: translateX(60px) scale(0.9); } to { opacity: 1; transform: translateX(0) scale(1); } }
+        @keyframes slideOutRight { from { opacity: 1; transform: translateX(0) scale(1); } to { opacity: 0; transform: translateX(60px) scale(0.9); } }
+        .toast-item.removing { animation: slideOutRight 0.3s ease forwards; }
+
+        .carousel-section { position: relative; width: 100%; height: 70vh; min-height: 400px; overflow: hidden; background: var(--denim-dark); border-radius: var(--radius); margin-bottom: 20px; margin-top: 8px; touch-action: pan-y; user-select: none; }
+        @media (max-width: 768px) { .carousel-section { border-radius: 0 !important; margin-top: 0; height: 75vh; } }
+        .carousel-track { display: flex; height: 100%; transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; }
+        .carousel-slide { min-width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 60px; background-size: cover; background-position: center; position: relative; flex-direction: column; }
+        .carousel-slide .overlay-dark { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11, 26, 43, 0.6) 0%, rgba(11, 26, 43, 0.2) 100%); z-index: 1; }
+        .slide-image { font-size: 10rem; color: var(--white); opacity: 0.2; position: absolute; right: -20px; bottom: -30px; z-index: 1; transform: rotate(-10deg); }
+        .slide-image-left { font-size: 8rem; color: var(--white); opacity: 0.15; position: absolute; left: -20px; top: -10px; z-index: 1; transform: rotate(15deg); }
+        .carousel-slide .slide-content { text-align: center; color: var(--white); z-index: 2; max-width: 700px; position: relative; }
+        .carousel-slide .slide-content h2 { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
+        .carousel-slide .slide-content p { font-size: 1.2rem; opacity: 0.9; color: var(--gold-light); text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); }
+        .carousel-slide .slide-content .btn-slide { display: inline-block; margin-top: 20px; background: var(--gold-accent); color: var(--denim-dark); padding: 14px 44px; border-radius: 60px; font-weight: 700; font-size: 1rem; transition: var(--transition); }
+        .carousel-slide .slide-content .btn-slide:hover { transform: scale(1.05); background: #b8963a; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); width: 50px; height: 50px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; z-index: 10; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
+        .carousel-btn:hover { background: var(--gold-accent); border-color: var(--gold-accent); color: var(--denim-dark); }
+        .carousel-btn.prev { left: 20px; } .carousel-btn.next { right: 20px; }
+        .carousel-dots { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 10; }
+        .carousel-dots .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: var(--transition); border: 2px solid transparent; }
+        .carousel-dots .dot.active { background: var(--gold-accent); border-color: var(--gold-light); transform: scale(1.15); }
+
+        .section-title { font-size: 1.6rem; font-weight: 700; color: var(--denim-dark); padding: 32px 0 16px; display: flex; align-items: center; gap: 12px; }
+        .section-title i { color: var(--gold-accent); }
+        .product-carousel-wrapper { position: relative; padding: 0 0 20px; overflow: hidden; }
+        .product-carousel { display: flex; gap: 20px; overflow-x: auto; scroll-behavior: smooth; padding: 8px 4px 20px; scrollbar-width: none; }
+        .product-carousel::-webkit-scrollbar { display: none; }
+        .product-carousel .product-card { flex: 0 0 220px; min-width: 200px; background: var(--white); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid #e8edf2; }
+        .product-carousel .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+        .product-carousel .product-card .img-placeholder { height: 180px; background: var(--denim-light); display: flex; align-items: center; justify-content: center; color: var(--denim-blue); font-size: 3rem; }
+        .product-carousel .product-card .body { padding: 16px; }
+        .product-carousel .product-card .body .tag { display: inline-block; background: var(--gold-accent); color: var(--denim-dark); font-size: 0.6rem; font-weight: 700; padding: 2px 14px; border-radius: 40px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .product-carousel .product-card .body h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
+        .product-carousel .product-card .body .price { font-weight: 700; color: var(--denim-blue); font-size: 1rem; }
+        .product-carousel .product-card .body .price del { color: #8a9aa8; font-weight: 400; font-size: 0.75rem; margin-left: 8px; }
+        .product-carousel .product-card .body .btn-group { display: flex; gap: 8px; margin-top: 10px; }
+        .product-carousel .product-card .body .btn-group .btn-detail { flex: 1; background: var(--denim-dark); color: #fff; padding: 5px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 600; text-align: center; }
+        .product-carousel .product-card .body .btn-group .btn-buy { flex: 1; background: var(--gold-accent); color: var(--denim-dark); padding: 5px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 700; text-align: center; }
+
+        .carousel-scroll-btn { position: absolute; top: 50%; transform: translateY(-50%); background: var(--white); color: var(--denim-dark); border: 1px solid var(--denim-light); width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 5; box-shadow: var(--shadow); transition: var(--transition); display: flex; align-items: center; justify-content: center; }
+        .carousel-scroll-btn.left { left: 8px; } .carousel-scroll-btn.right { right: 8px; }
+
+        .product-grid-wrapper { padding: 0 0 40px; }
+        .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
+        .product-grid .product-card { background: var(--white); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid #e8edf2; }
+        .product-grid .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
+        .product-grid .product-card .img-placeholder { height: 180px; background: var(--denim-light); display: flex; align-items: center; justify-content: center; color: var(--denim-blue); font-size: 3rem; }
+        .product-grid .product-card .body { padding: 16px; }
+        .product-grid .product-card .body .tag { display: inline-block; background: var(--gold-accent); color: var(--denim-dark); font-size: 0.6rem; font-weight: 700; padding: 2px 14px; border-radius: 40px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .product-grid .product-card .body h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
+        .product-grid .product-card .body .price { font-weight: 700; color: var(--denim-blue); font-size: 1.05rem; }
+        .product-grid .product-card .body .price del { color: #8a9aa8; font-weight: 400; font-size: 0.8rem; margin-left: 8px; }
+        .product-grid .product-card .body .btn-group { display: flex; gap: 8px; margin-top: 10px; }
+        .product-grid .product-card .body .btn-group .btn-detail { flex: 1; background: var(--denim-dark); color: #fff; padding: 6px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 600; text-align: center; }
+        .product-grid .product-card .body .btn-group .btn-buy { flex: 1; background: var(--gold-accent); color: var(--denim-dark); padding: 6px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 700; text-align: center; }
+
+        .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 24px; flex-wrap: wrap; }
+        .pagination button { padding: 8px 16px; border-radius: 60px; font-weight: 600; font-size: 0.85rem; background: var(--white); color: var(--denim-dark); border: 1px solid var(--denim-light); transition: var(--transition); cursor: pointer; }
+        .pagination button.active { background: var(--gold-accent); color: var(--denim-dark); border-color: var(--gold-accent); }
+
+        .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; padding: 20px 0 40px; }
+        .feature-item { background: var(--white); border-radius: var(--radius-sm); padding: 20px 16px; text-align: center; box-shadow: var(--shadow); border: 1px solid #e8edf2; }
+        .feature-item i { font-size: 2rem; color: var(--gold-accent); margin-bottom: 8px; }
+        .feature-item h4 { font-weight: 600; font-size: 0.95rem; }
+        .feature-item p { font-size: 0.8rem; color: #5a7a8a; }
+
+        .about-section, .faq-section { padding: 40px 30px 50px; background: var(--white); margin: 0 0 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--denim-light); }
+        .about-section h2, .faq-section h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--denim-dark); margin-bottom: 16px; }
+        .about-section h2 i, .faq-section h2 i { color: var(--gold-accent); }
+        .about-section p { color: var(--denim-navy); line-height: 1.8; font-size: 1rem; max-width: 800px; margin-bottom: 10px; }
+
+        .faq-item { border-bottom: 1px solid var(--denim-light); padding: 14px 0; }
+        .faq-item:last-child { border-bottom: none; }
+        .faq-item .faq-question { display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: 600; color: var(--denim-dark); font-size: 1rem; }
+        .faq-item .faq-question i { color: var(--gold-accent); transition: var(--transition); }
+        .faq-item .faq-question.active i { transform: rotate(180deg); }
+        .faq-item .faq-answer { display: none; padding-top: 10px; color: var(--denim-navy); line-height: 1.6; font-size: 0.95rem; }
+        .faq-item .faq-answer.open { display: block; }
+
+        .footer { background: var(--denim-dark); color: var(--cream); padding: 40px 28px 20px; border-top: 3px solid var(--gold-accent); margin-top: 20px; }
+        .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.2fr; gap: 30px; max-width: 1280px; margin: 0 auto 30px; }
+        .footer-col h4 { font-size: 0.9rem; font-weight: 700; color: var(--gold-light); margin-bottom: 12px; }
+        .footer-col p, .footer-col li { font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); line-height: 1.8; }
+        .footer-col ul { list-style: none; }
+        .footer-col .social-icons { display: flex; gap: 10px; margin-top: 8px; }
+        .footer-col .social-icons a { width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.06); display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.5); transition: var(--transition); }
+        .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 16px; text-align: center; font-size: 0.75rem; color: rgba(255, 255, 255, 0.3); max-width: 1280px; margin: 0 auto; }
 
         @media (max-width: 768px) {
-            .carousel-section {
-                border-radius: 0 !important;
-                margin-top: 0;
-                height: 75vh;
-            }
-        }
-
-        .carousel-track {
-            display: flex;
-            height: 100%;
-            transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
-            will-change: transform;
-        }
-
-        .carousel-slide {
-            min-width: 100%;
-            height: 100%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            padding: 60px 60px;
-            background-size: cover;
-            background-position: center;
-            position: relative;
-            flex-direction: column;
-            touch-action: pan-y;
-        }
-
-        .carousel-slide .overlay-dark {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(135deg, rgba(11, 26, 43, 0.6) 0%, rgba(11, 26, 43, 0.2) 100%);
-            z-index: 1;
-        }
-
-        .slide-image {
-            font-size: 10rem;
-            color: var(--white);
-            opacity: 0.2;
-            position: absolute;
-            right: -20px;
-            bottom: -30px;
-            z-index: 1;
-            transform: rotate(-10deg);
-        }
-
-        .slide-image-left {
-            font-size: 8rem;
-            color: var(--white);
-            opacity: 0.15;
-            position: absolute;
-            left: -20px;
-            top: -10px;
-            z-index: 1;
-            transform: rotate(15deg);
-        }
-
-        .carousel-slide .slide-content {
-            text-align: center;
-            color: var(--white);
-            z-index: 2;
-            max-width: 700px;
-            position: relative;
-        }
-
-        .carousel-slide .slide-content h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 3.5rem;
-            font-weight: 800;
-            letter-spacing: -1px;
-            margin-bottom: 12px;
-            text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);
-        }
-
-        .carousel-slide .slide-content h2 i {
-            color: var(--gold-accent);
-        }
-
-        .carousel-slide .slide-content p {
-            font-size: 1.2rem;
-            opacity: 0.9;
-            color: var(--gold-light);
-            text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2);
-        }
-
-        .carousel-slide .slide-content .btn-slide {
-            display: inline-block;
-            margin-top: 20px;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            padding: 14px 44px;
-            border-radius: 60px;
-            font-weight: 700;
-            font-size: 1rem;
-            transition: var(--transition);
-        }
-
-        .carousel-slide .slide-content .btn-slide:hover {
-            transform: scale(1.05);
-            background: #b8963a;
-        }
-
-        .carousel-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            color: #fff;
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            font-size: 1.3rem;
-            cursor: pointer;
-            z-index: 10;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .carousel-btn:hover {
-            background: var(--gold-accent);
-            border-color: var(--gold-accent);
-            color: var(--denim-dark);
-        }
-
-        .carousel-btn.prev {
-            left: 20px;
-        }
-        .carousel-btn.next {
-            right: 20px;
-        }
-
-        .carousel-dots {
-            position: absolute;
-            bottom: 24px;
-            left: 50%;
-            transform: translateX(-50%);
-            display: flex;
-            gap: 12px;
-            z-index: 10;
-        }
-
-        .carousel-dots .dot {
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.2);
-            cursor: pointer;
-            transition: var(--transition);
-            border: 2px solid transparent;
-        }
-
-        .carousel-dots .dot.active {
-            background: var(--gold-accent);
-            border-color: var(--gold-light);
-            box-shadow: 0 0 30px rgba(201, 168, 76, 0.3);
-            transform: scale(1.15);
-        }
-
-        /* ============================================================
-           SECTION TITLE & PRODUCTS
-           ============================================================ */
-        .section-title {
-            font-size: 1.6rem;
-            font-weight: 700;
-            color: var(--denim-dark);
-            padding: 32px 0 16px;
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .section-title i {
-            color: var(--gold-accent);
-        }
-
-        .product-carousel-wrapper {
-            position: relative;
-            padding: 0 0 20px;
-            overflow: hidden;
-        }
-
-        .product-carousel {
-            display: flex;
-            gap: 20px;
-            overflow-x: auto;
-            scroll-behavior: smooth;
-            padding: 8px 4px 20px;
-            scrollbar-width: none;
-            -webkit-overflow-scrolling: touch;
-        }
-
-        .product-carousel::-webkit-scrollbar {
-            display: none;
-        }
-
-        .product-carousel .product-card {
-            flex: 0 0 220px;
-            min-width: 200px;
-            background: var(--white);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: 1px solid #e8edf2;
-        }
-
-        .product-carousel .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .product-carousel .product-card .img-placeholder {
-            height: 180px;
-            background: var(--denim-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--denim-blue);
-            font-size: 3rem;
-        }
-
-        .product-carousel .product-card .body {
-            padding: 16px;
-        }
-
-        .product-carousel .product-card .body .tag {
-            display: inline-block;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            font-size: 0.6rem;
-            font-weight: 700;
-            padding: 2px 14px;
-            border-radius: 40px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-        }
-
-        .product-carousel .product-card .body h4 {
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .product-carousel .product-card .body .price {
-            font-weight: 700;
-            color: var(--denim-blue);
-            font-size: 1rem;
-        }
-
-        .product-carousel .product-card .body .price del {
-            color: #8a9aa8;
-            font-weight: 400;
-            font-size: 0.75rem;
-            margin-left: 8px;
-        }
-
-        .product-carousel .product-card .body .btn-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .product-carousel .product-card .body .btn-group .btn-detail {
-            flex: 1;
-            background: var(--denim-dark);
-            color: #fff;
-            padding: 5px 12px;
-            border-radius: 60px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            transition: var(--transition);
-            text-align: center;
-        }
-
-        .product-carousel .product-card .body .btn-group .btn-detail:hover {
-            background: var(--denim-blue);
-        }
-
-        .product-carousel .product-card .body .btn-group .btn-buy {
-            flex: 1;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            padding: 5px 12px;
-            border-radius: 60px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            transition: var(--transition);
-            text-align: center;
-        }
-
-        .product-carousel .product-card .body .btn-group .btn-buy:hover {
-            background: #b8963a;
-            transform: scale(0.97);
-        }
-
-        .carousel-scroll-btn {
-            position: absolute;
-            top: 50%;
-            transform: translateY(-50%);
-            background: var(--white);
-            color: var(--denim-dark);
-            border: 1px solid var(--denim-light);
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            font-size: 1.2rem;
-            cursor: pointer;
-            z-index: 5;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .carousel-scroll-btn:hover {
-            background: var(--gold-accent);
-            color: var(--white);
-            border-color: var(--gold-accent);
-        }
-
-        .carousel-scroll-btn.left {
-            left: 8px;
-        }
-        .carousel-scroll-btn.right {
-            right: 8px;
-        }
-
-        .product-grid-wrapper {
-            padding: 0 0 40px;
-        }
-
-        .product-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
-        }
-
-        .product-grid .product-card {
-            background: var(--white);
-            border-radius: var(--radius-sm);
-            overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: 1px solid #e8edf2;
-        }
-
-        .product-grid .product-card:hover {
-            transform: translateY(-6px);
-            box-shadow: var(--shadow-lg);
-        }
-
-        .product-grid .product-card .img-placeholder {
-            height: 180px;
-            background: var(--denim-light);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--denim-blue);
-            font-size: 3rem;
-        }
-
-        .product-grid .product-card .body {
-            padding: 16px;
-        }
-
-        .product-grid .product-card .body .tag {
-            display: inline-block;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            font-size: 0.6rem;
-            font-weight: 700;
-            padding: 2px 14px;
-            border-radius: 40px;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 6px;
-        }
-
-        .product-grid .product-card .body h4 {
-            font-size: 0.95rem;
-            font-weight: 600;
-            margin-bottom: 4px;
-        }
-
-        .product-grid .product-card .body .price {
-            font-weight: 700;
-            color: var(--denim-blue);
-            font-size: 1.05rem;
-        }
-
-        .product-grid .product-card .body .price del {
-            color: #8a9aa8;
-            font-weight: 400;
-            font-size: 0.8rem;
-            margin-left: 8px;
-        }
-
-        .product-grid .product-card .body .btn-group {
-            display: flex;
-            gap: 8px;
-            margin-top: 10px;
-        }
-
-        .product-grid .product-card .body .btn-group .btn-detail {
-            flex: 1;
-            background: var(--denim-dark);
-            color: #fff;
-            padding: 6px 12px;
-            border-radius: 60px;
-            font-size: 0.7rem;
-            font-weight: 600;
-            transition: var(--transition);
-            text-align: center;
-        }
-
-        .product-grid .product-card .body .btn-group .btn-detail:hover {
-            background: var(--denim-blue);
-        }
-
-        .product-grid .product-card .body .btn-group .btn-buy {
-            flex: 1;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            padding: 6px 12px;
-            border-radius: 60px;
-            font-size: 0.7rem;
-            font-weight: 700;
-            transition: var(--transition);
-            text-align: center;
-        }
-
-        .product-grid .product-card .body .btn-group .btn-buy:hover {
-            background: #b8963a;
-            transform: scale(0.97);
-        }
-
-        .pagination {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 8px;
-            margin-top: 24px;
-            flex-wrap: wrap;
-        }
-
-        .pagination button {
-            padding: 8px 16px;
-            border-radius: 60px;
-            font-weight: 600;
-            font-size: 0.85rem;
-            background: var(--white);
-            color: var(--denim-dark);
-            border: 1px solid var(--denim-light);
-            transition: var(--transition);
-            cursor: pointer;
-        }
-
-        .pagination button:hover {
-            background: var(--denim-blue);
-            color: var(--white);
-            border-color: var(--denim-blue);
-        }
-
-        .pagination button.active {
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            border-color: var(--gold-accent);
-        }
-
-        .pagination button:disabled {
-            opacity: 0.4;
-            cursor: not-allowed;
-        }
-
-        /* ============================================================
-           FEATURES, ABOUT, FAQ
-           ============================================================ */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
-            gap: 16px;
-            padding: 20px 0 40px;
-        }
-
-        .feature-item {
-            background: var(--white);
-            border-radius: var(--radius-sm);
-            padding: 20px 16px;
-            text-align: center;
-            box-shadow: var(--shadow);
-            border: 1px solid #e8edf2;
-        }
-
-        .feature-item i {
-            font-size: 2rem;
-            color: var(--gold-accent);
-            margin-bottom: 8px;
-        }
-
-        .feature-item h4 {
-            font-weight: 600;
-            font-size: 0.95rem;
-        }
-
-        .feature-item p {
-            font-size: 0.8rem;
-            color: #5a7a8a;
-        }
-
-        .about-section {
-            padding: 40px 30px 50px;
-            background: var(--white);
-            margin: 0 0 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--denim-light);
-        }
-
-        .about-section h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--denim-dark);
-            margin-bottom: 16px;
-        }
-
-        .about-section h2 i {
-            color: var(--gold-accent);
-        }
-
-        .about-section p {
-            color: var(--denim-navy);
-            line-height: 1.8;
-            font-size: 1rem;
-            max-width: 800px;
-            margin-bottom: 10px;
-        }
-
-        .faq-section {
-            padding: 40px 30px 50px;
-            background: var(--white);
-            margin: 0 0 20px;
-            border-radius: var(--radius);
-            box-shadow: var(--shadow);
-            border: 1px solid var(--denim-light);
-        }
-
-        .faq-section h2 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--denim-dark);
-            margin-bottom: 16px;
-        }
-
-        .faq-section h2 i {
-            color: var(--gold-accent);
-        }
-
-        .faq-item {
-            border-bottom: 1px solid var(--denim-light);
-            padding: 14px 0;
-        }
-
-        .faq-item:last-child {
-            border-bottom: none;
-        }
-
-        .faq-item .faq-question {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            font-weight: 600;
-            color: var(--denim-dark);
-            font-size: 1rem;
-        }
-
-        .faq-item .faq-question i {
-            color: var(--gold-accent);
-            transition: var(--transition);
-        }
-
-        .faq-item .faq-question.active i {
-            transform: rotate(180deg);
-        }
-
-        .faq-item .faq-answer {
-            display: none;
-            padding-top: 10px;
-            color: var(--denim-navy);
-            line-height: 1.6;
-            font-size: 0.95rem;
-        }
-
-        .faq-item .faq-answer.open {
-            display: block;
-        }
-
-        /* ============================================================
-           FOOTER
-           ============================================================ */
-        .footer {
-            background: var(--denim-dark);
-            color: var(--cream);
-            padding: 40px 28px 20px;
-            border-top: 3px solid var(--gold-accent);
-            margin-top: 20px;
-        }
-
-        .footer-grid {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr 1fr 1.2fr;
-            gap: 30px;
-            max-width: 1280px;
-            margin: 0 auto 30px;
-        }
-
-        .footer-col h4 {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--gold-light);
-            margin-bottom: 12px;
-            letter-spacing: 0.5px;
-        }
-
-        .footer-col p,
-        .footer-col li {
-            font-size: 0.8rem;
-            color: rgba(255, 255, 255, 0.6);
-            line-height: 1.8;
-        }
-
-        .footer-col ul {
-            list-style: none;
-        }
-
-        .footer-col ul li {
-            padding: 2px 0;
-            cursor: pointer;
-            transition: var(--transition);
-        }
-
-        .footer-col ul li:hover {
-            color: var(--gold-light);
-        }
-
-        .footer-col .social-icons {
-            display: flex;
-            gap: 10px;
-            margin-top: 8px;
-        }
-
-        .footer-col .social-icons a {
-            width: 36px;
-            height: 36px;
-            border-radius: 50%;
-            background: rgba(255, 255, 255, 0.06);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: rgba(255, 255, 255, 0.5);
-            transition: var(--transition);
-            font-size: 0.9rem;
-        }
-
-        .footer-col .social-icons a:hover {
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-        }
-
-        .footer-bottom {
-            border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 16px;
-            text-align: center;
-            font-size: 0.75rem;
-            color: rgba(255, 255, 255, 0.3);
-            max-width: 1280px;
-            margin: 0 auto;
-        }
-
-        /* ============================================================
-           RESPONSIVE
-           ============================================================ */
-        @media (max-width: 768px) {
-            body {
-                padding-top: 64px;
-            }
-
-            .app-container {
-                padding: 0 0px;
-            }
-
-            .navbar {
-                padding: 10px 16px;
-                height: 64px;
-            }
-
-            .navbar .logo {
-                font-size: 1.1rem;
-            }
-            .navbar .logo i {
-                font-size: 1.2rem;
-            }
-            .navbar .logo span {
-                font-size: 0.6rem;
-            }
-
-            .nav-menu {
-                display: none !important;
-            }
-            .nav-actions {
-                display: none !important;
-            }
-            .btn-nav {
-                display: none !important;
-            }
-
-            .burger-btn {
-                display: flex !important;
-            }
-            .search-icon-hp {
-                display: flex !important;
-            }
-            .cart-hp {
-                display: flex !important;
-            }
-
-            .sidebar {
-                display: flex;
-            }
-            .sidebar-overlay {
-                display: block;
-            }
-
-            .carousel-section {
-                height: 75vh;
-                min-height: 350px;
-                border-radius: 0 !important;
-            }
-            .carousel-slide {
-                padding: 30px 24px;
-            }
-            .carousel-slide .slide-content h2 {
-                font-size: 2rem;
-            }
-            .carousel-slide .slide-content p {
-                font-size: 0.95rem;
-            }
-            .carousel-slide .slide-content .btn-slide {
-                padding: 10px 28px;
-                font-size: 0.85rem;
-            }
-            .slide-image {
-                font-size: 6rem;
-                right: -20px;
-                bottom: -10px;
-            }
-            .slide-image-left {
-                font-size: 5rem;
-                left: -20px;
-                top: -5px;
-            }
-            .carousel-btn {
-                width: 36px;
-                height: 36px;
-                font-size: 0.9rem;
-            }
-            .carousel-btn.prev {
-                left: 8px;
-            }
-            .carousel-btn.next {
-                right: 8px;
-            }
-
-            .product-carousel .product-card {
-                flex: 0 0 170px;
-                min-width: 150px;
-            }
-            .product-carousel .product-card .img-placeholder {
-                height: 140px;
-                font-size: 2.2rem;
-            }
-            .product-grid {
-                grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-                gap: 14px;
-            }
-            .product-grid .product-card .img-placeholder {
-                height: 140px;
-                font-size: 2.2rem;
-            }
-            .section-title {
-                font-size: 1.3rem;
-                padding: 24px 0 12px;
-            }
-            .features {
-                padding: 12px 0 30px;
-                gap: 12px;
-            }
-            .product-carousel-wrapper {
-                padding: 0 0 10px;
-            }
-            .product-grid-wrapper {
-                padding: 0 0 30px;
-            }
-            .carousel-scroll-btn {
-                width: 32px;
-                height: 32px;
-                font-size: 0.9rem;
-            }
-            .carousel-scroll-btn.left {
-                left: 4px;
-            }
-            .carousel-scroll-btn.right {
-                right: 4px;
-            }
-
-            .about-section,
-            .faq-section {
-                padding: 24px 18px 30px;
-                margin: 0 0 16px;
-            }
-            .about-section h2,
-            .faq-section h2 {
-                font-size: 1.5rem;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 20px;
-            }
-
-            .popup-overlay .popup-box {
-                max-width: 95%;
-                padding: 20px 16px 24px;
-            }
-
-            .toast-container {
-                top: 80px;
-                right: 10px;
-                max-width: 300px;
-            }
-
-            .product-detail-popup .popup-grid {
-                grid-template-columns: 1fr;
-                gap: 16px;
-            }
-            .product-detail-popup .popup-image {
-                min-height: 180px;
-                font-size: 3.5rem;
-            }
-            .product-detail-popup .popup-info .popup-options {
-                grid-template-columns: 1fr;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .carousel-section {
-                height: 75vh;
-                min-height: 300px;
-            }
-            .carousel-slide .slide-content h2 {
-                font-size: 1.6rem;
-            }
-            .carousel-slide .slide-content p {
-                font-size: 0.8rem;
-            }
-            .carousel-slide .slide-content .btn-slide {
-                padding: 8px 20px;
-                font-size: 0.75rem;
-            }
-            .slide-image {
-                font-size: 4.5rem;
-                right: -15px;
-                bottom: -5px;
-            }
-            .slide-image-left {
-                font-size: 3.5rem;
-                left: -15px;
-                top: -5px;
-            }
-            .carousel-btn {
-                width: 30px;
-                height: 30px;
-                font-size: 0.7rem;
-            }
-            .carousel-btn.prev {
-                left: 4px;
-            }
-            .carousel-btn.next {
-                right: 4px;
-            }
-
-            .product-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 10px;
-            }
-            .product-grid .product-card .img-placeholder {
-                height: 120px;
-                font-size: 1.8rem;
-            }
-            .product-grid .product-card .body {
-                padding: 10px;
-            }
-            .product-grid .product-card .body h4 {
-                font-size: 0.75rem;
-            }
-            .product-grid .product-card .body .price {
-                font-size: 0.8rem;
-            }
-            .product-grid .product-card .body .btn-group .btn-detail,
-            .product-grid .product-card .body .btn-group .btn-buy {
-                font-size: 0.55rem;
-                padding: 4px 8px;
-            }
-
-            .product-carousel .product-card {
-                flex: 0 0 150px;
-                min-width: 130px;
-            }
-            .product-carousel .product-card .img-placeholder {
-                height: 120px;
-                font-size: 1.8rem;
-            }
-
-            .footer-grid {
-                grid-template-columns: 1fr 1fr;
-                gap: 16px;
-            }
-            .footer {
-                padding: 24px 16px 16px;
-            }
-
-            .toast-container {
-                top: 70px;
-                right: 8px;
-                max-width: 260px;
-            }
-            .toast-item {
-                padding: 12px 14px;
-                font-size: 0.8rem;
-            }
-
-            .product-detail-popup .popup-image {
-                min-height: 140px;
-                font-size: 2.5rem;
-            }
-            .product-detail-popup .popup-content {
-                padding: 16px 12px 20px;
-            }
-            .product-detail-popup .popup-info h2 {
-                font-size: 1rem;
-            }
-            .product-detail-popup .popup-info .popup-specs {
-                grid-template-columns: 1fr;
-                gap: 2px;
-            }
-        }
-
-        @media (min-width: 769px) {
-            .burger-btn {
-                display: none !important;
-            }
-            .sidebar {
-                display: none !important;
-            }
-            .sidebar-overlay {
-                display: none !important;
-            }
-            .nav-menu {
-                display: flex !important;
-            }
-            .nav-actions {
-                display: flex !important;
-            }
-            .search-icon-hp {
-                display: none !important;
-            }
-            .cart-hp {
-                display: none !important;
-            }
-            .btn-nav {
-                display: flex !important;
-            }
+            body { padding-top: 64px; }
+            .navbar { padding: 10px 16px; height: 64px; }
+            .nav-menu, .nav-actions, .btn-nav { display: none !important; }
+            .burger-btn, .search-icon-hp, .cart-hp { display: flex !important; }
+            .sidebar, .sidebar-overlay { display: block; }
+            .carousel-section { height: 75vh; min-height: 350px; border-radius: 0 !important; }
+            .carousel-slide { padding: 30px 24px; }
+            .product-carousel .product-card { flex: 0 0 170px; min-width: 150px; }
+            .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
+            .footer-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
         }
     </style>
 </head>
 <body>
 
-    <!-- ============================================================
-    TOAST CONTAINER
-    ============================================================ -->
     <div class="toast-container" id="toastContainer"></div>
 
-    <!-- ============================================================
-    NAVBAR
-    ============================================================ -->
     <header class="navbar" id="navbar">
-        <div class="logo">
+        <div class="logo" id="headerLogo">
             <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
         </div>
 
@@ -1841,8 +252,8 @@
                 <span class="badge">0</span>
             </span>
 
-            <a href="login.html" class="btn-nav btn-nav-outline">Login</a>
-            <a href="register.html" class="btn-nav btn-nav-gold">Daftar</a>
+            <a href="login.html" class="btn-nav btn-nav-outline" id="navAuthBtn">Login</a>
+            <a href="register.html" class="btn-nav btn-nav-gold" id="navRegBtn">Daftar</a>
 
             <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
@@ -1850,9 +261,6 @@
         </div>
     </header>
 
-    <!-- ============================================================
-    SIDEBAR (HP ONLY)
-    ============================================================ -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -1869,9 +277,6 @@
         <a href="register.html" class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</a>
     </nav>
 
-    <!-- ============================================================
-    POPUP SEARCH
-    ============================================================ -->
     <div class="popup-overlay" id="searchPopup">
         <div class="popup-box">
             <button class="close-popup" id="closeSearchPopup">&times;</button>
@@ -1885,25 +290,19 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    POPUP TRACK
-    ============================================================ -->
     <div class="popup-overlay" id="trackPopup">
         <div class="popup-box">
             <button class="close-popup" id="closeTrackPopup">&times;</button>
             <h3><i class="fas fa-truck" style="color:var(--gold-accent);"></i> Lacak Pesanan</h3>
             <p class="sub">Masukkan nomor pesanan Anda</p>
             <div class="popup-form">
-                <input type="text" id="trackInputPopup" placeholder="Contoh: HDT-2024-001" />
+                <input type="text" id="trackInputPopup" placeholder="Contoh: ORD-123456" />
                 <button id="trackBtnPopup"><i class="fas fa-search"></i> Lacak</button>
             </div>
             <div class="popup-result" id="trackResultPopup"></div>
         </div>
     </div>
 
-    <!-- ============================================================
-    POPUP CART
-    ============================================================ -->
     <div class="popup-overlay" id="cartPopup">
         <div class="popup-box">
             <button class="close-popup" id="closeCartPopup">&times;</button>
@@ -1914,9 +313,6 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    PRODUCT DETAIL POPUP
-    ============================================================ -->
     <div class="popup-overlay product-detail-popup" id="productDetailPopup">
         <div class="popup-box">
             <button class="close-popup" id="closeDetailPopup">&times;</button>
@@ -1935,26 +331,8 @@
                         <span><span class="label">Stok</span> <span id="detailStock">45</span></span>
                     </div>
                     <div class="popup-options">
-                        <select id="detailSize">
-                            <option value="28">Size 28</option>
-                            <option value="29">Size 29</option>
-                            <option value="30" selected>Size 30</option>
-                            <option value="31">Size 31</option>
-                            <option value="32">Size 32</option>
-                            <option value="33">Size 33</option>
-                            <option value="34">Size 34</option>
-                            <option value="36">Size 36</option>
-                            <option value="38">Size 38</option>
-                            <option value="40">Size 40</option>
-                        </select>
-                        <select id="detailColor">
-                            <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option>
-                            <option value="Black Stretch">Black Stretch</option>
-                            <option value="Light Wash">Light Wash</option>
-                            <option value="Dark Navy">Dark Navy</option>
-                            <option value="Grey Stone">Grey Stone</option>
-                            <option value="White">White</option>
-                        </select>
+                        <select id="detailSize"></select>
+                        <select id="detailColor"></select>
                     </div>
                     <button class="btn-buy-large" id="detailBuyBtn"><i class="fas fa-shopping-bag"></i> Beli Sekarang</button>
                 </div>
@@ -1962,22 +340,15 @@
         </div>
     </div>
 
-    <!-- ============================================================
-    MAIN CONTENT
-    ============================================================ -->
     <div class="app-container" id="home">
 
-        <!-- CAROUSEL -->
         <section class="carousel-section" id="carouselSection">
-            <div class="carousel-track" id="carouselTrack">
-                <!-- Akan diisi dari localStorage -->
-            </div>
+            <div class="carousel-track" id="carouselTrack"></div>
             <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
             <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
             <div class="carousel-dots" id="carouselDots"></div>
         </section>
 
-        <!-- PRODUK FAVORIT -->
         <h2 class="section-title"><i class="fas fa-heart" style="color:var(--gold-accent);"></i> PRODUK FAVORIT</h2>
         <div class="product-carousel-wrapper">
             <button class="carousel-scroll-btn left" id="favScrollLeft"><i class="fas fa-chevron-left"></i></button>
@@ -1985,77 +356,36 @@
             <div class="product-carousel" id="favoriteCarousel"></div>
         </div>
 
-        <!-- PRODUK POPULER -->
         <h2 class="section-title" id="products"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
         <div class="product-grid-wrapper">
             <div class="product-grid" id="productGrid"></div>
             <div class="pagination" id="pagination"></div>
         </div>
 
-        <!-- TENTANG KAMI -->
         <div class="about-section" id="about">
             <h2><i class="fas fa-info-circle"></i> Tentang Kami</h2>
-            <p><strong>HEDTRO JEANS</strong> adalah brand denim premium yang menghadirkan celana jeans berkualitas tinggi dengan bahan raw denim 14oz pilihan. Kami berkomitmen untuk memberikan produk dengan kualitas terbaik, desain ikonik, dan harga yang kompetitif.</p>
-            <p>Sejak 1873, kami menghadirkan gaya denim klasik yang tetap relevan sepanjang masa. Setiap produk kami melalui proses seleksi ketat untuk memastikan kepuasan pelanggan.</p>
-            <p><i class="fas fa-check-circle" style="color:var(--gold-accent);"></i> 100% Bahan Premium &nbsp; <i class="fas fa-check-circle" style="color:var(--gold-accent);"></i> Desain Ikonik &nbsp; <i class="fas fa-check-circle" style="color:var(--gold-accent);"></i> Garansi 30 Hari</p>
+            <div id="aboutContainer"></div>
         </div>
 
-        <!-- FAQ -->
         <div class="faq-section" id="faq">
             <h2><i class="fas fa-question-circle"></i> Pertanyaan yang Sering Diajukan</h2>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span>Bagaimana cara menjadi member?</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">Anda dapat mendaftar melalui tombol Daftar di navbar. Isi data diri lengkap dan verifikasi email untuk mengaktifkan akun member.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span>Apakah produk HEDTRO 100% original?</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">Ya, semua produk HEDTRO JEANS adalah 100% original dengan bahan raw denim berkualitas ekspor. Setiap produk dilengkapi dengan nomor seri keaslian.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span>Bagaimana cara melacak pesanan saya?</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">Klik tombol Lacak di navbar, masukkan nomor pesanan Anda. Status pengiriman akan ditampilkan secara real-time.</div>
-            </div>
-            <div class="faq-item">
-                <div class="faq-question" onclick="toggleFaq(this)">
-                    <span>Apa itu sistem MLM di HEDTRO?</span>
-                    <i class="fas fa-chevron-down"></i>
-                </div>
-                <div class="faq-answer">HEDTRO menggunakan sistem afiliasi MLM dengan bonus sponsor, binary 10 level, reward 5 level, dan RO produk. Member bisa mendapatkan komisi dari penjualan dan jaringan downline.</div>
-            </div>
+            <div id="faqContainer"></div>
         </div>
 
-        <!-- FEATURES -->
-        <div class="features" id="featuresContainer">
-            <div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz bermutu tinggi</p></div>
-            <div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Pengiriman cepat seluruh Indonesia</p></div>
-            <div class="feature-item"><i class="fas fa-exchange-alt"></i><h4>GARANSI 30 HARI</h4><p>Penukaran size tanpa ribet</p></div>
-            <div class="feature-item"><i class="fas fa-user-tie"></i><h4>HARGA MEMBER</h4><p>Potongan untuk pemilik lisensi</p></div>
-        </div>
+        <div class="features" id="featuresContainer"></div>
 
     </div>
 
-    <!-- ============================================================
-    FOOTER
-    ============================================================ -->
     <footer class="footer" id="mainFooter">
         <div class="footer-grid">
             <div class="footer-col">
-                <h4><i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> HEDTRO JEANS</h4>
-                <p>Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.</p>
+                <h4 id="footerBrandTitle"><i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> HEDTRO JEANS</h4>
+                <p id="footerBrandDesc">Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor.</p>
                 <div class="social-icons">
-                    <a href="#"><i class="fab fa-instagram"></i></a>
-                    <a href="#"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#"><i class="fab fa-youtube"></i></a>
-                    <a href="#"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" id="socInsta"><i class="fab fa-instagram"></i></a>
+                    <a href="#" id="socFb"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" id="socYt"><i class="fab fa-youtube"></i></a>
+                    <a href="#" id="socTt"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
             <div class="footer-col">
@@ -2065,7 +395,6 @@
                     <li>Celana Jeans Wanita</li>
                     <li>Jaket Denim</li>
                     <li>Aksesoris</li>
-                    <li>Limited Edition</li>
                 </ul>
             </div>
             <div class="footer-col">
@@ -2074,193 +403,88 @@
                     <li>Panduan Belanja</li>
                     <li>Lacak Pesanan</li>
                     <li>Pengembalian Produk</li>
-                    <li>Syarat & Ketentuan</li>
-                    <li>Kebijakan Privasi</li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Hubungi Kami</h4>
                 <p><i class="fas fa-envelope" style="color:var(--gold-accent);"></i> cs@hedtrojeans.com</p>
                 <p><i class="fas fa-phone" style="color:var(--gold-accent);"></i> +62 812 3456 7890</p>
-                <p><i class="fas fa-map-marker-alt" style="color:var(--gold-accent);"></i> Jakarta, Indonesia</p>
-                <p style="margin-top:6px;"><strong>Jam Operasional:</strong><br />Senin - Jumat 09:00 - 21:00</p>
             </div>
         </div>
-        <div class="footer-bottom">&copy; 2026 HEDTRO JEANS · All Rights Reserved</div>
+        <div class="footer-bottom" id="footerCopy">&copy; 2026 HEDTRO JEANS · All Rights Reserved</div>
     </footer>
 
-    <!-- ============================================================
-    JAVASCRIPT
-    ============================================================ -->
     <script>
         (function() {
             'use strict';
 
-            // ============================================================
-            // FUNGSI MEMBACA DATA DARI LOCALSTORAGE
-            // ============================================================
-            function loadSlides() {
-                try { return JSON.parse(localStorage.getItem('hedtro_slides') || '[]'); } catch(e) { return []; }
+            const DB_KEY = 'hedtro_mlm_users';
+            const PRODUCT_KEY = 'hedtro_products';
+            const ORDER_KEY = 'hedtro_orders';
+            const TRANSACTION_KEY = 'hedtro_transactions';
+            const SESSION_KEY = 'mlm_session';
+
+            function loadUsers() { try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch(e) { return []; } }
+            function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
+            function loadProductsFromDB() { try { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); } catch(e) { return []; } }
+            function saveProductsToDB(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
+            function loadOrders() { try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); } catch(e) { return []; } }
+            function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
+            function loadTransactions() { try { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); } catch(e) { return []; } }
+            function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
+            function loadSettings() { try { return JSON.parse(localStorage.getItem('hedtro_settings') || '{}'); } catch(e) { return {}; } }
+            function loadSlides() { try { return JSON.parse(localStorage.getItem('hedtro_slides') || '[]'); } catch(e) { return []; } }
+            function loadAbout() { try { return JSON.parse(localStorage.getItem('hedtro_about') || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}'); } catch(e) { return {title:'Tentang Kami', content:''}; } }
+            function loadFaq() { try { return JSON.parse(localStorage.getItem('hedtro_faq') || '[]'); } catch(e) { return []; } }
+            function loadFeatures() { try { return JSON.parse(localStorage.getItem('hedtro_features') || '[]'); } catch(e) { return []; } }
+            function loadFooter() { try { return JSON.parse(localStorage.getItem('hedtro_footer') || '{}'); } catch(e) { return {}; } }
+
+            function getSession() {
+                const s = localStorage.getItem(SESSION_KEY);
+                if (!s) return null;
+                try { return JSON.parse(s); } catch(e) { return null; }
             }
 
-            function loadAbout() {
-                try {
-                    return JSON.parse(localStorage.getItem('hedtro_about') || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium yang menghadirkan celana jeans berkualitas tinggi dengan bahan raw denim 14oz pilihan. Kami berkomitmen untuk memberikan produk dengan kualitas terbaik, desain ikonik, dan harga yang kompetitif.</p><p>Sejak 1873, kami menghadirkan gaya denim klasik yang tetap relevan sepanjang masa. Setiap produk kami melalui proses seleksi ketat untuk memastikan kepuasan pelanggan.</p><p><i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> 100% Bahan Premium &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Desain Ikonik &nbsp; <i class=\\"fas fa-check-circle\\" style=\\"color:var(--gold-accent);\\"></i> Garansi 30 Hari</p>"}');
-                } catch(e) { return { title: "Tentang Kami", content: "" }; }
-            }
+            function getNextId(arr) { return arr && arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
-            function loadFaq() {
-                try { return JSON.parse(localStorage.getItem('hedtro_faq') || '[]'); } catch(e) { return []; }
-            }
-
-            function loadFeatures() {
-                try { return JSON.parse(localStorage.getItem('hedtro_features') || '[]'); } catch(e) { return []; }
-            }
-
-            function loadFooter() {
-                try {
-                    return JSON.parse(localStorage.getItem('hedtro_footer') || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.","copyright":"&copy; 2026 HEDTRO JEANS · All Rights Reserved","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}');
-                } catch(e) { return { brand: "HEDTRO JEANS", desc: "", copyright: "", social: {} }; }
-            }
-
-            function loadProductsFromDB() {
-                try { return JSON.parse(localStorage.getItem('hedtro_products') || '[]'); } catch(e) { return []; }
-            }
-
-            function loadSettings() {
-                try {
-                    return JSON.parse(localStorage.getItem('hedtro_settings') || '{"sponsorBonus":10,"binaryBonus":8,"rewardBonus":5,"roBonus":3,"memberPrice":550000,"brandName":"HEDTRO JEANS","brandLogo":"fa-tshirt","heroTitle":"HEDTRO JEANS · Premium Denim"}');
-                } catch(e) { return {}; }
-            }
-
-            // ============================================================
-            // TOAST
-            // ============================================================
             function showToast(message, type = 'info', duration = 3000) {
                 const container = document.getElementById('toastContainer');
-                const icons = {
-                    success: 'fas fa-check-circle',
-                    error: 'fas fa-exclamation-circle',
-                    info: 'fas fa-info-circle'
-                };
+                const icons = { success: 'fas fa-check-circle', error: 'fas fa-exclamation-circle', info: 'fas fa-info-circle' };
                 const toast = document.createElement('div');
                 toast.className = `toast-item ${type}`;
-                toast.innerHTML = `
-                    <span class="toast-icon"><i class="${icons[type] || icons.info}"></i></span>
-                    <span class="toast-msg">${message}</span>
-                    <span class="toast-close">&times;</span>
-                `;
+                toast.innerHTML = `<span class="toast-icon"><i class="${icons[type] || icons.info}"></i></span><span class="toast-msg">${message}</span><span class="toast-close">&times;</span>`;
                 container.appendChild(toast);
-                const closeBtn = toast.querySelector('.toast-close');
-                closeBtn.addEventListener('click', function() {
-                    if (toast.classList.contains('removing')) return;
-                    toast.classList.add('removing');
-                    setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
-                });
-                setTimeout(() => {
-                    if (toast.classList.contains('removing')) return;
-                    toast.classList.add('removing');
-                    setTimeout(() => { if (toast.parentNode) toast.parentNode.removeChild(toast); }, 300);
-                }, duration);
+                toast.querySelector('.toast-close').addEventListener('click', () => toast.remove());
+                setTimeout(() => toast.remove(), duration);
             }
 
-            // ============================================================
-            // DATA PRODUK (default jika localStorage kosong)
-            // ============================================================
             let allProducts = [];
-
             function initProducts() {
-                const dbProducts = loadProductsFromDB();
-                if (dbProducts.length > 0) {
-                    allProducts = dbProducts;
-                } else {
-                    // Default products
+                const dbP = loadProductsFromDB();
+                if (dbP.length > 0) { allProducts = dbP; }
+                else {
                     allProducts = [
-                        { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER',
-                            icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', sizes: ['28', '29', '30',
-                                '31', '32'
-                            ], colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
-                            desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet.', image: null },
-                        { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL',
-                            icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', sizes: ['30', '32', '34'],
-                            colors: ['Raw Denim', 'Dark Navy'],
-                            desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor.', image: null },
-                        { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM',
-                            icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', sizes: ['29', '30', '31',
-                                '32'
-                            ], colors: ['Black Stretch', 'Grey Stone'],
-                            desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual. Sangat fleksibel (high stretch).', image: null },
-                        { id: 4, name: 'Light Wash Retro 90s', price: 270000, original: 370000, tag: 'DISKON 27%',
-                            icon: 'fa-tshirt', favorite: true, stock: 18, serial: 'HDT-SERI-004', sizes: ['28', '29', '30',
-                                '31'
-                            ], colors: ['Light Wash', 'Indigo Blue Raw Denim'],
-                            desc: 'Tampilan retro klasik tahun 90-an dengan efek pencucian warna muda (light wash) yang kasual.', image: null },
-                        { id: 5, name: 'Trucker Jacket Heritage Raw', price: 420000, original: 550000, tag: 'LIMITED',
-                            icon: 'fa-jacket', favorite: true, stock: 20, serial: 'HDT-SERI-005', sizes: ['S', 'M', 'L',
-                                'XL'
-                            ], colors: ['Raw Denim', 'Dark Navy'],
-                            desc: 'Jaket denim ikonik berbahan rigid denim 14.5oz dengan saku ganda di dada.', image: null },
-                        { id: 6, name: 'High Waist Skinny Wanita 721', price: 280000, original: 380000, tag: 'POPULER',
-                            icon: 'fa-tshirt', favorite: false, stock: 35, serial: 'HDT-SERI-006', sizes: ['25', '26', '27',
-                                '28'
-                            ], colors: ['Indigo Blue Raw Denim', 'Black Stretch'],
-                            desc: 'Celana jeans wanita potongan high-waist yang membentuk lekuk pinggang secara sempurna.', image: null },
-                        { id: 7, name: 'Genuine Leather Belt Vintage', price: 120000, original: 180000, tag: 'AKSESORIS',
-                            icon: 'fa-belt', favorite: false, stock: 50, serial: 'HDT-SERI-007', sizes: ['M', 'L', 'XL'],
-                            colors: ['Vintage Brown', 'Black'],
-                            desc: 'Ikat pinggang kulit sapi asli 100% dengan kepala gesper kuningan antik.', image: null },
-                        { id: 8, name: 'Oversized Shirt Vintage Wash', price: 230000, original: 320000, tag: 'FAVORIT',
-                            icon: 'fa-tshirt', favorite: false, stock: 22, serial: 'HDT-SERI-008', sizes: ['S', 'M', 'L',
-                                'XL'
-                            ], colors: ['Vintage Wash', 'Light Wash'],
-                            desc: 'Kemeja denim kasual berbahan katun ringan 8oz yang lembut.', image: null },
-                        { id: 9, name: 'Slim Fit Black Raw Denim', price: 260000, original: 360000, tag: 'NEW',
-                            icon: 'fa-tshirt', favorite: false, stock: 28, serial: 'HDT-SERI-009', sizes: ['28', '29', '30',
-                                '31', '32'
-                            ], colors: ['Black Raw Denim', 'Indigo Blue Raw Denim'],
-                            desc: 'Hitam pekat raw denim, slim fit modern.', image: null },
-                        { id: 10, name: 'Cropped Trucker Jacket', price: 390000, original: 500000, tag: 'TRENDY',
-                            icon: 'fa-jacket', favorite: false, stock: 15, serial: 'HDT-SERI-010', sizes: ['S', 'M', 'L'],
-                            colors: ['Blue Denim', 'Black'],
-                            desc: 'Jaket cropped pendek, gaya kekinian.', image: null },
-                        { id: 11, name: 'Denim Bucket Hat', price: 85000, original: 120000, tag: 'AKSESORIS',
-                            icon: 'fa-hat-cowboy', favorite: false, stock: 40, serial: 'HDT-SERI-011', sizes: ['One Size'],
-                            colors: ['Blue Denim', 'Light Wash'],
-                            desc: 'Topi bucket denim, adjustable, nyaman.', image: null },
-                        { id: 12, name: 'Canvas Tote Bag Denim', price: 150000, original: 200000, tag: 'AKSESORIS',
-                            icon: 'fa-shopping-bag', favorite: false, stock: 25, serial: 'HDT-SERI-012', sizes: ['One Size'],
-                            colors: ['Denim Blue', 'Natural'],
-                            desc: 'Tas kanvas denim, besar, cocok untuk daily.', image: null }
+                        { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', sizes: ['28', '29', '30', '31', '32'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'], desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet.', image: null },
+                        { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', sizes: ['30', '32', '34'], colors: ['Raw Denim', 'Dark Navy'], desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor.', image: null },
+                        { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', sizes: ['29', '30', '31', '32'], colors: ['Black Stretch', 'Grey Stone'], desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual.', image: null }
                     ];
+                    saveProductsToDB(allProducts);
                 }
             }
 
-            // ============================================================
-            // CART STATE
-            // ============================================================
             let cartItems = [];
-
             function updateCartUI() {
                 const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
                 document.querySelectorAll('.badge').forEach(el => el.textContent = totalItems);
                 document.getElementById('cartCountLabel').textContent = `${totalItems} item di keranjang`;
-
                 const container = document.getElementById('cartItems');
-                if (cartItems.length === 0) {
-                    container.innerHTML = '<p style="color:var(--denim-navy); opacity:0.6;">Keranjang kosong</p>';
-                    return;
-                }
+                if (cartItems.length === 0) { container.innerHTML = '<p style="color:var(--denim-navy); opacity:0.6;">Keranjang kosong</p>'; return; }
                 let html = '';
                 cartItems.forEach(item => {
-                    html += `
-                        <div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--denim-light);">
-                            <div>
-                                <strong>${item.name}</strong>
-                                <span style="display:block; font-size:0.8rem; color:var(--denim-navy);">${item.size || ''} · ${item.color || ''} · Rp ${item.price.toLocaleString()} x ${item.qty}</span>
-                            </div>
-                            <button class="remove-cart-item" data-id="${item.id}" style="color:#b13e3e; font-size:0.9rem; padding:4px 10px;">✕</button>
-                        </div>
-                    `;
+                    html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--denim-light);">
+                        <div><strong>${item.name}</strong><span style="display:block; font-size:0.8rem; color:var(--denim-navy);">${item.size || ''} · ${item.color || ''} · Rp ${item.price.toLocaleString()} x ${item.qty}</span></div>
+                        <button class="remove-cart-item" data-id="${item.id}" style="color:#b13e3e; font-size:0.9rem; padding:4px 10px;">✕</button>
+                    </div>`;
                 });
                 container.innerHTML = html;
                 container.querySelectorAll('.remove-cart-item').forEach(btn => {
@@ -2273,790 +497,304 @@
             }
 
             function addToCart(product, size, color) {
-                const existing = cartItems.find(item => item.id === product.id && item.size === size && item.color ===
-                    color);
-                if (existing) {
-                    existing.qty += 1;
-                } else {
-                    cartItems.push({ ...product, qty: 1, size, color });
-                }
+                const existing = cartItems.find(item => item.id === product.id && item.size === size && item.color === color);
+                if (existing) { existing.qty += 1; }
+                else { cartItems.push({ ...product, qty: 1, size, color }); }
                 updateCartUI();
                 showToast(`🛒 ${product.name} (${size} · ${color}) ditambahkan!`, 'success');
             }
 
-            // ============================================================
-            // RENDER CAROUSEL DARI LOCALSTORAGE
-            // ============================================================
+            // CHECKOUT TERHUBUNG DENGAN DATABASE (ADMIN & DASHBOARD)
+            document.getElementById('cartCheckoutBtn').addEventListener('click', function() {
+                if (cartItems.length === 0) { showToast('Keranjang kosong!', 'error'); return; }
+                const session = getSession();
+                let user = null;
+                let users = loadUsers();
+                if (session) { user = users.find(u => u.id === session.id); }
+
+                const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
+                const orderNum = 'ORD-' + Date.now().toString().slice(-6);
+
+                let orders = loadOrders();
+                let products = loadProductsFromDB();
+                let transactions = loadTransactions();
+
+                const newOrder = {
+                    id: getNextId(orders),
+                    order_number: orderNum,
+                    user_id: user ? user.id : 0,
+                    user_name: user ? (user.name || user.username) : 'Pelanggan Tamu',
+                    shipping_address: user ? (user.address || user.alamat || 'Alamat Akun Member') : 'Pesanan Langsung via Web',
+                    type: 'regular',
+                    items: cartItems.map(ci => ({ product_id: ci.id, name: ci.name, price: ci.price, qty: ci.qty, size: ci.size, color: ci.color })),
+                    total: totalAmount,
+                    status: 'pending',
+                    createdAt: new Date().toISOString(),
+                    proof_image: null
+                };
+
+                orders.push(newOrder);
+                saveOrders(orders);
+
+                const newTx = {
+                    id: Date.now(),
+                    user_id: user ? user.id : 0,
+                    type: 'order',
+                    amount: totalAmount,
+                    status: 'pending',
+                    date: new Date().toISOString(),
+                    note: `Order ${orderNum}`
+                };
+                transactions.push(newTx);
+                saveTransactions(transactions);
+
+                if (user) {
+                    if (!user.orders) user.orders = [];
+                    user.orders.push(newOrder);
+                    if (!user.transactions) user.transactions = [];
+                    user.transactions.push(newTx);
+                    saveUsers(users);
+                }
+
+                // Update stock
+                cartItems.forEach(ci => {
+                    const p = products.find(x => x.id === ci.id);
+                    if (p && p.stock) p.stock = Math.max(0, p.stock - ci.qty);
+                });
+                saveProductsToDB(products);
+
+                cartItems = [];
+                updateCartUI();
+                document.getElementById('cartPopup').classList.remove('show');
+                document.body.style.overflow = '';
+
+                showToast(`✅ Pesanan ${orderNum} berhasil dibuat! Total: Rp ${totalAmount.toLocaleString()}. Silakan cek di Dasbor / Lacak Pesanan.`, 'success', 5000);
+            });
+
+            // TRACK ORDER REAL DATABASE
+            document.getElementById('trackBtnPopup').addEventListener('click', function() {
+                const input = document.getElementById('trackInputPopup').value.trim().toUpperCase();
+                const resultEl = document.getElementById('trackResultPopup');
+                if (!input) { resultEl.innerHTML = '⚠️ Masukkan nomor pesanan.'; resultEl.style.color = '#b13e3e'; return; }
+                const orders = loadOrders();
+                const order = orders.find(o => (o.order_number && o.order_number.toUpperCase() === input) || ('ORD-' + o.id) === input);
+                if (order) {
+                    const statusText = order.status === 'pending' ? '⏳ Menunggu Konfirmasi / Pembayaran' : (order.status === 'processing' ? '📦 Pesanan Diproses' : (order.status === 'shipped' ? '🚚 Pesanan Dikirim' : '✅ Selesai'));
+                    resultEl.innerHTML = `✅ <strong>${order.order_number || ('ORD-' + order.id)}</strong><br>Pemesan: ${order.user_name}<br>Status: ${statusText}<br>Total: Rp ${(order.total||0).toLocaleString()}`;
+                    resultEl.style.color = '#1f7a4b';
+                } else {
+                    resultEl.innerHTML = '❌ Nomor pesanan tidak ditemukan.';
+                    resultEl.style.color = '#b13e3e';
+                }
+            });
+
+            // USER AUTH BADGE
+            function updateNavAuth() {
+                const session = getSession();
+                const navAuthBtn = document.getElementById('navAuthBtn');
+                const navRegBtn = document.getElementById('navRegBtn');
+                if (session) {
+                    const users = loadUsers();
+                    const user = users.find(u => u.id === session.id);
+                    if (user) {
+                        if (navAuthBtn) {
+                            navAuthBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Dashboard';
+                            navAuthBtn.href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';
+                        }
+                        if (navRegBtn) {
+                            navRegBtn.textContent = 'Keluar';
+                            navRegBtn.href = '#';
+                            navRegBtn.onclick = function(e) {
+                                e.preventDefault();
+                                localStorage.removeItem(SESSION_KEY);
+                                window.location.reload();
+                            };
+                        }
+                    }
+                }
+            }
+
+            // RENDER DYNAMIC CONTENT
             let currentSlide = 0;
             let slideInterval = null;
             const track = document.getElementById('carouselTrack');
             const dots = document.getElementById('carouselDots');
 
-            function renderCarouselFromDB() {
+            function renderCarousel() {
                 const slides = loadSlides();
-
-                if (!track) return;
-
-                // Jika tidak ada slide di DB, gunakan default
-                if (slides.length === 0) {
-                    // Default slides
-                    const defaultSlides = [
-                        { id: 1, title: '501® ORIGINAL DENIM', subtitle: 'Ikonik sejak 1873 · Potongan lurus dengan raw denim 14oz premium', btnText: 'Lihat Koleksi', btnLink: '#', bg: 'linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%)', icon: 'fa-tshirt', image: null },
-                        { id: 2, title: 'TRUCKER JACKET & OUTER', subtitle: 'Gaya ikonik denim modern untuk penampilan casual harian Anda', btnText: 'Lihat Koleksi', btnLink: '#', bg: 'linear-gradient(135deg, #1a2e44 0%, #2a4b6e 50%, #3a5f7e 100%)', icon: 'fa-jacket', image: null },
-                        { id: 3, title: 'SEASONAL SALE UP TO 40%', subtitle: 'Diskon spesial koleksi denim elegan dengan harga khusus eksklusif', btnText: 'Lihat Promo', btnLink: '#', bg: 'linear-gradient(135deg, #2a4b6e 0%, #1a2e44 50%, #0b1a2b 100%)', icon: 'fa-tags', image: null }
-                    ];
-                    renderCarouselSlides(defaultSlides);
-                    return;
-                }
-
-                renderCarouselSlides(slides);
-            }
-
-            function renderCarouselSlides(slides) {
-                // Kosongkan track
+                const displaySlides = slides.length > 0 ? slides : [
+                    { id: 1, title: '501® ORIGINAL DENIM', subtitle: 'Ikonik sejak 1873 · Raw denim 14oz premium', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%)', icon: 'fa-tshirt' },
+                    { id: 2, title: 'TRUCKER JACKET & OUTER', subtitle: 'Gaya ikonik denim modern', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #1a2e44 0%, #2a4b6e 50%, #3a5f7e 100%)', icon: 'fa-tshirt' }
+                ];
                 track.innerHTML = '';
-
-                // Buat slide dari data
-                slides.forEach((slide) => {
+                displaySlides.forEach(s => {
                     const slideDiv = document.createElement('div');
                     slideDiv.className = 'carousel-slide';
-                    slideDiv.style.background = slide.bg || 'linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%)';
-
-                    let imageHtml = '';
-                    if (slide.image && slide.image.startsWith('data:image')) {
-                        imageHtml = `<img src="${slide.image}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" />`;
-                    }
-
-                    slideDiv.innerHTML = `
-                        ${imageHtml}
-                        <div class="overlay-dark"></div>
-                        <div class="slide-image"><i class="fas ${slide.icon || 'fa-tshirt'}"></i></div>
-                        <div class="slide-image-left"><i class="fas ${slide.icon || 'fa-tshirt'}"></i></div>
-                        <div class="slide-content">
-                            <h2>${slide.title || 'HEDTRO JEANS'}</h2>
-                            <p>${slide.subtitle || 'Premium Denim'}</p>
-                            <a href="${slide.btnLink || '#'}" class="btn-slide">${slide.btnText || 'Lihat Koleksi'}</a>
-                        </div>
-                    `;
+                    slideDiv.style.background = s.bg || 'linear-gradient(135deg, #0b1a2b, #2a4b6e)';
+                    let imgHtml = s.image ? `<img src="${s.image}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" />` : '';
+                    slideDiv.innerHTML = `${imgHtml}<div class="overlay-dark"></div><div class="slide-content"><h2>${s.title}</h2><p>${s.subtitle}</p><a href="${s.btnLink || '#products'}" class="btn-slide">${s.btnText || 'Beli'}</a></div>`;
                     track.appendChild(slideDiv);
                 });
-
-                // Update dots
-                const totalSlides = slides.length;
                 dots.innerHTML = '';
-                for (let i = 0; i < totalSlides; i++) {
+                displaySlides.forEach((_, i) => {
                     const dot = document.createElement('span');
                     dot.className = 'dot' + (i === 0 ? ' active' : '');
-                    dot.dataset.index = i;
-                    dot.addEventListener('click', () => goToSlide(i));
+                    dot.onclick = () => goToSlide(i);
                     dots.appendChild(dot);
-                }
-
-                // Reset ke slide pertama
+                });
                 currentSlide = 0;
                 track.style.transform = 'translateX(0%)';
-
-                // Reset interval
                 if (slideInterval) clearInterval(slideInterval);
-                slideInterval = setInterval(nextSlide, 5000);
+                slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
             }
 
-            function goToSlide(index) {
+            function goToSlide(i) {
                 const slides = track.querySelectorAll('.carousel-slide');
-                const totalSlides = slides.length;
-                if (totalSlides === 0) return;
-                currentSlide = (index + totalSlides) % totalSlides;
-                track.style.transform = 'translateX(-' + (currentSlide * 100) + '%)';
-                document.querySelectorAll('.dot').forEach((d, i) => d.classList.toggle('active', i === currentSlide));
+                if (!slides.length) return;
+                currentSlide = (i + slides.length) % slides.length;
+                track.style.transform = `translateX(-${currentSlide * 100}%)`;
+                dots.querySelectorAll('.dot').forEach((d, idx) => d.classList.toggle('active', idx === currentSlide));
             }
 
-            function nextSlide() { goToSlide(currentSlide + 1); }
-
-            function prevSlide() { goToSlide(currentSlide - 1); }
-
-            // ============================================================
-            // RENDER ABOUT DARI LOCALSTORAGE
-            // ============================================================
-            function renderAboutFromDB() {
+            function renderAbout() {
                 const about = loadAbout();
-                const container = document.getElementById('about');
-                if (!container) return;
-
-                container.innerHTML = `
-                    <h2><i class="fas fa-info-circle"></i> ${about.title || 'Tentang Kami'}</h2>
-                    ${about.content || '<p>Isi tentang kami...</p>'}
-                `;
+                document.getElementById('aboutContainer').innerHTML = about.content || '<p>Brand denim premium HEDTRO JEANS.</p>';
             }
 
-            // ============================================================
-            // RENDER FAQ DARI LOCALSTORAGE
-            // ============================================================
-            function renderFaqFromDB() {
+            function renderFaq() {
                 const faqs = loadFaq();
-                const container = document.getElementById('faq');
-                if (!container) return;
-
+                const container = document.getElementById('faqContainer');
                 if (faqs.length === 0) {
-                    // FAQ default sudah ada di HTML
+                    container.innerHTML = `<div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>Bagaimana cara mendaftar?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">Klik tombol Daftar di navbar.</div></div>`;
                     return;
                 }
-
-                let html = `<h2><i class="fas fa-question-circle"></i> Pertanyaan yang Sering Diajukan</h2>`;
-                faqs.forEach((faq) => {
-                    html += `
-                        <div class="faq-item">
-                            <div class="faq-question" onclick="toggleFaq(this)">
-                                <span>${faq.question}</span>
-                                <i class="fas fa-chevron-down"></i>
-                            </div>
-                            <div class="faq-answer">${faq.answer}</div>
-                        </div>
-                    `;
+                let html = '';
+                faqs.forEach(f => {
+                    html += `<div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>${f.question}</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">${f.answer}</div></div>`;
                 });
                 container.innerHTML = html;
             }
 
-            // ============================================================
-            // RENDER FEATURES DARI LOCALSTORAGE
-            // ============================================================
-            function renderFeaturesFromDB() {
+            function renderFeatures() {
                 const features = loadFeatures();
                 const container = document.getElementById('featuresContainer');
-                if (!container) return;
-
                 if (features.length === 0) {
-                    // Features default sudah ada di HTML
+                    container.innerHTML = `<div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz</p></div><div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Seluruh Indonesia</p></div>`;
                     return;
                 }
-
                 let html = '';
-                features.forEach((feature) => {
-                    html += `
-                        <div class="feature-item">
-                            <i class="fas ${feature.icon || 'fa-check-circle'}"></i>
-                            <h4>${feature.title}</h4>
-                            <p>${feature.desc}</p>
-                        </div>
-                    `;
+                features.forEach(f => {
+                    html += `<div class="feature-item"><i class="fas ${f.icon || 'fa-check-circle'}"></i><h4>${f.title}</h4><p>${f.desc}</p></div>`;
                 });
                 container.innerHTML = html;
             }
 
-            // ============================================================
-            // RENDER FOOTER DARI LOCALSTORAGE
-            // ============================================================
-            function renderFooterFromDB() {
-                const footer = loadFooter();
-                const footerEl = document.getElementById('mainFooter');
-                if (!footerEl) return;
-
-                // Update brand di footer
-                const brandEl = footerEl.querySelector('.footer-col:first-child h4');
-                if (brandEl) {
-                    brandEl.innerHTML = `<i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> ${footer.brand || 'HEDTRO JEANS'}`;
-                }
-
-                // Update deskripsi footer
-                const descEl = footerEl.querySelector('.footer-col:first-child p');
-                if (descEl) {
-                    descEl.textContent = footer.desc || 'Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor. Menghadirkan gaya ikonik sejak 1873.';
-                }
-
-                // Update social links
-                const socialLinks = footerEl.querySelectorAll('.social-icons a');
-                const socialData = footer.social || {};
-                const socialKeys = ['instagram', 'facebook', 'youtube', 'tiktok'];
-                const socialIcons = ['fa-instagram', 'fa-facebook-f', 'fa-youtube', 'fa-tiktok'];
-
-                socialLinks.forEach((link, index) => {
-                    const key = socialKeys[index] || '';
-                    if (socialData[key]) {
-                        link.href = socialData[key];
-                    }
-                    link.innerHTML = `<i class="fab ${socialIcons[index] || 'fa-link'}"></i>`;
-                });
-
-                // Update copyright
-                const copyEl = footerEl.querySelector('.footer-bottom');
-                if (copyEl) {
-                    copyEl.textContent = footer.copyright || '&copy; 2026 HEDTRO JEANS · All Rights Reserved';
-                }
+            function renderFooter() {
+                const f = loadFooter();
+                if (f.brand) document.getElementById('footerBrandTitle').innerHTML = `<i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> ${f.brand}`;
+                if (f.desc) document.getElementById('footerBrandDesc').textContent = f.desc;
+                if (f.copyright) document.getElementById('footerCopy').innerHTML = f.copyright;
             }
 
-            // ============================================================
-            // RENDER FAVORITE CAROUSEL
-            // ============================================================
             function renderFavoriteCarousel() {
                 const container = document.getElementById('favoriteCarousel');
                 const favorites = allProducts.filter(p => p.favorite === true);
                 container.innerHTML = '';
-                if (favorites.length === 0) {
-                    container.innerHTML = '<p class="text-muted">Belum ada produk favorit.</p>';
-                    return;
-                }
                 favorites.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
-                    const imgHtml = p.image && p.image.startsWith('data:image') ?
-                        `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;" />` :
-                        `<i class="fas ${p.icon}"></i>`;
-                    card.innerHTML = `
-                        <div class="img-placeholder">${imgHtml}</div>
-                        <div class="body">
-                            <span class="tag">${p.tag}</span>
-                            <h4>${p.name}</h4>
-                            <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
-                            <div class="btn-group">
-                                <button class="btn-detail" data-id="${p.id}">Detail</button>
-                                <button class="btn-buy" data-id="${p.id}">Beli</button>
-                            </div>
-                        </div>
-                    `;
+                    card.innerHTML = `<div class="img-placeholder"><i class="fas ${p.icon||'fa-tshirt'}"></i></div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
                     container.appendChild(card);
                 });
                 bindProductButtons();
             }
 
-            // ============================================================
-            // PRODUCT GRID
-            // ============================================================
             const itemsPerPage = 6;
             let currentPage = 1;
-            const nonFavoriteProducts = () => allProducts.filter(p => p.favorite !== true);
-
             function renderProductGrid(page) {
                 const grid = document.getElementById('productGrid');
-                const products = nonFavoriteProducts();
+                const products = allProducts.filter(p => p.favorite !== true);
                 const start = (page - 1) * itemsPerPage;
-                const end = start + itemsPerPage;
-                const pageItems = products.slice(start, end);
-
+                const pageItems = products.slice(start, start + itemsPerPage);
                 grid.innerHTML = '';
-                if (pageItems.length === 0) {
-                    grid.innerHTML = '<p class="text-muted" style="padding:20px;text-align:center;">Belum ada produk.</p>';
-                    return;
-                }
                 pageItems.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
-                    const imgHtml = p.image && p.image.startsWith('data:image') ?
-                        `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;" />` :
-                        `<i class="fas ${p.icon}"></i>`;
-                    card.innerHTML = `
-                        <div class="img-placeholder">${imgHtml}</div>
-                        <div class="body">
-                            <span class="tag">${p.tag}</span>
-                            <h4>${p.name}</h4>
-                            <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
-                            <div class="btn-group">
-                                <button class="btn-detail" data-id="${p.id}">Detail</button>
-                                <button class="btn-buy" data-id="${p.id}">Beli</button>
-                            </div>
-                        </div>
-                    `;
+                    card.innerHTML = `<div class="img-placeholder"><i class="fas ${p.icon||'fa-tshirt'}"></i></div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
                     grid.appendChild(card);
                 });
                 bindProductButtons();
-                renderPagination();
             }
 
-            function renderPagination() {
-                const container = document.getElementById('pagination');
-                const totalPages = Math.ceil(nonFavoriteProducts().length / itemsPerPage);
-                if (totalPages <= 1) {
-                    container.innerHTML = '';
-                    return;
-                }
-                let html = '';
-                html +=
-                    `<button class="page-btn" data-page="prev" ${currentPage === 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
-                for (let i = 1; i <= totalPages; i++) {
-                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
-                }
-                html +=
-                    `<button class="page-btn" data-page="next" ${currentPage === totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
-                container.innerHTML = html;
-
-                container.querySelectorAll('.page-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const page = this.dataset.page;
-                        const totalPages = Math.ceil(nonFavoriteProducts().length / itemsPerPage);
-                        if (page === 'prev' && currentPage > 1) { currentPage--; } else if (page === 'next' &&
-                            currentPage < totalPages) { currentPage++; } else if (page !== 'prev' && page !==
-                            'next') { currentPage = parseInt(page); }
-                        renderProductGrid(currentPage);
-                        document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth',
-                            block: 'start' });
-                    });
-                });
-            }
-
-            // ============================================================
-            // PRODUCT BUTTONS
-            // ============================================================
             function bindProductButtons() {
-                document.querySelectorAll('.btn-detail').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        openProductDetail(id);
-                    });
-                });
-                document.querySelectorAll('.btn-buy').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        openProductDetail(id);
-                    });
+                document.querySelectorAll('.btn-detail, .btn-buy').forEach(btn => {
+                    btn.onclick = function() { openProductDetail(parseInt(this.dataset.id)); };
                 });
             }
-
-            // ============================================================
-            // PRODUCT DETAIL POPUP
-            // ============================================================
-            const detailPopup = document.getElementById('productDetailPopup');
-            const closeDetailPopup = document.getElementById('closeDetailPopup');
-            const detailImage = document.getElementById('detailImage');
-            const detailIconWrap = document.getElementById('detailIconWrap');
-            let currentDetailProduct = null;
-            let isZoomed = false;
 
             function openProductDetail(id) {
                 const product = allProducts.find(p => p.id === id);
                 if (!product) return;
-                currentDetailProduct = product;
-
-                document.getElementById('detailTag').textContent = product.tag;
+                document.getElementById('detailTag').textContent = product.tag || 'PRODUK';
                 document.getElementById('detailName').textContent = product.name;
-                document.getElementById('detailPrice').innerHTML =
-                    `Rp ${product.price.toLocaleString()} <del>Rp ${product.original.toLocaleString()}</del>`;
-                document.getElementById('detailDesc').textContent = product.desc || 'Deskripsi produk tidak tersedia.';
+                document.getElementById('detailPrice').innerHTML = `Rp ${(product.price||0).toLocaleString()}`;
+                document.getElementById('detailDesc').textContent = product.desc || 'Deskripsi produk.';
                 document.getElementById('detailSerial').textContent = product.serial || '-';
-                const stockEl = document.getElementById('detailStock');
-                stockEl.textContent = product.stock;
-                stockEl.style.color = product.stock <= 0 ? '#b13e3e' : '#1f7a4b';
-                document.getElementById('detailIcon').className = `fas ${product.icon}`;
+                document.getElementById('detailStock').textContent = product.stock || 0;
 
-                // Set size options
-                const sizeSelect = document.getElementById('detailSize');
-                sizeSelect.innerHTML = '';
-                const sizes = product.sizes || ['28', '29', '30', '31', '32'];
-                sizes.forEach(s => {
-                    const opt = document.createElement('option');
-                    opt.value = s;
-                    opt.textContent = `Size ${s}`;
-                    sizeSelect.appendChild(opt);
-                });
+                const sizeSel = document.getElementById('detailSize');
+                sizeSel.innerHTML = (product.sizes || ['30', '32']).map(s => `<option value="${s}">Size ${s}</option>`).join('');
+                const colorSel = document.getElementById('detailColor');
+                colorSel.innerHTML = (product.colors || ['Indigo Blue']).map(c => `<option value="${c}">${c}</option>`).join('');
 
-                // Set color options
-                const colorSelect = document.getElementById('detailColor');
-                colorSelect.innerHTML = '';
-                const colors = product.colors || ['Indigo Blue Raw Denim'];
-                colors.forEach(c => {
-                    const opt = document.createElement('option');
-                    opt.value = c;
-                    opt.textContent = c;
-                    colorSelect.appendChild(opt);
-                });
-
-                // Reset zoom
-                detailImage.classList.remove('zoomed');
-                detailIconWrap.style.transform = 'scale(1)';
-                isZoomed = false;
-
-                // Tombol beli
                 document.getElementById('detailBuyBtn').onclick = function() {
-                    const size = document.getElementById('detailSize').value;
-                    const color = document.getElementById('detailColor').value;
-                    if (product.stock <= 0) {
-                        showToast('Stok habis!', 'error');
-                        return;
-                    }
-                    addToCart(product, size, color);
-                    closeDetailPopupFn();
+                    addToCart(product, sizeSel.value, colorSel.value);
+                    document.getElementById('productDetailPopup').classList.remove('show');
+                    document.body.style.overflow = '';
                 };
 
-                detailPopup.classList.add('show');
+                document.getElementById('productDetailPopup').classList.add('show');
                 document.body.style.overflow = 'hidden';
             }
 
-            function closeDetailPopupFn() {
-                detailPopup.classList.remove('show');
-                document.body.style.overflow = '';
-                detailImage.classList.remove('zoomed');
-                detailIconWrap.style.transform = 'scale(1)';
-                isZoomed = false;
-            }
+            // POPUP EVENTS
+            document.getElementById('closeDetailPopup').onclick = () => { document.getElementById('productDetailPopup').classList.remove('show'); document.body.style.overflow = ''; };
+            document.getElementById('cartBtnDesktop').onclick = () => { updateCartUI(); document.getElementById('cartPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
+            document.getElementById('cartHp').onclick = () => { updateCartUI(); document.getElementById('cartPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
+            document.getElementById('closeCartPopup').onclick = () => { document.getElementById('cartPopup').classList.remove('show'); document.body.style.overflow = ''; };
+            document.getElementById('navTrackBtn').onclick = (e) => { e.preventDefault(); document.getElementById('trackPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
+            document.getElementById('closeTrackPopup').onclick = () => { document.getElementById('trackPopup').classList.remove('show'); document.body.style.overflow = ''; };
+            document.getElementById('searchIconHp').onclick = () => { document.getElementById('searchPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
+            document.getElementById('closeSearchPopup').onclick = () => { document.getElementById('searchPopup').classList.remove('show'); document.body.style.overflow = ''; };
 
-            closeDetailPopup.addEventListener('click', closeDetailPopupFn);
-            detailPopup.addEventListener('click', function(e) {
-                if (e.target === detailPopup) closeDetailPopupFn();
-            });
-
-            // Zoom
-            detailImage.addEventListener('click', function(e) {
-                e.stopPropagation();
-                isZoomed = !isZoomed;
-                this.classList.toggle('zoomed', isZoomed);
-                detailIconWrap.style.transform = isZoomed ? 'scale(2)' : 'scale(1)';
-            });
-
-            // ============================================================
-            // CAROUSEL NAVIGATION
-            // ============================================================
-            document.getElementById('carouselNext').addEventListener('click', () => { nextSlide();
-                resetInterval(); });
-            document.getElementById('carouselPrev').addEventListener('click', () => { prevSlide();
-                resetInterval(); });
-
-            function resetInterval() { if (slideInterval) clearInterval(slideInterval);
-                slideInterval = setInterval(nextSlide, 5000); }
-
-            // Touch support untuk carousel
-            const carouselSection = document.getElementById('carouselSection');
-            let touchStartX = 0;
-            let isDragging = false;
-
-            carouselSection.addEventListener('touchstart', function(e) {
-                touchStartX = e.changedTouches[0].screenX;
-                isDragging = true;
-            }, { passive: true });
-
-            carouselSection.addEventListener('touchend', function(e) {
-                if (!isDragging) return;
-                isDragging = false;
-                const diff = touchStartX - e.changedTouches[0].screenX;
-                if (Math.abs(diff) > 50) {
-                    if (diff > 0) { nextSlide(); } else { prevSlide(); }
-                    resetInterval();
-                }
-            }, { passive: true });
-
-            // ============================================================
-            // SCROLL BUTTONS FAVORITE
-            // ============================================================
-            document.getElementById('favScrollLeft').addEventListener('click', function() {
-                document.getElementById('favoriteCarousel').scrollBy({ left: -240, behavior: 'smooth' });
-            });
-            document.getElementById('favScrollRight').addEventListener('click', function() {
-                document.getElementById('favoriteCarousel').scrollBy({ left: 240, behavior: 'smooth' });
-            });
-
-            // ============================================================
-            // FAQ TOGGLE
-            // ============================================================
             window.toggleFaq = function(el) {
                 const answer = el.parentElement.querySelector('.faq-answer');
-                const icon = el.querySelector('i');
                 const isOpen = answer.classList.contains('open');
                 document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
-                document.querySelectorAll('.faq-question i').forEach(i => i.classList.remove('active'));
-                if (!isOpen) {
-                    answer.classList.add('open');
-                    icon.classList.add('active');
-                }
+                if (!isOpen) answer.classList.add('open');
             };
 
-            // ============================================================
-            // SIDEBAR & BURGER
-            // ============================================================
+            // BURGER
             const burgerBtn = document.getElementById('burgerBtn');
             const sidebar = document.getElementById('sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
-            const closeSidebar = document.getElementById('closeSidebar');
+            burgerBtn.onclick = () => { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); };
+            document.getElementById('closeSidebar').onclick = () => { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); };
+            sidebarOverlay.onclick = () => { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); };
 
-            function toggleSidebar(open) {
-                if (window.innerWidth >= 769) return;
-                const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
-                sidebar.classList.toggle('open', isOpen);
-                sidebarOverlay.classList.toggle('active', isOpen);
-                burgerBtn.classList.toggle('active', isOpen);
-                document.body.style.overflow = isOpen ? 'hidden' : '';
-            }
-
-            burgerBtn.addEventListener('click', () => toggleSidebar());
-            closeSidebar.addEventListener('click', () => toggleSidebar(false));
-            sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
-
-            // ============================================================
-            // NAVIGASI
-            // ============================================================
-            function navigateTo(page) {
-                if (page === 'home') {
-                    window.scrollTo({ top: 0, behavior: 'smooth' });
-                } else if (page === 'products') {
-                    document.getElementById('products')?.scrollIntoView({ behavior: 'smooth' });
-                } else if (page === 'about') {
-                    document.getElementById('about')?.scrollIntoView({ behavior: 'smooth' });
-                } else if (page === 'faq') {
-                    document.getElementById('faq')?.scrollIntoView({ behavior: 'smooth' });
-                }
-            }
-
-            document.querySelectorAll('.nav-menu a[data-page]').forEach(link => {
-                link.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const page = this.dataset.page;
-                    document.querySelectorAll('.nav-menu a').forEach(a => a.classList.remove('active'));
-                    this.classList.add('active');
-                    navigateTo(page);
-                });
-            });
-
-            document.querySelectorAll('.sidebar .menu-item[data-page]').forEach(item => {
-                item.addEventListener('click', function(e) {
-                    e.preventDefault();
-                    const page = this.dataset.page;
-                    if (window.innerWidth < 769) toggleSidebar(false);
-                    document.querySelectorAll('.sidebar .menu-item').forEach(a => a.classList.remove('active'));
-                    this.classList.add('active');
-                    navigateTo(page);
-                });
-            });
-
-            // ============================================================
-            // POPUP FUNCTIONS
-            // ============================================================
-
-            // --- SEARCH POPUP ---
-            const searchPopup = document.getElementById('searchPopup');
-            const closeSearchPopup = document.getElementById('closeSearchPopup');
-
-            function openSearchPopup() {
-                searchPopup.classList.add('show');
-                document.getElementById('searchInputPopup').value = '';
-                document.getElementById('searchResult').innerHTML = '';
-                document.body.style.overflow = 'hidden';
-                setTimeout(() => document.getElementById('searchInputPopup').focus(), 100);
-            }
-
-            function closeSearchPopupFn() {
-                searchPopup.classList.remove('show');
-                document.body.style.overflow = '';
-            }
-
-            closeSearchPopup.addEventListener('click', closeSearchPopupFn);
-            searchPopup.addEventListener('click', function(e) { if (e.target === searchPopup) closeSearchPopupFn(); });
-
-            document.getElementById('searchIconHp').addEventListener('click', openSearchPopup);
-
-            document.getElementById('searchBtnPopup').addEventListener('click', function() {
-                const query = document.getElementById('searchInputPopup').value.trim().toLowerCase();
-                const resultEl = document.getElementById('searchResult');
-                if (!query) {
-                    resultEl.innerHTML = '⚠️ Masukkan kata kunci pencarian.';
-                    resultEl.style.color = '#b13e3e';
-                    return;
-                }
-                const results = allProducts.filter(p => p.name.toLowerCase().includes(query) || p.tag.toLowerCase()
-                    .includes(query));
-                if (results.length === 0) {
-                    resultEl.innerHTML = '❌ Tidak ada produk yang ditemukan.';
-                    resultEl.style.color = '#b13e3e';
-                    return;
-                }
-                let html = '<div style="margin-top:8px;">';
-                results.forEach(p => {
-                    html +=
-                        `<div style="padding:8px 0; border-bottom:1px solid var(--denim-light); display:flex; justify-content:space-between; align-items:center;">
-                            <span>${p.name}</span>
-                            <button class="search-result-buy" data-id="${p.id}" style="background:var(--gold-accent); color:var(--denim-dark); padding:4px 16px; border-radius:60px; font-weight:600; font-size:0.8rem;">Beli</button>
-                        </div>`;
-                });
-                html += '</div>';
-                resultEl.innerHTML = html;
-                resultEl.style.color = 'var(--denim-dark)';
-                resultEl.querySelectorAll('.search-result-buy').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const id = parseInt(this.dataset.id);
-                        closeSearchPopupFn();
-                        openProductDetail(id);
-                    });
-                });
-            });
-
-            document.getElementById('searchInputPopup').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') document.getElementById('searchBtnPopup').click();
-            });
-
-            // Desktop search
-            document.getElementById('searchBtnDesktop').addEventListener('click', function() {
-                const query = document.getElementById('searchInputDesktop').value.trim().toLowerCase();
-                if (!query) {
-                    showToast('⚠️ Masukkan kata kunci pencarian', 'error');
-                    return;
-                }
-                const results = allProducts.filter(p => p.name.toLowerCase().includes(query) || p.tag.toLowerCase()
-                    .includes(query));
-                if (results.length === 0) {
-                    showToast('❌ Tidak ada produk yang ditemukan', 'error');
-                    return;
-                }
-                const grid = document.getElementById('productGrid');
-                grid.innerHTML = '';
-                results.forEach(p => {
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    const imgHtml = p.image && p.image.startsWith('data:image') ?
-                        `<img src="${p.image}" style="width:100%;height:100%;object-fit:cover;" />` :
-                        `<i class="fas ${p.icon}"></i>`;
-                    card.innerHTML = `
-                        <div class="img-placeholder">${imgHtml}</div>
-                        <div class="body">
-                            <span class="tag">${p.tag}</span>
-                            <h4>${p.name}</h4>
-                            <div class="price">Rp ${p.price.toLocaleString()} <del>Rp ${p.original.toLocaleString()}</del></div>
-                            <div class="btn-group">
-                                <button class="btn-detail" data-id="${p.id}">Detail</button>
-                                <button class="btn-buy" data-id="${p.id}">Beli</button>
-                            </div>
-                        </div>
-                    `;
-                    grid.appendChild(card);
-                });
-                bindProductButtons();
-                document.querySelector('.product-grid-wrapper').scrollIntoView({ behavior: 'smooth', block: 'start' });
-                showToast(`✅ ${results.length} produk ditemukan`, 'success');
-            });
-            document.getElementById('searchInputDesktop').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') document.getElementById('searchBtnDesktop').click();
-            });
-
-            // --- TRACK POPUP ---
-            const trackPopup = document.getElementById('trackPopup');
-            const closeTrackPopup = document.getElementById('closeTrackPopup');
-
-            function openTrackPopup() {
-                trackPopup.classList.add('show');
-                document.getElementById('trackInputPopup').value = '';
-                document.getElementById('trackResultPopup').innerHTML = '';
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeTrackPopupFn() {
-                trackPopup.classList.remove('show');
-                document.body.style.overflow = '';
-            }
-
-            closeTrackPopup.addEventListener('click', closeTrackPopupFn);
-            trackPopup.addEventListener('click', function(e) { if (e.target === trackPopup) closeTrackPopupFn(); });
-
-            document.getElementById('navTrackBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                openTrackPopup();
-            });
-            document.getElementById('sideTrackBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                if (window.innerWidth < 769) toggleSidebar(false);
-                openTrackPopup();
-            });
-
-            document.getElementById('trackBtnPopup').addEventListener('click', function() {
-                const input = document.getElementById('trackInputPopup').value.trim().toUpperCase();
-                const resultEl = document.getElementById('trackResultPopup');
-                if (!input) {
-                    resultEl.innerHTML = '⚠️ Masukkan nomor pesanan.';
-                    resultEl.style.color = '#b13e3e';
-                    return;
-                }
-                const orders = ['HDT-2024-001', 'HDT-2024-002', 'HDT-2024-003', 'HDT-2024-004', 'HDT-2024-005'];
-                if (orders.includes(input)) {
-                    const statuses = ['📦 Pesanan sedang diproses', '🚚 Pesanan dalam perjalanan',
-                        '✅ Pesanan telah sampai'
-                    ];
-                    const randomStatus = statuses[Math.floor(Math.random() * statuses.length)];
-                    resultEl.innerHTML =
-                        `✅ <strong>${input}</strong> - ${randomStatus}<br><span style="font-size:0.8rem; opacity:0.6;">Update: ${new Date().toLocaleDateString()}</span>`;
-                    resultEl.style.color = '#1f7a4b';
-                } else {
-                    resultEl.innerHTML = '❌ Nomor pesanan tidak ditemukan. Periksa kembali.';
-                    resultEl.style.color = '#b13e3e';
-                }
-            });
-
-            document.getElementById('trackInputPopup').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') document.getElementById('trackBtnPopup').click();
-            });
-
-            // --- CART POPUP ---
-            const cartPopup = document.getElementById('cartPopup');
-            const closeCartPopup = document.getElementById('closeCartPopup');
-
-            function openCartPopup() {
-                updateCartUI();
-                cartPopup.classList.add('show');
-                document.body.style.overflow = 'hidden';
-            }
-
-            function closeCartPopupFn() {
-                cartPopup.classList.remove('show');
-                document.body.style.overflow = '';
-            }
-
-            closeCartPopup.addEventListener('click', closeCartPopupFn);
-            cartPopup.addEventListener('click', function(e) { if (e.target === cartPopup) closeCartPopupFn(); });
-
-            document.getElementById('cartBtnDesktop').addEventListener('click', openCartPopup);
-            document.getElementById('cartHp').addEventListener('click', openCartPopup);
-
-            document.getElementById('cartCheckoutBtn').addEventListener('click', function() {
-                if (cartItems.length === 0) {
-                    showToast('Keranjang kosong!', 'error');
-                    return;
-                }
-                const total = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-                showToast(`🛒 Total: Rp ${total.toLocaleString()}\nTerima kasih!`, 'success', 4000);
-                cartItems = [];
-                updateCartUI();
-                closeCartPopupFn();
-            });
-
-            // ============================================================
             // INIT
-            // ============================================================
-            function init() {
-                // Load produk dari localStorage
-                initProducts();
-
-                // Render semua komponen dari localStorage
-                renderCarouselFromDB();
-                renderAboutFromDB();
-                renderFaqFromDB();
-                renderFeaturesFromDB();
-                renderFooterFromDB();
-                renderFavoriteCarousel();
-                renderProductGrid(1);
-                updateCartUI();
-
-                // Apply settings
-                const settings = loadSettings();
-                if (settings.heroTitle) {
-                    document.title = settings.heroTitle;
-                }
-                if (settings.brandLogo) {
-                    const logo = document.querySelector('.logo');
-                    if (logo) {
-                        if (settings.brandLogo.startsWith('http')) {
-                            logo.innerHTML =
-                                `<img src="${settings.brandLogo}" alt="Logo" style="height:40px;width:auto;object-fit:contain;" /> <span>HEDTRO<span>JEANS</span></span>`;
-                        } else {
-                            logo.innerHTML =
-                                `<i class="fas ${settings.brandLogo}"></i> HEDTRO<span>JEANS</span>`;
-                        }
-                    }
-                }
-
-                console.log('🟦 HEDTRO JEANS · Data dimuat dari localStorage');
-                console.log('  - Slides:', loadSlides().length);
-                console.log('  - Products:', allProducts.length);
-                console.log('  - FAQ:', loadFaq().length);
-                console.log('  - Features:', loadFeatures().length);
-                console.log('  - Settings:', loadSettings());
-            }
-
-            // Jalankan init
-            init();
+            initProducts();
+            updateNavAuth();
+            renderCarousel();
+            renderAbout();
+            renderFaq();
+            renderFeatures();
+            renderFooter();
+            renderFavoriteCarousel();
+            renderProductGrid(1);
+            updateCartUI();
 
         })();
     </script>
-
 </body>
 </html>

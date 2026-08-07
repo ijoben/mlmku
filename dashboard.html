@@ -9,72 +9,44 @@
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     :root {
-      --denim-dark: #0b1a2b;
-      --denim-navy: #15283c;
-      --denim-blue: #2a4b6e;
-      --denim-light: #f0f4f8;
-      --gold-accent: #d4af37;
-      --gold-light: #f3e5ab;
+      --denim-dark: #0b1a2b; --denim-navy: #15283c; --denim-blue: #2a4b6e; --denim-light: #f0f4f8;
+      --gold-accent: #d4af37; --gold-light: #f3e5ab;
       --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
-      --cream: #faf8f5;
-      --white: #ffffff;
-      --shadow-sm: 0 4px 15px rgba(0,0,0,0.05);
-      --shadow: 0 8px 24px rgba(11,26,43,0.08);
-      --shadow-lg: 0 16px 32px rgba(11,26,43,0.12);
-      --radius: 20px;
-      --radius-sm: 12px;
-      --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
-      --sidebar-width: 280px;
+      --cream: #faf8f5; --white: #ffffff;
+      --shadow-sm: 0 4px 15px rgba(0,0,0,0.05); --shadow: 0 8px 24px rgba(11,26,43,0.08); --shadow-lg: 0 16px 32px rgba(11,26,43,0.12);
+      --radius: 20px; --radius-sm: 12px; --transition: all 0.3s cubic-bezier(0.4,0,0.2,1); --sidebar-width: 280px;
     }
-    body {
-      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
-      background: #f4f6f9;
-      color: var(--denim-dark);
-      padding-top: 70px;
-      overflow-x: hidden;
-    }
+    body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background: #f4f6f9; color: var(--denim-dark); padding-top: 70px; overflow-x: hidden; }
     a { text-decoration:none; color:inherit; }
     button { cursor:pointer; font-family:inherit; border:none; background:none; }
     ::-webkit-scrollbar { width:6px; }
     ::-webkit-scrollbar-track { background:#f4f6f9; }
     ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
-    /* ===== NAVBAR ===== */
     .navbar {
       position: fixed; top:0; left:0; right:0; z-index:1100;
-      background: rgba(11, 26, 43, 0.95);
-      backdrop-filter: blur(10px);
-      padding: 12px 24px;
-      display: flex; align-items:center; justify-content:space-between;
-      border-bottom:2px solid var(--gold-accent);
-      height:70px;
+      background: rgba(11, 26, 43, 0.95); backdrop-filter: blur(10px);
+      padding: 12px 24px; display: flex; align-items:center; justify-content:space-between;
+      border-bottom:2px solid var(--gold-accent); height:70px;
     }
-    .navbar .logo {
-      display:flex; align-items:center; gap:10px;
-      color:var(--white); font-weight:800; font-size:1.3rem; letter-spacing:-0.5px;
-    }
+    .navbar .logo { display:flex; align-items:center; gap:10px; color:var(--white); font-weight:800; font-size:1.3rem; letter-spacing:-0.5px; }
     .navbar .logo i { color:var(--gold-accent); font-size:1.5rem; }
     .navbar .logo span { font-weight:400; color:var(--gold-light); font-size:0.75rem; margin-left:2px; letter-spacing:1px; }
     .nav-right { display:flex; align-items:center; gap:12px; }
     .nav-right .user-badge {
-      display:flex; align-items:center; gap:8px;
-      color:var(--cream); font-size:0.85rem; font-weight:600;
-      background:rgba(255,255,255,0.08);
-      padding:8px 16px; border-radius:60px;
-      border:1px solid rgba(255,255,255,0.12);
-      cursor:pointer; transition:var(--transition);
+      display:flex; align-items:center; gap:8px; color:var(--cream); font-size:0.85rem; font-weight:600;
+      background:rgba(255,255,255,0.08); padding:8px 16px; border-radius:60px;
+      border:1px solid rgba(255,255,255,0.12); cursor:pointer; transition:var(--transition);
     }
     .nav-right .user-badge:hover { background:rgba(255,255,255,0.15); }
     .nav-right .user-badge i { color:var(--gold-accent); }
 
-    /* ===== BURGER ===== */
     .burger-btn { display:none; flex-direction:column; gap:5px; padding:6px; background:transparent; border:none; cursor:pointer; z-index:1101; }
     .burger-btn span { display:block; width:26px; height:2.5px; background:var(--cream); border-radius:4px; transition:var(--transition); transform-origin:center; }
     .burger-btn.active span:nth-child(1) { transform:translateY(7.5px) rotate(45deg); }
     .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
     .burger-btn.active span:nth-child(3) { transform:translateY(-7.5px) rotate(-45deg); }
 
-    /* ===== SIDEBAR ===== */
     .sidebar-overlay {
       display:none; position:fixed; top:0; left:0; width:100%; height:100%;
       background:rgba(11,26,43,0.6); z-index:1050; opacity:0; pointer-events:none;
@@ -106,15 +78,11 @@
     .sidebar .menu-item:hover { background:rgba(255,255,255,0.06); color:var(--white); }
     .sidebar .menu-item i { width:20px; text-align:center; color:var(--gold-accent); font-size:1rem; }
     .sidebar .menu-item.active { background:linear-gradient(90deg, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0.02) 100%); color:var(--gold-accent); border-left:3px solid var(--gold-accent); border-radius:4px 12px 12px 4px; }
-    
-    /* 3. JARAK MENU PEMISAH PROFIL DIRAPATKAN */
     .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:4px 0; }
-    
     .sidebar .menu-item.logout { margin-top:auto; color:#ff6b6b; }
     .sidebar .menu-item.logout i { color:#ff6b6b; }
     .sidebar .menu-item.logout:hover { background:rgba(255,107,107,0.1); }
 
-    /* ===== MAIN CONTENT ===== */
     .main-content {
       margin-left: var(--sidebar-width); padding: 28px 32px 50px;
       transition: margin-left 0.3s ease; max-width: calc(100% - var(--sidebar-width));
@@ -125,12 +93,11 @@
 
     .btn-sm { padding:10px 20px; border-radius:60px; font-weight:700; font-size:0.85rem; transition:var(--transition); font-family:inherit; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(0,0,0,0.1); cursor: pointer; }
     .btn-sm-success { background:#2e7d32; color:#fff; } .btn-sm-success:hover { background:#1b5e20; transform:translateY(-1px); }
-    .btn-sm-primary { background:var(--denim-blue); color:#fff; border: 1px solid rgba(255,255,255,0.1); } .btn-sm-primary:hover { background:var(--denim-dark); transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,0.15); }
+    .btn-sm-primary { background:var(--denim-blue); color:#fff; border: 1px solid rgba(255,255,255,0.1); } .btn-sm-primary:hover { background:var(--denim-dark); transform:translateY(-2px); }
     .btn-sm-gold { background:var(--gold-gradient); color:var(--denim-dark); font-weight:800; border: none; } .btn-sm-gold:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(212,175,55,0.3); }
     .btn-sm-danger { background:#e53e3e; color:#fff; }
     .btn-sm-info { background:#3182ce; color:#fff; } .btn-sm-info:hover { background:#2b6cb0; transform:translateY(-1px); }
 
-    /* ===== PREMIUM WALLET CARD ===== */
     .wallet-card {
       background: linear-gradient(135deg, #0f2237 0%, #1a324b 100%); color: var(--cream);
       border-radius: var(--radius); padding: 28px 32px; margin-bottom: 24px;
@@ -139,7 +106,6 @@
       position: relative; overflow: hidden;
     }
     .wallet-card::before { content: ''; position: absolute; top: -50%; right: -10%; width: 300px; height: 300px; background: radial-gradient(circle, rgba(212,175,55,0.15) 0%, rgba(255,255,255,0) 70%); pointer-events: none; }
-    .wallet-card::after { content: '\f555'; font-family: "Font Awesome 6 Free"; font-weight: 900; position: absolute; bottom: -20px; right: 20px; font-size: 8rem; color: rgba(255,255,255,0.03); pointer-events: none; transform: rotate(-15deg); }
     .wallet-card .wallet-label { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 1.5px; color: rgba(255,255,255,0.8); font-weight: 700; display: flex; align-items: center; gap: 8px; }
     .wallet-card .wallet-label i { color: var(--gold-accent); }
     .wallet-card .wallet-amount { font-size: 2.6rem; font-weight: 800; color: var(--white); margin-top: 6px; letter-spacing: -1px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
@@ -147,42 +113,35 @@
     .ref-link-container { margin-top: 18px; background: rgba(0,0,0,0.2); padding: 12px 16px; border-radius: 10px; display: flex; align-items: center; gap: 10px; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.1); backdrop-filter: blur(4px); }
     .ref-link-input { background: transparent; border: none; color: var(--gold-light); flex-grow: 1; font-family: monospace; outline: none; width: 100%; font-size: 0.9rem; }
     .copy-btn { background: var(--gold-gradient); color: var(--denim-dark); border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 0.8rem; font-weight: 800; transition: var(--transition); }
-    .copy-btn:hover { transform: scale(0.95); }
 
-    /* ===== PREMIUM STATS GRID ===== */
     .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 24px; }
     .stat-card { background: var(--white); border-radius: var(--radius-sm); padding: 24px 20px; box-shadow: 0 10px 30px rgba(11,26,43,0.05); border: 1px solid rgba(212,175,55,0.1); border-top: 4px solid var(--gold-accent); transition: var(--transition); position: relative; overflow: hidden; }
-    .stat-card::before { content: ''; position: absolute; top: -30px; right: -30px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(212,175,55,0.08) 0%, transparent 70%); border-radius: 50%; pointer-events: none; }
-    .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); border-color: rgba(212,175,55,0.3); }
+    .stat-card:hover { transform: translateY(-4px); box-shadow: var(--shadow-lg); }
     .stat-card .icon-wrapper { width: 48px; height: 48px; border-radius: 12px; background: linear-gradient(135deg, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0.02) 100%); color: var(--gold-accent); border: 1px solid rgba(212,175,55,0.2); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; font-size: 1.3rem; }
     .stat-card .label { font-size: 0.8rem; text-transform: uppercase; color: #718096; font-weight: 700; letter-spacing: 0.5px; }
     .stat-card .value { font-size: 1.7rem; font-weight: 800; color: var(--denim-dark); margin-top: 4px; letter-spacing: -0.5px; }
 
-    /* ===== HISTORY CARD ===== */
     .history-card { background: var(--white); border-radius: var(--radius-sm); padding: 24px; box-shadow: 0 10px 30px rgba(11,26,43,0.05); border: 1px solid rgba(0,0,0,0.03); margin-bottom: 24px; }
     .history-card h3 { font-size: 1.1rem; font-weight: 800; margin-bottom: 18px; display: flex; align-items: center; gap: 10px; color: var(--denim-dark); }
     .history-card h3 i { color: var(--gold-accent); }
     .history-item { display: flex; justify-content: space-between; align-items: center; padding: 14px 0; border-bottom: 1px solid #edf2f7; font-size: 0.95rem; font-weight: 600; }
-    .history-item:last-child { border-bottom: none; padding-bottom: 0; }
+    .history-item:last-child { border-bottom: none; }
     .history-item .amount { font-weight: 800; font-size: 1.05rem; }
     .history-item .amount.plus { color: #2e7d32; }
     .history-item .amount.minus { color: #e53e3e; }
 
-    /* ===== PRO BINARY TREE (2 KAKI) ===== */
     .tree-wrapper { overflow-x: auto; padding: 40px 20px; background: var(--white); border-radius: var(--radius-sm); box-shadow: var(--shadow); border: 1px solid rgba(212,175,55,0.1); margin-bottom: 24px; }
     .binary-tree { display: flex; flex-direction: column; align-items: center; min-width: 800px; }
     .node-wrapper { display: flex; flex-direction: column; align-items: center; position: relative; }
     .tree-node-card { background: linear-gradient(145deg, #0b1a2b, #15283c); color: var(--white); padding: 16px 20px; border-radius: 16px; text-align: center; border: 2px solid rgba(212,175,55,0.5); min-width: 150px; box-shadow: 0 8px 20px rgba(0,0,0,0.2); z-index: 2; position: relative; transition: var(--transition); }
-    .tree-node-card:hover { transform: translateY(-4px); box-shadow: 0 12px 25px rgba(212,175,55,0.25); border-color: var(--gold-accent); }
-    .tree-node-card .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--gold-gradient); color: var(--denim-dark); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 1.2rem; font-weight: 900; box-shadow: 0 4px 10px rgba(0,0,0,0.3); }
+    .tree-node-card .avatar { width: 44px; height: 44px; border-radius: 50%; background: var(--gold-gradient); color: var(--denim-dark); display: flex; align-items: center; justify-content: center; margin: 0 auto 10px; font-size: 1.2rem; font-weight: 900; }
     .tree-node-card .node-name { font-weight: 800; font-size: 0.9rem; letter-spacing: 0.5px; }
     .tree-node-card .node-id { font-size: 0.75rem; color: var(--gold-light); margin-top: 4px; font-weight: 500; font-family: monospace; }
     .tree-node-card .node-status { font-size: 0.6rem; padding: 4px 10px; border-radius: 20px; margin-top: 10px; display: inline-block; text-transform: uppercase; font-weight: 800; letter-spacing: 1px; }
     
     .tree-node-card.empty { background: rgba(240,244,248,0.7); color: #a0aec0; border: 2px dashed #cbd5e0; box-shadow: none; cursor: pointer; }
     .tree-node-card.empty:hover { background: rgba(212,175,55,0.05); border-color: var(--gold-accent); color: var(--gold-accent); }
-    .tree-node-card.empty .avatar { background: #e2e8f0; color: #a0aec0; box-shadow: none; transition: var(--transition); }
-    .tree-node-card.empty:hover .avatar { background: var(--gold-accent); color: var(--white); }
+    .tree-node-card.empty .avatar { background: #e2e8f0; color: #a0aec0; }
     .tree-node-card.empty .node-name { font-size: 0.85rem; margin-top: 5px; }
 
     .binary-children { display: flex; justify-content: center; width: 100%; margin-top: 0; padding-top: 30px; position: relative; }
@@ -191,13 +150,7 @@
     .binary-child::before { content: ''; position: absolute; top: 0; height: 30px; width: 2px; background: rgba(212,175,55,0.6); }
     .binary-children::after { content: ''; position: absolute; top: -30px; left: 50%; width: 2px; height: 30px; background: rgba(212,175,55,0.6); transform: translateX(-50%); }
 
-    /* ===== FORM STYLES ===== */
-    .form-section-card {
-      background: var(--white); border-radius: var(--radius-sm); padding: 20px 24px; margin-bottom: 18px;
-      box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05);
-    }
-    #sec-profile .form-section-card { margin-bottom: 12px; }
-    
+    .form-section-card { background: var(--white); border-radius: var(--radius-sm); padding: 20px 24px; margin-bottom: 18px; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); }
     .form-section-card .section-title { font-size: 0.95rem; font-weight: 700; color: var(--denim-dark); margin-bottom: 16px; display: flex; align-items: center; gap: 10px; border-bottom: 1px solid #edf2f7; padding-bottom: 10px; }
     .form-section-card .section-title i { color: var(--gold-accent); }
     .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 18px; }
@@ -209,43 +162,31 @@
       width: 100%; padding: 10px 16px; border: 1.5px solid #e2e8f0; border-radius: 10px; font-size: 0.9rem;
       background: #f8fafc; font-family: inherit; transition: var(--transition); color: var(--denim-dark);
     }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--denim-blue); outline: none; background: var(--white); box-shadow: 0 0 0 3px rgba(42,75,110,0.12); }
-    .form-group input:disabled { background-color: #e9ecef; cursor: not-allowed; }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--denim-blue); outline: none; background: var(--white); }
 
-    /* ===== PRODUCT GRID ===== */
     .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(210px, 1fr)); gap: 20px; margin: 16px 0; }
     .product-card { background: var(--white); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); transition: var(--transition); display: flex; flex-direction: column; }
-    .product-card:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
     .product-card .img-placeholder { height: 160px; background: var(--denim-light); display: flex; align-items: center; justify-content: center; color: var(--denim-blue); font-size: 2.8rem; }
     .product-card .body { padding: 16px; display: flex; flex-direction: column; flex: 1; }
-    .product-card .body .tag { align-self: flex-start; background: var(--gold-light); color: #744210; font-size: 0.6rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+    .product-card .body .tag { align-self: flex-start; background: var(--gold-light); color: #744210; font-size: 0.6rem; font-weight: 800; padding: 3px 10px; border-radius: 20px; text-transform: uppercase; margin-bottom: 6px; }
     .product-card .body h4 { font-size: 0.95rem; font-weight: 700; margin-bottom: 6px; color: var(--denim-dark); }
     .product-card .body .price { font-weight: 800; color: var(--denim-blue); font-size: 1.05rem; margin-bottom: 4px; }
-    .product-card .body .price del { color: #a0aec0; font-size: 0.8rem; font-weight: 500; }
     .product-card .body .btn-sm { margin-top: auto; width: 100%; justify-content: center; }
 
-    /* ===== DATA TABLES ===== */
     .table-container { background: var(--white); border-radius: var(--radius-sm); box-shadow: var(--shadow-sm); border: 1px solid rgba(0,0,0,0.05); overflow-x: auto; margin-bottom: 24px; }
     table { width: 100%; border-collapse: collapse; min-width: 600px; }
     th, td { padding: 14px 20px; text-align: left; border-bottom: 1px solid #edf2f7; vertical-align: middle;}
-    th { background: #f8fafc; color: #718096; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.5px; }
+    th { background: #f8fafc; color: #718096; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; }
     td { font-size: 0.9rem; color: var(--denim-dark); font-weight: 500; }
-    tr:last-child td { border-bottom: none; }
-    tr:hover td { background: #f8fafc; }
-    
+
     .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.75rem; font-weight: 700; display: inline-block; }
     .status-pending { background: #feebc8; color: #dd6b20; }
     .status-success, .status-verified { background: #c6f6d5; color: #2f855a; }
     .status-failed, .status-free { background: #fed7d7; color: #c53030; }
 
-    /* PAGINATION */
     .pagination { display: flex; justify-content: flex-end; align-items: center; gap: 10px; padding: 12px 20px; border-top: 1px solid #edf2f7; }
-    .page-btn { padding: 6px 12px; border: 1px solid #e2e8f0; background: var(--white); border-radius: 6px; cursor: pointer; font-size: 0.85rem; color: var(--denim-navy); transition: var(--transition); }
-    .page-btn:hover:not(:disabled) { background: var(--denim-light); border-color: var(--denim-blue); }
-    .page-btn:disabled { opacity: 0.5; cursor: not-allowed; }
-    .page-info { font-size: 0.85rem; color: #718096; }
+    .page-btn { padding: 6px 12px; border: 1px solid #e2e8f0; background: var(--white); border-radius: 6px; cursor: pointer; font-size: 0.85rem; color: var(--denim-navy); }
 
-    /* ===== MODALS ===== */
     .custom-modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(11, 26, 43, 0.7); backdrop-filter: blur(6px);
       z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px; opacity: 0; pointer-events: none; transition: var(--transition);
@@ -268,7 +209,7 @@
 
     @media (max-width: 768px) {
       .stats-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
-      .wallet-card { padding: 24px 20px; flex-direction: column; align-items: stretch; min-height: auto; }
+      .wallet-card { padding: 24px 20px; flex-direction: column; align-items: stretch; }
       .wallet-card .wallet-amount { font-size: 2.2rem; }
       .product-grid { grid-template-columns: 1fr 1fr; gap: 12px; }
       .form-row { grid-template-columns: 1fr; gap: 0; }
@@ -277,7 +218,6 @@
 </head>
 <body>
 
-  <!-- ===== NAVBAR ===== -->
   <header class="navbar">
     <div class="logo"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></div>
     <div class="nav-right">
@@ -286,7 +226,6 @@
     </div>
   </header>
 
-  <!-- ===== SIDEBAR ===== -->
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-header">
@@ -317,14 +256,11 @@
     <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
   </nav>
 
-  <!-- ===== MAIN CONTENT ===== -->
   <div class="main-content" id="mainContent">
 
-    <!-- DASHBOARD -->
     <div class="section-content active" id="sec-dashboard">
       <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
       
-      <!-- WALLET CARD -->
       <div class="wallet-card">
         <div style="flex-grow: 1; z-index: 2;">
           <div class="wallet-label"><i class="fas fa-wallet"></i> Saldo Dompet Anda</div>
@@ -342,7 +278,6 @@
         </div>
       </div>
 
-      <!-- STATS GRID -->
       <div class="stats-grid">
         <div class="stat-card">
           <div class="icon-wrapper"><i class="fas fa-hand-holding-usd"></i></div>
@@ -377,13 +312,11 @@
       </div>
     </div>
 
-    <!-- TOKO ONLINE -->
     <div class="section-content" id="sec-products">
       <h1 class="page-title"><i class="fas fa-store"></i> Toko Online</h1>
       <div class="product-grid" id="productGridDashboard"></div>
     </div>
     
-    <!-- RIWAYAT RO -->
     <div class="section-content" id="sec-ro-history">
       <h1 class="page-title"><i class="fas fa-box"></i> Riwayat Pembelian RO</h1>
       <div class="table-container">
@@ -407,18 +340,16 @@
       </div>
     </div>
 
-    <!-- JARINGAN PRO -->
     <div class="section-content" id="sec-network">
       <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary (2 Kaki)</h1>
       <div style="background:#fffaf0; padding:12px 16px; border-radius:var(--radius-sm); border-left:4px solid #dd6b20; margin-bottom: 20px;">
           <p style="font-size: 0.85rem; color: #dd6b20; margin: 0;">
-              <i class="fas fa-lightbulb"></i> <strong>Tips:</strong> Klik kotak kosong bertuliskan <strong>"Tambah"</strong> untuk mendaftarkan member baru secara otomatis di posisi tersebut.
+              <i class="fas fa-lightbulb"></i> <strong>Tips:</strong> Klik kotak kosong bertuliskan <strong>"Tambah"</strong> untuk mendaftarkan member baru secara otomatis.
           </p>
       </div>
       <div class="tree-wrapper" id="treeContainer"></div>
     </div>
 
-    <!-- DOWNLINE -->
     <div class="section-content" id="sec-downline">
       <h1 class="page-title"><i class="fas fa-users"></i> Downline Saya</h1>
       <div class="form-section-card" style="margin-bottom: 24px;">
@@ -445,7 +376,6 @@
       </div>
     </div>
 
-    <!-- DEPOSIT -->
     <div class="section-content" id="sec-deposit">
       <h1 class="page-title"><i class="fas fa-plus-circle"></i> Deposit</h1>
 
@@ -462,7 +392,6 @@
         <p class="text-muted mt-16">Minimal deposit Rp 10.000</p>
       </div>
 
-      <!-- 2. TABEL RIWAYAT DEPOSIT DIPERBAIKI KOLOMNYA -->
       <h3 style="font-size: 1.1rem; color: var(--denim-dark); margin-bottom: 12px;"><i class="fas fa-list"></i> Tiket Konfirmasi Deposit</h3>
       <div class="table-container">
         <table>
@@ -485,7 +414,6 @@
       </div>
     </div>
 
-    <!-- WITHDRAW -->
     <div class="section-content" id="sec-withdraw">
       <h1 class="page-title"><i class="fas fa-minus-circle"></i> Withdraw</h1>
       
@@ -528,7 +456,6 @@
       </div>
     </div>
 
-    <!-- RIWAYAT KESELURUHAN -->
     <div class="section-content" id="sec-history">
       <h1 class="page-title"><i class="fas fa-history"></i> Riwayat Transaksi</h1>
       <div class="table-container">
@@ -552,7 +479,6 @@
       </div>
     </div>
 
-    <!-- PROFIL MEMBER -->
     <div class="section-content" id="sec-profile">
       <h1 class="page-title"><i class="fas fa-id-card"></i> Profil Saya</h1>
       <div style="max-width: 850px;">
@@ -606,7 +532,6 @@
 
   </div>
 
-  <!-- ===== MODALS ===== -->
   <div class="custom-modal-overlay" id="customModalOverlay">
     <div class="custom-modal">
       <div class="custom-modal-header"><h3 id="modalTitle">Konfirmasi</h3></div>
@@ -617,7 +542,6 @@
     </div>
   </div>
 
-  <!-- MODAL UPLOAD BUKTI (Untuk RO & Deposit) -->
   <div class="custom-modal-overlay" id="uploadModalOverlay">
     <div class="custom-modal" style="max-width: 460px;">
       <div class="custom-modal-header"><h3><i class="fas fa-upload"></i> Konfirmasi Transfer</h3></div>
@@ -635,7 +559,6 @@
     </div>
   </div>
 
-  <!-- MODAL RO PRODUK -->
   <div class="custom-modal-overlay" id="roModalOverlay">
     <div class="custom-modal" style="max-width: 500px;">
       <div class="custom-modal-header"><h3><i class="fas fa-shopping-cart"></i> Pembelian RO</h3></div>
@@ -673,7 +596,6 @@
     </div>
   </div>
 
-  <!-- JAVASCRIPT -->
   <script>
     (function() {
       'use strict';
@@ -682,14 +604,34 @@
       const PRODUCT_KEY = 'hedtro_products';
       const SETTINGS_KEY = 'hedtro_settings';
       const BANK_KEY = 'hedtro_bank_info';
+      const ORDER_KEY = 'hedtro_orders';
+      const TRANSACTION_KEY = 'hedtro_transactions';
 
-      function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
+      function loadUsers() { try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch(e) { return []; } }
       function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-      function loadProducts() { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); }
+      function loadProducts() { try { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); } catch(e) { return []; } }
       function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-      function loadSettings() { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{"sponsorBonus":10,"binaryBonus":8,"rewardBonus":5,"roBonus":3,"memberPrice":550000}'); }
-      function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
-      function loadBankInfo() { return JSON.parse(localStorage.getItem(BANK_KEY) || '{"bank":"BCA","account":"1234567890","name":"HEDTRO JEANS"}'); }
+      function loadSettings() { try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch(e) { return {}; } }
+      function loadBankInfo() { try { return JSON.parse(localStorage.getItem(BANK_KEY) || '{"bank":"BCA","account":"1234567890","name":"HEDTRO JEANS"}'); } catch(e) { return {bank:"BCA",account:"1234567890",name:"HEDTRO JEANS"}; } }
+      function loadOrders() { try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); } catch(e) { return []; } }
+      function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
+      function loadTransactions() { try { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); } catch(e) { return []; } }
+      function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
+
+      function pushGlobalTransaction(txObj) {
+        let globalTxs = loadTransactions();
+        globalTxs.push(txObj);
+        saveTransactions(globalTxs);
+      }
+
+      function updateGlobalTransaction(txId, updates) {
+        let globalTxs = loadTransactions();
+        const idx = globalTxs.findIndex(t => t.id === txId);
+        if (idx !== -1) {
+          globalTxs[idx] = { ...globalTxs[idx], ...updates };
+          saveTransactions(globalTxs);
+        }
+      }
 
       let users = loadUsers();
       let products = loadProducts();
@@ -706,11 +648,9 @@
         } catch (_) { window.location.href = 'index.html'; return; }
       } else { window.location.href = 'index.html'; return; }
 
-      // Variables Pagination
       let historyData = [], historyCurrentPage = 1;
       let downlineData = [], downlineCurrentPage = 1;
       let dashPage = 1, dpPage = 1, wdPage = 1, roPage = 1;
-      
       let uploadTxId = null, uploadType = null;
 
       window.copyRefLink = function() {
@@ -798,9 +738,9 @@
       });
 
       function renderDashboard() {
-        document.getElementById('navUserName').textContent = currentUser.fullname || currentUser.username;
+        document.getElementById('navUserName').textContent = currentUser.fullname || currentUser.name || currentUser.username;
         const rootUrl = window.location.origin;
-        document.getElementById('refLink').value = `${rootUrl}/ref/${currentUser.username}`;
+        document.getElementById('refLink').value = `${rootUrl}/register.html?ref=${currentUser.username}`;
 
         const isVerified = currentUser.status === 'verified';
         const sideUserStatusBadge = document.getElementById('sideUserStatusBadge');
@@ -808,8 +748,6 @@
           sideUserStatusBadge.textContent = isVerified ? 'VERIFIED' : 'FREE';
           sideUserStatusBadge.className = isVerified ? 'status-badge status-verified' : 'status-badge status-free';
         }
-
-        // 1. BANNER STATUS TELAH DIHAPUS (Logic diabaikan karena element sudah di hapus)
 
         const formattedWallet = 'Rp ' + (currentUser.wallet || 0).toLocaleString();
         document.getElementById('walletAmount').textContent = formattedWallet;
@@ -825,7 +763,7 @@
 
       function renderDashboardHistory() {
         const container = document.getElementById('transactionHistory');
-        const txs = (currentUser.transactions || []).reverse();
+        const txs = (currentUser.transactions || []).slice().reverse();
         if (txs.length === 0) {
             container.innerHTML = '<p class="text-muted">Belum ada transaksi.</p>';
             document.getElementById('dashHistoryPageInfo').textContent = '1/1';
@@ -833,7 +771,7 @@
         }
         
         const limit = 5;
-        const totalPages = Math.ceil(txs.length / limit);
+        const totalPages = Math.ceil(txs.length / limit) || 1;
         const paginated = txs.slice((dashPage - 1) * limit, dashPage * limit);
         
         let html = '';
@@ -842,7 +780,7 @@
           const colorClass = isPlus ? 'plus' : 'minus';
           const sign = isPlus ? '+' : '-';
           let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' || t.status === 'verified' ? 'status-success' : 'status-failed');
-          html += `<div class="history-item"><span>${t.type.toUpperCase()} <span class="status-badge ${badge}" style="transform: scale(0.8);">${t.status}</span></span><span class="amount ${colorClass}">${sign} Rp ${t.amount.toLocaleString()}</span></div>`;
+          html += `<div class="history-item"><span>${(t.type||'').toUpperCase()} <span class="status-badge ${badge}">${t.status||'pending'}</span></span><span class="amount ${colorClass}">${sign} Rp ${(t.amount||0).toLocaleString()}</span></div>`;
         });
         container.innerHTML = html;
         
@@ -852,9 +790,8 @@
       }
       
       document.getElementById('prevDashHistoryBtn').addEventListener('click', () => { if(dashPage > 1) { dashPage--; renderDashboardHistory(); } });
-      document.getElementById('nextDashHistoryBtn').addEventListener('click', () => { const max = Math.ceil((currentUser.transactions||[]).length/5); if(dashPage < max) { dashPage++; renderDashboardHistory(); } });
+      document.getElementById('nextDashHistoryBtn').addEventListener('click', () => { const max = Math.ceil((currentUser.transactions||[]).length/5)||1; if(dashPage < max) { dashPage++; renderDashboardHistory(); } });
 
-      // ===== BUILD BINARY TREE DENGAN FITUR ADD (4. DIUBAH MENGGUNAKAN A HREF) =====
       function renderNetwork() {
         const container = document.getElementById('treeContainer');
         const treeData = buildBinaryTree(currentUser.id, 0, 3, null, null);
@@ -882,7 +819,6 @@
             const baseUrl = window.location.origin + window.location.pathname.replace('dashboard.html', '');
             const refUrl = `${baseUrl}register.html?ref=${currentUser.username}&upline=${node.parentUpline}&pos=${node.position}`;
             const posText = node.position === 'left' ? 'Kiri' : 'Kanan';
-            // 4. Perbaikan fungsi add member (sekarang tag anchor murni)
             return `
               <a href="${refUrl}" class="tree-node-card empty" style="display:block; text-decoration:none;" title="Daftarkan member baru di posisi ini">
                 <div class="avatar"><i class="fas fa-plus"></i></div>
@@ -913,19 +849,18 @@
         return html;
       }
 
-      /* ===== SISTEM PAGINATION TABEL HISTORY ===== */
       function renderHistoryTable() {
           const tbody = document.getElementById('historyTableBody');
-          historyData = [...(currentUser.transactions || [])].reverse();
+          historyData = (currentUser.transactions || []).slice().reverse();
           if(historyData.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Kosong</td></tr>'; return; }
           const paginated = historyData.slice((historyCurrentPage - 1) * 10, historyCurrentPage * 10);
           let html = '';
           paginated.forEach(t => {
-              const date = new Date(t.date).toLocaleString('id-ID', {day:'2-digit', month:'short', year:'numeric'});
+              const date = new Date(t.date || Date.now()).toLocaleDateString('id-ID');
               let sign = (t.type === 'deposit' || t.type === 'bonus') ? '+' : '-';
               let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' || t.status === 'verified' ? 'status-success' : 'status-failed');
-              html += `<tr><td>${date}</td><td><strong>${t.type.toUpperCase()}</strong></td><td>${t.note || t.method || '-'}</td>
-                  <td style="font-weight:700;">${sign} Rp ${t.amount.toLocaleString()}</td><td><span class="status-badge ${badge}">${t.status}</span></td></tr>`;
+              html += `<tr><td>${date}</td><td><strong>${(t.type||'').toUpperCase()}</strong></td><td>${t.note || t.method || '-'}</td>
+                  <td style="font-weight:700;">${sign} Rp ${(t.amount||0).toLocaleString()}</td><td><span class="status-badge ${badge}">${t.status}</span></td></tr>`;
           });
           tbody.innerHTML = html;
           document.getElementById('historyPageInfo').textContent = `${historyCurrentPage}/${Math.ceil(historyData.length/10)||1}`;
@@ -957,7 +892,6 @@
       document.getElementById('prevDownlineBtn').addEventListener('click', () => { if(downlineCurrentPage > 1) { downlineCurrentPage--; renderDownlineTable(); }});
       document.getElementById('nextDownlineBtn').addEventListener('click', () => { if(downlineCurrentPage < Math.ceil(downlineData.length/10)) { downlineCurrentPage++; renderDownlineTable(); }});
 
-      // ===== DEPOSIT DENGAN KODE UNIK (2. DIPERBAIKI KOLOMNYA) =====
       document.getElementById('submitDeposit').addEventListener('click', function() {
         const amount = parseInt(document.getElementById('depositAmount').value);
         if (amount <= 0 || isNaN(amount)) { showModalAlert('Kesalahan', 'Masukkan nominal valid.'); return; }
@@ -965,10 +899,11 @@
         
         const uniqueCode = Math.floor(Math.random() * 900) + 100;
         const total = amount + uniqueCode;
+        const txId = Date.now();
         
-        if (!currentUser.transactions) currentUser.transactions = [];
-        currentUser.transactions.push({
-            id: Date.now(),
+        const txObj = {
+            id: txId,
+            user_id: currentUser.id,
             type: 'deposit',
             amount: total, 
             originalAmount: amount, 
@@ -977,19 +912,29 @@
             date: new Date().toISOString(),
             status: 'pending',
             proofUploaded: false
-        });
+        };
+
+        if (!currentUser.transactions) currentUser.transactions = [];
+        currentUser.transactions.push(txObj);
+        
+        // SYNC BOTH USER AND GLOBAL
+        const userIndex = users.findIndex(u => u.id === currentUser.id);
+        if (userIndex !== -1) users[userIndex] = currentUser;
         saveUsers(users);
+        pushGlobalTransaction(txObj);
+
         document.getElementById('depositAmount').value = '';
         renderDepositHistory();
+        renderDashboard();
         showModalAlert('Tiket Dibuat', '✅ Tiket deposit berhasil dibuat. Silakan klik "Konfirmasi TF" di tabel riwayat untuk melihat rekening dan upload bukti.');
       });
 
       function renderDepositHistory() {
           const tbody = document.getElementById('depositHistoryBody');
-          const dpTxs = (currentUser.transactions || []).filter(t => t.type === 'deposit').reverse();
+          const dpTxs = (currentUser.transactions || []).filter(t => t.type === 'deposit').slice().reverse();
           if(dpTxs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Kosong</td></tr>'; return; }
           
-          const maxPage = Math.ceil(dpTxs.length/10);
+          const maxPage = Math.ceil(dpTxs.length/10) || 1;
           const paginated = dpTxs.slice((dpPage - 1) * 10, dpPage * 10);
           let html = '';
           paginated.forEach(t => {
@@ -1000,29 +945,25 @@
               if(t.status === 'pending' && !t.proofUploaded) {
                   aksi = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload(${t.id}, 'deposit')" style="padding:6px 12px;">Konfirmasi TF</button>`;
               } else if(t.status === 'pending' && t.proofUploaded) {
-                  // Berubah menunggu admin approve
-                  aksi = `<span style="font-size:0.8rem; color:#dd6b20;"><i class="fas fa-clock"></i> Menunggu Admin</span>`;
+                  aksi = `<span style="font-size:0.8rem; color:#dd6b20;"><i class="fas fa-clock"></i> Cek Admin</span>`;
               }
 
-              // 2. Perbaikan jumlah kolom jadi 5 agar sesuai dengan <thead>
               html += `<tr>
                   <td>${date}</td>
-                  <td>${t.method.toUpperCase()}</td>
-                  <td><strong style="color:var(--denim-blue);">Rp ${t.amount.toLocaleString()}</strong><br><small class="text-muted">Kode: ${t.uniqueCode}</small></td>
+                  <td>${(t.method||'bank').toUpperCase()}</td>
+                  <td><strong style="color:var(--denim-blue);">Rp ${(t.amount||0).toLocaleString()}</strong><br><small class="text-muted">Kode: ${t.uniqueCode||'-'}</small></td>
                   <td><span class="status-badge ${badge}">${t.status}</span></td>
                   <td>${aksi}</td>
               </tr>`;
           });
           tbody.innerHTML = html;
-          document.getElementById('dpHistoryPageInfo').textContent = `${dpPage}/${maxPage||1}`;
+          document.getElementById('dpHistoryPageInfo').textContent = `${dpPage}/${maxPage}`;
           document.getElementById('prevDpHistoryBtn').disabled = dpPage === 1;
           document.getElementById('nextDpHistoryBtn').disabled = dpPage === maxPage;
       }
       document.getElementById('prevDpHistoryBtn').addEventListener('click', () => { if(dpPage > 1) { dpPage--; renderDepositHistory(); }});
-      document.getElementById('nextDpHistoryBtn').addEventListener('click', () => { const max = Math.ceil(((currentUser.transactions||[]).filter(t => t.type === 'deposit')).length/10); if(dpPage < max) { dpPage++; renderDepositHistory(); }});
+      document.getElementById('nextDpHistoryBtn').addEventListener('click', () => { const max = Math.ceil(((currentUser.transactions||[]).filter(t => t.type === 'deposit')).length/10)||1; if(dpPage < max) { dpPage++; renderDepositHistory(); }});
 
-
-      // ===== WITHDRAW WITH PAGINATION =====
       function prepareWithdrawForm() {
           const availBal = currentUser.wallet || 0;
           document.getElementById('wdAvailableBal').value = 'Rp ' + availBal.toLocaleString();
@@ -1045,9 +986,17 @@
         
         showModalConfirm('Konfirmasi Withdraw', `Tarik <strong>Rp ${amount.toLocaleString()}</strong> ke <strong>${currentUser.bankName}</strong>?`, function() {
             currentUser.wallet -= amount;
+            const txObj = { id: Date.now(), user_id: currentUser.id, type: 'withdraw', amount: amount, date: new Date().toISOString(), status: 'pending', account: `${currentUser.bankName} - ${currentUser.bankAccount}` };
+            
             if (!currentUser.transactions) currentUser.transactions = [];
-            currentUser.transactions.push({ id: Date.now(), type: 'withdraw', amount: amount, date: new Date().toISOString(), status: 'pending', account: `${currentUser.bankName} - ${currentUser.bankAccount}` });
-            saveUsers(users); renderDashboard(); renderWithdrawHistory();
+            currentUser.transactions.push(txObj);
+            
+            const userIndex = users.findIndex(u => u.id === currentUser.id);
+            if (userIndex !== -1) users[userIndex] = currentUser;
+            saveUsers(users);
+            pushGlobalTransaction(txObj);
+
+            renderDashboard(); renderWithdrawHistory();
             document.getElementById('withdrawAmount').value = '';
             showModalAlert('Berhasil', 'Permintaan withdraw dikirim ke Admin.');
         });
@@ -1055,40 +1004,38 @@
 
       function renderWithdrawHistory() {
           const tbody = document.getElementById('withdrawHistoryBody');
-          const wdTxs = (currentUser.transactions || []).filter(t => t.type === 'withdraw').reverse();
+          const wdTxs = (currentUser.transactions || []).filter(t => t.type === 'withdraw').slice().reverse();
           if(wdTxs.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Kosong</td></tr>'; return; }
           
-          const maxPage = Math.ceil(wdTxs.length/10);
+          const maxPage = Math.ceil(wdTxs.length/10) || 1;
           const paginated = wdTxs.slice((wdPage - 1) * 10, wdPage * 10);
           let html = '';
           paginated.forEach(t => {
               const date = new Date(t.date).toLocaleDateString('id-ID');
               let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' ? 'status-success' : 'status-failed');
-              html += `<tr><td>${date}</td><td>${t.account}</td><td style="color:#e53e3e; font-weight:bold;">Rp ${t.amount.toLocaleString()}</td><td><span class="status-badge ${badge}">${t.status}</span></td></tr>`;
+              html += `<tr><td>${date}</td><td>${t.account}</td><td style="color:#e53e3e; font-weight:bold;">Rp ${(t.amount||0).toLocaleString()}</td><td><span class="status-badge ${badge}">${t.status}</span></td></tr>`;
           });
           tbody.innerHTML = html;
-          document.getElementById('wdHistoryPageInfo').textContent = `${wdPage}/${maxPage||1}`;
+          document.getElementById('wdHistoryPageInfo').textContent = `${wdPage}/${maxPage}`;
           document.getElementById('prevWdHistoryBtn').disabled = wdPage === 1;
           document.getElementById('nextWdHistoryBtn').disabled = wdPage === maxPage;
       }
       document.getElementById('prevWdHistoryBtn').addEventListener('click', () => { if(wdPage > 1) { wdPage--; renderWithdrawHistory(); }});
-      document.getElementById('nextWdHistoryBtn').addEventListener('click', () => { const max = Math.ceil(((currentUser.transactions||[]).filter(t => t.type === 'withdraw')).length/10); if(wdPage < max) { wdPage++; renderWithdrawHistory(); }});
+      document.getElementById('nextWdHistoryBtn').addEventListener('click', () => { const max = Math.ceil(((currentUser.transactions||[]).filter(t => t.type === 'withdraw')).length/10)||1; if(wdPage < max) { wdPage++; renderWithdrawHistory(); }});
 
-
-      // ===== RIWAYAT RO KHUSUS =====
       function renderRoHistory() {
           const tbody = document.getElementById('roHistoryBody');
-          const roTxs = (currentUser.purchase_history || []).reverse();
+          const roTxs = (currentUser.purchase_history || []).slice().reverse();
           if(roTxs.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Belum ada riwayat RO.</td></tr>'; return; }
           
-          const maxPage = Math.ceil(roTxs.length/10);
+          const maxPage = Math.ceil(roTxs.length/10) || 1;
           const paginated = roTxs.slice((roPage - 1) * 10, roPage * 10);
           let html = '';
           paginated.forEach(t => {
               const date = new Date(t.date).toLocaleDateString('id-ID');
               
               let statusText = 'Diproses'; let badgeClass = 'status-pending';
-              if (t.status === 'success' || t.status === 'verified') { statusText = 'Dikirim'; badgeClass = 'status-success'; } 
+              if (t.status === 'success' || t.status === 'verified') { statusText = 'Dikirim / Selesai'; badgeClass = 'status-success'; } 
               else if (t.status === 'failed') { statusText = 'Dibatalkan'; badgeClass = 'status-failed'; }
 
               let actionHtml = '-';
@@ -1105,21 +1052,19 @@
               html += `<tr>
                   <td>${date}</td>
                   <td><strong>${t.productName}</strong><br><small class="text-muted">Seri: ${t.serialNumber||'-'}</small></td>
-                  <td style="color:var(--denim-blue); font-weight:bold;">Rp ${t.price.toLocaleString()}</td>
+                  <td style="color:var(--denim-blue); font-weight:bold;">Rp ${(t.price||0).toLocaleString()}</td>
                   <td><span class="status-badge ${badgeClass}">${statusText}</span></td>
                   <td>${actionHtml}</td>
               </tr>`;
           });
           tbody.innerHTML = html;
-          document.getElementById('roHistoryPageInfo').textContent = `${roPage}/${maxPage||1}`;
+          document.getElementById('roHistoryPageInfo').textContent = `${roPage}/${maxPage}`;
           document.getElementById('prevRoHistoryBtn').disabled = roPage === 1;
           document.getElementById('nextRoHistoryBtn').disabled = roPage === maxPage;
       }
       document.getElementById('prevRoHistoryBtn').addEventListener('click', () => { if(roPage > 1) { roPage--; renderRoHistory(); }});
-      document.getElementById('nextRoHistoryBtn').addEventListener('click', () => { const max = Math.ceil(((currentUser.purchase_history||[])).length/10); if(roPage < max) { roPage++; renderRoHistory(); }});
+      document.getElementById('nextRoHistoryBtn').addEventListener('click', () => { const max = Math.ceil(((currentUser.purchase_history||[])).length/10)||1; if(roPage < max) { roPage++; renderRoHistory(); }});
 
-
-      // ===== FUNGSI GLOBAL BUKA MODAL UPLOAD =====
       window.bukaModalUpload = function(id, type) {
           uploadTxId = id; uploadType = type;
           bankInfo = loadBankInfo();
@@ -1148,27 +1093,54 @@
       document.getElementById('uploadCancelBtn').addEventListener('click', () => document.getElementById('uploadModalOverlay').classList.remove('active'));
       
       document.getElementById('uploadSubmitBtn').addEventListener('click', function() {
-          const file = document.getElementById('uploadProofFile').value;
-          if(!file) { showModalAlert('Error', 'Pilih file bukti terlebih dahulu.'); return; }
+          const fileInput = document.getElementById('uploadProofFile');
+          if(!fileInput.files || !fileInput.files[0]) { showModalAlert('Error', 'Pilih file bukti terlebih dahulu.'); return; }
 
-          if (uploadType === 'deposit') {
-              let tx = currentUser.transactions.find(t => t.id === uploadTxId);
-              if(tx) tx.proofUploaded = true;
-              renderDepositHistory();
-          } else if (uploadType === 'ro') {
-              let txRO = currentUser.purchase_history.find(t => t.id === uploadTxId);
-              if(txRO) txRO.proofUploaded = true;
-              let txMain = currentUser.transactions.find(t => t.id === uploadTxId);
-              if(txMain) txMain.proofUploaded = true;
-              renderRoHistory();
-          }
-          saveUsers(users);
-          document.getElementById('uploadModalOverlay').classList.remove('active');
-          showModalAlert('Berhasil', '✅ Bukti transfer terkirim dan menunggu persetujuan / verifikasi Admin.');
+          const reader = new FileReader();
+          reader.onload = function(e) {
+              const proofDataUrl = e.target.result;
+
+              if (uploadType === 'deposit') {
+                  let tx = currentUser.transactions.find(t => t.id === uploadTxId);
+                  if(tx) {
+                      tx.proofUploaded = true;
+                      tx.proof_image = proofDataUrl;
+                  }
+                  updateGlobalTransaction(uploadTxId, { proofUploaded: true, proof_image: proofDataUrl });
+                  renderDepositHistory();
+              } else if (uploadType === 'ro') {
+                  let txRO = currentUser.purchase_history.find(t => t.id === uploadTxId);
+                  if(txRO) {
+                      txRO.proofUploaded = true;
+                      txRO.proof_image = proofDataUrl;
+                  }
+                  let txMain = currentUser.transactions.find(t => t.id === uploadTxId);
+                  if(txMain) {
+                      txMain.proofUploaded = true;
+                      txMain.proof_image = proofDataUrl;
+                  }
+                  updateGlobalTransaction(uploadTxId, { proofUploaded: true, proof_image: proofDataUrl });
+
+                  let globalOrders = loadOrders();
+                  let ord = globalOrders.find(o => o.id === uploadTxId);
+                  if (ord) {
+                      ord.proof_image = proofDataUrl;
+                      saveOrders(globalOrders);
+                  }
+
+                  renderRoHistory();
+              }
+
+              const userIndex = users.findIndex(u => u.id === currentUser.id);
+              if (userIndex !== -1) users[userIndex] = currentUser;
+              saveUsers(users);
+
+              document.getElementById('uploadModalOverlay').classList.remove('active');
+              showModalAlert('Berhasil', '✅ Bukti transfer terkirim dan menunggu persetujuan / verifikasi Admin.');
+          };
+          reader.readAsDataURL(fileInput.files[0]);
       });
 
-
-      // ===== PROFIL MEMBER =====
       function renderProfileForm() {
         users = loadUsers(); currentUser = users.find(u => u.id === currentUser.id) || currentUser;
         document.getElementById('profUsername').value = currentUser.username || '';
@@ -1183,9 +1155,6 @@
         document.getElementById('profBankHolder').value = currentUser.bankHolder || '';
         document.getElementById('profAddress').value = currentUser.address || '';
         document.getElementById('profCity').value = currentUser.city || '';
-        document.getElementById('profSerial').value = currentUser.serialNumber || '';
-        document.getElementById('profJeansSize').value = currentUser.jeansSize || '30';
-        document.getElementById('profJeansColor').value = currentUser.jeansColor || 'Indigo Blue Raw Denim';
       }
 
       document.getElementById('btnSaveProfile').addEventListener('click', function() {
@@ -1209,23 +1178,19 @@
         currentUser.phone = phone; currentUser.whatsapp = whatsapp;
         currentUser.bankName = bankName; currentUser.bankAccount = bankAccount; currentUser.bankHolder = bankHolder;
         currentUser.address = address; currentUser.city = city;
-        currentUser.jeansSize = document.getElementById('profJeansSize').value;
-        currentUser.jeansColor = document.getElementById('profJeansColor').value;
 
         const userIndex = users.findIndex(u => u.id === currentUser.id);
         if (userIndex !== -1) { users[userIndex] = currentUser; saveUsers(users); }
         showModalAlert('Berhasil', 'Profil diperbarui.');
       });
 
-
-      // ===== RENDER PRODUK & BELI RO =====
       function renderProductsDashboard() {
         const grid = document.getElementById('productGridDashboard');
         const prods = loadProducts(); grid.innerHTML = '';
         if (prods.length === 0) return;
         prods.forEach(p => {
           const card = document.createElement('div'); card.className = 'product-card';
-          card.innerHTML = `<div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div><div class="body"><span class="tag">${p.tag || 'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${p.price.toLocaleString()}</div><div style="font-size:0.75rem; color:#718096; margin-bottom:12px;">Stok: ${p.stock}</div><button class="btn-sm btn-sm-gold buy-ro-btn" data-id="${p.id}" data-price="${p.price}"><i class="fas fa-shopping-cart"></i> Beli (RO)</button></div>`;
+          card.innerHTML = `<div class="img-placeholder"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div><div class="body"><span class="tag">${p.tag || 'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div style="font-size:0.75rem; color:#718096; margin-bottom:12px;">Stok: ${p.stock||0}</div><button class="btn-sm btn-sm-gold buy-ro-btn" data-id="${p.id}" data-price="${p.price}"><i class="fas fa-shopping-cart"></i> Beli (RO)</button></div>`;
           grid.appendChild(card);
         });
         document.querySelectorAll('.buy-ro-btn').forEach(btn => {
@@ -1270,13 +1235,14 @@
       function prosesRO(method) {
         const prod = products.find(p => p.id === roPid); if (!prod) return;
         const sn = document.getElementById('roSerialNumber').value.trim();
-        prod.stock--; saveProducts(products);
+        prod.stock = Math.max(0, (prod.stock || 1) - 1);
+        saveProducts(products);
         
         const txId = Date.now();
         if (method === 'wallet') currentUser.wallet -= roPrice;
 
         const txObj = {
-          id: txId, type: 'ro_purchase', productId: roPid, productName: `${prod.name}`,
+          id: txId, user_id: currentUser.id, type: 'ro_purchase', productId: roPid, productName: `${prod.name}`,
           amount: roPrice, price: roPrice, date: new Date().toISOString(),
           status: method === 'wallet' ? 'success' : 'pending',
           serialNumber: sn, paymentMethod: method, proofUploaded: method === 'wallet' ? true : false
@@ -1284,7 +1250,27 @@
 
         if (!currentUser.transactions) currentUser.transactions = []; currentUser.transactions.push(txObj);
         if (!currentUser.purchase_history) currentUser.purchase_history = []; currentUser.purchase_history.push(txObj);
+        
+        const userIndex = users.findIndex(u => u.id === currentUser.id);
+        if (userIndex !== -1) users[userIndex] = currentUser;
         saveUsers(users);
+
+        // SYNC TO GLOBAL TRANSACTIONS & ORDERS
+        pushGlobalTransaction(txObj);
+        let globalOrders = loadOrders();
+        globalOrders.push({
+            id: txId,
+            order_number: 'RO-' + txId.toString().slice(-6),
+            user_id: currentUser.id,
+            user_name: currentUser.fullname || currentUser.name || currentUser.username,
+            type: 'ro',
+            items: [{ product_id: prod.id, name: prod.name, price: roPrice, qty: 1 }],
+            total: roPrice,
+            status: method === 'wallet' ? 'processing' : 'pending',
+            createdAt: new Date().toISOString(),
+            proof_image: null
+        });
+        saveOrders(globalOrders);
 
         if(method === 'wallet') showModalAlert('Sukses', 'RO lunas dari dompet.', () => { renderDashboard(); showSection('ro-history'); });
         else showModalAlert('Pesanan Dibuat', 'Buka menu <b>Riwayat RO</b> untuk melihat bank admin & upload bukti transfer.', () => { renderDashboard(); showSection('ro-history'); });
@@ -1307,9 +1293,8 @@
       document.getElementById('depositBtn').addEventListener('click', () => showSection('deposit'));
       document.getElementById('withdrawBtn').addEventListener('click', () => showSection('withdraw'));
 
-      // INIT
       showSection('dashboard');
-      setInterval(refreshUserData, 30000);
+      setInterval(refreshUserData, 15000);
     })();
   </script>
 </body>

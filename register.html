@@ -7,375 +7,47 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
-            --denim-dark: #0b1a2b;
-            --denim-navy: #1a2e44;
-            --denim-blue: #2a4b6e;
-            --denim-light: #e8edf2;
-            --gold-accent: #c9a84c;
-            --gold-light: #e8d5a3;
-            --cream: #f7f4ef;
-            --white: #ffffff;
-            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
-            --radius: 24px;
-            --radius-sm: 12px;
-            --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2;
+            --gold-accent: #c9a84c; --gold-light: #e8d5a3; --cream: #f7f4ef; --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08); --radius: 24px; --radius-sm: 12px; --transition: 0.3s ease;
         }
-
-        body {
-            font-family: 'Inter', -apple-system, sans-serif;
-            background: var(--cream);
-            color: var(--denim-dark);
-            min-height: 100vh;
-            padding: 20px;
-            padding-top: 80px;
-        }
-
-        .register-wrapper {
-            max-width: 1000px;
-            margin: 0 auto;
-            padding: 20px 0 40px;
-        }
-
-        .register-header {
-            text-align: center;
-            margin-bottom: 24px;
-        }
-
-        .register-header h1 {
-            font-family: 'Playfair Display', serif;
-            font-size: 2rem;
-            font-weight: 800;
-            color: var(--denim-dark);
-        }
-
-        .register-header h1 i {
-            color: var(--gold-accent);
-        }
-
-        .register-header p {
-            color: var(--denim-navy);
-            font-size: 0.9rem;
-            opacity: 0.7;
-        }
-
-        .form-section {
-            background: var(--white);
-            border-radius: var(--radius);
-            padding: 18px 22px;
-            margin-bottom: 14px;
-            box-shadow: var(--shadow);
-            border: 1px solid var(--denim-light);
-        }
-
-        .form-section .section-title {
-            font-size: 0.9rem;
-            font-weight: 700;
-            color: var(--denim-dark);
-            margin-bottom: 12px;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-            padding: 0;
-            border-bottom: 1px solid var(--denim-light);
-            padding-bottom: 8px;
-        }
-
-        .form-section .section-title i {
-            color: var(--gold-accent);
-        }
-
-        .form-section .section-title .badge-step {
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            font-size: 0.55rem;
-            padding: 1px 10px;
-            border-radius: 40px;
-            font-weight: 700;
-            margin-left: auto;
-        }
-
-        .form-row {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 10px 16px;
-        }
-
-        .form-group {
-            margin-bottom: 6px;
-        }
-
-        .form-group.full-width {
-            grid-column: 1 / -1;
-        }
-
-        .form-group label {
-            display: block;
-            font-weight: 600;
-            color: var(--denim-navy);
-            font-size: 0.75rem;
-            margin-bottom: 3px;
-        }
-
-        .form-group label .required {
-            color: #e74c3c;
-            margin-left: 2px;
-        }
-
-        .form-group label .helper {
-            font-weight: 400;
-            color: var(--denim-blue);
-            font-size: 0.6rem;
-            opacity: 0.6;
-            display: inline-block;
-            margin-left: 4px;
-        }
-
-        .form-group input,
-        .form-group select,
-        .form-group textarea {
-            width: 100%;
-            padding: 8px 14px;
-            border: 1.5px solid var(--denim-light);
-            border-radius: var(--radius-sm);
-            font-size: 0.85rem;
-            background: var(--cream);
-            color: var(--denim-dark);
-            font-family: inherit;
-            transition: var(--transition);
-        }
-
-        .form-group input:focus,
-        .form-group select:focus,
-        .form-group textarea:focus {
-            border-color: var(--gold-accent);
-            outline: none;
-            box-shadow: 0 0 0 3px rgba(201, 168, 76, 0.08);
-            background: var(--white);
-        }
-
-        .form-group input::placeholder,
-        .form-group textarea::placeholder {
-            color: #b0b8c4;
-            font-size: 0.75rem;
-        }
-
-        .form-group textarea {
-            resize: vertical;
-            min-height: 44px;
-            border-radius: var(--radius-sm);
-        }
-
-        .position-selector {
-            display: flex;
-            gap: 10px;
-            margin-top: 2px;
-        }
-
-        .position-option {
-            flex: 1;
-            padding: 8px 12px;
-            border: 2px solid var(--denim-light);
-            border-radius: var(--radius-sm);
-            text-align: center;
-            cursor: pointer;
-            transition: var(--transition);
-            background: var(--cream);
-            font-weight: 600;
-            font-size: 0.75rem;
-            color: var(--denim-navy);
-        }
-
-        .position-option:hover {
-            border-color: var(--denim-blue);
-        }
-
-        .position-option.active {
-            border-color: var(--gold-accent);
-            background: rgba(201, 168, 76, 0.08);
-            color: var(--denim-dark);
-        }
-
-        .position-option i {
-            display: block;
-            font-size: 1.1rem;
-            margin-bottom: 2px;
-            color: var(--gold-accent);
-        }
-
-        .position-option .pos-label {
-            font-size: 0.5rem;
-            font-weight: 400;
-            opacity: 0.5;
-            display: block;
-        }
-
-        .btn-submit {
-            width: 100%;
-            padding: 14px;
-            border: none;
-            border-radius: 60px;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            font-weight: 700;
-            font-size: 1rem;
-            transition: var(--transition);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-            font-family: inherit;
-            margin-top: 4px;
-        }
-
-        .btn-submit:hover {
-            background: #b8963a;
-            transform: scale(0.98);
-        }
-
-        .msg {
-            margin-top: 10px;
-            text-align: center;
-            font-size: 0.85rem;
-            min-height: 24px;
-            padding: 8px 14px;
-            border-radius: var(--radius-sm);
-        }
-
-        .msg.error {
-            background: #fde8e8;
-            color: #b13e3e;
-        }
-        .msg.success {
-            background: #e8f5ed;
-            color: #1f7a4b;
-        }
-
-        .form-footer {
-            text-align: center;
-            margin-top: 12px;
-            color: var(--denim-navy);
-            font-size: 0.85rem;
-        }
-
-        .form-footer a {
-            color: var(--gold-accent);
-            font-weight: 600;
-            cursor: pointer;
-        }
-
-        .form-footer a:hover {
-            text-decoration: underline;
-        }
-
-        .back-link {
-            display: inline-block;
-            margin-top: 12px;
-            color: var(--denim-navy);
-            font-size: 0.8rem;
-            opacity: 0.6;
-            transition: var(--transition);
-        }
-
-        .back-link:hover {
-            opacity: 1;
-            color: var(--gold-accent);
-        }
+        body { font-family: 'Inter', -apple-system, sans-serif; background: var(--cream); color: var(--denim-dark); min-height: 100vh; padding: 20px; padding-top: 80px; }
+        .register-wrapper { max-width: 1000px; margin: 0 auto; padding: 20px 0 40px; }
+        .register-header { text-align: center; margin-bottom: 24px; }
+        .register-header h1 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--denim-dark); }
+        .register-header h1 i { color: var(--gold-accent); }
+        .register-header p { color: var(--denim-navy); font-size: 0.9rem; opacity: 0.7; }
+        .form-section { background: var(--white); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 14px; box-shadow: var(--shadow); border: 1px solid var(--denim-light); }
+        .form-section .section-title { font-size: 0.9rem; font-weight: 700; color: var(--denim-dark); margin-bottom: 12px; display: flex; align-items: center; gap: 8px; border-bottom: 1px solid var(--denim-light); padding-bottom: 8px; }
+        .form-section .section-title i { color: var(--gold-accent); }
+        .form-section .section-title .badge-step { background: var(--gold-accent); color: var(--denim-dark); font-size: 0.55rem; padding: 1px 10px; border-radius: 40px; font-weight: 700; margin-left: auto; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px 16px; }
+        .form-group { margin-bottom: 6px; }
+        .form-group.full-width { grid-column: 1 / -1; }
+        .form-group label { display: block; font-weight: 600; color: var(--denim-navy); font-size: 0.75rem; margin-bottom: 3px; }
+        .form-group label .required { color: #e74c3c; margin-left: 2px; }
+        .form-group label .helper { font-weight: 400; color: var(--denim-blue); font-size: 0.6rem; opacity: 0.6; display: inline-block; margin-left: 4px; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 8px 14px; border: 1.5px solid var(--denim-light); border-radius: var(--radius-sm); font-size: 0.85rem; background: var(--cream); color: var(--denim-dark); font-family: inherit; transition: var(--transition); }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold-accent); outline: none; background: var(--white); }
+        .form-group textarea { resize: vertical; min-height: 44px; }
+        .position-selector { display: flex; gap: 10px; margin-top: 2px; }
+        .position-option { flex: 1; padding: 8px 12px; border: 2px solid var(--denim-light); border-radius: var(--radius-sm); text-align: center; cursor: pointer; transition: var(--transition); background: var(--cream); font-weight: 600; font-size: 0.75rem; color: var(--denim-navy); }
+        .position-option.active { border-color: var(--gold-accent); background: rgba(201, 168, 76, 0.08); color: var(--denim-dark); }
+        .position-option i { display: block; font-size: 1.1rem; margin-bottom: 2px; color: var(--gold-accent); }
+        .btn-submit { width: 100%; padding: 14px; border: none; border-radius: 60px; background: var(--gold-accent); color: var(--denim-dark); font-weight: 700; font-size: 1rem; transition: var(--transition); display: flex; align-items: center; justify-content: center; gap: 10px; margin-top: 4px; cursor: pointer; }
+        .btn-submit:hover { background: #b8963a; transform: scale(0.98); }
+        .msg { margin-top: 10px; text-align: center; font-size: 0.85rem; min-height: 24px; padding: 8px 14px; border-radius: var(--radius-sm); }
+        .msg.error { background: #fde8e8; color: #b13e3e; }
+        .msg.success { background: #e8f5ed; color: #1f7a4b; }
+        .form-footer { text-align: center; margin-top: 12px; color: var(--denim-navy); font-size: 0.85rem; }
+        .form-footer a { color: var(--gold-accent); font-weight: 600; }
+        .back-link { display: inline-block; margin-top: 12px; color: var(--denim-navy); font-size: 0.8rem; opacity: 0.6; text-decoration: none; }
 
         @media (max-width: 768px) {
-            body {
-                padding-top: 60px;
-                padding: 12px;
-            }
-
-            .register-wrapper {
-                padding: 12px 0 24px;
-            }
-
-            .register-header h1 {
-                font-size: 1.5rem;
-            }
-
-            .form-section {
-                padding: 14px 16px;
-                margin-bottom: 10px;
-            }
-
-            .form-section .section-title {
-                font-size: 0.8rem;
-            }
-
-            .form-row {
-                grid-template-columns: 1fr;
-                gap: 0;
-            }
-
-            .form-group {
-                margin-bottom: 10px;
-            }
-
-            .form-group.full-width {
-                grid-column: 1;
-            }
-
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
-                padding: 7px 12px;
-                font-size: 0.8rem;
-            }
-
-            .position-selector {
-                flex-direction: row;
-                gap: 6px;
-            }
-
-            .btn-submit {
-                padding: 12px;
-                font-size: 0.9rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .register-header h1 {
-                font-size: 1.2rem;
-            }
-
-            .form-section {
-                padding: 10px 12px;
-            }
-
-            .form-section .section-title {
-                font-size: 0.7rem;
-            }
-
-            .form-group input,
-            .form-group select,
-            .form-group textarea {
-                padding: 5px 10px;
-                font-size: 0.75rem;
-            }
-
-            .position-option {
-                padding: 6px 8px;
-                font-size: 0.65rem;
-            }
-
-            .position-option i {
-                font-size: 0.9rem;
-            }
-
-            .btn-submit {
-                padding: 10px;
-                font-size: 0.8rem;
-            }
+            body { padding-top: 60px; padding: 12px; }
+            .form-row { grid-template-columns: 1fr; gap: 0; }
         }
     </style>
 </head>
@@ -389,194 +61,91 @@
 
         <form id="registerForm" onsubmit="return false;">
 
-            <!-- SECTION 1: AKUN & KEAMANAN -->
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-lock"></i> Akun & Keamanan
-                    <span class="badge-step">1</span>
-                </div>
+                <div class="section-title"><i class="fas fa-lock"></i> Akun & Keamanan <span class="badge-step">1</span></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Username <span class="required">*</span> <span class="helper">agus2026</span></label>
-                        <input type="text" id="regUsername" placeholder="Username" />
-                    </div>
-                    <div class="form-group">
-                        <label>Email <span class="required">*</span> <span class="helper">nama@email.com</span></label>
-                        <input type="email" id="regEmail" placeholder="Email aktif" />
-                    </div>
-                    <div class="form-group">
-                        <label>Kata Sandi <span class="required">*</span></label>
-                        <input type="password" id="regPassword" placeholder="Min 6 karakter" />
-                    </div>
-                    <div class="form-group">
-                        <label>Konfirmasi Sandi <span class="required">*</span></label>
-                        <input type="password" id="regConfirmPassword" placeholder="Ulangi sandi" />
-                    </div>
+                    <div class="form-group"><label>Username <span class="required">*</span></label><input type="text" id="regUsername" placeholder="Username" /></div>
+                    <div class="form-group"><label>Email <span class="required">*</span></label><input type="email" id="regEmail" placeholder="Email aktif" /></div>
+                    <div class="form-group"><label>Kata Sandi <span class="required">*</span></label><input type="password" id="regPassword" placeholder="Min 6 karakter" /></div>
+                    <div class="form-group"><label>Konfirmasi Sandi <span class="required">*</span></label><input type="password" id="regConfirmPassword" placeholder="Ulangi sandi" /></div>
                 </div>
             </div>
 
-            <!-- SECTION 2: IDENTITAS & KONTAK -->
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-id-card"></i> Identitas & Kontak
-                    <span class="badge-step">2</span>
-                </div>
+                <div class="section-title"><i class="fas fa-id-card"></i> Identitas & Kontak <span class="badge-step">2</span></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Nama Lengkap <span class="required">*</span></label>
-                        <input type="text" id="regFullname" placeholder="Nama lengkap" />
-                    </div>
-                    <div class="form-group">
-                        <label>NIK (16 Digit) <span class="required">*</span> <span class="helper">3271xxxxxxxxxxxx</span></label>
-                        <input type="text" id="regNik" placeholder="16 digit NIK" maxlength="16" />
-                    </div>
-                    <div class="form-group">
-                        <label>No. HP <span class="required">*</span> <span class="helper">0812345678</span></label>
-                        <input type="text" id="regPhone" placeholder="No. HP" />
-                    </div>
-                    <div class="form-group">
-                        <label>No. WhatsApp <span class="required">*</span> <span class="helper">0812345678</span></label>
-                        <input type="text" id="regWhatsapp" placeholder="No. WhatsApp aktif" />
-                    </div>
+                    <div class="form-group"><label>Nama Lengkap <span class="required">*</span></label><input type="text" id="regFullname" placeholder="Nama lengkap" /></div>
+                    <div class="form-group"><label>NIK (16 Digit) <span class="required">*</span></label><input type="text" id="regNik" placeholder="16 digit NIK" maxlength="16" /></div>
+                    <div class="form-group"><label>No. HP <span class="required">*</span></label><input type="text" id="regPhone" placeholder="No. HP" /></div>
+                    <div class="form-group"><label>No. WhatsApp <span class="required">*</span></label><input type="text" id="regWhatsapp" placeholder="No. WhatsApp aktif" /></div>
                 </div>
             </div>
 
-            <!-- SECTION 3: REKENING BANK -->
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-university"></i> Rekening Bank
-                    <span class="badge-step">3</span>
-                </div>
+                <div class="section-title"><i class="fas fa-university"></i> Rekening Bank <span class="badge-step">3</span></div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Nama Bank <span class="required">*</span></label>
                         <select id="regBankName">
-                            <option value="BCA">BCA</option>
-                            <option value="BNI">BNI</option>
-                            <option value="BRI">BRI</option>
-                            <option value="Mandiri">Mandiri</option>
-                            <option value="CIMB Niaga">CIMB Niaga</option>
-                            <option value="Danamon">Danamon</option>
-                            <option value="BSI">BSI</option>
-                            <option value="Lainnya">Lainnya</option>
+                            <option value="BCA">BCA</option><option value="BNI">BNI</option><option value="BRI">BRI</option>
+                            <option value="Mandiri">Mandiri</option><option value="BSI">BSI</option><option value="Lainnya">Lainnya</option>
                         </select>
                     </div>
-                    <div class="form-group">
-                        <label>No. Rekening <span class="required">*</span> <span class="helper">1234567890</span></label>
-                        <input type="text" id="regBankAccount" placeholder="No. rekening" />
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Atas Nama <span class="required">*</span></label>
-                        <input type="text" id="regBankHolder" placeholder="Atas nama..." />
-                    </div>
+                    <div class="form-group"><label>No. Rekening <span class="required">*</span></label><input type="text" id="regBankAccount" placeholder="No. rekening" /></div>
+                    <div class="form-group full-width"><label>Atas Nama <span class="required">*</span></label><input type="text" id="regBankHolder" placeholder="Atas nama..." /></div>
                 </div>
             </div>
 
-            <!-- SECTION 4: ALAMAT PENGIRIMAN -->
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-map-pin"></i> Alamat Pengiriman
-                    <span class="badge-step">4</span>
-                </div>
+                <div class="section-title"><i class="fas fa-map-pin"></i> Alamat Pengiriman <span class="badge-step">4</span></div>
                 <div class="form-row">
-                    <div class="form-group full-width">
-                        <label>Alamat Lengkap <span class="required">*</span></label>
-                        <textarea id="regAddress" placeholder="Jalan, RT/RW, No. Rumah, Kel/Kec"></textarea>
-                    </div>
-                    <div class="form-group full-width">
-                        <label>Kota & Provinsi <span class="required">*</span> <span class="helper">Jakarta Selatan, DKI Jakarta</span></label>
-                        <input type="text" id="regCity" placeholder="Kota & provinsi" />
-                    </div>
+                    <div class="form-group full-width"><label>Alamat Lengkap <span class="required">*</span></label><textarea id="regAddress" placeholder="Alamat rumah"></textarea></div>
+                    <div class="form-group full-width"><label>Kota & Provinsi <span class="required">*</span></label><input type="text" id="regCity" placeholder="Kota & provinsi" /></div>
                 </div>
             </div>
 
-            <!-- SECTION 5: SPESIFIKASI JEANS -->
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-tshirt"></i> Spesifikasi Jeans
-                    <span class="badge-step">5</span>
-                </div>
+                <div class="section-title"><i class="fas fa-tshirt"></i> Spesifikasi Jeans <span class="badge-step">5</span></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Nomor Seri <span class="required">*</span> <span class="helper">HDT-SERI-001</span></label>
-                        <input type="text" id="regSerial" placeholder="Nomor seri" />
-                    </div>
+                    <div class="form-group"><label>Nomor Seri <span class="required">*</span></label><input type="text" id="regSerial" placeholder="HDT-SERI-001" /></div>
                     <div class="form-group">
                         <label>Ukuran <span class="required">*</span></label>
                         <select id="regJeansSize">
-                            <option value="28">Size 28</option>
-                            <option value="29">Size 29</option>
-                            <option value="30" selected>Size 30</option>
-                            <option value="31">Size 31</option>
-                            <option value="32">Size 32</option>
-                            <option value="33">Size 33</option>
-                            <option value="34">Size 34</option>
-                            <option value="36">Size 36</option>
-                            <option value="38">Size 38</option>
-                            <option value="40">Size 40</option>
+                            <option value="28">Size 28</option><option value="30" selected>Size 30</option><option value="32">Size 32</option><option value="34">Size 34</option>
                         </select>
                     </div>
                     <div class="form-group full-width">
                         <label>Warna <span class="required">*</span></label>
                         <select id="regJeansColor">
-                            <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option>
-                            <option value="Black Stretch">Black Stretch</option>
-                            <option value="Light Wash">Light Wash</option>
-                            <option value="Dark Navy">Dark Navy</option>
-                            <option value="Grey Stone">Grey Stone</option>
-                            <option value="White">White</option>
+                            <option value="Indigo Blue Raw Denim">Indigo Blue Raw Denim</option><option value="Black Stretch">Black Stretch</option>
                         </select>
                     </div>
                 </div>
             </div>
 
-            <!-- SECTION 6: PENEMPATAN TIM -->
             <div class="form-section">
-                <div class="section-title">
-                    <i class="fas fa-sitemap"></i> Penempatan Tim
-                    <span class="badge-step">6</span>
-                </div>
+                <div class="section-title"><i class="fas fa-sitemap"></i> Penempatan Tim <span class="badge-step">6</span></div>
                 <div class="form-row">
-                    <div class="form-group">
-                        <label>Username Sponsor <span class="helper">(kosong = Admin)</span></label>
-                        <input type="text" id="regSponsor" placeholder="Username sponsor" />
-                    </div>
-                    <div class="form-group">
-                        <label>Username Upline <span class="helper">(kosong = Admin)</span></label>
-                        <input type="text" id="regUpline" placeholder="Username upline" />
-                    </div>
+                    <div class="form-group"><label>Username Sponsor</label><input type="text" id="regSponsor" placeholder="Username sponsor" /></div>
+                    <div class="form-group"><label>Username Upline</label><input type="text" id="regUpline" placeholder="Username upline" /></div>
                     <div class="form-group full-width">
                         <label>Posisi Tim <span class="required">*</span></label>
                         <div class="position-selector" id="positionSelector">
-                            <div class="position-option active" data-value="left">
-                                <i class="fas fa-arrow-left"></i>
-                                KIRI (L)
-                                <span class="pos-label">Kiri</span>
-                            </div>
-                            <div class="position-option" data-value="right">
-                                <i class="fas fa-arrow-right"></i>
-                                KANAN (R)
-                                <span class="pos-label">Kanan</span>
-                            </div>
+                            <div class="position-option active" data-value="left"><i class="fas fa-arrow-left"></i> KIRI (L)</div>
+                            <div class="position-option" data-value="right"><i class="fas fa-arrow-right"></i> KANAN (R)</div>
                         </div>
                         <input type="hidden" id="regPosition" value="left" />
                     </div>
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit" id="registerBtn">
-                <i class="fas fa-user-plus"></i> Daftar Member
-            </button>
+            <button type="submit" class="btn-submit" id="registerBtn"><i class="fas fa-user-plus"></i> Daftar Member</button>
 
             <div class="msg" id="regMsg"></div>
 
-            <div class="form-footer">
-                Sudah punya akun? <a href="login.html">Login di sini</a>
-            </div>
+            <div class="form-footer">Sudah punya akun? <a href="login.html">Login di sini</a></div>
 
-            <div style="text-align:center;">
-                <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
-            </div>
+            <div style="text-align:center;"><a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a></div>
         </form>
     </div>
 
@@ -587,7 +156,7 @@
             const DB_KEY = 'hedtro_mlm_users';
             const ORDER_KEY = 'hedtro_orders';
             const PRODUCT_KEY = 'hedtro_products';
-            const SESSION_KEY = 'mlm_session';
+            const TRANSACTION_KEY = 'hedtro_transactions';
 
             function loadUsers() { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); }
             function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
@@ -595,25 +164,33 @@
             function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
             function loadOrders() { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); }
             function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
-            function getNextId(arr) { return arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
+            function loadTransactions() { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); }
+            function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
+            function getNextId(arr) { return arr && arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
-            // ============================================================
-            // POSITION SELECTOR
-            // ============================================================
-            const positionOptions = document.querySelectorAll('.position-option');
-            const positionInput = document.getElementById('regPosition');
+            // URL PARAMS AUTOFILL (Ref / Upline / Position)
+            const urlParams = new URLSearchParams(window.location.search);
+            const refParam = urlParams.get('ref');
+            const uplineParam = urlParams.get('upline');
+            const posParam = urlParams.get('pos');
 
-            positionOptions.forEach(opt => {
+            if (refParam) document.getElementById('regSponsor').value = refParam;
+            if (uplineParam) document.getElementById('regUpline').value = uplineParam;
+            if (posParam && (posParam === 'left' || posParam === 'right')) {
+                document.getElementById('regPosition').value = posParam;
+                document.querySelectorAll('.position-option').forEach(o => {
+                    o.classList.toggle('active', o.dataset.value === posParam);
+                });
+            }
+
+            document.querySelectorAll('.position-option').forEach(opt => {
                 opt.addEventListener('click', function() {
-                    positionOptions.forEach(o => o.classList.remove('active'));
+                    document.querySelectorAll('.position-option').forEach(o => o.classList.remove('active'));
                     this.classList.add('active');
-                    positionInput.value = this.dataset.value;
+                    document.getElementById('regPosition').value = this.dataset.value;
                 });
             });
 
-            // ============================================================
-            // REGISTER FUNCTION
-            // ============================================================
             function registerUser() {
                 const username = document.getElementById('regUsername').value.trim();
                 const email = document.getElementById('regEmail').value.trim();
@@ -636,227 +213,97 @@
                 const position = document.getElementById('regPosition').value;
                 const msgEl = document.getElementById('regMsg');
 
-                // Validasi
-                if (!username || !email || !password || !confirmPassword || !fullname || !nik || !phone || !whatsapp ||
-                    !bankAccount || !bankHolder || !address || !city || !serial) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Semua field wajib diisi (kecuali sponsor & upline).';
-                    return;
+                if (!username || !email || !password || !confirmPassword || !fullname || !nik || !phone || !whatsapp || !bankAccount || !bankHolder || !address || !city || !serial) {
+                    msgEl.className = 'msg error'; msgEl.innerText = '⚠️ Semua field wajib diisi.'; return;
                 }
-
-                if (password.length < 6) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Kata sandi minimal 6 karakter.';
-                    return;
-                }
-
                 if (password !== confirmPassword) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Kata sandi dan konfirmasi tidak sama.';
-                    return;
-                }
-
-                if (nik.length !== 16 || isNaN(nik)) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ NIK harus 16 digit angka.';
-                    return;
+                    msgEl.className = 'msg error'; msgEl.innerText = '⚠️ Password tidak sama.'; return;
                 }
 
                 let users = loadUsers();
-
-                if (users.find(u => u.username === username)) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Username sudah terdaftar.';
-                    return;
+                if (users.find(u => u.username === username || u.email === email)) {
+                    msgEl.className = 'msg error'; msgEl.innerText = '⚠️ Username atau Email sudah terdaftar.'; return;
                 }
 
-                if (users.find(u => u.email === email)) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Email sudah terdaftar.';
-                    return;
-                }
-
-                // Cek sponsor
                 let sponsorId = null;
                 if (sponsor) {
-                    const sponsorUser = users.find(u => u.username === sponsor);
-                    if (!sponsorUser) {
-                        msgEl.className = 'msg error';
-                        msgEl.innerText = '⚠️ Username sponsor tidak ditemukan.';
-                        return;
-                    }
-                    sponsorId = sponsorUser.id;
-                    if (position === 'left' && sponsorUser.left) {
-                        msgEl.className = 'msg error';
-                        msgEl.innerText = '⚠️ Posisi kiri sponsor sudah terisi oleh member lain.';
-                        return;
-                    }
-                    if (position === 'right' && sponsorUser.right) {
-                        msgEl.className = 'msg error';
-                        msgEl.innerText = '⚠️ Posisi kanan sponsor sudah terisi oleh member lain.';
-                        return;
-                    }
+                    const sp = users.find(u => u.username === sponsor);
+                    if (sp) sponsorId = sp.id;
                 }
 
-                // Cek upline
                 let uplineId = null;
                 if (upline) {
-                    const uplineUser = users.find(u => u.username === upline);
-                    if (!uplineUser) {
-                        msgEl.className = 'msg error';
-                        msgEl.innerText = '⚠️ Username upline tidak ditemukan.';
-                        return;
-                    }
-                    uplineId = uplineUser.id;
+                    const up = users.find(u => u.username === upline);
+                    if (up) uplineId = up.id;
                 }
 
-                // Buat user baru - status FREE
                 const newUser = {
                     id: getNextId(users),
-                    username,
-                    email,
-                    password,
-                    name: fullname,
-                    nik,
-                    phone,
-                    whatsapp,
-                    bankName,
-                    bankAccount,
-                    bankHolder,
-                    address,
-                    city,
-                    serialNumber: serial,
-                    jeansSize,
-                    jeansColor,
-                    sponsor_id: sponsorId,
-                    upline_id: uplineId,
-                    position: position || 'left',
-                    left: null,
-                    right: null,
-                    role: 'user',
-                    status: 'free', // FREE MEMBER
-                    wallet: 0,
-                    bonus_sponsor: 0,
-                    bonus_binary: 0,
-                    bonus_reward: 0,
-                    bonus_ro: 0,
-                    purchase_history: [],
-                    transactions: [],
-                    orders: [],
-                    proof_image: null,
+                    username, email, password, name: fullname, fullname, nik, phone, whatsapp,
+                    bankName, bankAccount, bankHolder, address, city, serialNumber: serial,
+                    jeansSize, jeansColor, sponsor_id: sponsorId, upline_id: uplineId,
+                    position: position || 'left', left: null, right: null, role: 'user',
+                    status: 'free', wallet: 0, bonus_sponsor: 0, bonus_binary: 0, bonus_reward: 0, bonus_ro: 0,
+                    purchase_history: [], transactions: [], orders: [], proof_image: null,
                     registeredAt: new Date().toISOString()
                 };
 
                 users.push(newUser);
                 saveUsers(users);
 
-                // Update tree di sponsor
                 if (sponsorId) {
-                    const sponsorUser = users.find(u => u.id === sponsorId);
-                    if (position === 'left') sponsorUser.left = newUser.id;
-                    else sponsorUser.right = newUser.id;
-                    saveUsers(users);
-                    updateBinaryTree(sponsorId, 1);
+                    const sp = users.find(u => u.id === sponsorId);
+                    if (sp) {
+                        if (position === 'left') sp.left = newUser.id;
+                        else sp.right = newUser.id;
+                        saveUsers(users);
+                    }
                 }
 
-                // Buat order perdana otomatis (1 produk) - status pending
+                // CREATE INITIAL ORDER IN HEDTRO_ORDERS & HEDTRO_TRANSACTIONS
                 const products = loadProducts();
-                const firstProduct = products.length > 0 ? products[0] : null;
-                if (firstProduct) {
-                    const orders = loadOrders();
-                    orders.push({
-                        id: getNextId(orders),
-                        order_number: 'FIRST-' + Date.now().toString().slice(-6),
-                        user_id: newUser.id,
-                        user_name: fullname,
-                        items: [{
-                            product_id: firstProduct.id,
-                            name: firstProduct.name,
-                            price: firstProduct.price,
-                            qty: 1,
-                            size: jeansSize,
-                            color: jeansColor
-                        }],
-                        total: firstProduct.price,
-                        status: 'pending',
-                        type: 'first_order',
-                        createdAt: new Date().toISOString(),
-                        updatedAt: new Date().toISOString()
-                    });
-                    saveOrders(orders);
+                const firstProduct = products.length > 0 ? products[0] : { id: 1, name: 'Paket Member Hedtro', price: 550000 };
+                
+                const orders = loadOrders();
+                const ordId = Date.now();
+                const ordNum = 'FIRST-' + ordId.toString().slice(-6);
+                
+                const newOrder = {
+                    id: ordId,
+                    order_number: ordNum,
+                    user_id: newUser.id,
+                    user_name: fullname,
+                    shipping_address: address + ', ' + city,
+                    items: [{ product_id: firstProduct.id, name: firstProduct.name, price: firstProduct.price, qty: 1, size: jeansSize, color: jeansColor }],
+                    total: firstProduct.price,
+                    status: 'pending',
+                    type: 'first_order',
+                    createdAt: new Date().toISOString(),
+                    proof_image: null
+                };
+                orders.push(newOrder);
+                saveOrders(orders);
 
-                    // Kurangi stok
-                    firstProduct.stock = (firstProduct.stock || 0) - 1;
-                    saveProducts(products);
-                }
+                const txs = loadTransactions();
+                txs.push({
+                    id: ordId,
+                    user_id: newUser.id,
+                    type: 'order',
+                    amount: firstProduct.price,
+                    status: 'pending',
+                    date: new Date().toISOString(),
+                    note: `Order Awal ${ordNum}`
+                });
+                saveTransactions(txs);
 
                 msgEl.className = 'msg success';
-                msgEl.innerText = '✅ Pendaftaran berhasil! Status: FREE MEMBER. Silakan login dan upload bukti TF ke admin untuk verifikasi.';
+                msgEl.innerText = '✅ Pendaftaran berhasil! Silakan login untuk mengonfirmasi / upload bukti.';
 
-                document.getElementById('registerForm').reset();
-                positionOptions.forEach(o => o.classList.remove('active'));
-                document.querySelector('.position-option[data-value="left"]').classList.add('active');
-
-                setTimeout(() => {
-                    window.location.href = 'login.html';
-                }, 3000);
+                setTimeout(() => { window.location.href = 'login.html'; }, 2000);
             }
 
-            function updateBinaryTree(userId, level) {
-                if (level > 10) return;
-                let users = loadUsers();
-                const user = users.find(u => u.id === userId);
-                if (!user) return;
-                if (!user.binary_tree) user.binary_tree = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
-                user.binary_tree[level - 1] = (user.binary_tree[level - 1] || 0) + 1;
-                if (level <= 5) {
-                    if (!user.reward_levels) user.reward_levels = [0, 0, 0, 0, 0];
-                    user.reward_levels[level - 1] = (user.reward_levels[level - 1] || 0) + 1;
-                }
-                saveUsers(users);
-                if (user.sponsor_id) {
-                    updateBinaryTree(user.sponsor_id, level + 1);
-                }
-            }
-
-            // ============================================================
-            // EVENT BINDING
-            // ============================================================
             document.getElementById('registerBtn').addEventListener('click', registerUser);
-
-            document.querySelectorAll('#registerForm input, #registerForm select, #registerForm textarea').forEach(el => {
-                el.addEventListener('keydown', function(e) {
-                    if (e.key === 'Enter') {
-                        e.preventDefault();
-                        registerUser();
-                    }
-                });
-            });
-
-            // ============================================================
-            // CHECK SESSION
-            // ============================================================
-            const session = localStorage.getItem(SESSION_KEY);
-            if (session) {
-                try {
-                    const { id } = JSON.parse(session);
-                    const users = loadUsers();
-                    const user = users.find(u => u.id === id);
-                    if (user) {
-                        if (user.role === 'admin') {
-                            window.location.href = 'admin.html';
-                        } else {
-                            window.location.href = 'dashboard.html';
-                        }
-                        return;
-                    }
-                } catch (_) {}
-            }
-
-            console.log('🟦 HEDTRO JEANS · Form pendaftaran siap');
-            console.log('📝 Status awal: FREE MEMBER, perlu verifikasi admin');
         })();
     </script>
-
 </body>
 </html>
