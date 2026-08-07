@@ -233,72 +233,6 @@
             const DB_KEY = 'hedtro_mlm_users';
 
             // ============================================================
-            // INIT DATA DEFAULT (jika belum ada)
-            // ============================================================
-            function initUsers() {
-                let users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
-                if (users.length === 0) {
-                    users = [{
-                        id: 1,
-                        username: 'admin',
-                        name: 'Admin Utama',
-                        email: 'admin@mlm.com',
-                        password: 'admin123',
-                        role: 'admin',
-                        status: 'verified',
-                        wallet: 0,
-                        bonus_sponsor: 0,
-                        bonus_binary: 0,
-                        bonus_reward: 0,
-                        bonus_ro: 0,
-                        binary_tree: [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-                        reward_levels: [0, 0, 0, 0, 0],
-                        purchase_history: [],
-                        transactions: [],
-                        registeredAt: new Date().toISOString()
-                    }, {
-                        id: 2,
-                        username: 'budi',
-                        name: 'Budi Santoso',
-                        email: 'budi@mail.com',
-                        password: 'budi123',
-                        role: 'user',
-                        status: 'verified',
-                        wallet: 120000,
-                        bonus_sponsor: 50,
-                        bonus_binary: 120,
-                        bonus_reward: 30,
-                        bonus_ro: 12,
-                        binary_tree: [2, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                        reward_levels: [4, 2, 1, 0, 0],
-                        purchase_history: [],
-                        transactions: [],
-                        registeredAt: new Date().toISOString()
-                    }, {
-                        id: 3,
-                        username: 'citra',
-                        name: 'Citra Dewi',
-                        email: 'citra@mail.com',
-                        password: 'citra123',
-                        role: 'user',
-                        status: 'verified',
-                        wallet: 80000,
-                        bonus_sponsor: 30,
-                        bonus_binary: 70,
-                        bonus_reward: 15,
-                        bonus_ro: 8,
-                        binary_tree: [1, 1, 0, 0, 0, 0, 0, 0, 0, 0],
-                        reward_levels: [3, 1, 0, 0, 0],
-                        purchase_history: [],
-                        transactions: [],
-                        registeredAt: new Date().toISOString()
-                    }];
-                    localStorage.setItem(DB_KEY, JSON.stringify(users));
-                }
-                return users;
-            }
-
-            // ============================================================
             // LOGIN FUNCTION
             // ============================================================
             function loginUser(email, password) {
@@ -318,11 +252,7 @@
                 msgEl.innerText = '✅ Login berhasil! Mengarahkan...';
 
                 setTimeout(() => {
-                    if (user.role === 'admin') {
-                        window.location.href = 'admin.html';
-                    } else {
-                        window.location.href = 'dashboard.html';
-                    }
+                    window.location.href = 'dashboard.html';
                 }, 1000);
             }
 
@@ -346,11 +276,8 @@
             });
 
             // ============================================================
-            // INIT
+            // INIT (Cek Session)
             // ============================================================
-            initUsers();
-
-            // Cek session, jika sudah login redirect
             const session = localStorage.getItem('mlm_session');
             if (session) {
                 try {
@@ -358,11 +285,7 @@
                     const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
                     const user = users.find(u => u.id === id);
                     if (user) {
-                        if (user.role === 'admin') {
-                            window.location.href = 'admin.html';
-                        } else {
-                            window.location.href = 'dashboard.html';
-                        }
+                        window.location.href = 'dashboard.html';
                         return;
                     } else {
                         localStorage.removeItem('mlm_session');
