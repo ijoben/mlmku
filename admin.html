@@ -200,7 +200,7 @@
             margin-bottom:12px;
         }
 
-        /* TABEL OPTIMASI */
+        /* TABEL DEFAULT DESKTOP */
         .table-wrap {
             overflow-x:auto; border-radius:var(--radius-sm);
             border:1px solid #e2e8f0; background:var(--white);
@@ -495,7 +495,7 @@
         .faq-item-admin > div:first-child, .feature-item-admin > div:first-child { flex:1; min-width:150px; }
         .faq-item-admin .faq-actions, .feature-item-admin .feature-actions { display:flex; gap:6px; flex-shrink:0; }
 
-        /* ===== OPTIMASI LAYAR HP (MOBILE FIXES) ===== */
+        /* ===== OPTIMASI LAYAR HP (MOBILE COMPACT GRID FIXES) ===== */
         @media (max-width: 768px) {
             .navbar { padding: 10px 14px; }
             .navbar .logo { font-size: 1.1rem; }
@@ -531,13 +531,68 @@
             .slide-preview { grid-template-columns: 1fr !important; }
             .modal-box { padding: 20px 16px 24px; border-radius: 20px; }
 
-            /* PERBAIKAN TABEL MOBILE */
-            table { font-size: 0.78rem; min-width: 600px; }
-            th, td { padding: 8px 10px; }
-            .btn-sm { padding: 6px 12px !important; font-size: 0.72rem !important; }
-
             .sub-tab-nav { padding-bottom: 8px; margin-bottom: 14px; }
             .sub-tab-btn { padding: 6px 12px; font-size: 0.75rem; }
+
+            /* COMPACT GRID CARD UNTUK SEMUA TABEL DI HP TANPA SCROLL HORIZONTAL */
+            .table-wrap {
+                background: transparent;
+                border: none;
+                box-shadow: none;
+                overflow-x: visible;
+            }
+            table, thead, tbody, th, td, tr {
+                display: block;
+                width: 100%;
+            }
+            thead {
+                display: none; /* Sembunyikan Header Tabel di HP */
+            }
+            tbody {
+                display: flex;
+                flex-direction: column;
+                gap: 12px;
+            }
+            tbody tr {
+                background: var(--white);
+                border: 1px solid #e2e8f0;
+                border-radius: var(--radius-sm);
+                padding: 14px;
+                box-shadow: var(--shadow);
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+                position: relative;
+            }
+            tbody td {
+                padding: 0;
+                border: none;
+                font-size: 0.85rem;
+                display: flex;
+                justify-content: space-between;
+                align-items: center;
+                text-align: right;
+            }
+            tbody td::before {
+                content: attr(data-label);
+                font-weight: 700;
+                color: var(--denim-navy);
+                text-align: left;
+                font-size: 0.78rem;
+                padding-right: 10px;
+                flex-shrink: 0;
+            }
+            
+            /* Custom styling khusus elemen tertentu dalam card hp */
+            tbody td:last-child {
+                margin-top: 6px;
+                padding-top: 8px;
+                border-top: 1px dashed #eef2f7;
+                justify-content: flex-end;
+            }
+            tbody td[data-label="Aksi"]::before {
+                display: none;
+            }
         }
 
         @media (min-width: 769px) {
@@ -1270,7 +1325,7 @@
                 });
             }
 
-            // RENDER MEMBERS
+            // RENDER MEMBERS (DENGAN DATA-LABEL COMPACT GRID HP)
             function renderAdminMembers() {
                 const tbody = document.getElementById('adminTableBody');
                 if (!tbody) return;
@@ -1281,15 +1336,15 @@
                     const statusClass = 'badge-' + (u.status || 'free');
                     const addressStr = u.address || u.alamat || '-';
                     html += `<tr>
-                        <td>${u.id}</td>
-                        <td><strong>${u.name || u.username}</strong><br><small class="text-muted">@${u.username || 'user'}</small> ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}</td>
-                        <td>${u.email}</td>
-                        <td style="max-width:180px; font-size:0.75rem;">${addressStr}</td>
-                        <td>${u.sponsor_id || '-'}</td>
-                        <td>${u.position || '-'}</td>
-                        <td><span class="badge-status ${statusClass}">${(u.status || 'free').toUpperCase()}</span></td>
-                        <td>Rp ${(u.wallet || 0).toLocaleString()}</td>
-                        <td>
+                        <td data-label="ID Member">${u.id}</td>
+                        <td data-label="Nama / User"><strong>${u.name || u.username}</strong><br><small class="text-muted">@${u.username || 'user'}</small> ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}</td>
+                        <td data-label="Email">${u.email}</td>
+                        <td data-label="Alamat" style="max-width:180px; font-size:0.75rem;">${addressStr}</td>
+                        <td data-label="Sponsor">${u.sponsor_id || '-'}</td>
+                        <td data-label="Posisi">${u.position || '-'}</td>
+                        <td data-label="Status"><span class="badge-status ${statusClass}">${(u.status || 'free').toUpperCase()}</span></td>
+                        <td data-label="Saldo Wallet">Rp ${(u.wallet || 0).toLocaleString()}</td>
+                        <td data-label="Aksi">
                             <div style="display:flex; gap:4px;">
                                 <button class="btn-sm btn-sm-warning edit-member-btn" data-id="${u.id}"><i class="fas fa-edit"></i> Edit</button>
                                 ${!isAdmin ? `<button class="btn-sm btn-sm-danger delete-member-btn" data-id="${u.id}"><i class="fas fa-trash"></i></button>` : ''}
@@ -1401,7 +1456,7 @@
             const addMemberBtn = document.getElementById('addMemberBtn');
             if(addMemberBtn) addMemberBtn.addEventListener('click', function() { openMemberModal(null); });
 
-            // RENDER VERIFICATION
+            // RENDER VERIFICATION (DENGAN DATA-LABEL COMPACT GRID HP)
             function renderVerification() {
                 const tbody = document.getElementById('verifTableBody');
                 if (!tbody) return;
@@ -1414,12 +1469,12 @@
                 let html = '';
                 pendingUsers.forEach(u => {
                     html += `<tr>
-                        <td>${u.id}</td>
-                        <td>${u.name || u.username}</td>
-                        <td>${u.email}</td>
-                        <td><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td>
-                        <td>${u.proof_image ? '📷 Telah diupload' : '❌ Belum upload'}</td>
-                        <td>
+                        <td data-label="ID Member">${u.id}</td>
+                        <td data-label="Nama">${u.name || u.username}</td>
+                        <td data-label="Email">${u.email}</td>
+                        <td data-label="Status"><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td>
+                        <td data-label="Bukti Transfer">${u.proof_image ? '📷 Telah diupload' : '❌ Belum upload'}</td>
+                        <td data-label="Aksi">
                             ${u.status === 'pending' ? `<button class="btn-sm btn-sm-success verify-btn" data-id="${u.id}">✅ Verifikasi</button>` : ''}
                             ${u.status === 'free' ? `<button class="btn-sm btn-sm-warning pending-btn" data-id="${u.id}">⏳ Jadikan Pending</button>` : ''}
                         </td>
@@ -1441,7 +1496,7 @@
                 });
             }
 
-            // RENDER PRODUCTS
+            // RENDER PRODUCTS (DENGAN DATA-LABEL COMPACT GRID HP)
             function renderAdminProducts() {
                 const tbody = document.getElementById('adminProductTableBody');
                 if (!tbody) return;
@@ -1455,18 +1510,20 @@
                         imgHtml = `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />`;
                     }
                     html += `<tr>
-                        <td>${idx+1}</td>
-                        <td>${imgHtml}</td>
-                        <td>${p.name}</td>
-                        <td>Rp ${p.price.toLocaleString()}</td>
-                        <td>Rp ${p.original?.toLocaleString() || '-'}</td>
-                        <td><span class="badge-status" style="background:${p.badgeColor || '#c9a84c'};color:#fff;">${p.tag || 'PRODUK'}</span></td>
-                        <td>${sizes}</td>
-                        <td>${colors}</td>
-                        <td>${p.stock}</td>
-                        <td>
-                            <button class="btn-sm btn-sm-warning edit-product" data-id="${p.id}"><i class="fas fa-edit"></i></button>
-                            <button class="btn-sm btn-sm-danger delete-product" data-id="${p.id}"><i class="fas fa-trash"></i></button>
+                        <td data-label="#">${idx+1}</td>
+                        <td data-label="Gambar">${imgHtml}</td>
+                        <td data-label="Nama Produk"><strong>${p.name}</strong></td>
+                        <td data-label="Harga Member">Rp ${p.price.toLocaleString()}</td>
+                        <td data-label="Harga Normal">Rp ${p.original?.toLocaleString() || '-'}</td>
+                        <td data-label="Tag"><span class="badge-status" style="background:${p.badgeColor || '#c9a84c'};color:#fff;">${p.tag || 'PRODUK'}</span></td>
+                        <td data-label="Ukuran">${sizes}</td>
+                        <td data-label="Warna">${colors}</td>
+                        <td data-label="Stok">${p.stock}</td>
+                        <td data-label="Aksi">
+                            <div style="display:flex; gap:4px;">
+                                <button class="btn-sm btn-sm-warning edit-product" data-id="${p.id}"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn-sm btn-sm-danger delete-product" data-id="${p.id}"><i class="fas fa-trash"></i> Hapus</button>
+                            </div>
                         </td>
                     </tr>`;
                 });
@@ -1488,7 +1545,7 @@
                 });
             }
 
-            // RENDER ORDERS
+            // RENDER ORDERS (DENGAN DATA-LABEL COMPACT GRID HP)
             function renderOrders() {
                 const tbody = document.getElementById('ordersTableBody');
                 if (!tbody) return;
@@ -1511,18 +1568,20 @@
                     const hasProof = o.proof_image || o.proof || false;
                     
                     html += `<tr>
-                        <td>${idx+1}</td>
-                        <td><strong>${userName}</strong></td>
-                        <td style="max-width:200px; font-size:0.75rem;"><i class="fas fa-map-marker-alt" style="color:var(--gold-accent);"></i> ${userAddress}</td>
-                        <td>${typeLabel}</td>
-                        <td style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${productNames}</td>
-                        <td>Rp ${(o.total || 0).toLocaleString()}</td>
-                        <td><span class="badge-status ${statusClass}">${statusLabel}</span></td>
-                        <td>${new Date(o.createdAt || Date.now()).toLocaleDateString()}</td>
-                        <td>${hasProof ? `<button class="btn-sm btn-sm-gold view-proof" data-id="${o.id}"><i class="fas fa-image"></i> Lihat</button>` : '<span style="color:#999;font-size:0.7rem;">Belum upload</span>'}</td>
-                        <td>
-                            ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
-                            ${o.status === 'processing' ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim</button>` : ''}
+                        <td data-label="#">${idx+1}</td>
+                        <td data-label="Member"><strong>${userName}</strong></td>
+                        <td data-label="Alamat Pengiriman" style="max-width:200px; font-size:0.75rem;"><i class="fas fa-map-marker-alt" style="color:var(--gold-accent);"></i> ${userAddress}</td>
+                        <td data-label="Tipe Order">${typeLabel}</td>
+                        <td data-label="Produk" style="max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;">${productNames}</td>
+                        <td data-label="Total Bayar">Rp ${(o.total || 0).toLocaleString()}</td>
+                        <td data-label="Status"><span class="badge-status ${statusClass}">${statusLabel}</span></td>
+                        <td data-label="Tanggal">${new Date(o.createdAt || Date.now()).toLocaleDateString()}</td>
+                        <td data-label="Bukti">${hasProof ? `<button class="btn-sm btn-sm-gold view-proof" data-id="${o.id}"><i class="fas fa-image"></i> Lihat</button>` : '<span style="color:#999;font-size:0.7rem;">Belum upload</span>'}</td>
+                        <td data-label="Aksi">
+                            <div style="display:flex; gap:4px;">
+                                ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
+                                ${o.status === 'processing' ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim</button>` : ''}
+                            </div>
                         </td>
                     </tr>`;
                 });
