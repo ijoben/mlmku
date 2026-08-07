@@ -59,7 +59,7 @@
             <p>Lengkapi data diri untuk bergabung menjadi member HEDTRO JEANS</p>
         </div>
 
-        <form id="registerForm" onsubmit="return false;">
+        <form id="registerForm">
 
             <div class="form-section">
                 <div class="section-title"><i class="fas fa-lock"></i> Akun & Keamanan <span class="badge-step">1</span></div>
@@ -139,7 +139,8 @@
                 </div>
             </div>
 
-            <button type="submit" class="btn-submit" id="registerBtn"><i class="fas fa-user-plus"></i> Daftar Member</button>
+            <!-- type diubah menjadi button -->
+            <button type="button" class="btn-submit" id="registerBtn"><i class="fas fa-user-plus"></i> Daftar Member</button>
 
             <div class="msg" id="regMsg"></div>
 
@@ -168,7 +169,6 @@
             function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
             function getNextId(arr) { return arr && arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
 
-            // URL PARAMS AUTOFILL (Ref / Upline / Position)
             const urlParams = new URLSearchParams(window.location.search);
             const refParam = urlParams.get('ref');
             const uplineParam = urlParams.get('upline');
@@ -260,7 +260,6 @@
                     }
                 }
 
-                // CREATE INITIAL ORDER IN HEDTRO_ORDERS & HEDTRO_TRANSACTIONS
                 const products = loadProducts();
                 const firstProduct = products.length > 0 ? products[0] : { id: 1, name: 'Paket Member Hedtro', price: 550000 };
                 
@@ -269,40 +268,30 @@
                 const ordNum = 'FIRST-' + ordId.toString().slice(-6);
                 
                 const newOrder = {
-                    id: ordId,
-                    order_number: ordNum,
-                    user_id: newUser.id,
-                    user_name: fullname,
+                    id: ordId, order_number: ordNum, user_id: newUser.id, user_name: fullname,
                     shipping_address: address + ', ' + city,
                     items: [{ product_id: firstProduct.id, name: firstProduct.name, price: firstProduct.price, qty: 1, size: jeansSize, color: jeansColor }],
-                    total: firstProduct.price,
-                    status: 'pending',
-                    type: 'first_order',
-                    createdAt: new Date().toISOString(),
-                    proof_image: null
+                    total: firstProduct.price, status: 'pending', type: 'first_order', createdAt: new Date().toISOString(), proof_image: null
                 };
-                orders.push(newOrder);
-                saveOrders(orders);
+                orders.push(newOrder); saveOrders(orders);
 
                 const txs = loadTransactions();
                 txs.push({
-                    id: ordId,
-                    user_id: newUser.id,
-                    type: 'order',
-                    amount: firstProduct.price,
-                    status: 'pending',
-                    date: new Date().toISOString(),
-                    note: `Order Awal ${ordNum}`
+                    id: ordId, user_id: newUser.id, type: 'order', amount: firstProduct.price,
+                    status: 'pending', date: new Date().toISOString(), note: `Order Awal ${ordNum}`
                 });
                 saveTransactions(txs);
 
                 msgEl.className = 'msg success';
                 msgEl.innerText = '✅ Pendaftaran berhasil! Silakan login untuk mengonfirmasi / upload bukti.';
 
-                setTimeout(() => { window.location.href = 'login.html'; }, 2000);
+                setTimeout(() => { window.location.replace('login.html'); }, 2000);
             }
 
-            document.getElementById('registerBtn').addEventListener('click', registerUser);
+            document.getElementById('registerBtn').addEventListener('click', function(e) {
+                e.preventDefault();
+                registerUser();
+            });
         })();
     </script>
 </body>
