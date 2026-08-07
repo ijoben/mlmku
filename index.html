@@ -91,6 +91,7 @@
         .product-detail-popup .popup-box { max-width: 700px; }
         .product-detail-popup .popup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 8px; }
         .product-detail-popup .popup-image { background: var(--denim-light); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--denim-blue); min-height: 260px; position: relative; overflow: hidden; cursor: pointer; user-select: none; }
+        .product-detail-popup .popup-image img { width: 100%; height: 100%; object-fit: cover; }
         .product-detail-popup .popup-image .popup-icon-wrap { transition: transform 0.3s ease; font-size: 5rem; }
         .product-detail-popup .popup-image.zoomed .popup-icon-wrap { transform: scale(1.8); }
         .product-detail-popup .popup-image .zoom-hint { position: absolute; bottom: 12px; right: 12px; background: rgba(0, 0, 0, 0.5); color: #fff; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; backdrop-filter: blur(4px); }
@@ -144,7 +145,8 @@
         .product-carousel::-webkit-scrollbar { display: none; }
         .product-carousel .product-card { flex: 0 0 220px; min-width: 200px; background: var(--white); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid #e8edf2; }
         .product-carousel .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
-        .product-carousel .product-card .img-placeholder { height: 180px; background: var(--denim-light); display: flex; align-items: center; justify-content: center; color: var(--denim-blue); font-size: 3rem; }
+        .product-carousel .product-card .img-placeholder { height: 180px; background: var(--denim-light); display: flex; align-items: center; justify-content: center; color: var(--denim-blue); font-size: 3rem; overflow: hidden; }
+        .product-carousel .product-card .img-placeholder img { width: 100%; height: 100%; object-fit: cover; }
         .product-carousel .product-card .body { padding: 16px; }
         .product-carousel .product-card .body .tag { display: inline-block; background: var(--gold-accent); color: var(--denim-dark); font-size: 0.6rem; font-weight: 700; padding: 2px 14px; border-radius: 40px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
         .product-carousel .product-card .body h4 { font-size: 0.9rem; font-weight: 600; margin-bottom: 4px; }
@@ -161,7 +163,8 @@
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
         .product-grid .product-card { background: var(--white); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid #e8edf2; }
         .product-grid .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
-        .product-grid .product-card .img-placeholder { height: 180px; background: var(--denim-light); display: flex; align-items: center; justify-content: center; color: var(--denim-blue); font-size: 3rem; }
+        .product-grid .product-card .img-placeholder { height: 180px; background: var(--denim-light); display: flex; align-items: center; justify-content: center; color: var(--denim-blue); font-size: 3rem; overflow: hidden; }
+        .product-grid .product-card .img-placeholder img { width: 100%; height: 100%; object-fit: cover; }
         .product-grid .product-card .body { padding: 16px; }
         .product-grid .product-card .body .tag { display: inline-block; background: var(--gold-accent); color: var(--denim-dark); font-size: 0.6rem; font-weight: 700; padding: 2px 14px; border-radius: 40px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
         .product-grid .product-card .body h4 { font-size: 0.95rem; font-weight: 600; margin-bottom: 4px; }
@@ -211,9 +214,15 @@
             .sidebar, .sidebar-overlay { display: block; }
             .carousel-section { height: 75vh; min-height: 350px; border-radius: 0 !important; }
             .carousel-slide { padding: 30px 24px; }
+            .carousel-slide .slide-content h2 { font-size: 2.5rem; }
             .product-carousel .product-card { flex: 0 0 170px; min-width: 150px; }
             .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
             .footer-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
+            .product-detail-popup .popup-grid { grid-template-columns: 1fr !important; gap: 16px; }
+            .product-detail-popup .popup-image { min-height: 200px; }
+            .product-detail-popup .popup-box { padding: 20px 18px; }
+            .product-detail-popup .popup-info h2 { font-size: 1.1rem; }
+            .product-detail-popup .popup-price { font-size: 1.1rem; }
         }
     </style>
 </head>
@@ -264,7 +273,7 @@
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
-            <div class="logo-side"><i class="fas fa-tshirt"></i> HEDTRO</div>
+            <div class="logo-side" id="sidebarLogo"><i class="fas fa-tshirt"></i> HEDTRO</div>
             <span class="close-side" id="closeSidebar">&times;</span>
         </div>
         <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
@@ -423,6 +432,28 @@
             const ORDER_KEY = 'hedtro_orders';
             const TRANSACTION_KEY = 'hedtro_transactions';
             const SESSION_KEY = 'mlm_session';
+            const SETTINGS_KEY = 'hedtro_settings';
+
+            function loadSettings() {
+                try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch(e) { return {}; }
+            }
+            function applyBrandSettings() {
+                const settings = loadSettings();
+                const brandName = settings.brandName || 'HEDTRO JEANS';
+                const brandLogo = settings.brandLogo || 'fa-tshirt';
+                document.querySelectorAll('#headerLogo, #sidebarLogo').forEach(el => {
+                    if (el) {
+                        const icon = el.querySelector('i');
+                        if (icon) icon.className = 'fas ' + brandLogo;
+                        const textSpan = el.querySelector('span') || el;
+                        if (textSpan && textSpan.tagName === 'SPAN') textSpan.innerText = brandName.replace('HEDTRO', '').trim();
+                        else if (el.tagName === 'DIV' && !el.querySelector('span')) {
+                            el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
+                        }
+                    }
+                });
+                document.querySelectorAll('.logo i').forEach(el => el.className = 'fas ' + brandLogo);
+            }
 
             function loadUsers() { try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch(e) { return []; } }
             function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
@@ -432,7 +463,6 @@
             function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
             function loadTransactions() { try { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); } catch(e) { return []; } }
             function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
-            function loadSettings() { try { return JSON.parse(localStorage.getItem('hedtro_settings') || '{}'); } catch(e) { return {}; } }
             function loadSlides() { try { return JSON.parse(localStorage.getItem('hedtro_slides') || '[]'); } catch(e) { return []; } }
             function loadAbout() { try { return JSON.parse(localStorage.getItem('hedtro_about') || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}'); } catch(e) { return {title:'Tentang Kami', content:''}; } }
             function loadFaq() { try { return JSON.parse(localStorage.getItem('hedtro_faq') || '[]'); } catch(e) { return []; } }
@@ -464,9 +494,9 @@
                 if (dbP.length > 0) { allProducts = dbP; }
                 else {
                     allProducts = [
-                        { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', sizes: ['28', '29', '30', '31', '32'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'], desc: 'Celana jeans premium dengan potongan slim-fit modern. Dibuat dengan katun denim berkualitas tinggi 14oz, warna indigo pekat elegan yang awet.', image: null },
-                        { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', sizes: ['30', '32', '34'], colors: ['Raw Denim', 'Dark Navy'], desc: 'Model straight cut klasik legendaris. Menggunakan bahan raw denim kaku berkualitas ekspor.', image: null },
-                        { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', sizes: ['29', '30', '31', '32'], colors: ['Black Stretch', 'Grey Stone'], desc: 'Warna hitam legam pekat yang elegan untuk formal maupun kasual.', image: null }
+                        { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', sizes: ['28', '29', '30', '31', '32'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'], desc: 'Celana jeans premium dengan potongan slim-fit modern.', image: null },
+                        { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', sizes: ['30', '32', '34'], colors: ['Raw Denim', 'Dark Navy'], desc: 'Model straight cut klasik legendaris.', image: null },
+                        { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', sizes: ['29', '30', '31', '32'], colors: ['Black Stretch', 'Grey Stone'], desc: 'Warna hitam legam pekat yang elegan.', image: null }
                     ];
                     saveProductsToDB(allProducts);
                 }
@@ -496,6 +526,23 @@
                 });
             }
 
+            // CEK VERIFIKASI SEBELUM BELI
+            function checkVerificationAndBuy(product, size, color) {
+                const session = getSession();
+                if (!session) {
+                    showToast('Silakan login terlebih dahulu.', 'error');
+                    window.location.href = 'login.html';
+                    return;
+                }
+                const users = loadUsers();
+                const user = users.find(u => u.id === session.id);
+                if (!user || user.status !== 'verified') {
+                    showToast('Akun Anda belum terverifikasi. Silakan verifikasi di dashboard member.', 'error');
+                    return;
+                }
+                addToCart(product, size, color);
+            }
+
             function addToCart(product, size, color) {
                 const existing = cartItems.find(item => item.id === product.id && item.size === size && item.color === color);
                 if (existing) { existing.qty += 1; }
@@ -504,13 +551,13 @@
                 showToast(`🛒 ${product.name} (${size} · ${color}) ditambahkan!`, 'success');
             }
 
-            // CHECKOUT TERHUBUNG DENGAN DATABASE (ADMIN & DASHBOARD)
             document.getElementById('cartCheckoutBtn').addEventListener('click', function() {
                 if (cartItems.length === 0) { showToast('Keranjang kosong!', 'error'); return; }
                 const session = getSession();
                 let user = null;
                 let users = loadUsers();
                 if (session) { user = users.find(u => u.id === session.id); }
+                if (!user) { showToast('Login dulu untuk checkout.', 'error'); return; }
 
                 const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const orderNum = 'ORD-' + Date.now().toString().slice(-6);
@@ -522,9 +569,9 @@
                 const newOrder = {
                     id: getNextId(orders),
                     order_number: orderNum,
-                    user_id: user ? user.id : 0,
-                    user_name: user ? (user.name || user.username) : 'Pelanggan Tamu',
-                    shipping_address: user ? (user.address || user.alamat || 'Alamat Akun Member') : 'Pesanan Langsung via Web',
+                    user_id: user.id,
+                    user_name: user.name || user.username,
+                    shipping_address: user.address || user.alamat || 'Alamat Akun Member',
                     type: 'regular',
                     items: cartItems.map(ci => ({ product_id: ci.id, name: ci.name, price: ci.price, qty: ci.qty, size: ci.size, color: ci.color })),
                     total: totalAmount,
@@ -538,7 +585,7 @@
 
                 const newTx = {
                     id: Date.now(),
-                    user_id: user ? user.id : 0,
+                    user_id: user.id,
                     type: 'order',
                     amount: totalAmount,
                     status: 'pending',
@@ -556,7 +603,6 @@
                     saveUsers(users);
                 }
 
-                // Update stock
                 cartItems.forEach(ci => {
                     const p = products.find(x => x.id === ci.id);
                     if (p && p.stock) p.stock = Math.max(0, p.stock - ci.qty);
@@ -568,10 +614,9 @@
                 document.getElementById('cartPopup').classList.remove('show');
                 document.body.style.overflow = '';
 
-                showToast(`✅ Pesanan ${orderNum} berhasil dibuat! Total: Rp ${totalAmount.toLocaleString()}. Silakan cek di Dasbor / Lacak Pesanan.`, 'success', 5000);
+                showToast(`✅ Pesanan ${orderNum} berhasil dibuat! Total: Rp ${totalAmount.toLocaleString()}.`, 'success', 5000);
             });
 
-            // TRACK ORDER REAL DATABASE
             document.getElementById('trackBtnPopup').addEventListener('click', function() {
                 const input = document.getElementById('trackInputPopup').value.trim().toUpperCase();
                 const resultEl = document.getElementById('trackResultPopup');
@@ -588,7 +633,6 @@
                 }
             });
 
-            // USER AUTH BADGE
             function updateNavAuth() {
                 const session = getSession();
                 const navAuthBtn = document.getElementById('navAuthBtn');
@@ -614,7 +658,6 @@
                 }
             }
 
-            // RENDER DYNAMIC CONTENT
             let currentSlide = 0;
             let slideInterval = null;
             const track = document.getElementById('carouselTrack');
@@ -703,7 +746,8 @@
                 favorites.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
-                    card.innerHTML = `<div class="img-placeholder"><i class="fas ${p.icon||'fa-tshirt'}"></i></div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
+                    let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon||'fa-tshirt'}"></i>`;
+                    card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
                     container.appendChild(card);
                 });
                 bindProductButtons();
@@ -720,15 +764,32 @@
                 pageItems.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
-                    card.innerHTML = `<div class="img-placeholder"><i class="fas ${p.icon||'fa-tshirt'}"></i></div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
+                    let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon||'fa-tshirt'}"></i>`;
+                    card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
                     grid.appendChild(card);
                 });
                 bindProductButtons();
             }
 
             function bindProductButtons() {
-                document.querySelectorAll('.btn-detail, .btn-buy').forEach(btn => {
+                document.querySelectorAll('.btn-detail').forEach(btn => {
                     btn.onclick = function() { openProductDetail(parseInt(this.dataset.id)); };
+                });
+                document.querySelectorAll('.btn-buy').forEach(btn => {
+                    btn.onclick = function() { 
+                        const id = parseInt(this.dataset.id);
+                        const product = allProducts.find(p => p.id === id);
+                        if (product) {
+                            // Cek verifikasi dulu
+                            const session = getSession();
+                            if (!session) { showToast('Silakan login terlebih dahulu.', 'error'); window.location.href='login.html'; return; }
+                            const users = loadUsers();
+                            const user = users.find(u => u.id === session.id);
+                            if (!user || user.status !== 'verified') { showToast('Akun Anda belum terverifikasi. Silakan verifikasi di dashboard.', 'error'); return; }
+                            // langsung buka detail atau beli?
+                            openProductDetail(id);
+                        }
+                    };
                 });
             }
 
@@ -737,10 +798,18 @@
                 if (!product) return;
                 document.getElementById('detailTag').textContent = product.tag || 'PRODUK';
                 document.getElementById('detailName').textContent = product.name;
-                document.getElementById('detailPrice').innerHTML = `Rp ${(product.price||0).toLocaleString()}`;
+                document.getElementById('detailPrice').innerHTML = `Rp ${(product.price||0).toLocaleString()}${product.original ? ` <del>Rp ${product.original.toLocaleString()}</del>` : ''}`;
                 document.getElementById('detailDesc').textContent = product.desc || 'Deskripsi produk.';
                 document.getElementById('detailSerial').textContent = product.serial || '-';
                 document.getElementById('detailStock').textContent = product.stock || 0;
+
+                const imgContainer = document.getElementById('detailImage');
+                const iconWrap = document.getElementById('detailIconWrap');
+                if (product.image) {
+                    imgContainer.innerHTML = `<img src="${product.image}" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;" /><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>`;
+                } else {
+                    imgContainer.innerHTML = `<div class="popup-icon-wrap"><i class="fas ${product.icon || 'fa-tshirt'}"></i></div><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>`;
+                }
 
                 const sizeSel = document.getElementById('detailSize');
                 sizeSel.innerHTML = (product.sizes || ['30', '32']).map(s => `<option value="${s}">Size ${s}</option>`).join('');
@@ -748,7 +817,7 @@
                 colorSel.innerHTML = (product.colors || ['Indigo Blue']).map(c => `<option value="${c}">${c}</option>`).join('');
 
                 document.getElementById('detailBuyBtn').onclick = function() {
-                    addToCart(product, sizeSel.value, colorSel.value);
+                    checkVerificationAndBuy(product, sizeSel.value, colorSel.value);
                     document.getElementById('productDetailPopup').classList.remove('show');
                     document.body.style.overflow = '';
                 };
@@ -783,6 +852,7 @@
             sidebarOverlay.onclick = () => { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); };
 
             // INIT
+            applyBrandSettings();
             initProducts();
             updateNavAuth();
             renderCarousel();
