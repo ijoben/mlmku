@@ -171,9 +171,9 @@
       font-weight:500; line-height:1.5; font-size:0.9rem;
       box-shadow: var(--shadow-sm);
     }
-    .status-free { background:#fff5f5; color:#c53030; border:1px solid #feb2b2; }
-    .status-pending { background:#fffaf0; color:#dd6b20; border:1px solid #fbd38d; }
-    .status-verified { background:#f0fff4; color:#2f855a; border:1px solid #9ae6b4; }
+    .status-free { background:#fff5f5; color:#c53030; border:1px solid #feb2b2; display: flex; }
+    .status-pending { background:#fffaf0; color:#dd6b20; border:1px solid #fbd38d; display: flex; }
+    .status-verified { display: none; } /* Disembunyikan sesuai request */
 
     .btn-sm {
       padding:9px 20px; border-radius:60px; font-weight:700; font-size:0.8rem;
@@ -211,6 +211,38 @@
     .wallet-card .wallet-label { font-size: 0.8rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: 600; display: flex; align-items: center; gap: 8px; }
     .wallet-card .wallet-label i { color: var(--gold-accent); }
     .wallet-card .wallet-amount { font-size: 2.2rem; font-weight: 800; color: var(--white); margin-top: 4px; letter-spacing: -0.5px; }
+    
+    /* REFERAL LINK */
+    .ref-link-container {
+        margin-top: 15px;
+        background: rgba(255,255,255,0.1);
+        padding: 10px 15px;
+        border-radius: 8px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 0.85rem;
+    }
+    .ref-link-input {
+        background: transparent;
+        border: none;
+        color: var(--gold-light);
+        flex-grow: 1;
+        font-family: monospace;
+        outline: none;
+        width: 100%;
+    }
+    .copy-btn {
+        background: var(--gold-accent);
+        color: var(--denim-dark);
+        border: none;
+        padding: 5px 10px;
+        border-radius: 4px;
+        cursor: pointer;
+        font-size: 0.75rem;
+        font-weight: bold;
+    }
+    .copy-btn:hover { background: #b8963a; }
 
     /* ===== STATS GRID ===== */
     .stats-grid {
@@ -241,7 +273,7 @@
       margin-top: 2px; letter-spacing: -0.5px;
     }
 
-    /* ===== HISTORY CARD ===== */
+    /* ===== HISTORY CARD (Dashboard) ===== */
     .history-card {
       background: var(--white); border-radius: var(--radius-sm);
       padding: 22px 24px; box-shadow: var(--shadow-sm);
@@ -388,6 +420,10 @@
       background: var(--white);
       box-shadow: 0 0 0 3px rgba(42,75,110,0.12);
     }
+    .form-group input:disabled {
+        background-color: #e9ecef;
+        cursor: not-allowed;
+    }
 
     /* ===== PRODUCT GRID ===== */
     .product-grid {
@@ -428,6 +464,84 @@
     .product-card .body .price del { color: #a0aec0; font-size: 0.8rem; font-weight: 500; }
     .product-card .body .btn-sm { margin-top: auto; width: 100%; justify-content: center; }
 
+    /* ===== DATA TABLES (PREMIUM LOOK) ===== */
+    .table-container {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-sm);
+      border: 1px solid rgba(0,0,0,0.05);
+      overflow-x: auto;
+      margin-bottom: 20px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 600px;
+    }
+    th, td {
+      padding: 16px 20px;
+      text-align: left;
+      border-bottom: 1px solid #edf2f7;
+    }
+    th {
+      background: #f8fafc;
+      color: #718096;
+      font-weight: 700;
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+    td {
+      font-size: 0.9rem;
+      color: var(--denim-dark);
+      font-weight: 500;
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:hover td { background: #f8fafc; }
+    
+    .status-badge {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      display: inline-block;
+    }
+    .status-pending { background: #feebc8; color: #dd6b20; }
+    .status-success, .status-verified { background: #c6f6d5; color: #2f855a; }
+    .status-failed, .status-free { background: #fed7d7; color: #c53030; }
+
+    /* PAGINATION */
+    .pagination {
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 10px;
+      padding: 15px 20px;
+      border-top: 1px solid #edf2f7;
+    }
+    .page-btn {
+      padding: 6px 12px;
+      border: 1px solid #e2e8f0;
+      background: var(--white);
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.85rem;
+      color: var(--denim-navy);
+      transition: var(--transition);
+    }
+    .page-btn:hover:not(:disabled) {
+      background: var(--denim-light);
+      border-color: var(--denim-blue);
+    }
+    .page-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+    .page-info {
+      font-size: 0.85rem;
+      color: #718096;
+    }
+
     /* ===== CUSTOM MODAL STYLES ===== */
     .custom-modal-overlay {
       position: fixed; top: 0; left: 0; right: 0; bottom: 0;
@@ -461,14 +575,6 @@
       display: flex; justify-content: flex-end; gap: 10px;
       border-top: 1px solid #edf2f7;
     }
-
-    .badge-status {
-      padding: 3px 10px; border-radius: 20px;
-      font-size: 0.7rem; font-weight: 700;
-    }
-    .badge-pending { background: #feebc8; color: #744210; }
-    .badge-success { background: #c6f6d5; color: #22543d; }
-    .badge-failed { background: #fed7d7; color: #742a2a; }
 
     .text-muted { color: #718096; font-size: 0.85rem; }
     .mt-16 { margin-top: 16px; }
@@ -519,14 +625,14 @@
     </div>
 
     <div class="menu-item active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
-    <div class="menu-item" data-section="profile"><i class="fas fa-id-card"></i> Profil Saya</div>
+    <div class="menu-item" data-section="products"><i class="fas fa-store"></i> Toko Online</div>
     <div class="menu-item" data-section="network"><i class="fas fa-sitemap"></i> Jaringan</div>
+    <div class="menu-item" data-section="downline"><i class="fas fa-users"></i> Downline</div>
     <div class="menu-item" data-section="deposit"><i class="fas fa-plus-circle"></i> Deposit</div>
     <div class="menu-item" data-section="withdraw"><i class="fas fa-minus-circle"></i> Withdraw</div>
-    <div class="menu-divider"></div>
     <div class="menu-item" data-section="history"><i class="fas fa-history"></i> Riwayat</div>
-    <div class="menu-item" data-section="products"><i class="fas fa-tshirt"></i> Koleksi</div>
     <div class="menu-divider"></div>
+    <div class="menu-item" data-section="profile"><i class="fas fa-id-card"></i> Profil Saya</div>
     <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
   </nav>
 
@@ -540,11 +646,18 @@
       
       <!-- CARD DOMPET UTAMA -->
       <div class="wallet-card">
-        <div>
+        <div style="flex-grow: 1;">
           <div class="wallet-label"><i class="fas fa-wallet"></i> Saldo Dompet Anda</div>
           <div class="wallet-amount" id="walletAmount">Rp 0</div>
+          
+          <!-- LINK REFERAL -->
+          <div class="ref-link-container">
+              <i class="fas fa-link"></i>
+              <input type="text" id="refLink" class="ref-link-input" readonly value="https://hedtrojeans.com/register?ref=username">
+              <button class="copy-btn" onclick="copyRefLink()"><i class="fas fa-copy"></i> Copy</button>
+          </div>
         </div>
-        <div style="display:flex; gap:10px; flex-wrap:wrap; z-index:2;">
+        <div style="display:flex; gap:10px; flex-wrap:wrap; z-index:2; align-items: flex-start;">
           <button class="btn-sm btn-sm-gold" id="depositBtn"><i class="fas fa-plus-circle"></i> Deposit</button>
           <button class="btn-sm btn-sm-primary" id="withdrawBtn"><i class="fas fa-minus-circle"></i> Withdraw</button>
         </div>
@@ -580,7 +693,128 @@
       </div>
     </div>
 
-    <!-- PROFIL MEMBER (DISAMAKAN DENGAN REGISTER.HTML) -->
+    <!-- TOKO ONLINE (KOLEKSI + RO) -->
+    <div class="section-content" id="sec-products">
+      <h1 class="page-title"><i class="fas fa-store"></i> Toko Online</h1>
+      <div class="product-grid" id="productGridDashboard"></div>
+    </div>
+
+    <!-- JARINGAN -->
+    <div class="section-content" id="sec-network">
+      <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary (2 Kaki)</h1>
+      <div class="tree-wrapper" id="treeContainer"></div>
+    </div>
+
+    <!-- DOWNLINE -->
+    <div class="section-content" id="sec-downline">
+      <h1 class="page-title"><i class="fas fa-users"></i> Downline Saya</h1>
+      <div class="form-section-card" style="margin-bottom: 20px;">
+          <p>Total Downline Disponsori: <strong id="totalDownlineCount" style="font-size: 1.2rem; color: var(--denim-blue);">0</strong></p>
+      </div>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal Daftar</th>
+              <th>Username</th>
+              <th>Nama Lengkap</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="downlineTableBody">
+            <!-- Data downline dirender di sini -->
+          </tbody>
+        </table>
+        <div class="pagination">
+            <button class="page-btn" id="prevDownlineBtn" disabled><i class="fas fa-chevron-left"></i></button>
+            <span class="page-info" id="downlinePageInfo">Halaman 1 dari 1</span>
+            <button class="page-btn" id="nextDownlineBtn" disabled><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- DEPOSIT -->
+    <div class="section-content" id="sec-deposit">
+      <h1 class="page-title"><i class="fas fa-plus-circle"></i> Deposit</h1>
+      
+      <!-- Info Rekening Admin untuk Deposit -->
+      <div id="depositBankInfo" style="background:#edf2f7; padding:16px 20px; border-radius:var(--radius-sm); margin-bottom:20px; border-left:4px solid var(--denim-blue); max-width: 500px;">
+        <p style="font-size:0.95rem;"><strong>💳 Rekening Tujuan Deposit:</strong></p>
+        <p id="depositBankDetail" style="font-weight:700; color:var(--denim-dark); margin:4px 0;">Memuat data bank...</p>
+        <p class="text-muted" style="font-size:0.8rem;">Silakan transfer sesuai nominal yang diajukan ke rekening di atas.</p>
+      </div>
+
+      <div class="form-section-card" style="max-width:500px;">
+        <div class="form-group"><label>Nominal Deposit (Rp)</label><input type="number" id="depositAmount" placeholder="Masukkan nominal" min="10000" /></div>
+        <div class="form-group"><label>Metode Pembayaran</label>
+          <select id="depositMethod">
+            <option value="bank">Transfer Bank</option>
+            <option value="ewallet">E-Wallet</option>
+            <option value="qris">QRIS</option>
+          </select>
+        </div>
+        <button class="btn-sm btn-sm-success" id="submitDeposit" style="width:100%; padding:14px; justify-content:center;">Kirim Deposit</button>
+        <p class="text-muted mt-16">Minimal deposit Rp 10.000</p>
+      </div>
+    </div>
+
+    <!-- WITHDRAW -->
+    <div class="section-content" id="sec-withdraw">
+      <h1 class="page-title"><i class="fas fa-minus-circle"></i> Withdraw</h1>
+      
+      <div style="background:#fffaf0; padding:12px 16px; border-radius:var(--radius-sm); border-left:4px solid #dd6b20; margin-bottom: 20px; max-width: 500px;">
+          <p style="font-size: 0.85rem; color: #dd6b20; margin: 0;">
+              <i class="fas fa-info-circle"></i> <strong>Perhatian:</strong> Setiap pengajuan withdraw membutuhkan <strong>persetujuan Admin</strong> untuk diproses (estimasi 1x24 jam kerja).
+          </p>
+      </div>
+
+      <div class="form-section-card" style="max-width:500px;">
+        <div class="form-group">
+            <label>Sisa Saldo Anda</label>
+            <input type="text" id="wdAvailableBal" disabled style="font-weight: bold; color: var(--denim-blue);" />
+        </div>
+        <div class="form-group"><label>Nominal Withdraw (Rp)</label><input type="number" id="withdrawAmount" placeholder="Masukkan nominal" min="50000" /></div>
+        
+        <div class="form-group">
+            <label>Rekening Tujuan <span class="helper">(Diambil dari Profil)</span></label>
+            <input type="text" id="withdrawAccount" disabled placeholder="Isi data bank di profil terlebih dahulu" />
+            <small class="text-muted" style="display:block; margin-top:4px;">Atas Nama: <span id="withdrawAccountName">-</span></small>
+        </div>
+
+        <button class="btn-sm btn-sm-primary" id="submitWithdraw" style="width:100%; padding:14px; justify-content:center;">Ajukan Withdraw</button>
+        <p class="text-muted mt-16">Minimal withdraw Rp 50.000</p>
+      </div>
+    </div>
+
+    <!-- RIWAYAT -->
+    <div class="section-content" id="sec-history">
+      <h1 class="page-title"><i class="fas fa-history"></i> Riwayat Transaksi</h1>
+      
+      <div class="table-container">
+        <table>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Jenis Transaksi</th>
+              <th>Detail</th>
+              <th>Nominal</th>
+              <th>Status</th>
+            </tr>
+          </thead>
+          <tbody id="historyTableBody">
+            <!-- Data riwayat dirender di sini -->
+          </tbody>
+        </table>
+        <div class="pagination">
+            <button class="page-btn" id="prevHistoryBtn" disabled><i class="fas fa-chevron-left"></i></button>
+            <span class="page-info" id="historyPageInfo">Halaman 1 dari 1</span>
+            <button class="page-btn" id="nextHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- PROFIL MEMBER -->
     <div class="section-content" id="sec-profile">
       <h1 class="page-title"><i class="fas fa-id-card"></i> Profil Saya</h1>
       <div style="max-width: 850px;">
@@ -591,11 +825,11 @@
           <div class="form-row">
             <div class="form-group">
               <label>Username</label>
-              <input type="text" id="profUsername" disabled style="opacity:0.75;" />
+              <input type="text" id="profUsername" disabled />
             </div>
             <div class="form-group">
               <label>Email</label>
-              <input type="email" id="profEmail" disabled style="opacity:0.75;" />
+              <input type="email" id="profEmail" disabled />
             </div>
             <div class="form-group">
               <label>Kata Sandi Baru <span class="helper">(Kosongkan jika tidak diubah)</span></label>
@@ -633,7 +867,7 @@
 
         <!-- SECTION 3: REKENING BANK -->
         <div class="form-section-card">
-          <div class="section-title"><i class="fas fa-university"></i> Rekening Bank</div>
+          <div class="section-title"><i class="fas fa-university"></i> Rekening Bank (Untuk Withdraw)</div>
           <div class="form-row">
             <div class="form-group">
               <label>Nama Bank</label>
@@ -680,7 +914,7 @@
           <div class="form-row">
             <div class="form-group">
               <label>Nomor Seri</label>
-              <input type="text" id="profSerial" placeholder="Nomor seri" />
+              <input type="text" id="profSerial" disabled />
             </div>
             <div class="form-group">
               <label>Ukuran</label>
@@ -717,72 +951,21 @@
           <div class="form-row">
             <div class="form-group">
               <label>Username Sponsor</label>
-              <input type="text" id="profSponsor" disabled style="opacity:0.75;" />
+              <input type="text" id="profSponsor" disabled />
             </div>
             <div class="form-group">
               <label>Username Upline</label>
-              <input type="text" id="profUpline" disabled style="opacity:0.75;" />
+              <input type="text" id="profUpline" disabled />
             </div>
             <div class="form-group full-width">
               <label>Posisi Tim</label>
-              <input type="text" id="profPosition" disabled style="opacity:0.75;" />
+              <input type="text" id="profPosition" disabled />
             </div>
           </div>
         </div>
 
         <button class="btn-sm btn-sm-gold" id="btnSaveProfile" style="width:100%; padding:14px; justify-content:center; margin-top:10px; font-size:1rem;"><i class="fas fa-save"></i> Simpan Perubahan Profil</button>
       </div>
-    </div>
-
-    <!-- JARINGAN -->
-    <div class="section-content" id="sec-network">
-      <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary (2 Kaki)</h1>
-      <div class="tree-wrapper" id="treeContainer"></div>
-    </div>
-
-    <!-- DEPOSIT -->
-    <div class="section-content" id="sec-deposit">
-      <h1 class="page-title"><i class="fas fa-plus-circle"></i> Deposit</h1>
-      <div class="form-section-card" style="max-width:500px;">
-        <div class="form-group"><label>Nominal Deposit (Rp)</label><input type="number" id="depositAmount" placeholder="Masukkan nominal" min="10000" /></div>
-        <div class="form-group"><label>Metode Pembayaran</label>
-          <select id="depositMethod">
-            <option value="bank">Transfer Bank</option>
-            <option value="ewallet">E-Wallet</option>
-            <option value="qris">QRIS</option>
-          </select>
-        </div>
-        <button class="btn-sm btn-sm-success" id="submitDeposit" style="width:100%; padding:14px; justify-content:center;">Kirim Deposit</button>
-        <p class="text-muted mt-16">Minimal deposit Rp 10.000</p>
-      </div>
-    </div>
-
-    <!-- WITHDRAW -->
-    <div class="section-content" id="sec-withdraw">
-      <h1 class="page-title"><i class="fas fa-minus-circle"></i> Withdraw</h1>
-      <div class="form-section-card" style="max-width:500px;">
-        <div class="form-group"><label>Nominal Withdraw (Rp)</label><input type="number" id="withdrawAmount" placeholder="Masukkan nominal" min="50000" /></div>
-        <div class="form-group"><label>Rekening Tujuan</label><input type="text" id="withdrawAccount" placeholder="Nomor rekening / e-wallet" /></div>
-        <button class="btn-sm btn-sm-primary" id="submitWithdraw" style="width:100%; padding:14px; justify-content:center;">Ajukan Withdraw</button>
-        <p class="text-muted mt-16">Minimal withdraw Rp 50.000 · Proses 1x24 jam</p>
-      </div>
-    </div>
-
-    <!-- RIWAYAT -->
-    <div class="section-content" id="sec-history">
-      <h1 class="page-title"><i class="fas fa-history"></i> Riwayat Transaksi</h1>
-      <div class="history-card"><div id="fullHistory"></div></div>
-    </div>
-
-    <!-- KOLEKSI + RO -->
-    <div class="section-content" id="sec-products">
-      <h1 class="page-title"><i class="fas fa-tshirt"></i> Koleksi Produk</h1>
-      <div id="bankInfo" style="background:#edf2f7; padding:16px 20px; border-radius:var(--radius-sm); margin-bottom:20px; border-left:4px solid var(--denim-blue);">
-        <p style="font-size:0.95rem;"><strong>💳 Transfer ke Rekening Admin:</strong></p>
-        <p id="bankDetail" style="font-weight:700; color:var(--denim-dark); margin:4px 0;">Bank: BCA · No. Rek: 1234567890 · a.n. HEDTRO JEANS</p>
-        <p class="text-muted" style="font-size:0.8rem;">Setelah transfer, admin akan memproses pesanan Anda.</p>
-      </div>
-      <div class="product-grid" id="productGridDashboard"></div>
     </div>
 
   </div>
@@ -802,14 +985,15 @@
     </div>
   </div>
 
-  <!-- ===== CUSTOM MODAL OPSI PRODUK RO (UKURAN & WARNA) ===== -->
+  <!-- ===== CUSTOM MODAL OPSI PRODUK RO (UKURAN, WARNA, NO SERI, METODE BAYAR) ===== -->
   <div class="custom-modal-overlay" id="roModalOverlay">
-    <div class="custom-modal">
+    <div class="custom-modal" style="max-width: 500px;">
       <div class="custom-modal-header">
-        <h3><i class="fas fa-tshirt"></i> Pilih Variasi Produk RO</h3>
+        <h3><i class="fas fa-shopping-cart"></i> Pembelian RO (Repeat Order)</h3>
       </div>
-      <div class="custom-modal-body">
-        <p id="roProductName" style="font-weight:700; margin-bottom:12px; font-size:1rem;"></p>
+      <div class="custom-modal-body" style="max-height: 60vh; overflow-y: auto;">
+        <p id="roProductName" style="font-weight:700; margin-bottom:12px; font-size:1.1rem; color: var(--denim-blue); border-bottom: 1px solid #eee; padding-bottom: 10px;"></p>
+        
         <div class="form-group">
           <label>Pilih Ukuran (Size)</label>
           <select id="roSizeSelect">
@@ -825,6 +1009,7 @@
             <option value="40">Size 40</option>
           </select>
         </div>
+        
         <div class="form-group">
           <label>Pilih Warna (Color)</label>
           <select id="roColorSelect">
@@ -836,10 +1021,37 @@
             <option value="White">White</option>
           </select>
         </div>
+
+        <div class="form-group">
+            <label>Nomor Seri RO <span class="helper">(Didapat dari Admin/Stokis)</span></label>
+            <input type="text" id="roSerialNumber" placeholder="Masukkan 10 digit kode seri" />
+        </div>
+        
+        <!-- Pilihan Metode Pembayaran Saat Klik Beli -->
+        <div id="roPaymentSelection" style="display: none; margin-top: 20px; border-top: 1px dashed #ccc; padding-top: 15px;">
+            <p style="font-weight: 600; margin-bottom: 10px;">Pilih Metode Pembayaran:</p>
+            <div style="display: flex; gap: 10px; flex-direction: column;">
+                <button class="btn-sm" id="btnPayWallet" style="background: #2e7d32; color: #fff; justify-content: space-between; padding: 12px 16px;">
+                    <span><i class="fas fa-wallet"></i> Saldo Dompet</span>
+                    <span id="roWalletBal" style="font-weight: 400; font-size: 0.8rem;"></span>
+                </button>
+                <button class="btn-sm" id="btnPayBank" style="background: var(--denim-blue); color: #fff; justify-content: space-between; padding: 12px 16px;">
+                    <span><i class="fas fa-university"></i> Transfer Bank Manual</span>
+                </button>
+            </div>
+            
+            <div id="roBankInfoBox" style="display: none; margin-top: 10px; background: #edf2f7; padding: 12px; border-radius: 8px; font-size: 0.85rem;">
+                <strong>Transfer Ke:</strong><br>
+                <span id="roBankDetailText"></span><br>
+                <small class="text-muted">Admin akan memverifikasi pesanan setelah dana diterima.</small>
+            </div>
+        </div>
+
       </div>
       <div class="custom-modal-footer">
         <button class="btn-sm btn-sm-danger" id="roModalCancelBtn">Batal</button>
-        <button class="btn-sm btn-sm-gold" id="roModalConfirmBtn">Beli Sekarang</button>
+        <button class="btn-sm btn-sm-gold" id="roModalNextBtn">Lanjutkan Pembayaran</button>
+        <button class="btn-sm btn-sm-primary" id="roModalConfirmBankBtn" style="display: none;">Konfirmasi Pesanan</button>
       </div>
     </div>
   </div>
@@ -872,7 +1084,7 @@
         try {
           const { id } = JSON.parse(session);
           currentUser = users.find(u => u.id === id);
-          if (!currentUser || currentUser.email === 'admin@mlm.com') {
+          if (!currentUser || currentUser.role === 'admin') {
             window.location.href = 'index.html';
             return;
           }
@@ -881,6 +1093,25 @@
         window.location.href = 'index.html';
         return;
       }
+
+      // ===== GLOBAL VARIABLES FOR PAGINATION =====
+      let historyData = [];
+      let historyCurrentPage = 1;
+      const historyRowsPerPage = 10;
+
+      let downlineData = [];
+      let downlineCurrentPage = 1;
+      const downlineRowsPerPage = 10;
+
+      // ===== COPY REFERAL LINK =====
+      window.copyRefLink = function() {
+        const copyText = document.getElementById("refLink");
+        copyText.select();
+        copyText.setSelectionRange(0, 99999); /* For mobile devices */
+        navigator.clipboard.writeText(copyText.value).then(() => {
+            showModalAlert('Berhasil', 'Tautan Referal berhasil disalin!');
+        });
+      };
 
       // ===== CUSTOM POPUP / MODAL UTILITY =====
       const modalOverlay = document.getElementById('customModalOverlay');
@@ -926,6 +1157,7 @@
       const walletAmount = document.getElementById('walletAmount');
       const sideWalletAmount = document.getElementById('sideWalletAmount');
       const sideUserStatusBadge = document.getElementById('sideUserStatusBadge');
+      const refLinkInput = document.getElementById('refLink');
 
       // ===== SIDEBAR TOGGLE (HP) =====
       function toggleSidebar(open) {
@@ -946,6 +1178,7 @@
         dashboard: document.getElementById('sec-dashboard'),
         profile: document.getElementById('sec-profile'),
         network: document.getElementById('sec-network'),
+        downline: document.getElementById('sec-downline'),
         deposit: document.getElementById('sec-deposit'),
         withdraw: document.getElementById('sec-withdraw'),
         history: document.getElementById('sec-history'),
@@ -962,9 +1195,12 @@
 
         if (sectionId === 'profile') renderProfileForm();
         if (sectionId === 'network') renderNetwork();
-        if (sectionId === 'history') renderFullHistory();
+        if (sectionId === 'downline') { downlineCurrentPage = 1; renderDownlineTable(); }
+        if (sectionId === 'history') { historyCurrentPage = 1; renderHistoryTable(); }
         if (sectionId === 'dashboard') renderDashboard();
-        if (sectionId === 'products') { renderProductsDashboard(); renderBankInfo(); }
+        if (sectionId === 'products') renderProductsDashboard();
+        if (sectionId === 'deposit') renderDepositBankInfo();
+        if (sectionId === 'withdraw') prepareWithdrawForm();
       }
 
       document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(item => {
@@ -1030,12 +1266,11 @@
         const bankHolder = document.getElementById('profBankHolder').value.trim();
         const address = document.getElementById('profAddress').value.trim();
         const city = document.getElementById('profCity').value.trim();
-        const serialNumber = document.getElementById('profSerial').value.trim();
         const jeansSize = document.getElementById('profJeansSize').value;
         const jeansColor = document.getElementById('profJeansColor').value;
 
-        if (!fullname || !nik || !phone || !whatsapp || !bankAccount || !bankHolder || !address || !city || !serialNumber) {
-          showModalAlert('Peringatan', '⚠️ Semua field profil wajib diisi.');
+        if (!fullname || !nik || !phone || !whatsapp || !bankAccount || !bankHolder || !address || !city) {
+          showModalAlert('Peringatan', '⚠️ Semua field profil wajib diisi (kecuali kata sandi).');
           return;
         }
 
@@ -1066,7 +1301,6 @@
         currentUser.bankHolder = bankHolder;
         currentUser.address = address;
         currentUser.city = city;
-        currentUser.serialNumber = serialNumber;
         currentUser.jeansSize = jeansSize;
         currentUser.jeansColor = jeansColor;
 
@@ -1077,83 +1311,101 @@
         }
 
         renderDashboard();
-        showModalAlert('Berhasil', '✅ Profil Anda telah diperbarui dan terhubung dengan data registrasi & admin.');
+        showModalAlert('Berhasil', '✅ Profil Anda telah diperbarui.');
       });
 
-      // ===== BANK INFO =====
-      function renderBankInfo() {
-        const el = document.getElementById('bankDetail');
-        if (el) {
-          el.textContent = `Bank: ${bankInfo.bank} · No. Rek: ${bankInfo.account} · a.n. ${bankInfo.name}`;
-        }
+      // ===== DEPOSIT =====
+      function renderDepositBankInfo() {
+          bankInfo = loadBankInfo();
+          document.getElementById('depositBankDetail').textContent = `Bank: ${bankInfo.bank} - ${bankInfo.account} (a.n ${bankInfo.name})`;
       }
 
-      // ===== DEPOSIT & WITHDRAW =====
-      function deposit(amount) {
+      document.getElementById('submitDeposit').addEventListener('click', function() {
+        const amount = parseInt(document.getElementById('depositAmount').value);
         if (amount <= 0 || isNaN(amount)) { showModalAlert('Kesalahan', 'Masukkan nominal yang valid.'); return; }
         if (amount < 10000) { showModalAlert('Kesalahan', 'Minimal deposit Rp 10.000'); return; }
-        currentUser.wallet = (currentUser.wallet || 0) + amount;
+        
+        currentUser.wallet = (currentUser.wallet || 0) + amount; // Simulasi instant. Realita harusnya pending
         if (!currentUser.transactions) currentUser.transactions = [];
         currentUser.transactions.push({
           type: 'deposit',
           amount: amount,
           date: new Date().toISOString(),
-          status: 'success',
-          method: document.getElementById('depositMethod')?.value || 'bank'
+          status: 'success', // Simulasi auto success
+          method: document.getElementById('depositMethod').value
         });
         saveUsers(users);
         renderDashboard();
+        document.getElementById('depositAmount').value = '';
         showModalAlert('Deposit Berhasil', '✅ Deposit sebesar Rp ' + amount.toLocaleString() + ' telah ditambahkan ke dompet Anda.', function() {
           showSection('dashboard');
         });
+      });
+
+      // ===== WITHDRAW =====
+      function prepareWithdrawForm() {
+          const availBal = currentUser.wallet || 0;
+          document.getElementById('wdAvailableBal').value = 'Rp ' + availBal.toLocaleString();
+          
+          const wdAccInput = document.getElementById('withdrawAccount');
+          const wdNameSpan = document.getElementById('withdrawAccountName');
+          
+          if (currentUser.bankName && currentUser.bankAccount && currentUser.bankHolder) {
+              wdAccInput.value = `${currentUser.bankName} - ${currentUser.bankAccount}`;
+              wdNameSpan.textContent = currentUser.bankHolder;
+          } else {
+              wdAccInput.value = '';
+              wdNameSpan.textContent = 'Data bank belum lengkap. Silakan lengkapi di menu Profil.';
+          }
       }
 
-      function withdraw(amount, account) {
+      document.getElementById('submitWithdraw').addEventListener('click', function() {
+        const amount = parseInt(document.getElementById('withdrawAmount').value);
+        
+        if (!currentUser.bankName || !currentUser.bankAccount || !currentUser.bankHolder) {
+            showModalAlert('Profil Belum Lengkap', '❌ Silakan lengkapi data Rekening Bank di menu Profil Saya sebelum melakukan penarikan.');
+            return;
+        }
+
         if (amount <= 0 || isNaN(amount)) { showModalAlert('Kesalahan', 'Masukkan nominal yang valid.'); return; }
         if (amount < 50000) { showModalAlert('Kesalahan', 'Minimal withdraw Rp 50.000'); return; }
         if ((currentUser.wallet || 0) < amount) {
           showModalAlert('Gagal', '❌ Saldo dompet Anda tidak mencukupi.');
           return;
         }
-        if (!account || account.trim() === '') {
-          showModalAlert('Kesalahan', 'Masukkan nomor rekening / e-wallet tujuan.');
-          return;
-        }
-        currentUser.wallet = (currentUser.wallet || 0) - amount;
-        if (!currentUser.transactions) currentUser.transactions = [];
-        currentUser.transactions.push({
-          type: 'withdraw',
-          amount: amount,
-          date: new Date().toISOString(),
-          status: 'pending',
-          account: account.trim()
+        
+        // Konfirmasi
+        showModalConfirm('Konfirmasi Withdraw', `Anda akan menarik dana sebesar <strong>Rp ${amount.toLocaleString()}</strong> ke rekening <strong>${currentUser.bankName} ${currentUser.bankAccount}</strong> a.n <strong>${currentUser.bankHolder}</strong>.<br><br>Proses ini memerlukan persetujuan Admin. Lanjutkan?`, function() {
+            currentUser.wallet = (currentUser.wallet || 0) - amount;
+            if (!currentUser.transactions) currentUser.transactions = [];
+            currentUser.transactions.push({
+              type: 'withdraw',
+              amount: amount,
+              date: new Date().toISOString(),
+              status: 'pending',
+              account: `${currentUser.bankName} ${currentUser.bankAccount} a.n ${currentUser.bankHolder}`
+            });
+            saveUsers(users);
+            renderDashboard();
+            document.getElementById('withdrawAmount').value = '';
+            showModalAlert('Withdraw Diajukan', '✅ Permintaan withdraw Rp ' + amount.toLocaleString() + ' berhasil dikirim ke Admin dan menunggu proses persetujuan.', function() {
+              showSection('history');
+            });
         });
-        saveUsers(users);
-        renderDashboard();
-        showModalAlert('Withdraw Diproses', '✅ Permintaan withdraw Rp ' + amount.toLocaleString() + ' telah diajukan dan sedang diproses admin.', function() {
-          showSection('dashboard');
-        });
-      }
+      });
 
       document.getElementById('depositBtn').addEventListener('click', () => showSection('deposit'));
       document.getElementById('withdrawBtn').addEventListener('click', () => showSection('withdraw'));
-
-      document.getElementById('submitDeposit').addEventListener('click', function() {
-        const amount = parseInt(document.getElementById('depositAmount').value);
-        deposit(amount);
-      });
-
-      document.getElementById('submitWithdraw').addEventListener('click', function() {
-        const amount = parseInt(document.getElementById('withdrawAmount').value);
-        const account = document.getElementById('withdrawAccount').value.trim();
-        withdraw(amount, account);
-      });
 
       // ===== RENDER DASHBOARD =====
       function renderDashboard() {
         navUserName.textContent = currentUser.fullname || currentUser.name || currentUser.username;
         
-        // Status & Tagihan Rp 550.000 untuk Free Member
+        // Link Referal
+        const baseUrl = window.location.origin + window.location.pathname.replace('dashboard.html', '');
+        refLinkInput.value = `${baseUrl}register.html?ref=${currentUser.username}`;
+
+        // Status Banner (Disembunyikan jika verified sesuai instruksi)
         const memberPrice = settings.memberPrice || 550000;
         let statusHtml = '';
         const isVerified = currentUser.status === 'verified';
@@ -1167,24 +1419,22 @@
           statusHtml = `<div>
             <strong>❌ Status: Free Member</strong><br>
             <span>Tagihan Pendaftaran: <strong>Rp ${memberPrice.toLocaleString()}</strong></span><br>
-            <span style="font-size:0.8rem;">Silakan melakukan pembayaran ke <b>${bankInfo.bank} ${bankInfo.account} (a.n ${bankInfo.name})</b> dan konfirmasi ke Admin untuk verifikasi & menerima Produk Perdana.</span>
+            <span style="font-size:0.8rem;">Silakan melakukan pembayaran ke <b>${bankInfo.bank} ${bankInfo.account} (a.n ${bankInfo.name})</b> dan konfirmasi ke Admin beserta Nomor Seri Pendaftaran Anda.</span>
           </div>`;
           statusBanner.className = 'status-free';
         } else if (currentUser.status === 'pending') {
           statusHtml = `<div>
             <strong>⏳ Status: Menunggu Verifikasi Admin</strong><br>
-            <span>Pembayaran pendaftaran Rp ${memberPrice.toLocaleString()} sedang diproses oleh admin.</span>
+            <span>Pembayaran pendaftaran sedang diproses oleh admin.</span>
           </div>`;
           statusBanner.className = 'status-pending';
         } else {
-          let produkInfo = currentUser.initialProduct ? `<br><small>📦 Produk Perdana diterima: <b>${currentUser.initialProduct}</b></small>` : '';
-          statusHtml = `<div>
-            <strong>✅ Status: Verified Member</strong> — Selamat bergabung! ${produkInfo}
-          </div>`;
-          statusBanner.className = 'status-verified';
+          // Jika verified, sembunyikan banner
+          statusBanner.className = 'status-verified'; 
         }
         
-        statusBanner.innerHTML = statusHtml;
+        if(statusHtml !== '') statusBanner.innerHTML = statusHtml;
+
         const formattedWallet = 'Rp ' + (currentUser.wallet || 0).toLocaleString();
         if (walletAmount) walletAmount.textContent = formattedWallet;
         if (sideWalletAmount) sideWalletAmount.textContent = formattedWallet;
@@ -1193,10 +1443,10 @@
         document.getElementById('binaryBonus').textContent = currentUser.bonus_binary || 0;
         document.getElementById('rewardBonus').textContent = currentUser.bonus_reward || 0;
         document.getElementById('roBonus').textContent = currentUser.bonus_ro || 0;
-        renderTransactionHistory();
+        renderRecentTransactions();
       }
 
-      function renderTransactionHistory() {
+      function renderRecentTransactions() {
         const container = document.getElementById('transactionHistory');
         const transactions = currentUser.transactions || [];
         if (transactions.length === 0) {
@@ -1206,32 +1456,146 @@
         let html = '';
         const sorted = [...transactions].reverse().slice(0, 5);
         sorted.forEach(t => {
-          const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'ro_purchase' ? 'RO Purchase' : (t.type === 'registration' ? 'Pendaftaran' : 'Withdraw'));
-          const amountClass = (t.type === 'deposit' || t.type === 'ro_purchase') ? 'plus' : 'minus';
-          const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' ? '✅ Selesai' : '❌ Gagal');
-          html += `<div class="history-item"><span>${typeLabel} ${statusText}</span><span class="amount ${amountClass}">${(t.type === 'deposit' || t.type === 'ro_purchase') ? '+' : '-'} Rp ${t.amount.toLocaleString()}</span></div>`;
+          let typeLabel = t.type;
+          if(t.type === 'deposit') typeLabel = 'Deposit';
+          else if(t.type === 'ro_purchase') typeLabel = 'Pembelian RO';
+          else if(t.type === 'withdraw') typeLabel = 'Withdraw';
+          else if(t.type === 'registration') typeLabel = 'Pendaftaran';
+
+          const amountClass = (t.type === 'deposit' || t.type === 'ro_purchase') ? 'plus' : 'minus'; // asumsi beli RO masuk riwayat sbg + di tabel ini, walau aslinya mengurangi wallet atau via TF
+          const sign = (t.type === 'deposit' || t.type === 'bonus') ? '+' : '-';
+          
+          let statusHtml = '';
+          if(t.status === 'pending') statusHtml = '<span class="status-badge status-pending">Pending</span>';
+          else if(t.status === 'success' || t.status === 'verified') statusHtml = '<span class="status-badge status-success">Selesai</span>';
+          else statusHtml = '<span class="status-badge status-failed">Gagal</span>';
+
+          html += `<div class="history-item">
+            <span>${typeLabel} ${statusHtml}</span>
+            <span class="amount ${amountClass}">${sign} Rp ${t.amount.toLocaleString()}</span>
+          </div>`;
         });
         container.innerHTML = html;
       }
 
-      function renderFullHistory() {
-        const container = document.getElementById('fullHistory');
-        const transactions = currentUser.transactions || [];
-        if (transactions.length === 0) {
-          container.innerHTML = '<p class="text-muted">Belum ada transaksi.</p>';
-          return;
-        }
-        let html = '';
-        const sorted = [...transactions].reverse();
-        sorted.forEach(t => {
-          const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'ro_purchase' ? 'RO Purchase' : (t.type === 'registration' ? 'Pendaftaran' : 'Withdraw'));
-          const amountClass = (t.type === 'deposit' || t.type === 'ro_purchase') ? 'plus' : 'minus';
-          const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' ? '✅ Selesai' : '❌ Gagal');
-          const date = new Date(t.date).toLocaleDateString() + ' ' + new Date(t.date).toLocaleTimeString();
-          html += `<div class="history-item"><span>${typeLabel} ${statusText} <span class="text-muted" style="font-size:0.75rem;">${date}</span></span><span class="amount ${amountClass}">${(t.type === 'deposit' || t.type === 'ro_purchase') ? '+' : '-'} Rp ${t.amount.toLocaleString()}</span></div>`;
-        });
-        container.innerHTML = html;
+      // ===== RENDER TABEL HISTORY DGN PAGINATION =====
+      function renderHistoryTable() {
+          const tbody = document.getElementById('historyTableBody');
+          historyData = [...(currentUser.transactions || [])].reverse();
+          
+          if(historyData.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Belum ada riwayat transaksi.</td></tr>';
+              updateHistoryPagination();
+              return;
+          }
+
+          const start = (historyCurrentPage - 1) * historyRowsPerPage;
+          const end = start + historyRowsPerPage;
+          const paginatedItems = historyData.slice(start, end);
+
+          let html = '';
+          paginatedItems.forEach(t => {
+              const date = new Date(t.date).toLocaleString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit'});
+              
+              let typeLabel = t.type;
+              if(t.type === 'deposit') typeLabel = 'Deposit';
+              else if(t.type === 'ro_purchase') typeLabel = 'Pembelian RO';
+              else if(t.type === 'withdraw') typeLabel = 'Withdraw';
+              else if(t.type === 'registration') typeLabel = 'Pendaftaran';
+
+              let detail = '-';
+              if(t.type === 'withdraw') detail = `Ke: ${t.account}`;
+              if(t.type === 'ro_purchase') detail = t.productName;
+              if(t.type === 'deposit') detail = `Metode: ${t.method || 'Transfer Bank'}`;
+
+              let sign = (t.type === 'deposit' || t.type === 'bonus') ? '+' : '-';
+              let amountStyle = (t.type === 'deposit' || t.type === 'bonus') ? 'color: #2e7d32;' : 'color: #e53e3e;';
+
+              let statusHtml = '';
+              if(t.status === 'pending') statusHtml = '<span class="status-badge status-pending">Pending</span>';
+              else if(t.status === 'success' || t.status === 'verified') statusHtml = '<span class="status-badge status-success">Selesai</span>';
+              else statusHtml = '<span class="status-badge status-failed">Ditolak</span>';
+
+              html += `<tr>
+                  <td>${date}</td>
+                  <td><strong>${typeLabel}</strong></td>
+                  <td>${detail}</td>
+                  <td style="${amountStyle} font-weight:700;">${sign} Rp ${t.amount.toLocaleString()}</td>
+                  <td>${statusHtml}</td>
+              </tr>`;
+          });
+          tbody.innerHTML = html;
+          updateHistoryPagination();
       }
+
+      function updateHistoryPagination() {
+          const totalPages = Math.ceil(historyData.length / historyRowsPerPage) || 1;
+          document.getElementById('historyPageInfo').textContent = `Halaman ${historyCurrentPage} dari ${totalPages}`;
+          document.getElementById('prevHistoryBtn').disabled = historyCurrentPage === 1;
+          document.getElementById('nextHistoryBtn').disabled = historyCurrentPage === totalPages;
+      }
+
+      document.getElementById('prevHistoryBtn').addEventListener('click', () => {
+          if (historyCurrentPage > 1) { historyCurrentPage--; renderHistoryTable(); }
+      });
+      document.getElementById('nextHistoryBtn').addEventListener('click', () => {
+          const totalPages = Math.ceil(historyData.length / historyRowsPerPage);
+          if (historyCurrentPage < totalPages) { historyCurrentPage++; renderHistoryTable(); }
+      });
+
+      // ===== RENDER DOWNLINE DGN PAGINATION =====
+      function renderDownlineTable() {
+          const tbody = document.getElementById('downlineTableBody');
+          // Cari user yang sponsor_id nya adalah ID current user
+          downlineData = users.filter(u => u.sponsor_id === currentUser.id);
+          
+          document.getElementById('totalDownlineCount').textContent = downlineData.length;
+
+          if(downlineData.length === 0) {
+              tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Anda belum memiliki downline.</td></tr>';
+              updateDownlinePagination();
+              return;
+          }
+
+          const start = (downlineCurrentPage - 1) * downlineRowsPerPage;
+          const end = start + downlineRowsPerPage;
+          const paginatedItems = downlineData.slice(start, end);
+
+          let html = '';
+          paginatedItems.forEach(u => {
+              const date = u.registeredAt ? new Date(u.registeredAt).toLocaleDateString('id-ID') : '-';
+              
+              let statusHtml = '';
+              if(u.status === 'verified') statusHtml = '<span class="status-badge status-verified">Verified</span>';
+              else if(u.status === 'pending') statusHtml = '<span class="status-badge status-pending">Pending</span>';
+              else statusHtml = '<span class="status-badge status-free">Free</span>';
+
+              html += `<tr>
+                  <td>${date}</td>
+                  <td><strong>${u.username}</strong></td>
+                  <td>${u.fullname || u.name}</td>
+                  <td>${statusHtml}</td>
+              </tr>`;
+          });
+          tbody.innerHTML = html;
+          updateDownlinePagination();
+      }
+
+      function updateDownlinePagination() {
+          const totalPages = Math.ceil(downlineData.length / downlineRowsPerPage) || 1;
+          document.getElementById('downlinePageInfo').textContent = `Halaman ${downlineCurrentPage} dari ${totalPages}`;
+          document.getElementById('prevDownlineBtn').disabled = downlineCurrentPage === 1;
+          document.getElementById('nextDownlineBtn').disabled = downlineCurrentPage === totalPages;
+      }
+
+      document.getElementById('prevDownlineBtn').addEventListener('click', () => {
+          if (downlineCurrentPage > 1) { downlineCurrentPage--; renderDownlineTable(); }
+      });
+      document.getElementById('nextDownlineBtn').addEventListener('click', () => {
+          const totalPages = Math.ceil(downlineData.length / downlineRowsPerPage);
+          if (downlineCurrentPage < totalPages) { downlineCurrentPage++; renderDownlineTable(); }
+      });
+
 
       // ===== RENDER NETWORK (BINARY TREE 2 KAKI) =====
       function renderNetwork() {
@@ -1319,10 +1683,16 @@
         });
       }
 
-      // ===== MODAL VARIASI PRODUK RO (UKURAN & WARNA) =====
+      // ===== MODAL VARIASI PRODUK RO (DENGAN NO SERI & PEMBAYARAN) =====
       const roModalOverlay = document.getElementById('roModalOverlay');
+      const roPaymentSelection = document.getElementById('roPaymentSelection');
+      const roModalNextBtn = document.getElementById('roModalNextBtn');
+      const roModalConfirmBankBtn = document.getElementById('roModalConfirmBankBtn');
+      const roBankInfoBox = document.getElementById('roBankInfoBox');
+      
       let currentRoProductId = null;
       let currentRoPrice = 0;
+      let selectedPaymentMethod = null; // 'wallet' or 'bank'
 
       function openROModal(productId, price) {
         if (currentUser.status !== 'verified') {
@@ -1336,6 +1706,20 @@
         currentRoProductId = productId;
         currentRoPrice = price;
         document.getElementById('roProductName').textContent = `${product.name} — Rp ${price.toLocaleString()}`;
+        document.getElementById('roSerialNumber').value = '';
+        
+        // Reset state modal
+        roPaymentSelection.style.display = 'none';
+        roModalNextBtn.style.display = 'block';
+        roModalConfirmBankBtn.style.display = 'none';
+        roBankInfoBox.style.display = 'none';
+        selectedPaymentMethod = null;
+        document.getElementById('btnPayWallet').style.opacity = '1';
+        document.getElementById('btnPayBank').style.opacity = '1';
+        
+        // Update info saldo dompet
+        document.getElementById('roWalletBal').textContent = `(Rp ${(currentUser.wallet || 0).toLocaleString()})`;
+
         roModalOverlay.classList.add('active');
       }
 
@@ -1343,50 +1727,111 @@
         roModalOverlay.classList.remove('active');
       });
 
-      document.getElementById('roModalConfirmBtn').addEventListener('click', function() {
-        const size = document.getElementById('roSizeSelect').value;
-        const color = document.getElementById('roColorSelect').value;
-        roModalOverlay.classList.remove('active');
-        processROPurchase(currentRoProductId, currentRoPrice, size, color);
+      // Lanjut pilih pembayaran
+      roModalNextBtn.addEventListener('click', function() {
+          const serialNo = document.getElementById('roSerialNumber').value.trim();
+          if(!serialNo || serialNo.length < 5) {
+              showModalAlert('Peringatan', 'Nomor Seri RO harus diisi dengan benar.');
+              return;
+          }
+          
+          roModalNextBtn.style.display = 'none';
+          roPaymentSelection.style.display = 'block';
       });
 
-      function processROPurchase(productId, price, size, color) {
-        const product = products.find(p => p.id === productId);
+      // Pilihan Saldo Dompet
+      document.getElementById('btnPayWallet').addEventListener('click', function() {
+          if((currentUser.wallet || 0) < currentRoPrice) {
+              showModalAlert('Saldo Kurang', 'Saldo dompet Anda tidak mencukupi untuk pembelian ini.');
+              return;
+          }
+          
+          showModalConfirm('Konfirmasi', `Gunakan saldo dompet sebesar Rp ${currentRoPrice.toLocaleString()} untuk pembayaran?`, function() {
+              roModalOverlay.classList.remove('active');
+              processROPurchase('wallet');
+          });
+      });
+
+      // Pilihan Transfer Bank
+      document.getElementById('btnPayBank').addEventListener('click', function() {
+          selectedPaymentMethod = 'bank';
+          document.getElementById('btnPayWallet').style.opacity = '0.5';
+          document.getElementById('btnPayBank').style.opacity = '1';
+          
+          roBankInfoBox.style.display = 'block';
+          bankInfo = loadBankInfo();
+          document.getElementById('roBankDetailText').textContent = `${bankInfo.bank} - ${bankInfo.account} (a.n ${bankInfo.name})`;
+          
+          roModalConfirmBankBtn.style.display = 'block';
+      });
+
+      roModalConfirmBankBtn.addEventListener('click', function() {
+          roModalOverlay.classList.remove('active');
+          processROPurchase('bank');
+      });
+
+      function processROPurchase(paymentMethod) {
+        const size = document.getElementById('roSizeSelect').value;
+        const color = document.getElementById('roColorSelect').value;
+        const serialNo = document.getElementById('roSerialNumber').value.trim();
+        
+        const product = products.find(p => p.id === currentRoProductId);
         if (!product) return;
 
         product.stock--;
         saveProducts(products);
 
-        if (!currentUser.transactions) currentUser.transactions = [];
         const fullProductName = `${product.name} (${size} / ${color})`;
+        
+        let txStatus = 'pending';
+        let txNote = `Seri: ${serialNo} | Menunggu transfer manual`;
+        
+        if (paymentMethod === 'wallet') {
+            currentUser.wallet -= currentRoPrice;
+            txStatus = 'success'; // Auto success klo potong saldo
+            txNote = `Seri: ${serialNo} | Dibayar dengan Saldo Dompet`;
+        }
 
+        if (!currentUser.transactions) currentUser.transactions = [];
         currentUser.transactions.push({
           type: 'ro_purchase',
-          productId: productId,
+          productId: currentRoProductId,
           productName: fullProductName,
-          amount: price,
+          amount: currentRoPrice,
           date: new Date().toISOString(),
-          status: 'pending',
-          note: `Ukuran: ${size}, Warna: ${color} · Menunggu konfirmasi pembayaran transfer ke ${bankInfo.bank} ${bankInfo.account}`
+          status: txStatus,
+          note: txNote,
+          serialNumber: serialNo,
+          paymentMethod: paymentMethod
         });
 
         if (!currentUser.purchase_history) currentUser.purchase_history = [];
         currentUser.purchase_history.push({
-          productId: productId,
+          productId: currentRoProductId,
           productName: fullProductName,
           size: size,
           color: color,
-          price: price,
+          price: currentRoPrice,
           date: new Date().toISOString(),
-          status: 'pending'
+          status: txStatus,
+          serialNumber: serialNo
         });
+        
         saveUsers(users);
 
-        showModalAlert('Pesanan Berhasil', `✅ Pesanan RO untuk <b>${fullProductName}</b> berhasil diajukan!<br><br>Silakan melakukan transfer ke rekening admin (<b>${bankInfo.bank} ${bankInfo.account}</b>) untuk diproses.`, function() {
-          renderDashboard();
-          renderProductsDashboard();
-          showSection('history');
-        });
+        if (paymentMethod === 'wallet') {
+            showModalAlert('Pembelian Berhasil', `✅ RO <b>${fullProductName}</b> berhasil dibayar menggunakan saldo dompet.`, function() {
+                renderDashboard();
+                renderProductsDashboard();
+                showSection('history');
+            });
+        } else {
+            showModalAlert('Pesanan Dibuat', `✅ Pesanan RO <b>${fullProductName}</b> berhasil diajukan.<br><br>Silakan transfer ke <b>${bankInfo.bank} ${bankInfo.account}</b> dan tunggu verifikasi admin.`, function() {
+                renderDashboard();
+                renderProductsDashboard();
+                showSection('history');
+            });
+        }
       }
 
       // ===== REFRESH DATA =====
@@ -1400,8 +1845,11 @@
           if (activeSection === 'dashboard') renderDashboard();
           else if (activeSection === 'profile') renderProfileForm();
           else if (activeSection === 'network') renderNetwork();
-          else if (activeSection === 'history') renderFullHistory();
-          else if (activeSection === 'products') { renderProductsDashboard(); renderBankInfo(); }
+          else if (activeSection === 'downline') renderDownlineTable();
+          else if (activeSection === 'history') renderHistoryTable();
+          else if (activeSection === 'products') renderProductsDashboard();
+          else if (activeSection === 'deposit') renderDepositBankInfo();
+          else if (activeSection === 'withdraw') prepareWithdrawForm();
         }
       }
 
@@ -1411,11 +1859,11 @@
       });
 
       // ===== INIT =====
-      renderBankInfo();
+      bankInfo = loadBankInfo();
       showSection('dashboard');
       setInterval(refreshUserData, 30000);
 
-      console.log('🟦 HEDTRO · Dashboard Sinkron dengan Form Register & Admin');
+      console.log('🟦 HEDTRO · Dashboard User Siap');
     })();
   </script>
 </body>
