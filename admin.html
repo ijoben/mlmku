@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
@@ -248,7 +247,6 @@
             <div class="logo-icon"><i class="fas fa-tshirt"></i></div>
             <h2>Admin Panel</h2>
             <p class="sub">Masuk sebagai administrator</p>
-            <!-- Form diubah agar tidak submit otomatis -->
             <form id="adminLoginForm">
                 <div class="form-group">
                     <label>Email atau Username</label>
@@ -258,7 +256,6 @@
                     <label>Kata Sandi</label>
                     <input type="password" id="adminLoginPassword" placeholder="••••••••" value="admin123" />
                 </div>
-                <!-- type diubah menjadi button -->
                 <button type="button" class="btn-login" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
                 <div class="msg" id="adminLoginMsg"></div>
             </form>
@@ -379,7 +376,7 @@
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>#</th><th>Gambar</th><th>Nama</th><th>Harga Member</th><th>Harga Normal</th><th>Tag</th><th>Ukuran</th><th>Warna</th><th>Stok</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>#</th><th>Gambar</th><th>Nama</th><th>Nomor Seri</th><th>Harga Member</th><th>Harga Normal</th><th>Tag</th><th>Ukuran</th><th>Warna</th><th>Stok</th><th>Aksi</th></tr></thead>
                         <tbody id="adminProductTableBody"></tbody>
                     </table>
                 </div>
@@ -1144,12 +1141,16 @@
                 });
             }
 
+            // ============================================================
+            // PERBAIKAN: PRODUK (Tambah Nomor Seri & Edit Produk)
+            // ============================================================
+
             function renderAdminProducts() { 
                 const tbody = document.getElementById('adminProductTableBody');
                 if (!tbody) return;
                 const products = loadProducts();
                 const totalItems = products.length;
-                if (totalItems === 0) { tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;">Belum ada produk.</td></tr>`; document.getElementById('productsPagination').innerHTML = ''; return; }
+                if (totalItems === 0) { tbody.innerHTML = `<tr><td colspan="11" style="text-align:center;padding:20px;">Belum ada produk.</td></tr>`; document.getElementById('productsPagination').innerHTML = ''; return; }
 
                 const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
                 statePage.products = Math.max(1, Math.min(statePage.products, totalPages));
@@ -1166,6 +1167,7 @@
                         <td data-label="#">${startIdx + idx + 1}</td>
                         <td data-label="Gambar">${imgHtml}</td>
                         <td data-label="Nama Produk"><strong>${p.name}</strong></td>
+                        <td data-label="Nomor Seri">${p.serial || '-'}</td>
                         <td data-label="Harga Member">Rp ${p.price.toLocaleString()}</td>
                         <td data-label="Harga Normal">Rp ${p.original?.toLocaleString() || '-'}</td>
                         <td data-label="Tag"><span class="badge-status" style="background:${p.badgeColor || '#c9a84c'};color:#fff;">${p.tag || 'PRODUK'}</span></td>
@@ -1174,7 +1176,8 @@
                         <td data-label="Stok">${p.stock}</td>
                         <td data-label="Aksi">
                             <div>
-                                <button class="btn-sm btn-sm-danger delete-product" data-id="${p.id}">Hapus</button>
+                                <button class="btn-sm btn-sm-warning edit-product-btn" data-id="${p.id}"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn-sm btn-sm-danger delete-product" data-id="${p.id}"><i class="fas fa-trash"></i> Hapus</button>
                             </div>
                         </td>
                     </tr>`;
@@ -1191,6 +1194,121 @@
                     }
                 });
             }
+
+            // ============================================================
+            // PERBAIKAN: MODAL PRODUK (Tambahkan Nomor Seri & Mode Edit)
+            // ============================================================
+
+            function openProductModal(product = null) {
+                const isEdit = !!product;
+                const title = isEdit ? 'Edit Produk' : 'Tambah Produk';
+                const html = `
+                    <h3><i class="fas fa-box" style="color:var(--gold-accent);"></i> ${title}</h3>
+                    <div class="form-group"><label>Nama Produk</label><input type="text" id="prodName" value="${isEdit ? product.name : ''}" /></div>
+                    <div class="form-group"><label>Nomor Seri / SKU</label><input type="text" id="prodSerial" value="${isEdit ? product.serial : ''}" placeholder="Contoh: SKU-001" /></div>
+                    <div class="form-group"><label>Harga Member (Rp)</label><input type="number" id="prodPrice" value="${isEdit ? product.price : ''}" /></div>
+                    <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="prodOriginal" value="${isEdit ? product.original : ''}" /></div>
+                    <div class="form-group"><label>Tag / Label</label><input type="text" id="prodTag" value="${isEdit ? product.tag : 'PRODUK'}" /></div>
+                    <div class="form-group"><label>Warna Label (hex)</label><input type="text" id="prodTagColor" value="${isEdit ? product.badgeColor : '#c9a84c'}" /></div>
+                    <div class="form-group"><label>Ukuran (pisahkan koma)</label><input type="text" id="prodSizes" value="${isEdit ? product.sizes.join(', ') : ''}" placeholder="S, M, L, XL" /></div>
+                    <div class="form-group"><label>Warna (pisahkan koma)</label><input type="text" id="prodColors" value="${isEdit ? product.colors.join(', ') : ''}" placeholder="Hitam, Biru, Abu" /></div>
+                    <div class="form-group"><label>Stok</label><input type="number" id="prodStock" value="${isEdit ? product.stock : 10}" /></div>
+                    <div class="form-group">
+                        <label>Gambar Produk</label>
+                        <div class="upload-box">
+                            <input type="file" id="prodImageFile" accept="image/*" />
+                            <input type="text" id="prodImageUrl" value="${isEdit ? product.image : ''}" placeholder="URL gambar atau upload" />
+                            <img id="prodImagePreview" class="upload-preview-img ${isEdit && product.image ? 'show' : ''}" src="${isEdit ? product.image : ''}" alt="Preview" />
+                        </div>
+                    </div>
+                    <button class="btn-submit" id="saveProductBtn">${isEdit ? 'Update' : 'Simpan'} Produk</button>
+                    <button class="btn-submit" style="background:#e2e8f0;color:#333;margin-top:8px;" onclick="document.getElementById('modalClose').click();">Batal</button>
+                `;
+                openModal(html);
+
+                // Preview upload gambar
+                const fileInput = document.getElementById('prodImageFile');
+                const urlInput = document.getElementById('prodImageUrl');
+                const preview = document.getElementById('prodImagePreview');
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(ev) {
+                            preview.src = ev.target.result;
+                            preview.classList.add('show');
+                            urlInput.value = ev.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                urlInput.addEventListener('input', function() {
+                    if (this.value) {
+                        preview.src = this.value;
+                        preview.classList.add('show');
+                    } else {
+                        preview.classList.remove('show');
+                    }
+                });
+
+                document.getElementById('saveProductBtn').addEventListener('click', function() {
+                    const name = document.getElementById('prodName').value.trim();
+                    const serial = document.getElementById('prodSerial').value.trim();
+                    const price = parseInt(document.getElementById('prodPrice').value) || 0;
+                    const original = parseInt(document.getElementById('prodOriginal').value) || 0;
+                    const tag = document.getElementById('prodTag').value.trim() || 'PRODUK';
+                    const tagColor = document.getElementById('prodTagColor').value.trim() || '#c9a84c';
+                    const sizes = document.getElementById('prodSizes').value.split(',').map(s => s.trim()).filter(Boolean);
+                    const colors = document.getElementById('prodColors').value.split(',').map(s => s.trim()).filter(Boolean);
+                    const stock = parseInt(document.getElementById('prodStock').value) || 0;
+                    const image = document.getElementById('prodImageUrl').value.trim() || '';
+
+                    if (!name || price <= 0) {
+                        showToast('Nama dan harga wajib diisi.', 'error');
+                        return;
+                    }
+
+                    let products = loadProducts();
+                    if (isEdit) {
+                        const target = products.find(p => p.id === product.id);
+                        if (target) {
+                            target.name = name;
+                            target.serial = serial;
+                            target.price = price;
+                            target.original = original;
+                            target.tag = tag;
+                            target.badgeColor = tagColor;
+                            target.sizes = sizes;
+                            target.colors = colors;
+                            target.stock = stock;
+                            target.image = image;
+                        }
+                    } else {
+                        products.push({
+                            id: getNextId(products),
+                            name: name,
+                            serial: serial,
+                            price: price,
+                            original: original,
+                            tag: tag,
+                            badgeColor: tagColor,
+                            sizes: sizes,
+                            colors: colors,
+                            stock: stock,
+                            image: image
+                        });
+                    }
+                    saveProducts(products);
+                    renderAdminProducts();
+                    renderDashboard();
+                    closeModal();
+                    showToast(isEdit ? 'Produk diperbarui.' : 'Produk berhasil ditambahkan.', 'success');
+                });
+            }
+
+            // ============================================================
+            // LANJUTAN: RENDER HALAMAN UTAMA & CRUD LAINNYA
+            // ============================================================
 
             function renderVerification() {
                 const users = loadUsers();
@@ -1224,6 +1342,10 @@
                     document.getElementById('sosmedYoutube').value = f.social.youtube || '';
                     document.getElementById('sosmedTiktok').value = f.social.tiktok || '';
                 }
+                
+                renderSlideList();
+                renderFaqList();
+                renderFeatureList();
             }
             
             function loadSettingsToForm() {
@@ -1342,6 +1464,578 @@
             });
             document.getElementById('saveFooterBtn')?.addEventListener('click', function() {
                 saveFooter({brand: document.getElementById('footerBrand').value, desc: document.getElementById('footerDesc').value, copyright: document.getElementById('footerCopyright').value, social: {instagram: document.getElementById('sosmedInstagram').value, facebook: document.getElementById('sosmedFacebook').value, youtube: document.getElementById('sosmedYoutube').value, tiktok: document.getElementById('sosmedTiktok').value}}); showToast('✅ Tersimpan', 'success');
+            });
+
+            // ============================================================
+            // PERBAIKAN CRUD & TOMBOL YANG TIDAK BERFUNGSI (Bagian Lanjutan)
+            // ============================================================
+
+            function renderSlideList() {
+                const container = document.getElementById('slideList');
+                if (!container) return;
+                const slides = loadSlides();
+                if (slides.length === 0) {
+                    container.innerHTML = '<p class="text-muted">Belum ada slide. Tambahkan sekarang!</p>';
+                    return;
+                }
+                let html = '';
+                slides.forEach((s, idx) => {
+                    const imgHtml = s.image ? `<img src="${s.image}" />` : `<i class="fas fa-image"></i>`;
+                    html += `
+                        <div class="slide-item">
+                            <div class="slide-img">${imgHtml}</div>
+                            <div class="slide-body">
+                                <h4>${s.title || 'Slide ' + (idx+1)}</h4>
+                                <p>${s.description || ''}</p>
+                            </div>
+                            <div class="slide-actions">
+                                <button class="btn-sm btn-sm-warning edit-slide-btn" data-id="${s.id}"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn-sm btn-sm-danger delete-slide-btn" data-id="${s.id}"><i class="fas fa-trash"></i> Hapus</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+                container.querySelectorAll('.edit-slide-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        const slides = loadSlides();
+                        const slide = slides.find(s => s.id === id);
+                        if (slide) openSlideModal(slide);
+                    });
+                });
+                container.querySelectorAll('.delete-slide-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        if (!confirm('Hapus slide ini?')) return;
+                        const id = parseInt(this.dataset.id);
+                        let slides = loadSlides().filter(s => s.id !== id);
+                        saveSlides(slides);
+                        renderSlideList();
+                        showToast('Slide dihapus.', 'info');
+                    });
+                });
+            }
+
+            function renderFaqList() {
+                const container = document.getElementById('faqList');
+                if (!container) return;
+                const faqs = loadFaq();
+                if (faqs.length === 0) {
+                    container.innerHTML = '<p class="text-muted">Belum ada FAQ.</p>';
+                    return;
+                }
+                let html = '';
+                faqs.forEach((f, idx) => {
+                    html += `
+                        <div class="faq-item-admin">
+                            <div>
+                                <strong>${f.question || 'Pertanyaan '+(idx+1)}</strong><br>
+                                <small class="text-muted">${f.answer || ''}</small>
+                            </div>
+                            <div class="faq-actions">
+                                <button class="btn-sm btn-sm-warning edit-faq-btn" data-id="${f.id}"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn-sm btn-sm-danger delete-faq-btn" data-id="${f.id}"><i class="fas fa-trash"></i> Hapus</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+                container.querySelectorAll('.edit-faq-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        const faqs = loadFaq();
+                        const faq = faqs.find(f => f.id === id);
+                        if (faq) openFaqModal(faq);
+                    });
+                });
+                container.querySelectorAll('.delete-faq-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        if (!confirm('Hapus FAQ ini?')) return;
+                        const id = parseInt(this.dataset.id);
+                        let faqs = loadFaq().filter(f => f.id !== id);
+                        saveFaq(faqs);
+                        renderFaqList();
+                        showToast('FAQ dihapus.', 'info');
+                    });
+                });
+            }
+
+            function renderFeatureList() {
+                const container = document.getElementById('featureList');
+                if (!container) return;
+                const features = loadFeatures();
+                if (features.length === 0) {
+                    container.innerHTML = '<p class="text-muted">Belum ada keunggulan.</p>';
+                    return;
+                }
+                let html = '';
+                features.forEach((f, idx) => {
+                    html += `
+                        <div class="feature-item-admin">
+                            <div>
+                                <strong>${f.title || 'Keunggulan '+(idx+1)}</strong><br>
+                                <small class="text-muted">${f.description || ''}</small>
+                            </div>
+                            <div class="feature-actions">
+                                <button class="btn-sm btn-sm-warning edit-feature-btn" data-id="${f.id}"><i class="fas fa-edit"></i> Edit</button>
+                                <button class="btn-sm btn-sm-danger delete-feature-btn" data-id="${f.id}"><i class="fas fa-trash"></i> Hapus</button>
+                            </div>
+                        </div>
+                    `;
+                });
+                container.innerHTML = html;
+
+                container.querySelectorAll('.edit-feature-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        const id = parseInt(this.dataset.id);
+                        const features = loadFeatures();
+                        const feat = features.find(f => f.id === id);
+                        if (feat) openFeatureModal(feat);
+                    });
+                });
+                container.querySelectorAll('.delete-feature-btn').forEach(btn => {
+                    btn.addEventListener('click', function() {
+                        if (!confirm('Hapus keunggulan ini?')) return;
+                        const id = parseInt(this.dataset.id);
+                        let features = loadFeatures().filter(f => f.id !== id);
+                        saveFeatures(features);
+                        renderFeatureList();
+                        showToast('Keunggulan dihapus.', 'info');
+                    });
+                });
+            }
+
+            function openSlideModal(slide = null) {
+                const isEdit = !!slide;
+                const title = isEdit ? 'Edit Slide' : 'Tambah Slide';
+                const html = `
+                    <h3><i class="fas fa-image" style="color:var(--gold-accent);"></i> ${title}</h3>
+                    <div class="form-group">
+                        <label>Judul Slide</label>
+                        <input type="text" id="slideTitle" value="${isEdit ? slide.title : ''}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi</label>
+                        <textarea id="slideDesc" rows="3">${isEdit ? slide.description : ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>URL Gambar (atau upload)</label>
+                        <div class="upload-box">
+                            <input type="file" id="slideImageFile" accept="image/*" />
+                            <input type="text" id="slideImageUrl" value="${isEdit ? slide.image : ''}" placeholder="https://... atau data:image..." />
+                            <img id="slideImagePreview" class="upload-preview-img ${isEdit && slide.image ? 'show' : ''}" src="${isEdit ? slide.image : ''}" alt="Preview" />
+                        </div>
+                    </div>
+                    <button class="btn-submit" id="saveSlideBtn">Simpan Slide</button>
+                    <button class="btn-submit" style="background:#e2e8f0;color:#333;margin-top:8px;" onclick="document.getElementById('modalClose').click();">Batal</button>
+                `;
+                openModal(html);
+
+                const fileInput = document.getElementById('slideImageFile');
+                const urlInput = document.getElementById('slideImageUrl');
+                const preview = document.getElementById('slideImagePreview');
+                fileInput.addEventListener('change', function(e) {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = function(ev) {
+                            preview.src = ev.target.result;
+                            preview.classList.add('show');
+                            urlInput.value = ev.target.result;
+                        };
+                        reader.readAsDataURL(file);
+                    }
+                });
+                urlInput.addEventListener('input', function() {
+                    if (this.value) {
+                        preview.src = this.value;
+                        preview.classList.add('show');
+                    } else {
+                        preview.classList.remove('show');
+                    }
+                });
+
+                document.getElementById('saveSlideBtn').addEventListener('click', function() {
+                    const title = document.getElementById('slideTitle').value.trim();
+                    const description = document.getElementById('slideDesc').value.trim();
+                    const image = document.getElementById('slideImageUrl').value.trim();
+                    if (!title) { showToast('Judul wajib diisi.', 'error'); return; }
+
+                    let slides = loadSlides();
+                    if (isEdit) {
+                        const target = slides.find(s => s.id === slide.id);
+                        if (target) {
+                            target.title = title;
+                            target.description = description;
+                            target.image = image || target.image;
+                        }
+                    } else {
+                        slides.push({
+                            id: Date.now(),
+                            title: title,
+                            description: description,
+                            image: image || ''
+                        });
+                    }
+                    saveSlides(slides);
+                    renderSlideList();
+                    closeModal();
+                    showToast('Slide tersimpan.', 'success');
+                });
+            }
+
+            function openFaqModal(faq = null) {
+                const isEdit = !!faq;
+                const html = `
+                    <h3><i class="fas fa-question-circle" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit FAQ' : 'Tambah FAQ'}</h3>
+                    <div class="form-group">
+                        <label>Pertanyaan</label>
+                        <input type="text" id="faqQuestion" value="${isEdit ? faq.question : ''}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Jawaban</label>
+                        <textarea id="faqAnswer" rows="3">${isEdit ? faq.answer : ''}</textarea>
+                    </div>
+                    <button class="btn-submit" id="saveFaqBtn">Simpan FAQ</button>
+                    <button class="btn-submit" style="background:#e2e8f0;color:#333;margin-top:8px;" onclick="document.getElementById('modalClose').click();">Batal</button>
+                `;
+                openModal(html);
+                document.getElementById('saveFaqBtn').addEventListener('click', function() {
+                    const question = document.getElementById('faqQuestion').value.trim();
+                    const answer = document.getElementById('faqAnswer').value.trim();
+                    if (!question || !answer) { showToast('Pertanyaan dan jawaban wajib diisi.', 'error'); return; }
+
+                    let faqs = loadFaq();
+                    if (isEdit) {
+                        const target = faqs.find(f => f.id === faq.id);
+                        if (target) { target.question = question; target.answer = answer; }
+                    } else {
+                        faqs.push({ id: Date.now(), question: question, answer: answer });
+                    }
+                    saveFaq(faqs);
+                    renderFaqList();
+                    closeModal();
+                    showToast('FAQ tersimpan.', 'success');
+                });
+            }
+
+            function openFeatureModal(feature = null) {
+                const isEdit = !!feature;
+                const html = `
+                    <h3><i class="fas fa-star" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit Keunggulan' : 'Tambah Keunggulan'}</h3>
+                    <div class="form-group">
+                        <label>Judul</label>
+                        <input type="text" id="featureTitle" value="${isEdit ? feature.title : ''}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Deskripsi</label>
+                        <textarea id="featureDesc" rows="3">${isEdit ? feature.description : ''}</textarea>
+                    </div>
+                    <button class="btn-submit" id="saveFeatureBtn">Simpan Keunggulan</button>
+                    <button class="btn-submit" style="background:#e2e8f0;color:#333;margin-top:8px;" onclick="document.getElementById('modalClose').click();">Batal</button>
+                `;
+                openModal(html);
+                document.getElementById('saveFeatureBtn').addEventListener('click', function() {
+                    const title = document.getElementById('featureTitle').value.trim();
+                    const description = document.getElementById('featureDesc').value.trim();
+                    if (!title || !description) { showToast('Judul dan deskripsi wajib diisi.', 'error'); return; }
+
+                    let features = loadFeatures();
+                    if (isEdit) {
+                        const target = features.find(f => f.id === feature.id);
+                        if (target) { target.title = title; target.description = description; }
+                    } else {
+                        features.push({ id: Date.now(), title: title, description: description });
+                    }
+                    saveFeatures(features);
+                    renderFeatureList();
+                    closeModal();
+                    showToast('Keunggulan tersimpan.', 'success');
+                });
+            }
+
+            function openMemberModal(member = null) {
+                const isEdit = !!member;
+                const title = isEdit ? 'Edit Member' : 'Tambah Member';
+                const html = `
+                    <h3><i class="fas fa-user" style="color:var(--gold-accent);"></i> ${title}</h3>
+                    <div class="form-group">
+                        <label>Nama Lengkap</label>
+                        <input type="text" id="memName" value="${isEdit ? member.name : ''}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Username</label>
+                        <input type="text" id="memUsername" value="${isEdit ? member.username : ''}" ${isEdit ? 'readonly' : ''} />
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="memEmail" value="${isEdit ? member.email : ''}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Password ${isEdit ? '(kosongkan jika tidak diubah)' : ''}</label>
+                        <input type="password" id="memPassword" placeholder="${isEdit ? '••••••••' : 'Minimal 6 karakter'}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Alamat</label>
+                        <textarea id="memAddress" rows="2">${isEdit ? member.address : ''}</textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Sponsor ID</label>
+                        <input type="text" id="memSponsor" value="${isEdit ? member.sponsor_id || '' : ''}" />
+                    </div>
+                    <div class="form-group">
+                        <label>Posisi (Left / Right)</label>
+                        <select id="memPosition">
+                            <option value="">Pilih</option>
+                            <option value="left" ${isEdit && member.position === 'left' ? 'selected' : ''}>Kiri</option>
+                            <option value="right" ${isEdit && member.position === 'right' ? 'selected' : ''}>Kanan</option>
+                        </select>
+                    </div>
+                    <button class="btn-submit" id="saveMemberBtn">${isEdit ? 'Update' : 'Tambah'} Member</button>
+                    <button class="btn-submit" style="background:#e2e8f0;color:#333;margin-top:8px;" onclick="document.getElementById('modalClose').click();">Batal</button>
+                `;
+                openModal(html);
+
+                document.getElementById('saveMemberBtn').addEventListener('click', function() {
+                    const name = document.getElementById('memName').value.trim();
+                    const username = document.getElementById('memUsername').value.trim();
+                    const email = document.getElementById('memEmail').value.trim();
+                    const password = document.getElementById('memPassword').value.trim();
+                    const address = document.getElementById('memAddress').value.trim();
+                    const sponsor = document.getElementById('memSponsor').value.trim();
+                    const position = document.getElementById('memPosition').value;
+
+                    if (!name || !username || !email) {
+                        showToast('Nama, username, dan email wajib diisi.', 'error');
+                        return;
+                    }
+                    if (!isEdit && (!password || password.length < 6)) {
+                        showToast('Password minimal 6 karakter.', 'error');
+                        return;
+                    }
+
+                    let users = loadUsers();
+                    if (!isEdit) {
+                        if (users.some(u => u.username === username)) {
+                            showToast('Username sudah digunakan.', 'error');
+                            return;
+                        }
+                        if (users.some(u => u.email === email)) {
+                            showToast('Email sudah digunakan.', 'error');
+                            return;
+                        }
+                    } else {
+                        if (username !== member.username && users.some(u => u.username === username)) {
+                            showToast('Username sudah digunakan.', 'error');
+                            return;
+                        }
+                        if (email !== member.email && users.some(u => u.email === email)) {
+                            showToast('Email sudah digunakan.', 'error');
+                            return;
+                        }
+                    }
+
+                    if (isEdit) {
+                        const target = users.find(u => u.id === member.id);
+                        if (target) {
+                            target.name = name;
+                            target.username = username;
+                            target.email = email;
+                            if (password) target.password = password;
+                            target.address = address;
+                            target.sponsor_id = sponsor || null;
+                            target.position = position || null;
+                        }
+                    } else {
+                        users.push({
+                            id: getNextId(users),
+                            name: name,
+                            username: username,
+                            email: email,
+                            password: password,
+                            role: 'member',
+                            status: 'free',
+                            wallet: 0,
+                            address: address,
+                            sponsor_id: sponsor || null,
+                            position: position || null,
+                            transactions: [],
+                            orders: [],
+                            purchase_history: []
+                        });
+                    }
+                    saveUsers(users);
+                    renderAdminMembers();
+                    renderDashboard();
+                    closeModal();
+                    showToast(isEdit ? 'Member diperbarui.' : 'Member berhasil ditambahkan.', 'success');
+                });
+            }
+
+            // ---------- SEED DEMO DATA ----------
+            function seedDemoData() {
+                if (!confirm('Ini akan menambahkan data contoh member, produk, dan transaksi. Lanjutkan?')) return;
+
+                let users = loadUsers();
+                let products = loadProducts();
+                let orders = loadOrders();
+                let transactions = loadTransactions();
+
+                const demoMembers = [
+                    { name: 'Budi Santoso', username: 'budi', email: 'budi@mail.com', password: '123456', address: 'Jakarta', sponsor_id: null, position: 'left', status: 'verified', wallet: 1000000 },
+                    { name: 'Siti Aminah', username: 'siti', email: 'siti@mail.com', password: '123456', address: 'Bandung', sponsor_id: 2, position: 'right', status: 'verified', wallet: 500000 },
+                    { name: 'Andi Pratama', username: 'andi', email: 'andi@mail.com', password: '123456', address: 'Surabaya', sponsor_id: 2, position: 'left', status: 'free', wallet: 0 },
+                    { name: 'Rina Wati', username: 'rina', email: 'rina@mail.com', password: '123456', address: 'Yogyakarta', sponsor_id: 3, position: 'right', status: 'pending', wallet: 0 },
+                    { name: 'Joko Widodo', username: 'joko', email: 'joko@mail.com', password: '123456', address: 'Semarang', sponsor_id: 3, position: 'left', status: 'verified', wallet: 200000 }
+                ];
+
+                let maxId = Math.max(...users.map(u => u.id), 0);
+                demoMembers.forEach((m, i) => {
+                    const id = maxId + i + 1;
+                    if (!users.some(u => u.email === m.email)) {
+                        users.push({
+                            id: id,
+                            ...m,
+                            role: 'member',
+                            transactions: [],
+                            orders: [],
+                            purchase_history: []
+                        });
+                    }
+                });
+
+                if (products.length === 0) {
+                    const demoProducts = [
+                        { name: 'Jeans Slim Fit', serial: 'SKU-001', price: 250000, original: 350000, tag: 'BEST SELLER', badgeColor: '#e74c3c', sizes: ['S','M','L','XL'], colors: ['Hitam','Biru','Abu'], stock: 50, image: '' },
+                        { name: 'Jaket Denim', serial: 'SKU-002', price: 450000, original: 600000, tag: 'NEW', badgeColor: '#2ecc71', sizes: ['M','L','XL'], colors: ['Biru Tua'], stock: 20, image: '' },
+                        { name: 'Topi Baseball', serial: 'SKU-003', price: 75000, original: 100000, tag: 'AKSESORIS', badgeColor: '#3498db', sizes: ['All'], colors: ['Hitam','Putih'], stock: 100, image: '' }
+                    ];
+                    demoProducts.forEach(p => {
+                        products.push({ id: getNextId(products), ...p });
+                    });
+                }
+
+                if (transactions.length < 3) {
+                    const demoTrans = [
+                        { id: getNextId(transactions), user_id: 2, type: 'deposit', amount: 500000, method: 'BCA', status: 'success', date: Date.now() - 86400000, proof_image: '' },
+                        { id: getNextId(transactions), user_id: 3, type: 'order', amount: 250000, status: 'pending', date: Date.now() - 3600000, items: [{name: 'Jeans Slim Fit'}] },
+                        { id: getNextId(transactions), user_id: 6, type: 'withdraw', amount: 100000, account: 'BCA 1234567890', status: 'pending', date: Date.now() }
+                    ];
+                    demoTrans.forEach(t => transactions.push(t));
+                    users.forEach(u => {
+                        if (u.id === 2) u.wallet += 500000;
+                    });
+                }
+
+                saveUsers(users);
+                saveProducts(products);
+                saveOrders(orders);
+                saveTransactions(transactions);
+                renderDashboard();
+                renderAdminMembers();
+                renderAdminProducts();
+                renderVerification();
+                renderDeposit();
+                renderWithdraw();
+                renderOrders();
+                showToast('Data demo berhasil ditambahkan.', 'success');
+            }
+
+            // ---------- RESET ALL DATA ----------
+            function resetAllData() {
+                if (!confirm('⚠️ PERINGATAN: Ini akan menghapus SEMUA data member, produk, transaksi, order, dan pengaturan! Lanjutkan?')) return;
+                if (!confirm('Konfirmasi kedua: Anda yakin ingin mereset semua data?')) return;
+
+                localStorage.removeItem(DB_KEY);
+                localStorage.removeItem(PRODUCT_KEY);
+                localStorage.removeItem(ORDER_KEY);
+                localStorage.removeItem(TRANSACTION_KEY);
+                localStorage.removeItem(BANK_KEY);
+                localStorage.removeItem(SLIDES_KEY);
+                localStorage.removeItem(FAQ_KEY);
+                localStorage.removeItem(FEATURES_KEY);
+                const defaultAdmin = { id: 1, username: 'admin', email: 'admin@mlm.com', password: 'admin123', role: 'admin', status: 'verified' };
+                saveUsers([defaultAdmin]);
+                localStorage.removeItem(SETTINGS_KEY);
+                localStorage.removeItem(ABOUT_KEY);
+                localStorage.removeItem(FOOTER_KEY);
+
+                renderDashboard();
+                renderAdminMembers();
+                renderAdminProducts();
+                renderVerification();
+                renderDeposit();
+                renderWithdraw();
+                renderOrders();
+                renderPageSettings();
+                loadSettingsToForm();
+                renderBankSettings();
+                showToast('Semua data telah direset.', 'info');
+            }
+
+            // ---------- EVENT LISTENER UNTUK TOMBOL YANG HILANG ----------
+            document.addEventListener('DOMContentLoaded', function() {
+                const addMemberBtn = document.getElementById('addMemberBtn');
+                if (addMemberBtn) addMemberBtn.addEventListener('click', () => openMemberModal());
+
+                const refreshBtn = document.getElementById('refreshBtn');
+                if (refreshBtn) refreshBtn.addEventListener('click', () => { renderAdminMembers(); showToast('🔄 Data member diperbarui.', 'info'); });
+
+                const seedDemoBtn = document.getElementById('seedDemoBtn');
+                if (seedDemoBtn) seedDemoBtn.addEventListener('click', seedDemoData);
+
+                const resetAllBtn = document.getElementById('resetAllBtn');
+                if (resetAllBtn) resetAllBtn.addEventListener('click', resetAllData);
+
+                const addProductBtn = document.getElementById('addProductBtn');
+                if (addProductBtn) addProductBtn.addEventListener('click', () => openProductModal());
+
+                // Event listener untuk edit produk (delegasi)
+                const productTableBody = document.getElementById('adminProductTableBody');
+                if (productTableBody) {
+                    productTableBody.addEventListener('click', function(e) {
+                        const target = e.target.closest('.edit-product-btn');
+                        if (target) {
+                            const id = parseInt(target.dataset.id);
+                            const products = loadProducts();
+                            const product = products.find(p => p.id === id);
+                            if (product) openProductModal(product);
+                        }
+                    });
+                }
+
+                const refreshVerifBtn = document.getElementById('refreshVerifBtn');
+                if (refreshVerifBtn) refreshVerifBtn.addEventListener('click', () => { renderVerification(); showToast('🔄 Verifikasi diperbarui.', 'info'); });
+
+                const refreshOrdersBtn = document.getElementById('refreshOrdersBtn');
+                if (refreshOrdersBtn) refreshOrdersBtn.addEventListener('click', () => { renderOrders(); showToast('🔄 Orders diperbarui.', 'info'); });
+
+                const refreshSlidesBtn = document.getElementById('refreshSlidesBtn');
+                if (refreshSlidesBtn) refreshSlidesBtn.addEventListener('click', () => { renderSlideList(); showToast('🔄 Slide diperbarui.', 'info'); });
+
+                const addSlideBtn = document.getElementById('addSlideBtn');
+                if (addSlideBtn) addSlideBtn.addEventListener('click', () => openSlideModal());
+
+                const addFaqBtn = document.getElementById('addFaqBtn');
+                if (addFaqBtn) addFaqBtn.addEventListener('click', () => openFaqModal());
+
+                const addFeatureBtn = document.getElementById('addFeatureBtn');
+                if (addFeatureBtn) addFeatureBtn.addEventListener('click', () => openFeatureModal());
+
+                const adminTableBody = document.getElementById('adminTableBody');
+                if (adminTableBody) {
+                    adminTableBody.addEventListener('click', function(e) {
+                        const target = e.target.closest('.edit-member-btn');
+                        if (target) {
+                            const id = parseInt(target.dataset.id);
+                            const users = loadUsers();
+                            const member = users.find(u => u.id === id);
+                            if (member) openMemberModal(member);
+                        }
+                    });
+                }
             });
 
             // LOGIN
