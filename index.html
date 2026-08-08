@@ -6,14 +6,16 @@
     <title>HEDTRO JEANS · Premium Denim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
     <style>
-        /* CSS SAMA SEPERTI SEBELUMNYA – saya singkat agar tidak kepanjangan */
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2;
             --gold-accent: #c9a84c; --gold-light: #e8d5a3; --cream: #f7f4ef; --white: #ffffff;
-            --shadow: 0 4px 20px rgba(0,0,0,0.08); --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
-            --radius: 24px; --radius-sm: 12px; --transition: 0.3s cubic-bezier(0.4,0,0.2,1);
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08); --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15);
+            --radius: 24px; --radius-sm: 12px; --transition: 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }
         html { scroll-behavior: smooth; }
         body { font-family: 'Inter', -apple-system, sans-serif; background: var(--cream); color: var(--denim-dark); overflow-x: hidden; padding-top: 80px; }
@@ -24,7 +26,6 @@
         ::-webkit-scrollbar-track { background: var(--cream); }
         ::-webkit-scrollbar-thumb { background: var(--denim-blue); border-radius: 10px; }
 
-        /* NAVBAR */
         .navbar {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
             background: var(--denim-dark); padding: 10px 28px;
@@ -33,24 +34,23 @@
         }
         .navbar .logo { display: flex; align-items: center; gap: 8px; color: var(--white); font-weight: 800; font-size: 1.4rem; flex-shrink: 0; }
         .navbar .logo i { color: var(--gold-accent); font-size: 1.6rem; }
-        .navbar .logo img { height: 40px; width: auto; object-fit: contain; }
         .navbar .logo span { font-weight: 300; color: var(--gold-light); font-size: 0.75rem; margin-left: 2px; }
         .nav-menu { display: flex; align-items: center; gap: 4px; list-style: none; }
         .nav-menu li a { color: var(--cream); font-size: 0.78rem; font-weight: 500; padding: 8px 14px; border-radius: 60px; transition: var(--transition); display: flex; align-items: center; gap: 6px; }
-        .nav-menu li a:hover, .nav-menu li a.active { background: rgba(201,168,76,0.12); color: var(--gold-accent); }
+        .nav-menu li a:hover, .nav-menu li a.active { background: rgba(201, 168, 76, 0.12); color: var(--gold-accent); }
         .nav-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
-        .nav-actions .search-box { display: flex; align-items: center; background: rgba(255,255,255,0.06); border-radius: 60px; padding: 4px 6px 4px 16px; border: 1px solid rgba(255,255,255,0.06); transition: var(--transition); }
-        .nav-actions .search-box:focus-within { border-color: var(--gold-accent); background: rgba(255,255,255,0.1); }
+        .nav-actions .search-box { display: flex; align-items: center; background: rgba(255, 255, 255, 0.06); border-radius: 60px; padding: 4px 6px 4px 16px; border: 1px solid rgba(255, 255, 255, 0.06); transition: var(--transition); }
+        .nav-actions .search-box:focus-within { border-color: var(--gold-accent); background: rgba(255, 255, 255, 0.1); }
         .nav-actions .search-box input { background: transparent; border: none; color: var(--cream); font-size: 0.8rem; padding: 6px 0; width: 130px; outline: none; }
-        .nav-actions .search-box input::placeholder { color: rgba(255,255,255,0.3); }
-        .nav-actions .search-box button { color: rgba(255,255,255,0.4); padding: 6px 12px; transition: var(--transition); font-size: 0.9rem; }
+        .nav-actions .search-box input::placeholder { color: rgba(255, 255, 255, 0.3); }
+        .nav-actions .search-box button { color: rgba(255, 255, 255, 0.4); padding: 6px 12px; transition: var(--transition); font-size: 0.9rem; }
         .nav-actions .search-box button:hover { color: var(--gold-accent); }
         .nav-actions .cart-btn { color: var(--cream); font-size: 1.1rem; padding: 8px 12px; border-radius: 60px; transition: var(--transition); position: relative; }
         .nav-actions .cart-btn .badge { position: absolute; top: 0; right: 0; background: var(--gold-accent); color: var(--denim-dark); font-size: 0.6rem; font-weight: 700; width: 18px; height: 18px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
         .nav-right { display: flex; align-items: center; gap: 8px; flex-shrink: 0; }
         .btn-nav { padding: 8px 18px; border-radius: 60px; font-weight: 600; font-size: 0.8rem; transition: var(--transition); flex-shrink: 0; }
-        .btn-nav-outline { background: transparent; border: 1.5px solid rgba(255,255,255,0.2); color: var(--cream); }
-        .btn-nav-outline:hover { background: rgba(255,255,255,0.1); }
+        .btn-nav-outline { background: transparent; border: 1.5px solid rgba(255, 255, 255, 0.2); color: var(--cream); }
+        .btn-nav-outline:hover { background: rgba(255, 255, 255, 0.1); }
         .btn-nav-gold { background: var(--gold-accent); color: var(--denim-dark); }
         .btn-nav-gold:hover { background: #b8963a; transform: scale(0.97); }
 
@@ -59,26 +59,24 @@
         .burger-btn.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
         .burger-btn.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .burger-btn.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
-        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.5); z-index: 999; opacity: 0; pointer-events: none; transition: var(--transition); }
+        .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999; opacity: 0; pointer-events: none; transition: var(--transition); }
         .sidebar-overlay.active { opacity: 1; pointer-events: all; }
         .sidebar { display: none; position: fixed; top: 0; left: -320px; width: 300px; height: 100%; background: var(--denim-dark); z-index: 1000; padding: 24px 20px; transition: var(--transition); overflow-y: auto; border-right: 3px solid var(--gold-accent); flex-direction: column; gap: 4px; }
         .sidebar.open { left: 0; }
-        .sidebar .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid rgba(255,255,255,0.08); margin-bottom: 10px; }
-        .sidebar .sidebar-header .logo-side { color: var(--white); font-weight: 800; font-size: 1.2rem; display:flex; align-items:center; gap:8px; }
-        .sidebar .sidebar-header .logo-side img { height:32px; width:auto; object-fit:contain; }
+        .sidebar .sidebar-header { display: flex; align-items: center; justify-content: space-between; padding-bottom: 16px; border-bottom: 1px solid rgba(255, 255, 255, 0.08); margin-bottom: 10px; }
+        .sidebar .sidebar-header .logo-side { color: var(--white); font-weight: 800; font-size: 1.2rem; }
         .sidebar .sidebar-header .logo-side i { color: var(--gold-accent); }
         .sidebar .sidebar-header .close-side { color: var(--cream); font-size: 1.6rem; cursor: pointer; }
         .sidebar .menu-item { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 12px; color: var(--cream); font-weight: 500; font-size: 0.9rem; transition: var(--transition); cursor: pointer; }
-        .sidebar .menu-item:hover { background: rgba(255,255,255,0.08); }
+        .sidebar .menu-item:hover { background: rgba(255, 255, 255, 0.08); }
         .sidebar .menu-item i { width: 22px; color: var(--gold-accent); }
-        .sidebar .menu-item.active { background: rgba(201,168,76,0.15); color: var(--gold-accent); }
-        .sidebar .menu-divider { height: 1px; background: rgba(255,255,255,0.06); margin: 6px 0; }
+        .sidebar .menu-item.active { background: rgba(201, 168, 76, 0.15); color: var(--gold-accent); }
+        .sidebar .menu-divider { height: 1px; background: rgba(255, 255, 255, 0.06); margin: 6px 0; }
         .search-icon-hp { display: none; color: var(--cream); font-size: 1.1rem; padding: 8px 10px; border-radius: 60px; transition: var(--transition); cursor: pointer; }
         .cart-hp { display: none; color: var(--cream); font-size: 1.1rem; padding: 8px 10px; border-radius: 60px; transition: var(--transition); position: relative; cursor: pointer; }
         .cart-hp .badge { position: absolute; top: 0; right: 0; background: var(--gold-accent); color: var(--denim-dark); font-size: 0.55rem; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
-        /* POPUP */
-        .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
+        .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
         .popup-overlay.show { display: flex; }
         .popup-overlay .popup-box { background: var(--white); max-width: 560px; width: 100%; max-height: 85vh; overflow-y: auto; border-radius: var(--radius); padding: 28px 30px 32px; box-shadow: var(--shadow-lg); position: relative; animation: popupIn 0.3s ease; }
         @keyframes popupIn { from { transform: scale(0.9) translateY(20px); opacity: 0; } to { transform: scale(1) translateY(0); opacity: 1; } }
@@ -99,7 +97,7 @@
         .product-detail-popup .popup-image img { width: 100%; height: 100%; object-fit: cover; }
         .product-detail-popup .popup-image .popup-icon-wrap { transition: transform 0.3s ease; font-size: 5rem; }
         .product-detail-popup .popup-image.zoomed .popup-icon-wrap { transform: scale(1.8); }
-        .product-detail-popup .popup-image .zoom-hint { position: absolute; bottom: 12px; right: 12px; background: rgba(0,0,0,0.5); color: #fff; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; backdrop-filter: blur(4px); }
+        .product-detail-popup .popup-image .zoom-hint { position: absolute; bottom: 12px; right: 12px; background: rgba(0, 0, 0, 0.5); color: #fff; padding: 4px 12px; border-radius: 40px; font-size: 0.7rem; backdrop-filter: blur(4px); }
         .product-detail-popup .popup-info h2 { font-size: 1.2rem; font-weight: 700; color: var(--denim-dark); margin-bottom: 4px; }
         .product-detail-popup .popup-info .popup-tag { display: inline-block; background: var(--gold-accent); color: var(--denim-dark); font-size: 0.6rem; font-weight: 700; padding: 2px 14px; border-radius: 40px; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; }
         .product-detail-popup .popup-info .popup-price { font-size: 1.3rem; font-weight: 700; color: var(--denim-blue); }
@@ -119,27 +117,28 @@
         .toast-item.info { border-left-color: var(--gold-accent); }
         .toast-item .toast-icon { font-size: 1.2rem; flex-shrink: 0; }
         .toast-item .toast-msg { font-size: 0.9rem; flex: 1; }
-        .toast-item .toast-close { color: rgba(255,255,255,0.4); font-size: 1.2rem; cursor: pointer; transition: var(--transition); }
+        .toast-item .toast-close { color: rgba(255, 255, 255, 0.4); font-size: 1.2rem; cursor: pointer; transition: var(--transition); }
         @keyframes slideInRight { from { opacity: 0; transform: translateX(60px) scale(0.9); } to { opacity: 1; transform: translateX(0) scale(1); } }
         @keyframes slideOutRight { from { opacity: 1; transform: translateX(0) scale(1); } to { opacity: 0; transform: translateX(60px) scale(0.9); } }
         .toast-item.removing { animation: slideOutRight 0.3s ease forwards; }
 
-        /* CAROUSEL */
         .carousel-section { position: relative; width: 100%; height: 70vh; min-height: 400px; overflow: hidden; background: var(--denim-dark); border-radius: var(--radius); margin-bottom: 20px; margin-top: 8px; touch-action: pan-y; user-select: none; }
         @media (max-width: 768px) { .carousel-section { border-radius: 0 !important; margin-top: 0; height: 75vh; } }
-        .carousel-track { display: flex; height: 100%; transition: transform 0.8s cubic-bezier(0.25,0.46,0.45,0.94); will-change: transform; }
+        .carousel-track { display: flex; height: 100%; transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; }
         .carousel-slide { min-width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 60px; background-size: cover; background-position: center; position: relative; flex-direction: column; }
-        .carousel-slide .overlay-dark { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11,26,43,0.6) 0%, rgba(11,26,43,0.2) 100%); z-index: 1; }
+        .carousel-slide .overlay-dark { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11, 26, 43, 0.6) 0%, rgba(11, 26, 43, 0.2) 100%); z-index: 1; }
+        .slide-image { font-size: 10rem; color: var(--white); opacity: 0.2; position: absolute; right: -20px; bottom: -30px; z-index: 1; transform: rotate(-10deg); }
+        .slide-image-left { font-size: 8rem; color: var(--white); opacity: 0.15; position: absolute; left: -20px; top: -10px; z-index: 1; transform: rotate(15deg); }
         .carousel-slide .slide-content { text-align: center; color: var(--white); z-index: 2; max-width: 700px; position: relative; }
-        .carousel-slide .slide-content h2 { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; text-shadow: 0 4px 30px rgba(0,0,0,0.3); }
-        .carousel-slide .slide-content p { font-size: 1.2rem; opacity: 0.9; color: var(--gold-light); text-shadow: 0 2px 20px rgba(0,0,0,0.2); }
+        .carousel-slide .slide-content h2 { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
+        .carousel-slide .slide-content p { font-size: 1.2rem; opacity: 0.9; color: var(--gold-light); text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); }
         .carousel-slide .slide-content .btn-slide { display: inline-block; margin-top: 20px; background: var(--gold-accent); color: var(--denim-dark); padding: 14px 44px; border-radius: 60px; font-weight: 700; font-size: 1rem; transition: var(--transition); }
         .carousel-slide .slide-content .btn-slide:hover { transform: scale(1.05); background: #b8963a; }
-        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255,255,255,0.08); backdrop-filter: blur(12px); color: #fff; border: 1px solid rgba(255,255,255,0.1); width: 50px; height: 50px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; z-index: 10; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); width: 50px; height: 50px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; z-index: 10; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
         .carousel-btn:hover { background: var(--gold-accent); border-color: var(--gold-accent); color: var(--denim-dark); }
         .carousel-btn.prev { left: 20px; } .carousel-btn.next { right: 20px; }
         .carousel-dots { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 10; }
-        .carousel-dots .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255,255,255,0.2); cursor: pointer; transition: var(--transition); border: 2px solid transparent; }
+        .carousel-dots .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: var(--transition); border: 2px solid transparent; }
         .carousel-dots .dot.active { background: var(--gold-accent); border-color: var(--gold-light); transform: scale(1.15); }
 
         .section-title { font-size: 1.6rem; font-weight: 700; color: var(--denim-dark); padding: 32px 0 16px; display: flex; align-items: center; gap: 12px; }
@@ -159,6 +158,7 @@
         .product-carousel .product-card .body .btn-group { display: flex; gap: 8px; margin-top: 10px; }
         .product-carousel .product-card .body .btn-group .btn-detail { flex: 1; background: var(--denim-dark); color: #fff; padding: 5px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 600; text-align: center; }
         .product-carousel .product-card .body .btn-group .btn-buy { flex: 1; background: var(--gold-accent); color: var(--denim-dark); padding: 5px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 700; text-align: center; }
+
         .carousel-scroll-btn { position: absolute; top: 50%; transform: translateY(-50%); background: var(--white); color: var(--denim-dark); border: 1px solid var(--denim-light); width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 5; box-shadow: var(--shadow); transition: var(--transition); display: flex; align-items: center; justify-content: center; }
         .carousel-scroll-btn.left { left: 8px; } .carousel-scroll-btn.right { right: 8px; }
 
@@ -203,11 +203,11 @@
         .footer { background: var(--denim-dark); color: var(--cream); padding: 40px 28px 20px; border-top: 3px solid var(--gold-accent); margin-top: 20px; }
         .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.2fr; gap: 30px; max-width: 1280px; margin: 0 auto 30px; }
         .footer-col h4 { font-size: 0.9rem; font-weight: 700; color: var(--gold-light); margin-bottom: 12px; }
-        .footer-col p, .footer-col li { font-size: 0.8rem; color: rgba(255,255,255,0.6); line-height: 1.8; }
+        .footer-col p, .footer-col li { font-size: 0.8rem; color: rgba(255, 255, 255, 0.6); line-height: 1.8; }
         .footer-col ul { list-style: none; }
         .footer-col .social-icons { display: flex; gap: 10px; margin-top: 8px; }
-        .footer-col .social-icons a { width: 36px; height: 36px; border-radius: 50%; background: rgba(255,255,255,0.06); display: flex; align-items: center; justify-content: center; color: rgba(255,255,255,0.5); transition: var(--transition); }
-        .footer-bottom { border-top: 1px solid rgba(255,255,255,0.06); padding-top: 16px; text-align: center; font-size: 0.75rem; color: rgba(255,255,255,0.3); max-width: 1280px; margin: 0 auto; }
+        .footer-col .social-icons a { width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.06); display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.5); transition: var(--transition); }
+        .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 16px; text-align: center; font-size: 0.75rem; color: rgba(255, 255, 255, 0.3); max-width: 1280px; margin: 0 auto; }
 
         @media (max-width: 768px) {
             body { padding-top: 64px; }
@@ -289,7 +289,6 @@
         <a href="register.html" class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</a>
     </nav>
 
-    <!-- POPUP SEARCH -->
     <div class="popup-overlay" id="searchPopup">
         <div class="popup-box">
             <button class="close-popup" id="closeSearchPopup">&times;</button>
@@ -303,21 +302,19 @@
         </div>
     </div>
 
-    <!-- POPUP TRACK -->
     <div class="popup-overlay" id="trackPopup">
         <div class="popup-box">
             <button class="close-popup" id="closeTrackPopup">&times;</button>
             <h3><i class="fas fa-truck" style="color:var(--gold-accent);"></i> Lacak Pesanan</h3>
-            <p class="sub">Masukkan nomor pesanan atau resi</p>
+            <p class="sub">Masukkan nomor pesanan Anda</p>
             <div class="popup-form">
-                <input type="text" id="trackInputPopup" placeholder="Contoh: ORD-123456 atau resi..." />
+                <input type="text" id="trackInputPopup" placeholder="Contoh: ORD-123456" />
                 <button id="trackBtnPopup"><i class="fas fa-search"></i> Lacak</button>
             </div>
             <div class="popup-result" id="trackResultPopup"></div>
         </div>
     </div>
 
-    <!-- POPUP CART -->
     <div class="popup-overlay" id="cartPopup">
         <div class="popup-box">
             <button class="close-popup" id="closeCartPopup">&times;</button>
@@ -328,7 +325,6 @@
         </div>
     </div>
 
-    <!-- POPUP DETAIL PRODUK -->
     <div class="popup-overlay product-detail-popup" id="productDetailPopup">
         <div class="popup-box">
             <button class="close-popup" id="closeDetailPopup">&times;</button>
@@ -358,7 +354,6 @@
 
     <div class="app-container" id="home">
 
-        <!-- CAROUSEL -->
         <section class="carousel-section" id="carouselSection">
             <div class="carousel-track" id="carouselTrack"></div>
             <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
@@ -366,7 +361,6 @@
             <div class="carousel-dots" id="carouselDots"></div>
         </section>
 
-        <!-- PRODUK FAVORIT (Carousel) -->
         <h2 class="section-title"><i class="fas fa-heart" style="color:var(--gold-accent);"></i> PRODUK FAVORIT</h2>
         <div class="product-carousel-wrapper">
             <button class="carousel-scroll-btn left" id="favScrollLeft"><i class="fas fa-chevron-left"></i></button>
@@ -374,31 +368,26 @@
             <div class="product-carousel" id="favoriteCarousel"></div>
         </div>
 
-        <!-- TOP TRENDING DENIM (Grid Semua Produk) -->
         <h2 class="section-title" id="products"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
         <div class="product-grid-wrapper">
             <div class="product-grid" id="productGrid"></div>
             <div class="pagination" id="pagination"></div>
         </div>
 
-        <!-- ABOUT -->
         <div class="about-section" id="about">
             <h2><i class="fas fa-info-circle"></i> Tentang Kami</h2>
             <div id="aboutContainer"></div>
         </div>
 
-        <!-- FAQ -->
         <div class="faq-section" id="faq">
             <h2><i class="fas fa-question-circle"></i> Pertanyaan yang Sering Diajukan</h2>
             <div id="faqContainer"></div>
         </div>
 
-        <!-- FEATURES -->
         <div class="features" id="featuresContainer"></div>
 
     </div>
 
-    <!-- FOOTER -->
     <footer class="footer" id="mainFooter">
         <div class="footer-grid">
             <div class="footer-col">
@@ -441,92 +430,241 @@
         (function() {
             'use strict';
 
-            const DB_KEY = 'hedtro_mlm_users';
-            const PRODUCT_KEY = 'hedtro_products';
-            const ORDER_KEY = 'hedtro_orders';
-            const TRANSACTION_KEY = 'hedtro_transactions';
-            const SESSION_KEY = 'mlm_session';
-            const SETTINGS_KEY = 'hedtro_settings';
+            // ========== GLOBAL STATE ==========
+            let allProducts = [];
+            let currentSlide = 0;
+            let slideInterval = null;
+            const track = document.getElementById('carouselTrack');
+            const dots = document.getElementById('carouselDots');
+            let cartItems = [];
+            let currentUserProfile = null;
 
-            function loadSettings() {
-                try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch(e) { return {}; }
-            }
-            function applyBrandSettings() {
-                const settings = loadSettings();
-                const brandName = settings.brandName || 'HEDTRO JEANS';
-                const brandLogo = settings.brandLogo || 'fa-tshirt';
-                const isImage = brandLogo && brandLogo.startsWith('data:image');
-                
-                document.querySelectorAll('#headerLogo, #sidebarLogo').forEach(el => {
-                    if (el) {
-                        if (isImage) {
-                            el.innerHTML = `<img src="${brandLogo}" alt="${brandName}" style="height:40px;width:auto;object-fit:contain;" />`;
-                        } else {
-                            const icon = el.querySelector('i');
-                            if (icon) icon.className = 'fas ' + brandLogo;
-                            const textSpan = el.querySelector('span');
-                            if (textSpan && textSpan.tagName === 'SPAN') {
-                                textSpan.innerText = brandName.replace('HEDTRO', '').trim();
-                            }
-                            if (!el.querySelector('span')) {
-                                el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
-                            }
-                        }
-                    }
-                });
-                document.querySelectorAll('.logo i').forEach(el => {
-                    if (!isImage) el.className = 'fas ' + brandLogo;
-                });
-            }
-
-            function loadUsers() { try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch(e) { return []; } }
-            function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-            function loadProductsFromDB() { try { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); } catch(e) { return []; } }
-            function saveProductsToDB(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-            function loadOrders() { try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); } catch(e) { return []; } }
-            function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
-            function loadTransactions() { try { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); } catch(e) { return []; } }
-            function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
-            function loadSlides() { try { return JSON.parse(localStorage.getItem('hedtro_slides') || '[]'); } catch(e) { return []; } }
-            function loadAbout() { try { return JSON.parse(localStorage.getItem('hedtro_about') || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}'); } catch(e) { return {title:'Tentang Kami', content:''}; } }
-            function loadFaq() { try { return JSON.parse(localStorage.getItem('hedtro_faq') || '[]'); } catch(e) { return []; } }
-            function loadFeatures() { try { return JSON.parse(localStorage.getItem('hedtro_features') || '[]'); } catch(e) { return []; } }
-            function loadFooter() { try { return JSON.parse(localStorage.getItem('hedtro_footer') || '{}'); } catch(e) { return {}; } }
-
-            function getSession() {
-                const s = localStorage.getItem(SESSION_KEY);
-                if (!s) return null;
-                try { return JSON.parse(s); } catch(e) { return null; }
-            }
-
-            function getNextId(arr) { return arr && arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
-
+            // ========== HELPER FUNCTIONS ==========
             function showToast(message, type = 'info', duration = 3000) {
                 const container = document.getElementById('toastContainer');
-                const icons = { success: 'fas fa-check-circle', error: 'fas fa-exclamation-circle', info: 'fas fa-info-circle' };
+                const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
                 const toast = document.createElement('div');
                 toast.className = `toast-item ${type}`;
-                toast.innerHTML = `<span class="toast-icon"><i class="${icons[type] || icons.info}"></i></span><span class="toast-msg">${message}</span><span class="toast-close">&times;</span>`;
+                toast.innerHTML = `<span class="toast-icon"><i class="fas ${icons[type] || icons.info}"></i></span><span class="toast-msg">${message}</span><span class="toast-close">&times;</span>`;
                 container.appendChild(toast);
                 toast.querySelector('.toast-close').addEventListener('click', () => toast.remove());
                 setTimeout(() => toast.remove(), duration);
             }
 
-            let allProducts = [];
-            function initProducts() {
-                const dbP = loadProductsFromDB();
-                if (dbP.length > 0) { allProducts = dbP; }
-                else {
-                    allProducts = [
-                        { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', favorite: true, stock: 45, serial: 'HDT-SERI-001', sizes: ['28','29','30','31','32'], colors: ['Indigo Blue Raw Denim','Black Stretch'], desc: 'Celana jeans premium dengan potongan slim-fit modern.', image: null },
-                        { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', favorite: true, stock: 30, serial: 'HDT-SERI-002', sizes: ['30','32','34'], colors: ['Raw Denim','Dark Navy'], desc: 'Model straight cut klasik legendaris.', image: null },
-                        { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', favorite: true, stock: 25, serial: 'HDT-SERI-003', sizes: ['29','30','31','32'], colors: ['Black Stretch','Grey Stone'], desc: 'Warna hitam legam pekat yang elegan.', image: null }
-                    ];
-                    saveProductsToDB(allProducts);
+            // ========== LOAD DATA FROM SUPABASE ==========
+            async function loadAllData() {
+                try {
+                    // Products
+                    const products = await window.getProducts();
+                    if (products.length === 0) {
+                        // Seed default jika kosong
+                        const defaults = [
+                            { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', favorite: true, stock: 45, sizes: ['28','29','30','31','32'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'], description: 'Celana jeans premium dengan potongan slim-fit modern.' },
+                            { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', favorite: true, stock: 30, sizes: ['30','32','34'], colors: ['Raw Denim', 'Dark Navy'], description: 'Model straight cut klasik legendaris.' },
+                            { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', favorite: true, stock: 25, sizes: ['29','30','31','32'], colors: ['Black Stretch', 'Grey Stone'], description: 'Warna hitam legam pekat yang elegan.' }
+                        ];
+                        for (let p of defaults) {
+                            await window.saveProduct(p);
+                        }
+                        allProducts = await window.getProducts();
+                    } else {
+                        allProducts = products;
+                    }
+
+                    // Slides, About, FAQ, Features, Footer
+                    const slides = await window.getSlides();
+                    const about = await window.getAbout();
+                    const faqs = await window.getFaqs();
+                    const features = await window.getFeatures();
+                    const footer = await window.getFooter();
+
+                    renderCarousel(slides);
+                    renderAbout(about);
+                    renderFaq(faqs);
+                    renderFeatures(features);
+                    renderFooter(footer);
+                    renderFavoriteCarousel();
+                    renderProductGrid(1);
+                    updateCartUI();
+                    updateNavAuth();
+
+                } catch (error) {
+                    console.error('Gagal load data:', error);
+                    showToast('Gagal memuat data dari server.', 'error');
                 }
             }
 
-            let cartItems = [];
+            // ========== RENDER FUNCTIONS ==========
+            function renderCarousel(slides) {
+                const displaySlides = slides.length > 0 ? slides : [
+                    { id: 1, title: '501® ORIGINAL DENIM', subtitle: 'Ikonik sejak 1873', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #0b1a2b, #2a4b6e)' },
+                    { id: 2, title: 'TRUCKER JACKET', subtitle: 'Gaya ikonik denim modern', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #1a2e44, #3a5f7e)' }
+                ];
+                track.innerHTML = '';
+                displaySlides.forEach(s => {
+                    const div = document.createElement('div');
+                    div.className = 'carousel-slide';
+                    div.style.background = s.bg || 'linear-gradient(135deg, #0b1a2b, #2a4b6e)';
+                    let imgHtml = s.image ? `<img src="${s.image}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" />` : '';
+                    div.innerHTML = `${imgHtml}<div class="overlay-dark"></div><div class="slide-content"><h2>${s.title}</h2><p>${s.subtitle}</p><a href="${s.btnLink || '#products'}" class="btn-slide">${s.btnText || 'Beli'}</a></div>`;
+                    track.appendChild(div);
+                });
+                dots.innerHTML = '';
+                displaySlides.forEach((_, i) => {
+                    const dot = document.createElement('span');
+                    dot.className = 'dot' + (i === 0 ? ' active' : '');
+                    dot.onclick = () => goToSlide(i);
+                    dots.appendChild(dot);
+                });
+                currentSlide = 0;
+                track.style.transform = 'translateX(0%)';
+                if (slideInterval) clearInterval(slideInterval);
+                slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
+            }
+
+            function goToSlide(i) {
+                const slides = track.querySelectorAll('.carousel-slide');
+                if (!slides.length) return;
+                currentSlide = (i + slides.length) % slides.length;
+                track.style.transform = `translateX(-${currentSlide * 100}%)`;
+                dots.querySelectorAll('.dot').forEach((d, idx) => d.classList.toggle('active', idx === currentSlide));
+            }
+
+            function renderAbout(about) {
+                document.getElementById('aboutContainer').innerHTML = about.content || '<p>Brand denim premium HEDTRO JEANS.</p>';
+            }
+
+            function renderFaq(faqs) {
+                const container = document.getElementById('faqContainer');
+                if (faqs.length === 0) {
+                    container.innerHTML = `<div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>Bagaimana cara mendaftar?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">Klik tombol Daftar di navbar.</div></div>`;
+                    return;
+                }
+                let html = '';
+                faqs.forEach(f => {
+                    html += `<div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>${f.question}</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">${f.answer}</div></div>`;
+                });
+                container.innerHTML = html;
+            }
+
+            function renderFeatures(features) {
+                const container = document.getElementById('featuresContainer');
+                if (features.length === 0) {
+                    container.innerHTML = `<div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz</p></div><div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Seluruh Indonesia</p></div>`;
+                    return;
+                }
+                let html = '';
+                features.forEach(f => {
+                    html += `<div class="feature-item"><i class="fas ${f.icon || 'fa-check-circle'}"></i><h4>${f.title}</h4><p>${f.description}</p></div>`;
+                });
+                container.innerHTML = html;
+            }
+
+            function renderFooter(f) {
+                if (f.brand) document.getElementById('footerBrandTitle').innerHTML = `<i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> ${f.brand}`;
+                if (f.description) document.getElementById('footerBrandDesc').textContent = f.description;
+                if (f.copyright) document.getElementById('footerCopy').innerHTML = f.copyright;
+            }
+
+            function renderFavoriteCarousel() {
+                const container = document.getElementById('favoriteCarousel');
+                const favorites = allProducts.filter(p => p.favorite === true);
+                container.innerHTML = '';
+                favorites.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon||'fa-tshirt'}"></i>`;
+                    card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
+                    container.appendChild(card);
+                });
+                bindProductButtons();
+            }
+
+            const itemsPerPage = 6;
+            let currentPage = 1;
+            function renderProductGrid(page) {
+                const grid = document.getElementById('productGrid');
+                const products = allProducts.filter(p => p.favorite !== true);
+                const start = (page - 1) * itemsPerPage;
+                const pageItems = products.slice(start, start + itemsPerPage);
+                grid.innerHTML = '';
+                pageItems.forEach(p => {
+                    const card = document.createElement('div');
+                    card.className = 'product-card';
+                    let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon||'fa-tshirt'}"></i>`;
+                    card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
+                    grid.appendChild(card);
+                });
+                bindProductButtons();
+            }
+
+            // ========== PRODUCT BUTTONS ==========
+            function bindProductButtons() {
+                document.querySelectorAll('.btn-detail').forEach(btn => {
+                    btn.onclick = function() { openProductDetail(parseInt(this.dataset.id)); };
+                });
+                document.querySelectorAll('.btn-buy').forEach(btn => {
+                    btn.onclick = function() {
+                        const id = parseInt(this.dataset.id);
+                        const product = allProducts.find(p => p.id === id);
+                        if (product) {
+                            // Cek login dulu
+                            window.getSession().then(session => {
+                                if (!session) { showToast('Silakan login terlebih dahulu.', 'error'); window.location.href='login.html'; return; }
+                                openProductDetail(id);
+                            });
+                        }
+                    };
+                });
+            }
+
+            // ========== PRODUCT DETAIL ==========
+            function openProductDetail(id) {
+                const product = allProducts.find(p => p.id === id);
+                if (!product) return;
+                document.getElementById('detailTag').textContent = product.tag || 'PRODUK';
+                document.getElementById('detailName').textContent = product.name;
+                document.getElementById('detailPrice').innerHTML = `Rp ${(product.price||0).toLocaleString()}${product.original ? ` <del>Rp ${product.original.toLocaleString()}</del>` : ''}`;
+                document.getElementById('detailDesc').textContent = product.description || 'Deskripsi produk.';
+                document.getElementById('detailSerial').textContent = product.serial || '-';
+                document.getElementById('detailStock').textContent = product.stock || 0;
+
+                const imgContainer = document.getElementById('detailImage');
+                if (product.image) {
+                    imgContainer.innerHTML = `<img src="${product.image}" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;" /><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>`;
+                } else {
+                    imgContainer.innerHTML = `<div class="popup-icon-wrap"><i class="fas ${product.icon || 'fa-tshirt'}"></i></div><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>`;
+                }
+
+                const sizeSel = document.getElementById('detailSize');
+                sizeSel.innerHTML = (product.sizes || ['30', '32']).map(s => `<option value="${s}">Size ${s}</option>`).join('');
+                const colorSel = document.getElementById('detailColor');
+                colorSel.innerHTML = (product.colors || ['Indigo Blue']).map(c => `<option value="${c}">${c}</option>`).join('');
+
+                document.getElementById('detailBuyBtn').onclick = function() {
+                    window.getSession().then(session => {
+                        if (!session) { showToast('Login dulu.', 'error'); window.location.href='login.html'; return; }
+                        addToCart(product, sizeSel.value, colorSel.value);
+                        document.getElementById('productDetailPopup').classList.remove('show');
+                        document.body.style.overflow = '';
+                    });
+                };
+
+                document.getElementById('productDetailPopup').classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+
+            document.getElementById('closeDetailPopup').onclick = () => { document.getElementById('productDetailPopup').classList.remove('show'); document.body.style.overflow = ''; };
+
+            // ========== CART ==========
+            function addToCart(product, size, color) {
+                const existing = cartItems.find(item => item.id === product.id && item.size === size && item.color === color);
+                if (existing) { existing.qty += 1; }
+                else { cartItems.push({ ...product, qty: 1, size, color }); }
+                updateCartUI();
+                showToast(`🛒 ${product.name} (${size} · ${color}) ditambahkan!`, 'success');
+            }
+
             function updateCartUI() {
                 const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
                 document.querySelectorAll('.badge').forEach(el => el.textContent = totalItems);
@@ -550,368 +688,143 @@
                 });
             }
 
-            function checkVerificationAndBuy(product, size, color) {
-                const session = getSession();
-                if (!session) {
-                    showToast('Silakan login terlebih dahulu.', 'error');
-                    window.location.href = 'login.html';
-                    return;
-                }
-                const users = loadUsers();
-                const user = users.find(u => u.id === session.id);
-                if (!user || user.status !== 'verified') {
-                    showToast('Akun Anda belum terverifikasi. Silakan verifikasi di dashboard member.', 'error');
-                    return;
-                }
-                addToCart(product, size, color);
-            }
-
-            function addToCart(product, size, color) {
-                const existing = cartItems.find(item => item.id === product.id && item.size === size && item.color === color);
-                if (existing) { existing.qty += 1; }
-                else { cartItems.push({ ...product, qty: 1, size, color }); }
-                updateCartUI();
-                showToast(`🛒 ${product.name} (${size} · ${color}) ditambahkan!`, 'success');
-            }
-
-            document.getElementById('cartCheckoutBtn').addEventListener('click', function() {
+            // ========== CHECKOUT ==========
+            document.getElementById('cartCheckoutBtn').addEventListener('click', async function() {
                 if (cartItems.length === 0) { showToast('Keranjang kosong!', 'error'); return; }
-                const session = getSession();
-                let user = null;
-                let users = loadUsers();
-                if (session) { user = users.find(u => u.id === session.id); }
-                if (!user) { showToast('Login dulu untuk checkout.', 'error'); return; }
-                if (user.status !== 'verified') { showToast('Akun belum verified!', 'error'); return; }
+                const session = await window.getSession();
+                if (!session) { showToast('Login dulu untuk checkout.', 'error'); window.location.href='login.html'; return; }
+                const profile = await window.getUserProfile();
+                if (!profile) { showToast('Profile tidak ditemukan.', 'error'); return; }
+                if (profile.status !== 'verified') { showToast('Akun belum terverifikasi.', 'error'); return; }
 
                 const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
                 const orderNum = 'ORD-' + Date.now().toString().slice(-6);
-
-                let orders = loadOrders();
-                let products = loadProductsFromDB();
-                let transactions = loadTransactions();
-
                 const newOrder = {
-                    id: getNextId(orders),
+                    id: Date.now(),
                     order_number: orderNum,
-                    user_id: user.id,
-                    user_name: user.name || user.username,
-                    shipping_address: user.address || user.alamat || 'Alamat Akun Member',
+                    user_id: profile.id,
+                    user_name: profile.fullname || profile.username,
+                    shipping_address: profile.address || 'Alamat Akun',
                     type: 'regular',
                     items: cartItems.map(ci => ({ product_id: ci.id, name: ci.name, price: ci.price, qty: ci.qty, size: ci.size, color: ci.color })),
                     total: totalAmount,
                     status: 'pending',
-                    createdAt: new Date().toISOString(),
-                    proof_image: null,
-                    resi: null
+                    created_at: new Date().toISOString()
                 };
 
-                orders.push(newOrder);
-                saveOrders(orders);
+                try {
+                    await window.saveOrder(newOrder);
+                    // Update stock produk
+                    for (let ci of cartItems) {
+                        const p = allProducts.find(x => x.id === ci.id);
+                        if (p && p.stock !== undefined) {
+                            p.stock = Math.max(0, p.stock - ci.qty);
+                            await window.saveProduct(p);
+                        }
+                    }
+                    // Reload products
+                    allProducts = await window.getProducts();
 
-                const newTx = {
-                    id: Date.now(),
-                    user_id: user.id,
-                    type: 'order',
-                    amount: totalAmount,
-                    status: 'pending',
-                    date: new Date().toISOString(),
-                    note: `Order ${orderNum}`
-                };
-                transactions.push(newTx);
-                saveTransactions(transactions);
-
-                if (user) {
-                    if (!user.orders) user.orders = [];
-                    user.orders.push(newOrder);
-                    if (!user.transactions) user.transactions = [];
-                    user.transactions.push(newTx);
-                    saveUsers(users);
+                    cartItems = [];
+                    updateCartUI();
+                    document.getElementById('cartPopup').classList.remove('show');
+                    document.body.style.overflow = '';
+                    showToast(`✅ Pesanan ${orderNum} dibuat! Total: Rp ${totalAmount.toLocaleString()}`, 'success', 5000);
+                } catch (error) {
+                    showToast('Gagal checkout: ' + error.message, 'error');
                 }
-
-                cartItems.forEach(ci => {
-                    const p = products.find(x => x.id === ci.id);
-                    if (p && p.stock) p.stock = Math.max(0, p.stock - ci.qty);
-                });
-                saveProductsToDB(products);
-
-                cartItems = [];
-                updateCartUI();
-                document.getElementById('cartPopup').classList.remove('show');
-                document.body.style.overflow = '';
-
-                showToast(`✅ Pesanan ${orderNum} berhasil dibuat! Total: Rp ${totalAmount.toLocaleString()}.`, 'success', 5000);
             });
 
-            // TRACK ORDER dengan RESI
-            document.getElementById('trackBtnPopup').addEventListener('click', function() {
+            // ========== NAV AUTH ==========
+            async function updateNavAuth() {
+                const session = await window.getSession();
+                const navAuth = document.getElementById('navAuthBtn');
+                const navReg = document.getElementById('navRegBtn');
+                if (session) {
+                    const profile = await window.getUserProfile();
+                    if (profile) {
+                        currentUserProfile = profile;
+                        navAuth.textContent = profile.role === 'admin' ? 'Admin Panel' : 'Dashboard';
+                        navAuth.href = profile.role === 'admin' ? 'admin.html' : 'dashboard.html';
+                        navReg.textContent = 'Keluar';
+                        navReg.onclick = async (e) => {
+                            e.preventDefault();
+                            await window.signOut();
+                            window.location.reload();
+                        };
+                    }
+                } else {
+                    navAuth.textContent = 'Login';
+                    navAuth.href = 'login.html';
+                    navReg.textContent = 'Daftar';
+                    navReg.href = 'register.html';
+                    navReg.onclick = null;
+                }
+            }
+
+            // ========== TRACKING ==========
+            document.getElementById('trackBtnPopup').addEventListener('click', async function() {
                 const input = document.getElementById('trackInputPopup').value.trim().toUpperCase();
                 const resultEl = document.getElementById('trackResultPopup');
-                if (!input) { resultEl.innerHTML = '⚠️ Masukkan nomor pesanan atau resi.'; resultEl.style.color = '#b13e3e'; return; }
-                const orders = loadOrders();
-                let order = orders.find(o => 
-                    (o.order_number && o.order_number.toUpperCase() === input) || 
-                    ('ORD-' + o.id) === input ||
-                    (o.resi && o.resi.toUpperCase() === input)
-                );
-                if (order) {
-                    const statusMap = {
-                        'pending': '⏳ Menunggu Konfirmasi / Pembayaran',
-                        'processing': '📦 Pesanan Diproses',
-                        'shipped': '🚚 Pesanan Dikirim',
-                        'success': '✅ Selesai',
-                        'verified': '✅ Selesai'
-                    };
-                    const statusText = statusMap[order.status] || order.status;
-                    let resiHtml = order.resi ? `<br><strong>Resi:</strong> ${order.resi}` : '';
-                    resultEl.innerHTML = `✅ <strong>${order.order_number || ('ORD-' + order.id)}</strong><br>Pemesan: ${order.user_name}<br>Status: ${statusText}${resiHtml}<br>Total: Rp ${(order.total||0).toLocaleString()}`;
-                    resultEl.style.color = '#1f7a4b';
-                } else {
-                    resultEl.innerHTML = '❌ Pesanan tidak ditemukan.';
+                if (!input) { resultEl.innerHTML = '⚠️ Masukkan nomor pesanan.'; resultEl.style.color = '#b13e3e'; return; }
+                try {
+                    const orders = await window.getOrders();
+                    const order = orders.find(o => (o.order_number && o.order_number.toUpperCase() === input) || ('ORD-' + o.id) === input);
+                    if (order) {
+                        const statusText = order.status === 'pending' ? '⏳ Menunggu Konfirmasi / Pembayaran' : (order.status === 'processing' ? '📦 Pesanan Diproses' : (order.status === 'shipped' ? '🚚 Pesanan Dikirim' : '✅ Selesai'));
+                        resultEl.innerHTML = `✅ <strong>${order.order_number || ('ORD-' + order.id)}</strong><br>Pemesan: ${order.user_name}<br>Status: ${statusText}<br>Total: Rp ${(order.total||0).toLocaleString()}`;
+                        resultEl.style.color = '#1f7a4b';
+                    } else {
+                        resultEl.innerHTML = '❌ Nomor pesanan tidak ditemukan.';
+                        resultEl.style.color = '#b13e3e';
+                    }
+                } catch (error) {
+                    resultEl.innerHTML = '❌ Gagal mencari pesanan.';
                     resultEl.style.color = '#b13e3e';
                 }
             });
 
-            function updateNavAuth() {
-                const session = getSession();
-                const navAuthBtn = document.getElementById('navAuthBtn');
-                const navRegBtn = document.getElementById('navRegBtn');
-                if (session) {
-                    const users = loadUsers();
-                    const user = users.find(u => u.id === session.id);
-                    if (user) {
-                        if (navAuthBtn) {
-                            navAuthBtn.textContent = user.role === 'admin' ? 'Admin Panel' : 'Dashboard';
-                            navAuthBtn.href = user.role === 'admin' ? 'admin.html' : 'dashboard.html';
-                        }
-                        if (navRegBtn) {
-                            navRegBtn.textContent = 'Keluar';
-                            navRegBtn.href = '#';
-                            navRegBtn.onclick = function(e) {
-                                e.preventDefault();
-                                localStorage.removeItem(SESSION_KEY);
-                                window.location.reload();
-                            };
-                        }
-                    }
-                }
-            }
-
-            // CAROUSEL
-            let currentSlide = 0;
-            let slideInterval = null;
-            const track = document.getElementById('carouselTrack');
-            const dots = document.getElementById('carouselDots');
-
-            function renderCarousel() {
-                const slides = loadSlides();
-                const displaySlides = slides.length > 0 ? slides : [
-                    { id: 1, title: '501® ORIGINAL DENIM', subtitle: 'Ikonik sejak 1873 · Raw denim 14oz premium', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #0b1a2b 0%, #1a2e44 50%, #2a4b6e 100%)', icon: 'fa-tshirt' },
-                    { id: 2, title: 'TRUCKER JACKET & OUTER', subtitle: 'Gaya ikonik denim modern', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #1a2e44 0%, #2a4b6e 50%, #3a5f7e 100%)', icon: 'fa-tshirt' }
-                ];
-                track.innerHTML = '';
-                displaySlides.forEach(s => {
-                    const slideDiv = document.createElement('div');
-                    slideDiv.className = 'carousel-slide';
-                    slideDiv.style.background = s.bg || 'linear-gradient(135deg, #0b1a2b, #2a4b6e)';
-                    let imgHtml = s.image ? `<img src="${s.image}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" />` : '';
-                    slideDiv.innerHTML = `${imgHtml}<div class="overlay-dark"></div><div class="slide-content"><h2>${s.title}</h2><p>${s.subtitle}</p><a href="${s.btnLink || '#products'}" class="btn-slide">${s.btnText || 'Beli'}</a></div>`;
-                    track.appendChild(slideDiv);
-                });
-                dots.innerHTML = '';
-                displaySlides.forEach((_, i) => {
-                    const dot = document.createElement('span');
-                    dot.className = 'dot' + (i === 0 ? ' active' : '');
-                    dot.onclick = () => goToSlide(i);
-                    dots.appendChild(dot);
-                });
-                currentSlide = 0;
-                track.style.transform = 'translateX(0%)';
-                if (slideInterval) clearInterval(slideInterval);
-                slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
-            }
-
-            function goToSlide(i) {
-                const slides = track.querySelectorAll('.carousel-slide');
-                if (!slides.length) return;
-                currentSlide = (i + slides.length) % slides.length;
-                track.style.transform = `translateX(-${currentSlide * 100}%)`;
-                dots.querySelectorAll('.dot').forEach((d, idx) => d.classList.toggle('active', idx === currentSlide));
-            }
-
-            function renderAbout() {
-                const about = loadAbout();
-                document.getElementById('aboutContainer').innerHTML = about.content || '<p>Brand denim premium HEDTRO JEANS.</p>';
-            }
-
-            function renderFaq() {
-                const faqs = loadFaq();
-                const container = document.getElementById('faqContainer');
-                if (faqs.length === 0) {
-                    container.innerHTML = `<div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>Bagaimana cara mendaftar?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">Klik tombol Daftar di navbar.</div></div>`;
-                    return;
-                }
-                let html = '';
-                faqs.forEach(f => {
-                    html += `<div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>${f.question}</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">${f.answer}</div></div>`;
-                });
-                container.innerHTML = html;
-            }
-
-            function renderFeatures() {
-                const features = loadFeatures();
-                const container = document.getElementById('featuresContainer');
-                if (features.length === 0) {
-                    container.innerHTML = `<div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz</p></div><div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Seluruh Indonesia</p></div>`;
-                    return;
-                }
-                let html = '';
-                features.forEach(f => {
-                    html += `<div class="feature-item"><i class="fas ${f.icon || 'fa-check-circle'}"></i><h4>${f.title}</h4><p>${f.desc}</p></div>`;
-                });
-                container.innerHTML = html;
-            }
-
-            function renderFooter() {
-                const f = loadFooter();
-                if (f.brand) document.getElementById('footerBrandTitle').innerHTML = `<i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> ${f.brand}`;
-                if (f.desc) document.getElementById('footerBrandDesc').textContent = f.desc;
-                if (f.copyright) document.getElementById('footerCopy').innerHTML = f.copyright;
-            }
-
-            // RENDER FAVORITE CAROUSEL (hanya favorite: true)
-            function renderFavoriteCarousel() {
-                const container = document.getElementById('favoriteCarousel');
-                const favorites = allProducts.filter(p => p.favorite === true);
-                container.innerHTML = '';
-                if (favorites.length === 0) {
-                    container.innerHTML = '<p style="color:var(--denim-navy); opacity:0.6; padding:20px 0;">Belum ada produk favorit.</p>';
-                    return;
-                }
-                favorites.forEach(p => {
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon||'fa-tshirt'}"></i>`;
-                    card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
-                    container.appendChild(card);
-                });
-                bindProductButtons();
-            }
-
-            // RENDER TOP TRENDING GRID (SEMUA PRODUK)
-            const itemsPerPage = 6;
-            let currentPage = 1;
-            function renderProductGrid(page) {
-                const grid = document.getElementById('productGrid');
-                // Tampilkan SEMUA produk (tanpa filter favorite)
-                const products = allProducts.slice(); // copy semua
-                const start = (page - 1) * itemsPerPage;
-                const pageItems = products.slice(start, start + itemsPerPage);
-                grid.innerHTML = '';
-                if (pageItems.length === 0) {
-                    grid.innerHTML = '<p style="color:var(--denim-navy); opacity:0.6; padding:20px 0; grid-column:1/-1; text-align:center;">Belum ada produk.</p>';
-                    return;
-                }
-                pageItems.forEach(p => {
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon||'fa-tshirt'}"></i>`;
-                    card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
-                    grid.appendChild(card);
-                });
-                bindProductButtons();
-
-                // Pagination
-                const totalPages = Math.ceil(products.length / itemsPerPage) || 1;
-                const pagContainer = document.getElementById('pagination');
-                if (totalPages <= 1) { pagContainer.innerHTML = ''; return; }
-                let pagHtml = '';
-                for (let i = 1; i <= totalPages; i++) {
-                    pagHtml += `<button class="${i === page ? 'active' : ''}" data-page="${i}">${i}</button>`;
-                }
-                pagContainer.innerHTML = pagHtml;
-                pagContainer.querySelectorAll('button').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        const newPage = parseInt(this.dataset.page);
-                        if (newPage !== currentPage) {
-                            currentPage = newPage;
-                            renderProductGrid(currentPage);
-                            window.scrollTo({ top: document.getElementById('products').offsetTop - 100, behavior: 'smooth' });
-                        }
-                    });
-                });
-            }
-
-            function bindProductButtons() {
-                document.querySelectorAll('.btn-detail').forEach(btn => {
-                    btn.onclick = function() { openProductDetail(parseInt(this.dataset.id)); };
-                });
-                document.querySelectorAll('.btn-buy').forEach(btn => {
-                    btn.onclick = function() { 
-                        const id = parseInt(this.dataset.id);
-                        const product = allProducts.find(p => p.id === id);
-                        if (product) {
-                            const session = getSession();
-                            if (!session) { showToast('Silakan login terlebih dahulu.', 'error'); window.location.href='login.html'; return; }
-                            const users = loadUsers();
-                            const user = users.find(u => u.id === session.id);
-                            if (!user || user.status !== 'verified') { showToast('Akun Anda belum terverifikasi. Silakan verifikasi di dashboard.', 'error'); return; }
-                            openProductDetail(id);
-                        }
-                    };
-                });
-            }
-
-            function openProductDetail(id) {
-                const product = allProducts.find(p => p.id === id);
-                if (!product) return;
-                document.getElementById('detailTag').textContent = product.tag || 'PRODUK';
-                document.getElementById('detailName').textContent = product.name;
-                document.getElementById('detailPrice').innerHTML = `Rp ${(product.price||0).toLocaleString()}${product.original ? ` <del>Rp ${product.original.toLocaleString()}</del>` : ''}`;
-                document.getElementById('detailDesc').textContent = product.desc || 'Deskripsi produk.';
-                document.getElementById('detailSerial').textContent = product.serial || '-';
-                document.getElementById('detailStock').textContent = product.stock || 0;
-
-                const imgContainer = document.getElementById('detailImage');
-                if (product.image) {
-                    imgContainer.innerHTML = `<img src="${product.image}" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;" /><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>`;
-                } else {
-                    imgContainer.innerHTML = `<div class="popup-icon-wrap"><i class="fas ${product.icon || 'fa-tshirt'}"></i></div><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>`;
-                }
-
-                const sizeSel = document.getElementById('detailSize');
-                sizeSel.innerHTML = (product.sizes || ['30', '32']).map(s => `<option value="${s}">Size ${s}</option>`).join('');
-                const colorSel = document.getElementById('detailColor');
-                colorSel.innerHTML = (product.colors || ['Indigo Blue']).map(c => `<option value="${c}">${c}</option>`).join('');
-
-                document.getElementById('detailBuyBtn').onclick = function() {
-                    checkVerificationAndBuy(product, sizeSel.value, colorSel.value);
-                    document.getElementById('productDetailPopup').classList.remove('show');
-                    document.body.style.overflow = '';
-                };
-
-                document.getElementById('productDetailPopup').classList.add('show');
-                document.body.style.overflow = 'hidden';
-            }
-
-            // EVENT POPUP
-            document.getElementById('closeDetailPopup').onclick = () => { document.getElementById('productDetailPopup').classList.remove('show'); document.body.style.overflow = ''; };
+            // ========== POPUP EVENTS ==========
             document.getElementById('cartBtnDesktop').onclick = () => { updateCartUI(); document.getElementById('cartPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
             document.getElementById('cartHp').onclick = () => { updateCartUI(); document.getElementById('cartPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
             document.getElementById('closeCartPopup').onclick = () => { document.getElementById('cartPopup').classList.remove('show'); document.body.style.overflow = ''; };
             document.getElementById('navTrackBtn').onclick = (e) => { e.preventDefault(); document.getElementById('trackPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
-            document.getElementById('sideTrackBtn').onclick = () => { document.getElementById('trackPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
             document.getElementById('closeTrackPopup').onclick = () => { document.getElementById('trackPopup').classList.remove('show'); document.body.style.overflow = ''; };
             document.getElementById('searchIconHp').onclick = () => { document.getElementById('searchPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
             document.getElementById('closeSearchPopup').onclick = () => { document.getElementById('searchPopup').classList.remove('show'); document.body.style.overflow = ''; };
 
-            window.toggleFaq = function(el) {
-                const answer = el.parentElement.querySelector('.faq-answer');
-                const isOpen = answer.classList.contains('open');
-                document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
-                if (!isOpen) answer.classList.add('open');
-            };
+            // ========== SEARCH ==========
+            document.getElementById('searchBtnPopup').addEventListener('click', function() {
+                const query = document.getElementById('searchInputPopup').value.trim().toLowerCase();
+                const resultEl = document.getElementById('searchResult');
+                if (!query) { resultEl.innerHTML = '<p class="text-muted">Ketik kata kunci.</p>'; return; }
+                const results = allProducts.filter(p => p.name.toLowerCase().includes(query) || (p.description && p.description.toLowerCase().includes(query)));
+                if (results.length === 0) { resultEl.innerHTML = '<p class="text-muted">Tidak ditemukan.</p>'; return; }
+                let html = '';
+                results.forEach(p => {
+                    html += `<div style="display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid #eee;">
+                        <span style="font-weight:600;">${p.name}</span>
+                        <span style="color:var(--denim-blue);">Rp ${p.price.toLocaleString()}</span>
+                        <button class="btn-sm btn-sm-gold" onclick="openProductDetail(${p.id}); document.getElementById('closeSearchPopup').click();">Lihat</button>
+                    </div>`;
+                });
+                resultEl.innerHTML = html;
+            });
 
-            // BURGER
+            document.getElementById('searchBtnDesktop').addEventListener('click', function() {
+                const query = document.getElementById('searchInputDesktop').value.trim().toLowerCase();
+                if (!query) return;
+                document.getElementById('searchInputPopup').value = query;
+                document.getElementById('searchPopup').classList.add('show');
+                document.body.style.overflow = 'hidden';
+                document.getElementById('searchBtnPopup').click();
+            });
+
+            document.getElementById('searchInputDesktop').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('searchBtnDesktop').click();
+            });
+
+            // ========== BURGER MENU ==========
             const burgerBtn = document.getElementById('burgerBtn');
             const sidebar = document.getElementById('sidebar');
             const sidebarOverlay = document.getElementById('sidebarOverlay');
@@ -919,22 +832,53 @@
             document.getElementById('closeSidebar').onclick = () => { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); };
             sidebarOverlay.onclick = () => { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); };
 
-            // CAROUSEL SCROLL BUTTONS
-            document.getElementById('favScrollLeft').onclick = () => { document.getElementById('favoriteCarousel').scrollLeft -= 250; };
-            document.getElementById('favScrollRight').onclick = () => { document.getElementById('favoriteCarousel').scrollLeft += 250; };
+            // ========== FAQ TOGGLE ==========
+            window.toggleFaq = function(el) {
+                const answer = el.parentElement.querySelector('.faq-answer');
+                const isOpen = answer.classList.contains('open');
+                document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
+                if (!isOpen) answer.classList.add('open');
+            };
 
-            // INIT
-            applyBrandSettings();
-            initProducts();
-            updateNavAuth();
-            renderCarousel();
-            renderAbout();
-            renderFaq();
-            renderFeatures();
-            renderFooter();
-            renderFavoriteCarousel();
-            renderProductGrid(1);
-            updateCartUI();
+            // ========== BRAND SETTINGS ==========
+            async function applyBrandSettings() {
+                try {
+                    const settings = await window.getSettings();
+                    const brandName = settings.brandName || 'HEDTRO JEANS';
+                    const brandLogo = settings.brandLogo || 'fa-tshirt';
+                    const isImage = brandLogo && brandLogo.startsWith('data:image');
+                    document.querySelectorAll('#headerLogo, #sidebarLogo').forEach(el => {
+                        if (el) {
+                            if (isImage) {
+                                el.innerHTML = `<img src="${brandLogo}" alt="${brandName}" style="height:32px;width:auto;object-fit:contain;" />`;
+                            } else {
+                                const icon = el.querySelector('i');
+                                if (icon) icon.className = 'fas ' + brandLogo;
+                                const textSpan = el.querySelector('span');
+                                if (textSpan && textSpan.tagName === 'SPAN') {
+                                    textSpan.innerText = brandName.replace('HEDTRO', '').trim();
+                                }
+                                if (!el.querySelector('span')) {
+                                    el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
+                                }
+                            }
+                        }
+                    });
+                } catch (e) { console.warn('Brand settings not applied:', e); }
+            }
+
+            // ========== INIT ==========
+            (async function init() {
+                try {
+                    await applyBrandSettings();
+                    await loadAllData();
+                    // Update nav auth after data loaded
+                    await updateNavAuth();
+                } catch (error) {
+                    console.error('Init error:', error);
+                    showToast('Gagal memuat halaman.', 'error');
+                }
+            })();
 
         })();
     </script>
