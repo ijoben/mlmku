@@ -7,12 +7,9 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <style>
+        /* === STYLE SAMA PERSIS SEPERTI YANG ANDA PUNYA === */
         * { margin: 0; padding: 0; box-sizing: border-box; }
-        :root {
-            --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2;
-            --gold-accent: #c9a84c; --gold-light: #e8d5a3; --cream: #f7f4ef; --white: #ffffff;
-            --shadow-lg: 0 20px 60px rgba(0, 0, 0, 0.15); --radius: 24px; --radius-sm: 12px; --transition: 0.3s ease;
-        }
+        :root { --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2; --gold-accent: #c9a84c; --gold-light: #e8d5a3; --cream: #f7f4ef; --white: #ffffff; --shadow-lg: 0 20px 60px rgba(0,0,0,0.15); --radius: 24px; --radius-sm: 12px; --transition: 0.3s ease; }
         body { font-family: 'Inter', -apple-system, sans-serif; background: var(--cream); color: var(--denim-dark); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
         .login-wrapper { max-width: 440px; width: 100%; }
         .login-card { background: var(--white); border-radius: var(--radius); padding: 36px 34px 40px; box-shadow: var(--shadow-lg); border: 1px solid var(--denim-light); }
@@ -33,10 +30,11 @@
         .msg.success { background: #e8f5ed; color: #1f7a4b; }
         .back-link { display: inline-block; margin-top: 16px; color: var(--denim-navy); font-size: 0.8rem; opacity: 0.6; text-decoration: none; }
         .back-link:hover { opacity: 1; color: var(--gold-accent); }
+        /* Hilangkan display none untuk sementara */
+        .hidden { display: none; }
     </style>
 </head>
 <body>
-
     <div class="login-wrapper">
         <div class="login-card">
             <div class="logo">
@@ -60,83 +58,72 @@
             <div class="login-footer">
                 Belum punya akun? <a href="register.html">Daftar di sini</a>
             </div>
-
             <div style="text-align:center; margin-top:12px;">
                 <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
             </div>
         </div>
     </div>
 
+    <!-- ========== SCRIPT SUPABASE ========== -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
     <script>
         (function() {
             'use strict';
 
-            const DB_KEY = 'hedtro_mlm_users';
-            const SESSION_KEY = 'mlm_session';
+            // Cek apakah sudah login, jika ya redirect ke dashboard
+            window.getSession().then(session => {
+                if (session) {
+                    window.getUserProfile().then(profile => {
+                        if (profile) {
+                            window.location.href = (profile.role === 'admin') ? 'admin.html' : 'dashboard.html';
+                        }
+                    });
+                }
+            });
 
-            function doLogin() {
+            async function doLogin() {
                 const email = document.getElementById('loginEmail').value.trim();
                 const password = document.getElementById('loginPassword').value.trim();
                 const msgEl = document.getElementById('loginMsg');
 
                 if (!email || !password) {
                     msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Isi email/username dan password.';
+                    msgEl.innerText = '⚠️ Isi email dan password.';
                     return;
                 }
 
-                const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
-                const user = users.find(u => (u.email === email || u.username === email) && u.password === password);
-
-                if (!user) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '❌ Email/Username atau password salah.';
-                    return;
-                }
-
-                localStorage.setItem(SESSION_KEY, JSON.stringify({ id: user.id, role: user.role }));
-                msgEl.className = 'msg success';
-                msgEl.innerText = '✅ Login berhasil! Mengarahkan...';
-
-                setTimeout(() => {
-                    if (user.role === 'admin') {
-                        window.location.replace('admin.html');
-                    } else {
-                        window.location.replace('dashboard.html');
-                    }
-                }, 1000);
-            }
-
-            document.getElementById('loginBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                doLogin();
-            });
-
-            document.getElementById('loginPassword').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    doLogin();
-                }
-            });
-
-            document.getElementById('loginEmail').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    document.getElementById('loginPassword').focus();
-                }
-            });
-
-            const session = localStorage.getItem(SESSION_KEY);
-            if (session) {
                 try {
-                    const { id, role } = JSON.parse(session);
-                    const users = JSON.parse(localStorage.getItem(DB_KEY) || '[]');
-                    const user = users.find(u => u.id === id);
-                    if (user) {
-                        window.location.replace((role === 'admin' || user.role === 'admin') ? 'admin.html' : 'dashboard.html');
-                    }
-                } catch (_) { localStorage.removeItem(SESSION_KEY); }
+                    const { user, session } = await window.signIn(email, password);
+                    
+                    // Ambil profile dari tabel users
+                    const profile = await window.getUserProfile();
+                    
+                    msgEl.className = 'msg success';
+                    msgEl.innerText = '✅ Login berhasil! Mengarahkan...';
+                    
+                    setTimeout(() => {
+                        if (profile?.role === 'admin') {
+                            window.location.href = 'admin.html';
+                        } else {
+                            window.location.href = 'dashboard.html';
+                        }
+                    }, 1000);
+
+                } catch (error) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '❌ ' + error.message;
+                }
             }
+
+            document.getElementById('loginBtn').addEventListener('click', doLogin);
+            document.getElementById('loginPassword').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') doLogin();
+            });
+            document.getElementById('loginEmail').addEventListener('keydown', (e) => {
+                if (e.key === 'Enter') document.getElementById('loginPassword').focus();
+            });
+
         })();
     </script>
 </body>
