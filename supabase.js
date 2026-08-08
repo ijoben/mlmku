@@ -1,4 +1,4 @@
-// supabase.js - FULL LENGKAP
+// supabase.js - FULL LENGKAP DENGAN STORAGE
 console.log('🔵 supabase.js mulai dieksekusi...');
 
 var SUPABASE_URL = 'https://dbfwcsuptitytlposubo.supabase.co';
@@ -198,6 +198,143 @@ window.deleteRow = async function(table, id) {
 };
 
 // ============================================================
+// STORAGE FUNCTIONS (Upload & Delete Gambar)
+// ============================================================
+
+// Upload file ke Supabase Storage
+window.uploadFile = async function(file, folder = 'products') {
+  console.log('🔵 uploadFile dipanggil:', file.name);
+  
+  try {
+    // Generate nama file unik
+    var fileExt = file.name.split('.').pop();
+    var fileName = Date.now() + '-' + Math.random().toString(36).substring(2, 7) + '.' + fileExt;
+    var filePath = folder + '/' + fileName;
+    
+    // Upload ke Supabase Storage
+    var { data, error } = await supabaseClient
+      .storage
+      .from('hedtro-images')
+      .upload(filePath, file, {
+        cacheControl: '3600',
+        upsert: false
+      });
+    
+    if (error) {
+      console.error('🔴 Upload error:', error);
+      throw error;
+    }
+    
+    // Dapatkan URL publik
+    var { data: publicUrlData } = supabaseClient
+      .storage
+      .from('hedtro-images')
+      .getPublicUrl(filePath);
+    
+    console.log('✅ Upload berhasil:', publicUrlData.publicUrl);
+    return publicUrlData.publicUrl;
+    
+  } catch (error) {
+    console.error('❌ Upload error:', error);
+    throw error;
+  }
+};
+
+// Hapus file dari Storage
+window.deleteFile = async function(fileUrl) {
+  console.log('🔵 deleteFile dipanggil:', fileUrl);
+  
+  try {
+    // Extract path dari URL
+    var urlParts = fileUrl.split('/');
+    var filePath = urlParts.slice(urlParts.indexOf('hedtro-images') + 1).join('/');
+    
+    if (!filePath) {
+      console.log('⚠️ Tidak ada file path');
+      return;
+    }
+    
+    var { error } = await supabaseClient
+      .storage
+      .from('hedtro-images')
+      .remove([filePath]);
+    
+    if (error) {
+      console.error('🔴 Delete error:', error);
+      // Jangan throw, biarkan lanjut
+    }
+    console.log('✅ Delete berhasil:', filePath);
+    
+  } catch (error) {
+    console.error('❌ Delete error:', error);
+    // Jangan throw, karena file mungkin sudah tidak ada
+  }
+};
+
+// Upload gambar dengan kompresi otomatis
+window.uploadImage = async function(file, folder = 'products', maxSize = 2 * 1024 * 1024) {
+  console.log('🔵 uploadImage dipanggil:', file.name);
+  
+  try {
+    // Cek ukuran file
+    if (file.size > maxSize) {
+      console.log('🔄 Kompres gambar...');
+      var compressed = await window.compressImageFile(file, 800, 0.7);
+      return await window.uploadFile(compressed, folder);
+    }
+    
+    return await window.uploadFile(file, folder);
+  } catch (error) {
+    console.error('❌ uploadImage error:', error);
+    throw error;
+  }
+};
+
+// Kompres file gambar sebelum upload
+window.compressImageFile = function(file, maxWidth, quality) {
+  maxWidth = maxWidth || 800;
+  quality = quality || 0.7;
+  
+  return new Promise(function(resolve, reject) {
+    var reader = new FileReader();
+    reader.onload = function(e) {
+      var img = new Image();
+      img.onload = function() {
+        var canvas = document.createElement('canvas');
+        var width = img.width;
+        var height = img.height;
+        
+        if (width > maxWidth) {
+          height = (height * maxWidth) / width;
+          width = maxWidth;
+        }
+        
+        canvas.width = width;
+        canvas.height = height;
+        var ctx = canvas.getContext('2d');
+        ctx.drawImage(img, 0, 0, width, height);
+        
+        canvas.toBlob(function(blob) {
+          var compressedFile = new File([blob], file.name, {
+            type: 'image/jpeg',
+            lastModified: Date.now()
+          });
+          resolve(compressedFile);
+        }, 'image/jpeg', quality);
+      };
+      img.onerror = function() {
+        reject(new Error('Gagal mengompres gambar'));
+      };
+      img.src = e.target.result;
+    };
+    reader.onerror = function() {
+      reject(new Error('Gagal membaca file'));
+    };
+    reader.readAsDataURL(file);
+  });
+};
+
+// ============================================================
 // FUNGSI KHUSUS UNTUK APLIKASI
 // ============================================================
 
@@ -331,3 +468,7 @@ console.log('✅ window.updateUserProfile:', typeof window.updateUserProfile);
 console.log('✅ window.getTable:', typeof window.getTable);
 console.log('✅ window.upsertRow:', typeof window.upsertRow);
 console.log('✅ window.deleteRow:', typeof window.deleteRow);
+console.log('✅ window.uploadFile:', typeof window.uploadFile);
+console.log('✅ window.deleteFile:', typeof window.deleteFile);
+console.log('✅ window.uploadImage:', typeof window.uploadImage);
+console.log('✅ window.compressImageFile:', typeof window.compressImageFile);
