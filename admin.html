@@ -6,6 +6,9 @@
     <title>Admin · HEDTRO JEANS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
     <style>
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
@@ -43,7 +46,6 @@
         .sidebar .sidebar-header { display:flex; align-items:center; justify-content:space-between; padding-bottom:20px; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:12px; }
         .sidebar .sidebar-header .logo-side { color:var(--white); font-weight:800; font-size:1.3rem; display: flex; align-items: center; gap: 8px; }
         .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
-        .sidebar .sidebar-header .logo-side img { height:32px; width:auto; object-fit:contain; }
         .sidebar .sidebar-header .close-side { display:none; color:var(--cream); font-size:1.6rem; cursor:pointer; }
         .sidebar .menu-item { display:flex; align-items:center; gap:14px; padding:12px 16px; border-radius:12px; color:var(--cream); font-weight:500; font-size:0.95rem; transition:var(--transition); cursor:pointer; }
         .sidebar .menu-item:hover { background:rgba(255,255,255,0.08); }
@@ -95,7 +97,6 @@
         .badge-failed { background:#f8d7da; color:#721c24; }
         .badge-free { background:#f8d7da; color:#721c24; }
         .badge-verified { background:#d4edda; color:#155724; }
-        .badge-shipped { background:#bee3f8; color:#2a69ac; }
 
         .text-muted { color:#6a7e9a; font-size:0.8rem; }
         .mt-16 { margin-top:16px; }
@@ -181,7 +182,7 @@
         .modal-box .form-group label { display:block; font-weight:600; font-size:0.8rem; color:var(--denim-navy); margin-bottom:4px; }
         .modal-box .form-group input, .modal-box .form-group select, .modal-box .form-group textarea { width:100%; padding:10px 14px; border:1.5px solid var(--denim-light); border-radius:60px; font-size:0.9rem; background:var(--cream); font-family:inherit; transition:var(--transition); outline:none; }
         .modal-box .form-group textarea { border-radius:var(--radius-sm); resize:vertical; min-height:50px; }
-        .modal-box .btn-submit { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor: pointer;}
+        .modal-box .btn-submit { width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border:none; border-radius:60px; font-weight:700; font-size:1rem; transition:var(--transition); font-family:inherit; margin-top:4px; cursor:pointer;}
         .modal-box .btn-submit:hover { background:#b8963a; transform:scale(0.98); }
         .modal-box .order-detail { background:var(--cream); border-radius:var(--radius-sm); padding:14px 16px; margin:10px 0; }
         .modal-box .order-detail .item { display:flex; justify-content:space-between; padding:4px 0; font-size:0.85rem; }
@@ -407,7 +408,7 @@
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>#</th><th>Member</th><th>Tipe</th><th>Produk</th><th>Total</th><th>Status</th><th>Resi</th><th>Tanggal</th><th>Bukti</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>#</th><th>Member</th><th>Tipe</th><th>Produk</th><th>Total</th><th>Status</th><th>Tanggal</th><th>Bukti</th><th>Aksi</th></tr></thead>
                         <tbody id="ordersTableBody"></tbody>
                     </table>
                 </div>
@@ -622,145 +623,58 @@
         (function() {
             'use strict';
 
-            const DB_KEY = 'hedtro_mlm_users';
-            const PRODUCT_KEY = 'hedtro_products';
-            const SETTINGS_KEY = 'hedtro_settings';
-            const ORDER_KEY = 'hedtro_orders';
-            const TRANSACTION_KEY = 'hedtro_transactions';
-            const BANK_KEY = 'hedtro_bank_info'; 
-            const SESSION_KEY = 'mlm_session';
-            
-            const SLIDES_KEY = 'hedtro_slides';
-            const ABOUT_KEY = 'hedtro_about';
-            const FAQ_KEY = 'hedtro_faq';
-            const FEATURES_KEY = 'hedtro_features';
-            const FOOTER_KEY = 'hedtro_footer';
-
-            function loadSettings() {
-                try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch(e) { return {}; }
-            }
-            function saveSettings(s) { localStorage.setItem(SETTINGS_KEY, JSON.stringify(s)); }
-
-            function applyBrandSettings() {
-                const settings = loadSettings();
-                const brandName = settings.brandName || 'HEDTRO JEANS';
-                const brandLogo = settings.brandLogo || 'fa-tshirt';
-                const isImage = brandLogo && brandLogo.startsWith('data:image');
-                document.querySelectorAll('#brandLogo, #sideBrandLogo').forEach(el => {
-                    if (el) {
-                        if (isImage) {
-                            el.innerHTML = `<img src="${brandLogo}" alt="${brandName}" style="height:36px;width:auto;object-fit:contain;" />`;
-                        } else {
-                            const icon = el.querySelector('i');
-                            if (icon) icon.className = 'fas ' + brandLogo;
-                            const textSpan = el.querySelector('span') || el;
-                            if (textSpan && textSpan.tagName === 'SPAN') textSpan.innerText = brandName.replace('HEDTRO', '').trim();
-                            else if (el.tagName === 'DIV' && !el.querySelector('span')) {
-                                el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
-                            }
-                        }
-                    }
-                });
-                document.querySelectorAll('.logo i').forEach(el => el.className = 'fas ' + (isImage ? 'fa-tshirt' : brandLogo));
-            }
-
+            // ========== GLOBAL STATE ==========
+            let allUsers = [];
+            let allProducts = [];
+            let allOrders = [];
+            let allTransactions = [];
+            let allBankInfo = [];
+            let allSlides = [];
+            let allFaqs = [];
+            let allFeatures = [];
+            let allSettings = {};
+            let currentAdmin = null;
             let statePage = {
                 members: 1, products: 1, verif: 1, orders: 1, deposit: 1, withdraw: 1
             };
             const ITEMS_PER_PAGE = 10;
 
-            function loadSlides() { try { return JSON.parse(localStorage.getItem(SLIDES_KEY) || '[]'); } catch(e) { return []; } }
-            function saveSlides(s) { localStorage.setItem(SLIDES_KEY, JSON.stringify(s)); }
-            function loadAbout() { try { return JSON.parse(localStorage.getItem(ABOUT_KEY) || '{"title":"Tentang Kami","content":"<p><strong>HEDTRO JEANS</strong> adalah brand denim premium..."}'); } catch(e) { return {title:"Tentang Kami", content:""}; } }
-            function saveAbout(a) { localStorage.setItem(ABOUT_KEY, JSON.stringify(a)); }
-            function loadFaq() { try { return JSON.parse(localStorage.getItem(FAQ_KEY) || '[]'); } catch(e) { return []; } }
-            function saveFaq(f) { localStorage.setItem(FAQ_KEY, JSON.stringify(f)); }
-            function loadFeatures() { try { return JSON.parse(localStorage.getItem(FEATURES_KEY) || '[]'); } catch(e) { return []; } }
-            function saveFeatures(f) { localStorage.setItem(FEATURES_KEY, JSON.stringify(f)); }
-            function loadFooter() { try { return JSON.parse(localStorage.getItem(FOOTER_KEY) || '{"brand":"HEDTRO JEANS","desc":"Brand denim premium...","copyright":"&copy; 2026 HEDTRO JEANS","social":{"instagram":"","facebook":"","youtube":"","tiktok":""}}'); } catch(e) { return {brand:"HEDTRO JEANS", desc:"", copyright:"", social:{}}; } }
-            function saveFooter(f) { localStorage.setItem(FOOTER_KEY, JSON.stringify(f)); }
-
-            function loadUsers() { try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch(e) { return []; } }
-            function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-            function loadProducts() { try { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); } catch(e) { return []; } }
-            function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-            function loadOrders() { try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); } catch(e) { return []; } }
-            function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
-            function loadTransactions() { try { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); } catch(e) { return []; } }
-            function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
-            
-            function loadBankInfo() {
-                try { 
-                    let data = JSON.parse(localStorage.getItem(BANK_KEY));
-                    if (!data) return [{id:1, bank:'BCA', account:'1234567890', name:'HEDTRO JEANS'}];
-                    if (!Array.isArray(data)) return [{id:1, bank:data.bank, account:data.account, name:data.name}];
-                    return data;
-                } catch(e) { 
-                    return [{id:1, bank:'BCA', account:'1234567890', name:'HEDTRO JEANS'}]; 
-                }
-            }
-            function saveBankInfo(b) { localStorage.setItem(BANK_KEY, JSON.stringify(b)); }
-            
-            function getSession() { const session = localStorage.getItem(SESSION_KEY); if (!session) return null; try { return JSON.parse(session); } catch (_) { return null; } }
-            function saveSession(s) { localStorage.setItem(SESSION_KEY, JSON.stringify(s)); }
-            function clearSession() { localStorage.removeItem(SESSION_KEY); }
-            function getNextId(arr) { return arr && arr.length ? Math.max(...arr.map(i => i.id || 0)) + 1 : 1; }
-
+            // ========== HELPER FUNCTIONS ==========
             function showToast(message, type = 'info', duration = 3000) {
                 const container = document.getElementById('toastContainer');
-                if (!container) return;
-                const icons = { success: 'fas fa-check-circle', error: 'fas fa-exclamation-circle', info: 'fas fa-info-circle', warning: 'fas fa-exclamation-triangle' };
+                const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
                 const toast = document.createElement('div');
                 toast.className = `toast-item ${type}`;
-                toast.innerHTML = `<span class="toast-icon"><i class="${icons[type] || icons.info}"></i></span><span class="toast-msg">${message}</span><span class="toast-close">&times;</span>`;
+                toast.innerHTML = `<span class="toast-icon"><i class="fas ${icons[type] || icons.info}"></i></span><span class="toast-msg">${message}</span><span class="toast-close">&times;</span>`;
                 container.appendChild(toast);
                 toast.querySelector('.toast-close').addEventListener('click', () => toast.remove());
                 setTimeout(() => toast.remove(), duration);
             }
 
-            const modalOverlay = document.getElementById('modalOverlay');
-            const modalContent = document.getElementById('modalContent');
-            function openModal(html) { modalContent.innerHTML = html; modalOverlay.classList.add('show'); document.body.style.overflow = 'hidden'; }
-            function closeModal() { modalOverlay.classList.remove('show'); document.body.style.overflow = ''; }
-            document.getElementById('modalClose').addEventListener('click', closeModal);
-            modalOverlay.addEventListener('click', function(e) { if (e.target === modalOverlay) closeModal(); });
-
-            const burgerBtn = document.getElementById('burgerBtn');
-            const sidebar = document.getElementById('sidebar');
-            const sidebarOverlay = document.getElementById('sidebarOverlay');
-            function toggleSidebar(open) {
-                const isOpen = open !== undefined ? open : !sidebar.classList.contains('open');
-                sidebar.classList.toggle('open', isOpen);
-                sidebarOverlay.classList.toggle('active', isOpen);
-                if(burgerBtn) burgerBtn.classList.toggle('active', isOpen);
-                document.body.style.overflow = isOpen && window.innerWidth <= 768 ? 'hidden' : '';
+            function getNextId(arr) {
+                if (!arr || arr.length === 0) return 1;
+                return Math.max(...arr.map(item => parseInt(item.id) || 0)) + 1;
             }
-            if(burgerBtn) burgerBtn.onclick = (e) => { e.stopPropagation(); toggleSidebar(); };
-            document.getElementById('closeSidebar').onclick = () => toggleSidebar(false);
-            sidebarOverlay.onclick = () => toggleSidebar(false);
 
             function buildPagination(totalItems, currentPage, containerId, tabKey, renderFunc) {
                 const container = document.getElementById(containerId);
                 if (!container) return;
                 const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
                 if (totalItems === 0) { container.innerHTML = ''; return; }
-
                 let html = `<button class="page-btn" ${currentPage === 1 ? 'disabled' : ''} data-page="${currentPage - 1}"><i class="fas fa-chevron-left"></i> Prev</button>`;
                 let startP = Math.max(1, currentPage - 1);
                 let endP = Math.min(totalPages, currentPage + 1);
-                
                 if (startP > 1) html += `<button class="page-btn" data-page="1">1</button><span style="font-size:0.8rem;color:#999;padding:0 4px;">...</span>`;
                 for (let i = startP; i <= endP; i++) {
                     html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" data-page="${i}">${i}</button>`;
                 }
                 if (endP < totalPages) html += `<span style="font-size:0.8rem;color:#999;padding:0 4px;">...</span><button class="page-btn" data-page="${totalPages}">${totalPages}</button>`;
                 html += `<button class="page-btn" ${currentPage === totalPages ? 'disabled' : ''} data-page="${currentPage + 1}">Next <i class="fas fa-chevron-right"></i></button>`;
-                
                 container.innerHTML = html;
                 container.querySelectorAll('.page-btn:not(:disabled)').forEach(btn => {
                     btn.onclick = function() {
                         const newPage = parseInt(this.dataset.page);
-                        if(newPage && newPage !== currentPage) {
+                        if (newPage && newPage !== currentPage) {
                             statePage[tabKey] = newPage;
                             renderFunc();
                         }
@@ -768,7 +682,35 @@
                 });
             }
 
-            function switchTab(tabId) {
+            // ========== MODAL ==========
+            function openModal(html) {
+                document.getElementById('modalContent').innerHTML = html;
+                document.getElementById('modalOverlay').classList.add('show');
+                document.body.style.overflow = 'hidden';
+            }
+            function closeModal() {
+                document.getElementById('modalOverlay').classList.remove('show');
+                document.body.style.overflow = '';
+            }
+            document.getElementById('modalClose').addEventListener('click', closeModal);
+            document.getElementById('modalOverlay').addEventListener('click', function(e) {
+                if (e.target === this) closeModal();
+            });
+
+            // ========== SIDEBAR ==========
+            function toggleSidebar(open) {
+                const isOpen = open !== undefined ? open : !document.getElementById('sidebar').classList.contains('open');
+                document.getElementById('sidebar').classList.toggle('open', isOpen);
+                document.getElementById('sidebarOverlay').classList.toggle('active', isOpen);
+                if (document.getElementById('burgerBtn')) document.getElementById('burgerBtn').classList.toggle('active', isOpen);
+                document.body.style.overflow = isOpen && window.innerWidth <= 768 ? 'hidden' : '';
+            }
+            document.getElementById('burgerBtn').addEventListener('click', function(e) { e.stopPropagation(); toggleSidebar(); });
+            document.getElementById('closeSidebar').addEventListener('click', function() { toggleSidebar(false); });
+            document.getElementById('sidebarOverlay').addEventListener('click', function() { toggleSidebar(false); });
+
+            // ========== SWITCH TABS ==========
+            async function switchTab(tabId) {
                 document.querySelectorAll('.tab-content').forEach(t => t.classList.remove('active'));
                 let targetId = 'tab' + tabId.split('-').map(part => part.charAt(0).toUpperCase() + part.slice(1)).join('');
                 const tabContent = document.getElementById(targetId);
@@ -778,19 +720,18 @@
                 const activeMenuItem = document.querySelector(`.sidebar .menu-item[data-tab="${tabId}"]`);
                 if (activeMenuItem) activeMenuItem.classList.add('active');
 
-                if (tabId === 'dashboard') renderDashboard();
-                if (tabId === 'members') renderAdminMembers();
-                if (tabId === 'products') renderAdminProducts();
-                if (tabId === 'verification') renderVerification();
-                if (tabId === 'orders') renderOrders();
-                if (tabId === 'deposit') renderDeposit();
-                if (tabId === 'withdraw') renderWithdraw();
-                if (tabId === 'page-settings') renderPageSettings();
+                if (tabId === 'dashboard') await renderDashboard();
+                if (tabId === 'members') await renderAdminMembers();
+                if (tabId === 'products') await renderAdminProducts();
+                if (tabId === 'verification') await renderVerification();
+                if (tabId === 'orders') await renderOrders();
+                if (tabId === 'deposit') await renderDeposit();
+                if (tabId === 'withdraw') await renderWithdraw();
+                if (tabId === 'page-settings') await renderPageSettings();
                 if (tabId === 'settings') {
-                    loadSettingsToForm();
-                    renderBankSettings();
+                    await loadSettingsToForm();
+                    await renderBankSettings();
                 }
-                
                 sessionStorage.setItem('adminActiveTab', tabId);
                 toggleSidebar(false);
             }
@@ -805,722 +746,1317 @@
                     document.querySelectorAll('.sub-tab-content').forEach(c => c.classList.remove('active'));
                     this.classList.add('active');
                     const targetSub = document.getElementById(this.dataset.subtab);
-                    if(targetSub) targetSub.classList.add('active');
+                    if (targetSub) targetSub.classList.add('active');
                     sessionStorage.setItem('adminActiveSubTab', this.dataset.subtab);
                 });
             });
 
-            function processTransactionStatus(id, newStatus, type) {
-                let txs = loadTransactions();
-                let tx = txs.find(t => t.id === id);
-                if (!tx) return;
-
-                let users = loadUsers();
-                let user = users.find(u => u.id === tx.user_id);
-
-                if (user) {
-                    if (type === 'deposit' && newStatus === 'success' && tx.status === 'pending') {
-                        user.wallet = (user.wallet || 0) + (tx.originalAmount || tx.amount);
-                    } else if (type === 'withdraw' && newStatus === 'failed' && tx.status === 'pending') {
-                        user.wallet = (user.wallet || 0) + tx.amount;
+            // ========== AUTH GUARD ==========
+            async function checkAdminAuth() {
+                try {
+                    const session = await window.getSession();
+                    if (!session) {
+                        document.getElementById('loginOverlay').classList.remove('hidden');
+                        document.getElementById('mainApp').style.display = 'none';
+                        return false;
                     }
-                    if (user.transactions) {
-                        let utx = user.transactions.find(t => t.id === id);
-                        if (utx) utx.status = newStatus;
+                    const profile = await window.getUserProfile();
+                    if (!profile || profile.role !== 'admin') {
+                        document.getElementById('loginOverlay').classList.remove('hidden');
+                        document.getElementById('mainApp').style.display = 'none';
+                        showToast('Anda bukan admin.', 'error');
+                        return false;
                     }
-                    saveUsers(users);
-                }
-                tx.status = newStatus;
-                saveTransactions(txs);
-
-                if (type === 'deposit') renderDeposit();
-                if (type === 'withdraw') renderWithdraw();
-                renderDashboard();
-                showToast(`Transaksi ${newStatus === 'success' ? 'disetujui' : 'ditolak'}.`, newStatus === 'success' ? 'success' : 'warning');
-            }
-
-            function deleteTransaction(id, type) {
-                let txs = loadTransactions();
-                txs = txs.filter(t => t.id !== id);
-                saveTransactions(txs);
-
-                let users = loadUsers();
-                users.forEach(u => {
-                    if (u.transactions) u.transactions = u.transactions.filter(t => t.id !== id);
-                });
-                saveUsers(users);
-
-                if (type === 'deposit') renderDeposit();
-                if (type === 'withdraw') renderWithdraw();
-                renderDashboard();
-                showToast('Transaksi dihapus.', 'info');
-            }
-
-            function renderDashboard() {
-                const users = loadUsers();
-                const orders = loadOrders();
-                const products = loadProducts();
-                const transactions = loadTransactions();
-
-                document.getElementById('statTotalMember').textContent = users.length;
-                document.getElementById('statVerifiedMember').textContent = users.filter(u => u.status === 'verified').length;
-                document.getElementById('statTotalOrders').textContent = orders.length;
-                document.getElementById('statPendingOrders').textContent = orders.filter(o => o.status === 'pending').length;
-                document.getElementById('statTotalProducts').textContent = products.length;
-                
-                const totalVol = transactions.reduce((sum, t) => sum + (t.amount || t.price || 0), 0);
-                document.getElementById('statTotalTransactions').textContent = 'Rp ' + totalVol.toLocaleString();
-
-                const container = document.getElementById('adminTransactionHistory');
-                const sorted = [...transactions].reverse().slice(0, 15);
-                if (sorted.length === 0) {
-                    container.innerHTML = '<p class="text-muted">Belum ada transaksi.</p>';
-                    return;
-                }
-                let html = '';
-                sorted.forEach(t => {
-                    const user = users.find(u => u.id === t.user_id);
-                    const userName = user ? (user.name || user.username) : 'Pelanggan / Guest';
-                    const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'withdraw' ? 'Withdraw' : (t.type === 'order' ? 'Order' : 'RO'));
-                    const amountClass = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase') ? 'plus' : 'minus';
-                    const sign = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase') ? '+' : '-';
-                    const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' || t.status === 'processing' ? '✅ Selesai' : '❌ Gagal');
-                    const date = new Date(t.createdAt || t.date || Date.now()).toLocaleDateString('id-ID');
-                    
-                    let actionBtn = '';
-                    if(t.status === 'pending' && (t.type === 'deposit' || t.type === 'withdraw')) {
-                        actionBtn = `<button class="btn-sm btn-sm-success approve-tx-btn" data-id="${t.id}" data-type="${t.type}" style="margin-left:6px; padding:4px 8px; font-size:0.7rem;">Approve</button>`;
-                        if (t.proof_image) actionBtn += `<button class="btn-sm btn-sm-gold view-tx-proof" data-proof="${t.proof_image}" style="margin-left:4px; padding:4px 8px; font-size:0.7rem;">Bukti</button>`;
-                    }
-
-                    html += `<div class="history-item" style="flex-wrap:wrap; gap:8px;">
-                        <span style="flex:1;"><strong>${userName}</strong> · ${typeLabel} ${statusText} <span class="text-muted" style="font-size:0.7rem;">${date}</span></span>
-                        <span class="amount ${amountClass}" style="display:flex; align-items:center;">${sign} Rp ${(t.amount || 0).toLocaleString()} ${actionBtn}</span>
-                    </div>`;
-                });
-                container.innerHTML = html;
-
-                container.querySelectorAll('.view-tx-proof').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        openModal(`<h3><i class="fas fa-image" style="color:var(--gold-accent);"></i> Bukti Transfer</h3><div class="proof-image" style="max-width:100%;"><img src="${this.dataset.proof}" style="width:100%; border-radius:10px;" /></div><button class="btn-submit" onclick="document.getElementById('modalClose').click();" style="margin-top:12px;">Tutup</button>`);
-                    });
-                });
-
-                container.querySelectorAll('.approve-tx-btn').forEach(btn => {
-                    btn.addEventListener('click', function() {
-                        processTransactionStatus(parseInt(this.dataset.id), 'success', this.dataset.type);
-                    });
-                });
-            }
-
-            function renderAdminMembers() {
-                const tbody = document.getElementById('adminTableBody');
-                if (!tbody) return;
-                const users = loadUsers();
-                const totalItems = users.length;
-                document.getElementById('totalMembers').textContent = totalItems;
-                if (totalItems === 0) { tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;">Kosong.</td></tr>`; document.getElementById('membersPagination').innerHTML = ''; return; }
-
-                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
-                statePage.members = Math.max(1, Math.min(statePage.members, totalPages));
-                const startIdx = (statePage.members - 1) * ITEMS_PER_PAGE;
-                const paginatedData = users.slice(startIdx, startIdx + ITEMS_PER_PAGE);
-
-                let html = '';
-                paginatedData.forEach(u => {
-                    const isAdmin = u.email === 'admin@mlm.com' || u.role === 'admin';
-                    const statusClass = 'badge-' + (u.status || 'free');
-                    let fotoHtml = '<i class="fas fa-user" style="font-size:1.2rem; color:var(--denim-blue);"></i>';
-                    if (u.profile_image) fotoHtml = `<img src="${u.profile_image}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-accent);" />`;
-                    html += `<tr>
-                        <td data-label="Foto">${fotoHtml}</td>
-                        <td data-label="ID Member"><strong>${u.id}</strong></td>
-                        <td data-label="Nama / User"><strong>${u.name || u.username}</strong><br><small class="text-muted">@${u.username || 'user'}</small> ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}</td>
-                        <td data-label="Email">${u.email}</td>
-                        <td data-label="Sponsor">${u.sponsor_id || '-'}</td>
-                        <td data-label="Status"><span class="badge-status ${statusClass}">${(u.status || 'free').toUpperCase()}</span></td>
-                        <td data-label="Saldo Wallet">Rp ${(u.wallet || 0).toLocaleString()}</td>
-                        <td data-label="Aksi">
-                            <div>
-                                <button class="btn-sm btn-sm-warning edit-member-btn" data-id="${u.id}"><i class="fas fa-edit"></i> Edit</button>
-                                ${!isAdmin ? `<button class="btn-sm btn-sm-danger delete-member-btn" data-id="${u.id}"><i class="fas fa-trash"></i> Hapus</button>` : ''}
-                            </div>
-                        </td>
-                    </tr>`;
-                });
-                tbody.innerHTML = html;
-                buildPagination(totalItems, statePage.members, 'membersPagination', 'members', renderAdminMembers);
-
-                document.querySelectorAll('.delete-member-btn').forEach(btn => {
-                    btn.onclick = function() {
-                        if(!confirm('Hapus member ini dari database?')) return;
-                        let users = loadUsers().filter(u => u.id !== parseInt(this.dataset.id));
-                        saveUsers(users); renderAdminMembers(); renderDashboard(); showToast('✅ Member dihapus.', 'info');
-                    };
-                });
-            }
-
-            function renderDeposit() {
-                const tbody = document.getElementById('depositTableBody');
-                if (!tbody) return;
-                const transactions = loadTransactions();
-                const users = loadUsers();
-                const deposits = transactions.filter(t => t.type === 'deposit').reverse();
-
-                const totalItems = deposits.length;
-                if (totalItems === 0) { tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;">Belum ada data deposit.</td></tr>`; document.getElementById('depositPagination').innerHTML = ''; return; }
-
-                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
-                statePage.deposit = Math.max(1, Math.min(statePage.deposit, totalPages));
-                const startIdx = (statePage.deposit - 1) * ITEMS_PER_PAGE;
-                const paginatedData = deposits.slice(startIdx, startIdx + ITEMS_PER_PAGE);
-
-                let html = '';
-                paginatedData.forEach(t => {
-                    const user = users.find(u => u.id === t.user_id);
-                    const userName = user ? (user.name || user.username) : 'Pelanggan';
-                    const hasProof = t.proof_image ? true : false;
-                    const statusClass = t.status === 'pending' ? 'badge-pending' : (t.status === 'success' ? 'badge-success' : 'badge-failed');
-
-                    html += `<tr>
-                        <td data-label="ID Transaksi">${t.id}</td>
-                        <td data-label="Member"><strong>${userName}</strong></td>
-                        <td data-label="Metode">${(t.method || 'bank').toUpperCase()}</td>
-                        <td data-label="Nominal">Rp ${(t.amount || 0).toLocaleString()}</td>
-                        <td data-label="Status"><span class="badge-status ${statusClass}">${t.status.toUpperCase()}</span></td>
-                        <td data-label="Tanggal">${new Date(t.date || t.createdAt || Date.now()).toLocaleDateString('id-ID')}</td>
-                        <td data-label="Bukti TF">${hasProof ? `<button class="btn-sm btn-sm-gold view-tx-proof" data-proof="${t.proof_image}">Lihat</button>` : 'Belum upload'}</td>
-                        <td data-label="Aksi">
-                            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
-                                ${t.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-dp" data-id="${t.id}">Approve</button>
-                                <button class="btn-sm btn-sm-warning reject-dp" data-id="${t.id}">Reject</button>` : ''}
-                                <button class="btn-sm btn-sm-danger delete-dp" data-id="${t.id}">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>`;
-                });
-                tbody.innerHTML = html;
-                buildPagination(totalItems, statePage.deposit, 'depositPagination', 'deposit', renderDeposit);
-
-                tbody.querySelectorAll('.view-tx-proof').forEach(btn => {
-                    btn.onclick = function() { openModal(`<h3><i class="fas fa-image" style="color:var(--gold-accent);"></i> Bukti Transfer</h3><div class="proof-image" style="max-width:100%;"><img src="${this.dataset.proof}" style="width:100%; border-radius:10px;" /></div><button class="btn-submit" onclick="document.getElementById('modalClose').click();" style="margin-top:12px;">Tutup</button>`); };
-                });
-                tbody.querySelectorAll('.approve-dp').forEach(btn => {
-                    btn.onclick = function() { if(!confirm('Setujui deposit ini? Saldo member akan bertambah otomatis.')) return; processTransactionStatus(parseInt(this.dataset.id), 'success', 'deposit'); };
-                });
-                tbody.querySelectorAll('.reject-dp').forEach(btn => {
-                    btn.onclick = function() { if(!confirm('Tolak deposit ini?')) return; processTransactionStatus(parseInt(this.dataset.id), 'failed', 'deposit'); };
-                });
-                tbody.querySelectorAll('.delete-dp').forEach(btn => {
-                    btn.onclick = function() { if(!confirm('Hapus data deposit ini dari sistem secara permanen?')) return; deleteTransaction(parseInt(this.dataset.id), 'deposit'); };
-                });
-            }
-
-            function renderWithdraw() {
-                const tbody = document.getElementById('withdrawTableBody');
-                if (!tbody) return;
-                const transactions = loadTransactions();
-                const users = loadUsers();
-                const withdraws = transactions.filter(t => t.type === 'withdraw').reverse();
-
-                const totalItems = withdraws.length;
-                if (totalItems === 0) { tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;padding:20px;">Belum ada data withdraw.</td></tr>`; document.getElementById('withdrawPagination').innerHTML = ''; return; }
-
-                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
-                statePage.withdraw = Math.max(1, Math.min(statePage.withdraw, totalPages));
-                const startIdx = (statePage.withdraw - 1) * ITEMS_PER_PAGE;
-                const paginatedData = withdraws.slice(startIdx, startIdx + ITEMS_PER_PAGE);
-
-                let html = '';
-                paginatedData.forEach(t => {
-                    const user = users.find(u => u.id === t.user_id);
-                    const userName = user ? (user.name || user.username) : 'Pelanggan';
-                    const statusClass = t.status === 'pending' ? 'badge-pending' : (t.status === 'success' ? 'badge-success' : 'badge-failed');
-
-                    html += `<tr>
-                        <td data-label="ID Transaksi">${t.id}</td>
-                        <td data-label="Member"><strong>${userName}</strong></td>
-                        <td data-label="Rekening">${t.account || '-'}</td>
-                        <td data-label="Nominal">Rp ${(t.amount || 0).toLocaleString()}</td>
-                        <td data-label="Status"><span class="badge-status ${statusClass}">${t.status.toUpperCase()}</span></td>
-                        <td data-label="Tanggal">${new Date(t.date || t.createdAt || Date.now()).toLocaleDateString('id-ID')}</td>
-                        <td data-label="Aksi">
-                            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
-                                ${t.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-wd" data-id="${t.id}">Approve</button>
-                                <button class="btn-sm btn-sm-warning reject-wd" data-id="${t.id}">Reject</button>` : ''}
-                                <button class="btn-sm btn-sm-danger delete-wd" data-id="${t.id}">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>`;
-                });
-                tbody.innerHTML = html;
-                buildPagination(totalItems, statePage.withdraw, 'withdrawPagination', 'withdraw', renderWithdraw);
-
-                tbody.querySelectorAll('.approve-wd').forEach(btn => {
-                    btn.onclick = function() { 
-                        const id = parseInt(this.dataset.id);
-                        const txs = loadTransactions();
-                        const tx = txs.find(t => t.id === id);
-                        if (tx && tx.amount < 50000) { showToast('Minimal withdraw Rp 50.000', 'error'); return; }
-                        if(!confirm('Setujui withdraw ini? Pastikan dana telah ditransfer ke rekening member.')) return; 
-                        processTransactionStatus(id, 'success', 'withdraw'); 
-                    };
-                });
-                tbody.querySelectorAll('.reject-wd').forEach(btn => {
-                    btn.onclick = function() { if(!confirm('Tolak withdraw ini? Saldo yang dipotong akan dikembalikan ke wallet member.')) return; processTransactionStatus(parseInt(this.dataset.id), 'failed', 'withdraw'); };
-                });
-                tbody.querySelectorAll('.delete-wd').forEach(btn => {
-                    btn.onclick = function() { if(!confirm('Hapus data withdraw ini dari sistem?')) return; deleteTransaction(parseInt(this.dataset.id), 'withdraw'); };
-                });
-            }
-
-            // ========== ORDERS dengan RESI ==========
-            function renderOrders() {
-                const tbody = document.getElementById('ordersTableBody');
-                if (!tbody) return;
-                const orders = loadOrders();
-                const users = loadUsers();
-                const totalItems = orders.length;
-
-                if (totalItems === 0) { tbody.innerHTML = `<tr><td colspan="10" style="text-align:center;padding:20px;">Belum ada pesanan.</td></tr>`; document.getElementById('ordersPagination').innerHTML = ''; return; }
-
-                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
-                statePage.orders = Math.max(1, Math.min(statePage.orders, totalPages));
-                const startIdx = (statePage.orders - 1) * ITEMS_PER_PAGE;
-                const paginatedData = [...orders].reverse().slice(startIdx, startIdx + ITEMS_PER_PAGE);
-
-                let html = '';
-                paginatedData.forEach((o, idx) => {
-                    const user = users.find(u => u.id === o.user_id);
-                    const userName = user ? (user.name || user.username) : o.user_name || 'Guest';
-                    const typeLabel = o.type === 'first_order' ? '🎯 First Order' : (o.type === 'ro' ? '🔄 RO' : '📦 Regular');
-                    const statusClass = 'badge-' + (o.status || 'pending');
-                    const hasProof = o.proof_image || false;
-                    const resi = o.resi || '-';
-                    
-                    html += `<tr>
-                        <td data-label="#">${startIdx + idx + 1}</td>
-                        <td data-label="Member"><strong>${userName}</strong></td>
-                        <td data-label="Tipe">${typeLabel}</td>
-                        <td data-label="Produk">${o.items ? o.items.map(i => i.name).join(', ') : '-'}</td>
-                        <td data-label="Total">Rp ${(o.total || 0).toLocaleString()}</td>
-                        <td data-label="Status"><span class="badge-status ${statusClass}">${(o.status||'pending').toUpperCase()}</span></td>
-                        <td data-label="Resi">${resi}</td>
-                        <td data-label="Tanggal">${new Date(o.createdAt || Date.now()).toLocaleDateString('id-ID')}</td>
-                        <td data-label="Bukti">${hasProof ? `<button class="btn-sm btn-sm-gold view-proof" data-id="${o.id}">Lihat</button>` : 'Belum upload'}</td>
-                        <td data-label="Aksi">
-                            <div style="display:flex; gap:6px; flex-wrap:wrap; justify-content:flex-end;">
-                                ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
-                                ${o.status === 'processing' ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim + Resi</button>` : ''}
-                            </div>
-                        </td>
-                    </tr>`;
-                });
-                tbody.innerHTML = html;
-                buildPagination(totalItems, statePage.orders, 'ordersPagination', 'orders', renderOrders);
-
-                tbody.querySelectorAll('.view-proof').forEach(btn => {
-                    btn.onclick = function() {
-                        const ord = loadOrders().find(o => o.id === parseInt(this.dataset.id));
-                        if(ord) openModal(`<h3>Bukti Pembayaran</h3><div class="proof-image" style="max-width:100%;"><img src="${ord.proof_image}" style="width:100%; border-radius:10px;" /></div><button class="btn-submit" onclick="document.getElementById('modalClose').click();" style="margin-top:12px;">Tutup</button>`);
-                    };
-                });
-
-                tbody.querySelectorAll('.approve-order').forEach(btn => {
-                    btn.onclick = function() {
-                        const id = parseInt(this.dataset.id);
-                        let orders = loadOrders(); const order = orders.find(o => o.id === id);
-                        if (!order) return;
-                        order.status = 'processing'; saveOrders(orders);
-                        
-                        let txs = loadTransactions(); let tx = txs.find(t => t.id === id);
-                        if (tx) { tx.status = 'success'; saveTransactions(txs); }
-                        
-                        let users = loadUsers(); let user = users.find(u => u.id === order.user_id);
-                        if (user) {
-                            if(user.transactions) { let utx = user.transactions.find(t => t.id === id); if(utx) utx.status = 'success'; }
-                            if(user.purchase_history) { let upx = user.purchase_history.find(t => t.id === id); if(upx) upx.status = 'success'; }
-                            if(user.orders) { let uox = user.orders.find(o => o.id === id); if(uox) uox.status = 'processing'; }
-                            saveUsers(users);
-                        }
-
-                        renderOrders(); renderDashboard(); showToast(`✅ Order disetujui.`, 'success');
-                    };
-                });
-
-                tbody.querySelectorAll('.ship-order').forEach(btn => {
-                    btn.onclick = function() {
-                        const id = parseInt(this.dataset.id);
-                        const order = loadOrders().find(o => o.id === id);
-                        if (!order) return;
-                        
-                        openModal(`
-                            <h3><i class="fas fa-truck" style="color:var(--gold-accent);"></i> Kirim Pesanan</h3>
-                            <p class="sub">Masukkan nomor resi pengiriman untuk pesanan <strong>${order.order_number || ('ORD-'+id)}</strong></p>
-                            <div class="form-group">
-                                <label>Nomor Resi</label>
-                                <input type="text" id="resiInput" placeholder="Contoh: JNE-1234567890" />
-                            </div>
-                            <button class="btn-submit" id="saveResiBtn">Simpan & Kirim</button>
-                        `);
-                        
-                        document.getElementById('saveResiBtn').onclick = function() {
-                            const resi = document.getElementById('resiInput').value.trim();
-                            if (!resi) { showToast('Nomor resi wajib diisi.', 'error'); return; }
-                            
-                            let orders = loadOrders();
-                            const o = orders.find(x => x.id === id);
-                            if (o) {
-                                o.status = 'shipped';
-                                o.resi = resi;
-                                saveOrders(orders);
-                            }
-                            
-                            // Update juga di user purchase_history & transactions
-                            let users = loadUsers();
-                            let user = users.find(u => u.id === o.user_id);
-                            if (user) {
-                                if(user.orders) { let uox = user.orders.find(x => x.id === id); if(uox) { uox.status = 'shipped'; uox.resi = resi; } }
-                                if(user.purchase_history) { let upx = user.purchase_history.find(x => x.id === id); if(upx) { upx.status = 'shipped'; upx.resi = resi; } }
-                                if(user.transactions) { let utx = user.transactions.find(x => x.id === id); if(utx) { utx.resi = resi; } }
-                                saveUsers(users);
-                            }
-                            
-                            // Update global transactions
-                            let txs = loadTransactions();
-                            let tx = txs.find(x => x.id === id);
-                            if (tx) { tx.resi = resi; tx.status = 'shipped'; saveTransactions(txs); }
-                            
-                            closeModal();
-                            renderOrders();
-                            renderDashboard();
-                            showToast(`🚚 Pesanan dikirim dengan resi: ${resi}`, 'success');
-                        };
-                    };
-                });
-            }
-
-            function renderAdminProducts() { 
-                const tbody = document.getElementById('adminProductTableBody');
-                if (!tbody) return;
-                const products = loadProducts();
-                const totalItems = products.length;
-                if (totalItems === 0) { tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;">Belum ada produk.</td></tr>`; document.getElementById('productsPagination').innerHTML = ''; return; }
-
-                const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
-                statePage.products = Math.max(1, Math.min(statePage.products, totalPages));
-                const startIdx = (statePage.products - 1) * ITEMS_PER_PAGE;
-                const paginatedData = products.slice(startIdx, startIdx + ITEMS_PER_PAGE);
-
-                let html = '';
-                paginatedData.forEach((p, idx) => {
-                    let imgHtml = `<i class="fas fa-tshirt" style="font-size:1.5rem;color:var(--denim-blue);"></i>`;
-                    if (p.image && (p.image.startsWith('data:image') || p.image.startsWith('http'))) imgHtml = `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />`;
-                    html += `<tr>
-                        <td data-label="#">${startIdx + idx + 1}</td>
-                        <td data-label="Gambar">${imgHtml}</td>
-                        <td data-label="Nama Produk"><strong>${p.name}</strong></td>
-                        <td data-label="Harga Member">Rp ${p.price.toLocaleString()}</td>
-                        <td data-label="Harga Normal">Rp ${p.original?.toLocaleString() || '-'}</td>
-                        <td data-label="Tag"><span class="badge-status" style="background:${p.badgeColor || '#c9a84c'};color:#fff;">${p.tag || 'PRODUK'}</span></td>
-                        <td data-label="Stok">${p.stock}</td>
-                        <td data-label="Aksi">
-                            <div>
-                                <button class="btn-sm btn-sm-danger delete-product" data-id="${p.id}">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>`;
-                });
-                tbody.innerHTML = html;
-                buildPagination(totalItems, statePage.products, 'productsPagination', 'products', renderAdminProducts);
-
-                tbody.querySelectorAll('.delete-product').forEach(btn => {
-                    btn.onclick = function() {
-                        if (!confirm('Hapus produk ini?')) return;
-                        const id = parseInt(this.dataset.id);
-                        let products = loadProducts().filter(x => x.id !== id);
-                        saveProducts(products); renderAdminProducts(); renderDashboard(); showToast('✅ Produk dihapus.', 'info');
-                    }
-                });
-            }
-
-            function renderVerification() {
-                const users = loadUsers();
-                const tbody = document.getElementById('verifTableBody');
-                const pending = users.filter(u => u.status === 'pending' || u.status === 'free');
-                if (pending.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Semua member sudah terverifikasi.</td></tr>'; return; }
-                let html = '';
-                pending.forEach(u => {
-                    html += `<tr><td>${u.id}</td><td>${u.name || u.username}</td><td>${u.email}</td><td><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td><td>${u.proof_image ? `<button class="btn-sm btn-sm-gold view-user-proof" data-proof="${u.proof_image}">Lihat</button>` : 'Belum'}</td><td><button class="btn-sm btn-sm-success verify-user" data-id="${u.id}">Verifikasi</button></td></tr>`;
-                });
-                tbody.innerHTML = html;
-                tbody.querySelectorAll('.view-user-proof').forEach(btn => btn.onclick = function() { openModal(`<h3>Bukti Verifikasi</h3><div class="proof-image" style="max-width:100%;"><img src="${this.dataset.proof}" style="width:100%; border-radius:10px;" /></div><button class="btn-submit" onclick="document.getElementById('modalClose').click();" style="margin-top:12px;">Tutup</button>`); });
-                tbody.querySelectorAll('.verify-user').forEach(btn => btn.onclick = function() {
-                    const id = parseInt(this.dataset.id); let users = loadUsers(); const u = users.find(x => x.id === id);
-                    if (u) { u.status = 'verified'; saveUsers(users); renderVerification(); renderAdminMembers(); renderDashboard(); showToast(`User diverifikasi!`, 'success'); }
-                });
-            }
-
-            function renderPageSettings() { 
-                const about = loadAbout();
-                document.getElementById('aboutTitle').value = about.title || 'Tentang Kami';
-                document.getElementById('aboutContent').value = about.content || '';
-
-                const f = loadFooter();
-                if(f.brand) document.getElementById('footerBrand').value = f.brand;
-                if(f.desc) document.getElementById('footerDesc').value = f.desc;
-                if(f.copyright) document.getElementById('footerCopyright').value = f.copyright;
-                if(f.social) {
-                    document.getElementById('sosmedInstagram').value = f.social.instagram || '';
-                    document.getElementById('sosmedFacebook').value = f.social.facebook || '';
-                    document.getElementById('sosmedYoutube').value = f.social.youtube || '';
-                    document.getElementById('sosmedTiktok').value = f.social.tiktok || '';
+                    currentAdmin = profile;
+                    document.getElementById('loginOverlay').classList.add('hidden');
+                    document.getElementById('mainApp').style.display = 'block';
+                    document.getElementById('navUserName').textContent = profile.fullname || profile.username;
+                    return true;
+                } catch (e) {
+                    console.error('Auth error:', e);
+                    document.getElementById('loginOverlay').classList.remove('hidden');
+                    document.getElementById('mainApp').style.display = 'none';
+                    return false;
                 }
             }
-            
-            function loadSettingsToForm() {
-                const settings = loadSettings();
-                const users = loadUsers();
-                const adminUser = users.find(u => u.email === 'admin@mlm.com' || u.role === 'admin');
 
-                document.getElementById('setSponsorBonus').value = settings.sponsorBonus || 10;
-                document.getElementById('setRoBonus').value = settings.roBonus || 3;
-                const bLevels = settings.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
-                for(let i = 1; i <= 10; i++) { const elB = document.getElementById(`setBinaryL${i}`); if(elB) elB.value = bLevels[i-1] !== undefined ? bLevels[i-1] : 0; }
-                const rLevels = settings.rewardBonusLevels || [5, 4, 3, 2, 1];
-                for(let i = 1; i <= 5; i++) { const elR = document.getElementById(`setRewardL${i}`); if(elR) elR.value = rLevels[i-1] !== undefined ? rLevels[i-1] : 0; }
-                
-                document.getElementById('setMemberPrice').value = settings.memberPrice || 550000;
-                document.getElementById('setBrandName').value = settings.brandName || 'HEDTRO JEANS';
-                document.getElementById('setBrandLogo').value = settings.brandLogo || 'fa-tshirt';
-                document.getElementById('setBrandIcon').value = settings.brandIcon || 'fa-tshirt';
-                document.getElementById('setHeroTitle').value = settings.heroTitle || 'HEDTRO JEANS · Premium Denim';
-                
-                if(adminUser) document.getElementById('setAdminEmail').value = adminUser.email;
-            }
-
-            function renderBankSettings() {
-                const banks = loadBankInfo();
-                const tbody = document.getElementById('bankTableBody');
-                if(!tbody) return;
-                if(banks.length === 0) {
-                    tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada rekening/pembayaran.</td></tr>';
-                    return;
-                }
-                let html = '';
-                banks.forEach(b => {
-                    html += `<tr>
-                        <td><strong>${b.bank}</strong></td>
-                        <td>${b.account}</td>
-                        <td>${b.name}</td>
-                        <td>
-                            <div style="display:flex;gap:6px;">
-                                <button class="btn-sm btn-sm-warning edit-bank" data-id="${b.id}">Edit</button>
-                                <button class="btn-sm btn-sm-danger del-bank" data-id="${b.id}">Hapus</button>
-                            </div>
-                        </td>
-                    </tr>`;
-                });
-                tbody.innerHTML = html;
-
-                tbody.querySelectorAll('.edit-bank').forEach(btn => {
-                    btn.onclick = () => openBankModal(parseInt(btn.dataset.id));
-                });
-                tbody.querySelectorAll('.del-bank').forEach(btn => {
-                    btn.onclick = () => {
-                        if(confirm('Hapus metode pembayaran ini?')) {
-                            const id = parseInt(btn.dataset.id);
-                            let allBanks = loadBankInfo().filter(x => x.id !== id);
-                            saveBankInfo(allBanks);
-                            renderBankSettings();
-                            showToast('Metode pembayaran dihapus.', 'info');
-                        }
-                    };
-                });
-            }
-
-            function openBankModal(id = null) {
-                let banks = loadBankInfo();
-                let b = id ? banks.find(x => x.id === id) : null;
-                let isEdit = !!b;
-                let html = `
-                    <h3><i class="fas fa-university" style="color:var(--gold-accent);"></i> ${isEdit ? 'Edit Pembayaran' : 'Tambah Pembayaran'}</h3>
-                    <p class="sub">Metode pembayaran akan tampil di dashboard member.</p>
-                    <div class="form-group"><label>Nama Bank / E-Wallet</label><input type="text" id="mBankName" value="${b ? b.bank : ''}" placeholder="Contoh: BCA / DANA / OVO"></div>
-                    <div class="form-group"><label>No. Rekening / VA</label><input type="text" id="mBankAcc" value="${b ? b.account : ''}" placeholder="1234567890"></div>
-                    <div class="form-group"><label>Atas Nama</label><input type="text" id="mBankHolder" value="${b ? b.name : ''}" placeholder="Nama Lengkap Pemilik"></div>
-                    <button class="btn-submit" id="saveBankBtn">Simpan Rekening</button>
-                    <button class="btn-submit" style="background:#e2e8f0; color:#333; margin-top:8px;" onclick="document.getElementById('modalClose').click();">Batal</button>
-                `;
-                openModal(html);
-                document.getElementById('saveBankBtn').onclick = function() {
-                    let bankName = document.getElementById('mBankName').value.trim();
-                    let bankAcc = document.getElementById('mBankAcc').value.trim();
-                    let bankHolder = document.getElementById('mBankHolder').value.trim();
-                    if(!bankName || !bankAcc || !bankHolder) { showToast('Semua wajib diisi', 'error'); return; }
-                    
-                    if(isEdit) {
-                        b.bank = bankName; b.account = bankAcc; b.name = bankHolder;
+            // ========== LOGIN ==========
+            document.getElementById('adminLoginBtn').addEventListener('click', async function() {
+                const email = document.getElementById('adminLoginEmail').value.trim();
+                const password = document.getElementById('adminLoginPassword').value.trim();
+                const msgEl = document.getElementById('adminLoginMsg');
+                try {
+                    await window.signIn(email, password);
+                    const profile = await window.getUserProfile();
+                    if (profile && profile.role === 'admin') {
+                        msgEl.className = 'msg success';
+                        msgEl.innerText = '✅ Login berhasil!';
+                        setTimeout(() => { window.location.reload(); }, 500);
                     } else {
-                        banks.push({ id: Date.now(), bank: bankName, account: bankAcc, name: bankHolder });
+                        await window.signOut();
+                        msgEl.className = 'msg error';
+                        msgEl.innerText = '❌ Akun ini bukan admin.';
                     }
-                    saveBankInfo(banks); renderBankSettings(); document.getElementById('modalClose').click(); showToast('Metode pembayaran disimpan', 'success');
-                };
+                } catch (error) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '❌ ' + error.message;
+                }
+            });
+
+            document.getElementById('adminDemoBtn').addEventListener('click', function() {
+                document.getElementById('adminLoginEmail').value = 'admin@mlm.com';
+                document.getElementById('adminLoginPassword').value = 'admin123';
+                document.getElementById('adminLoginBtn').click();
+            });
+
+            document.getElementById('adminLoginPassword').addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('adminLoginBtn').click();
+            });
+
+            // ========== LOGOUT ==========
+            document.getElementById('sideLogoutBtn').addEventListener('click', async function() {
+                await window.signOut();
+                window.location.reload();
+            });
+
+            // ========== DASHBOARD ==========
+            async function renderDashboard() {
+                try {
+                    allUsers = await window.getTable('users');
+                    allOrders = await window.getOrders();
+                    allProducts = await window.getProducts();
+                    allTransactions = await window.getTransactions();
+
+                    document.getElementById('statTotalMember').textContent = allUsers.length;
+                    document.getElementById('statVerifiedMember').textContent = allUsers.filter(u => u.status === 'verified').length;
+                    document.getElementById('statTotalOrders').textContent = allOrders.length;
+                    document.getElementById('statPendingOrders').textContent = allOrders.filter(o => o.status === 'pending').length;
+                    document.getElementById('statTotalProducts').textContent = allProducts.length;
+                    const totalVol = allTransactions.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
+                    document.getElementById('statTotalTransactions').textContent = 'Rp ' + totalVol.toLocaleString();
+
+                    const container = document.getElementById('adminTransactionHistory');
+                    const sorted = [...allTransactions].reverse().slice(0, 15);
+                    if (sorted.length === 0) {
+                        container.innerHTML = '<p class="text-muted">Belum ada transaksi.</p>';
+                        return;
+                    }
+                    let html = '';
+                    sorted.forEach(t => {
+                        const user = allUsers.find(u => u.id === t.user_id);
+                        const userName = user ? (user.fullname || user.username) : 'Pelanggan';
+                        const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'withdraw' ? 'Withdraw' : (t.type === 'order' ? 'Order' : 'RO'));
+                        const amountClass = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase') ? 'plus' : 'minus';
+                        const sign = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase') ? '+' : '-';
+                        const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' || t.status === 'processing' ? '✅ Selesai' : '❌ Gagal');
+                        const date = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID');
+                        let actionBtn = '';
+                        if (t.status === 'pending' && (t.type === 'deposit' || t.type === 'withdraw')) {
+                            actionBtn = `<button class="btn-sm btn-sm-success approve-tx-btn" data-id="${t.id}" data-type="${t.type}" style="margin-left:6px; padding:4px 8px; font-size:0.7rem;">Approve</button>`;
+                            if (t.proof_image) actionBtn += `<button class="btn-sm btn-sm-gold view-tx-proof" data-proof="${t.proof_image}" style="margin-left:4px; padding:4px 8px; font-size:0.7rem;">Bukti</button>`;
+                        }
+                        html += `<div class="history-item" style="flex-wrap:wrap; gap:8px;">
+                            <span style="flex:1;"><strong>${userName}</strong> · ${typeLabel} ${statusText} <span class="text-muted" style="font-size:0.7rem;">${date}</span></span>
+                            <span class="amount ${amountClass}" style="display:flex; align-items:center;">${sign} Rp ${(parseFloat(t.amount) || 0).toLocaleString()} ${actionBtn}</span>
+                        </div>`;
+                    });
+                    container.innerHTML = html;
+
+                    container.querySelectorAll('.view-tx-proof').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            openModal(`<h3><i class="fas fa-image" style="color:var(--gold-accent);"></i> Bukti Transfer</h3><div class="proof-image" style="max-width:100%;"><img src="${this.dataset.proof}" style="width:100%; border-radius:10px;" /></div><button class="btn-submit" onclick="closeModal()" style="margin-top:12px;">Tutup</button>`);
+                        });
+                    });
+
+                    container.querySelectorAll('.approve-tx-btn').forEach(btn => {
+                        btn.addEventListener('click', function() {
+                            processTransaction(parseInt(this.dataset.id), 'success', this.dataset.type);
+                        });
+                    });
+                } catch (e) {
+                    console.error('Dashboard error:', e);
+                    showToast('Gagal memuat dashboard.', 'error');
+                }
             }
 
-            document.getElementById('addBankBtn')?.addEventListener('click', () => openBankModal());
+            // ========== TRANSACTION PROCESSOR ==========
+            async function processTransaction(id, newStatus, type) {
+                try {
+                    let tx = allTransactions.find(t => t.id === id);
+                    if (!tx) return;
+                    let user = allUsers.find(u => u.id === tx.user_id);
+                    if (user) {
+                        if (type === 'deposit' && newStatus === 'success' && tx.status === 'pending') {
+                            user.wallet = (parseFloat(user.wallet) || 0) + (parseFloat(tx.original_amount) || parseFloat(tx.amount));
+                        } else if (type === 'withdraw' && newStatus === 'failed' && tx.status === 'pending') {
+                            user.wallet = (parseFloat(user.wallet) || 0) + parseFloat(tx.amount);
+                        }
+                        if (user.transactions) {
+                            let utx = user.transactions.find(t => t.id === id);
+                            if (utx) utx.status = newStatus;
+                        }
+                        // Update user di database
+                        await window.upsertRow('users', user);
+                    }
+                    tx.status = newStatus;
+                    await window.upsertRow('transactions', tx);
+                    // Refresh data
+                    await refreshAdminData();
+                    await renderDeposit();
+                    await renderWithdraw();
+                    await renderDashboard();
+                    showToast(`Transaksi ${newStatus === 'success' ? 'disetujui' : 'ditolak'}.`, newStatus === 'success' ? 'success' : 'warning');
+                } catch (e) {
+                    console.error('Process transaction error:', e);
+                    showToast('Gagal memproses transaksi.', 'error');
+                }
+            }
 
-            // ADD PRODUCT WITH IMAGE
-            document.getElementById('addProductBtn').addEventListener('click', function() {
-                let html = `
-                    <h3><i class="fas fa-box" style="color:var(--gold-accent);"></i> Tambah Produk Baru</h3>
-                    <div class="form-group"><label>Nama Produk</label><input type="text" id="pName" placeholder="Jeans Slim Fit" /></div>
-                    <div class="form-group"><label>Harga Member (Rp)</label><input type="number" id="pPrice" placeholder="250000" /></div>
-                    <div class="form-group"><label>Harga Normal (Rp) Opsional</label><input type="number" id="pOriginal" placeholder="350000" /></div>
-                    <div class="form-group"><label>Tag / Label</label><input type="text" id="pTag" placeholder="BEST SELLER" /></div>
-                    <div class="form-group"><label>Stok</label><input type="number" id="pStock" placeholder="50" /></div>
-                    <div class="form-group"><label>Gambar Produk</label>
-                        <input type="file" id="pImage" accept="image/*" />
-                        <div style="margin-top:8px;"><img id="pImagePreview" style="max-height:100px; border-radius:8px; display:none;" /></div>
+            async function deleteTransaction(id, type) {
+                if (!confirm('Hapus transaksi ini dari sistem?')) return;
+                try {
+                    await window.deleteRow('transactions', id);
+                    // Hapus dari array user.transactions juga
+                    let user = allUsers.find(u => u.transactions && u.transactions.some(t => t.id === id));
+                    if (user) {
+                        user.transactions = user.transactions.filter(t => t.id !== id);
+                        await window.upsertRow('users', user);
+                    }
+                    await refreshAdminData();
+                    if (type === 'deposit') await renderDeposit();
+                    if (type === 'withdraw') await renderWithdraw();
+                    await renderDashboard();
+                    showToast('Transaksi dihapus.', 'info');
+                } catch (e) {
+                    console.error('Delete tx error:', e);
+                    showToast('Gagal menghapus transaksi.', 'error');
+                }
+            }
+
+            // ========== REFRESH DATA ==========
+            async function refreshAdminData() {
+                allUsers = await window.getTable('users');
+                allProducts = await window.getProducts();
+                allOrders = await window.getOrders();
+                allTransactions = await window.getTransactions();
+                allBankInfo = await window.getBankInfo();
+                allSlides = await window.getSlides();
+                allFaqs = await window.getFaqs();
+                allFeatures = await window.getFeatures();
+                allSettings = await window.getSettings();
+            }
+
+            // ========== MEMBERS ==========
+            async function renderAdminMembers() {
+                try {
+                    const tbody = document.getElementById('adminTableBody');
+                    if (!tbody) return;
+                    const users = await window.getTable('users');
+                    const totalItems = users.length;
+                    document.getElementById('totalMembers').textContent = totalItems;
+                    if (totalItems === 0) {
+                        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;">Kosong.</td></tr>`;
+                        document.getElementById('membersPagination').innerHTML = '';
+                        return;
+                    }
+                    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                    statePage.members = Math.max(1, Math.min(statePage.members, totalPages));
+                    const startIdx = (statePage.members - 1) * ITEMS_PER_PAGE;
+                    const paginatedData = users.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+                    let html = '';
+                    for (let u of paginatedData) {
+                        const isAdmin = u.role === 'admin';
+                        const statusClass = 'badge-' + (u.status || 'free');
+                        let fotoHtml = '<i class="fas fa-user" style="font-size:1.2rem; color:var(--denim-blue);"></i>';
+                        if (u.profile_image) fotoHtml = `<img src="${u.profile_image}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-accent);" />`;
+                        html += `<tr>
+                            <td data-label="Foto">${fotoHtml}</td>
+                            <td data-label="ID Member">${u.id}</td>
+                            <td data-label="Nama / User"><strong>${u.fullname || u.username}</strong><br><small class="text-muted">@${u.username || 'user'}</small> ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}</td>
+                            <td data-label="Email">${u.email}</td>
+                            <td data-label="Sponsor">${u.sponsor_id || '-'}</td>
+                            <td data-label="Status"><span class="badge-status ${statusClass}">${(u.status || 'free').toUpperCase()}</span></td>
+                            <td data-label="Saldo Wallet">Rp ${(parseFloat(u.wallet) || 0).toLocaleString()}</td>
+                            <td data-label="Aksi">
+                                <div>
+                                    <button class="btn-sm btn-sm-warning edit-member-btn" data-id="${u.id}"><i class="fas fa-edit"></i> Edit</button>
+                                    ${!isAdmin ? `<button class="btn-sm btn-sm-danger delete-member-btn" data-id="${u.id}"><i class="fas fa-trash"></i> Hapus</button>` : ''}
+                                </div>
+                            </td>
+                        </tr>`;
+                    }
+                    tbody.innerHTML = html;
+                    buildPagination(totalItems, statePage.members, 'membersPagination', 'members', renderAdminMembers);
+
+                    tbody.querySelectorAll('.delete-member-btn').forEach(btn => {
+                        btn.onclick = async function() {
+                            if (!confirm('Hapus member ini dari database?')) return;
+                            const id = this.dataset.id;
+                            await window.deleteRow('users', id);
+                            await refreshAdminData();
+                            await renderAdminMembers();
+                            await renderDashboard();
+                            showToast('✅ Member dihapus.', 'info');
+                        };
+                    });
+
+                    tbody.querySelectorAll('.edit-member-btn').forEach(btn => {
+                        btn.onclick = function() { openMemberModal(this.dataset.id); };
+                    });
+                } catch (e) {
+                    console.error('Render members error:', e);
+                    showToast('Gagal memuat member.', 'error');
+                }
+            }
+
+            async function openMemberModal(id = null) {
+                let user = null;
+                if (id) {
+                    user = allUsers.find(u => u.id === id);
+                }
+                const isEdit = !!user;
+                openModal(`<h3>${isEdit ? 'Edit Member' : 'Tambah Member'}</h3>
+                    <div class="form-group"><label>Nama Lengkap</label><input type="text" id="mName" value="${isEdit ? (user.fullname || '') : ''}"></div>
+                    <div class="form-group"><label>Username</label><input type="text" id="mUsername" value="${isEdit ? (user.username || '') : ''}"></div>
+                    <div class="form-group"><label>Email</label><input type="email" id="mEmail" value="${isEdit ? (user.email || '') : ''}"></div>
+                    ${!isEdit ? `<div class="form-group"><label>Password</label><input type="password" id="mPass" placeholder="Minimal 6 karakter"></div>` : ''}
+                    <div class="form-group"><label>Status</label><select id="mStatus">
+                        <option value="free" ${isEdit && user.status === 'free' ? 'selected' : ''}>Free</option>
+                        <option value="verified" ${isEdit && user.status === 'verified' ? 'selected' : ''}>Verified</option>
+                        <option value="pending" ${isEdit && user.status === 'pending' ? 'selected' : ''}>Pending</option>
+                    </select></div>
+                    <div class="form-group"><label>Wallet (Saldo)</label><input type="number" id="mWallet" value="${isEdit ? (parseFloat(user.wallet) || 0) : 0}"></div>
+                    <div class="form-group"><label>Role</label><select id="mRole">
+                        <option value="user" ${isEdit && user.role === 'user' ? 'selected' : ''}>User</option>
+                        <option value="admin" ${isEdit && user.role === 'admin' ? 'selected' : ''}>Admin</option>
+                    </select></div>
+                    <button class="btn-submit" id="saveMemberBtn">Simpan</button>
+                `);
+
+                document.getElementById('saveMemberBtn').addEventListener('click', async function() {
+                    const name = document.getElementById('mName').value.trim();
+                    const username = document.getElementById('mUsername').value.trim();
+                    const email = document.getElementById('mEmail').value.trim();
+                    const status = document.getElementById('mStatus').value;
+                    const wallet = parseFloat(document.getElementById('mWallet').value) || 0;
+                    const role = document.getElementById('mRole').value;
+                    let password = document.getElementById('mPass') ? document.getElementById('mPass').value.trim() : '';
+
+                    if (!name || !username || !email) {
+                        showToast('Isi semua field yang wajib.', 'error');
+                        return;
+                    }
+
+                    try {
+                        if (isEdit) {
+                            const updated = { ...user, fullname: name, username, email, status, wallet, role };
+                            if (password) updated.password = password;
+                            await window.upsertRow('users', updated);
+                        } else {
+                            if (!password || password.length < 6) {
+                                showToast('Password minimal 6 karakter.', 'error');
+                                return;
+                            }
+                            // Daftar via Supabase Auth (akan otomatis create profile via trigger)
+                            await window.signUp(email, password, { username, fullname: name, role });
+                            // Tunggu trigger membuat user, lalu ambil user baru
+                            const newUser = await window.getUserByEmail(email);
+                            if (newUser) {
+                                await window.upsertRow('users', { ...newUser, wallet, status });
+                            }
+                        }
+                        await refreshAdminData();
+                        await renderAdminMembers();
+                        await renderDashboard();
+                        closeModal();
+                        showToast('Tersimpan!', 'success');
+                    } catch (e) {
+                        console.error('Save member error:', e);
+                        showToast('Gagal menyimpan: ' + e.message, 'error');
+                    }
+                });
+            }
+
+            document.getElementById('addMemberBtn').addEventListener('click', function() { openMemberModal(); });
+            document.getElementById('refreshBtn').addEventListener('click', async function() { await refreshAdminData(); await renderAdminMembers(); showToast('Direfresh!', 'info'); });
+            document.getElementById('seedDemoBtn').addEventListener('click', async function() {
+                try {
+                    const demoNames = ['Budi', 'Siti', 'Agus', 'Rina'];
+                    for (let n of demoNames) {
+                        const email = n.toLowerCase() + '@mail.com';
+                        const existing = allUsers.find(u => u.email === email);
+                        if (!existing) {
+                            await window.signUp(email, '123456', { username: n.toLowerCase(), fullname: n, role: 'user' });
+                            // Tunggu trigger
+                            await new Promise(r => setTimeout(r, 500));
+                            const newUser = await window.getUserByEmail(email);
+                            if (newUser) {
+                                await window.upsertRow('users', { ...newUser, status: 'verified', wallet: 10000 });
+                            }
+                        }
+                    }
+                    await refreshAdminData();
+                    await renderAdminMembers();
+                    await renderDashboard();
+                    showToast('✅ Demo members added.', 'success');
+                } catch (e) {
+                    console.error('Seed demo error:', e);
+                    showToast('Gagal seed demo.', 'error');
+                }
+            });
+            document.getElementById('resetAllBtn').addEventListener('click', async function() {
+                if (!confirm('⚠️ Hapus SEMUA data (kecuali admin)?')) return;
+                try {
+                    // Hapus semua user kecuali admin
+                    const adminUser = allUsers.find(u => u.role === 'admin');
+                    for (let u of allUsers) {
+                        if (u.id !== adminUser.id) {
+                            await window.deleteRow('users', u.id);
+                        }
+                    }
+                    // Hapus semua produk, order, transaksi
+                    for (let p of allProducts) await window.deleteRow('products', p.id);
+                    for (let o of allOrders) await window.deleteRow('orders', o.id);
+                    for (let t of allTransactions) await window.deleteRow('transactions', t.id);
+                    await refreshAdminData();
+                    await renderAdminMembers();
+                    await renderDashboard();
+                    showToast('Semua data direset.', 'info');
+                } catch (e) {
+                    console.error('Reset error:', e);
+                    showToast('Gagal reset data.', 'error');
+                }
+            });
+
+            // ========== PRODUCTS ==========
+            async function renderAdminProducts() {
+                try {
+                    const tbody = document.getElementById('adminProductTableBody');
+                    if (!tbody) return;
+                    const products = await window.getProducts();
+                    const totalItems = products.length;
+                    if (totalItems === 0) {
+                        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;">Belum ada produk.</td></tr>`;
+                        document.getElementById('productsPagination').innerHTML = '';
+                        return;
+                    }
+                    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                    statePage.products = Math.max(1, Math.min(statePage.products, totalPages));
+                    const startIdx = (statePage.products - 1) * ITEMS_PER_PAGE;
+                    const paginatedData = products.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+                    let html = '';
+                    paginatedData.forEach((p, idx) => {
+                        let imgHtml = `<i class="fas fa-tshirt" style="font-size:1.5rem;color:var(--denim-blue);"></i>`;
+                        if (p.image && (p.image.startsWith('data:image') || p.image.startsWith('http'))) imgHtml = `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />`;
+                        html += `<tr>
+                            <td data-label="#">${startIdx + idx + 1}</td>
+                            <td data-label="Gambar">${imgHtml}</td>
+                            <td data-label="Nama Produk"><strong>${p.name}</strong></td>
+                            <td data-label="Harga Member">Rp ${parseFloat(p.price).toLocaleString()}</td>
+                            <td data-label="Harga Normal">Rp ${parseFloat(p.original || 0).toLocaleString()}</td>
+                            <td data-label="Tag"><span class="badge-status" style="background:${p.badgeColor || '#c9a84c'};color:#fff;">${p.tag || 'PRODUK'}</span></td>
+                            <td data-label="Stok">${p.stock}</td>
+                            <td data-label="Aksi">
+                                <div>
+                                    <button class="btn-sm btn-sm-warning edit-product-btn" data-id="${p.id}"><i class="fas fa-edit"></i> Edit</button>
+                                    <button class="btn-sm btn-sm-danger delete-product" data-id="${p.id}"><i class="fas fa-trash"></i> Hapus</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                    tbody.innerHTML = html;
+                    buildPagination(totalItems, statePage.products, 'productsPagination', 'products', renderAdminProducts);
+
+                    tbody.querySelectorAll('.delete-product').forEach(btn => {
+                        btn.onclick = async function() {
+                            if (!confirm('Hapus produk ini?')) return;
+                            const id = parseInt(this.dataset.id);
+                            await window.deleteRow('products', id);
+                            await refreshAdminData();
+                            await renderAdminProducts();
+                            await renderDashboard();
+                            showToast('✅ Produk dihapus.', 'info');
+                        };
+                    });
+
+                    tbody.querySelectorAll('.edit-product-btn').forEach(btn => {
+                        btn.onclick = function() { openProductModal(this.dataset.id); };
+                    });
+                } catch (e) {
+                    console.error('Render products error:', e);
+                    showToast('Gagal memuat produk.', 'error');
+                }
+            }
+
+            async function openProductModal(id = null) {
+                let product = null;
+                if (id) {
+                    product = allProducts.find(p => p.id === parseInt(id));
+                }
+                const isEdit = !!product;
+                openModal(`<h3>${isEdit ? 'Edit Produk' : 'Tambah Produk'}</h3>
+                    <div class="form-group"><label>Nama Produk</label><input type="text" id="pName" value="${isEdit ? product.name : ''}"></div>
+                    <div class="form-group"><label>Harga Member (Rp)</label><input type="number" id="pPrice" value="${isEdit ? product.price : ''}"></div>
+                    <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="pOriginal" value="${isEdit ? (product.original || '') : ''}"></div>
+                    <div class="form-group"><label>Stok</label><input type="number" id="pStock" value="${isEdit ? product.stock : 0}"></div>
+                    <div class="form-group"><label>Tag</label><input type="text" id="pTag" value="${isEdit ? product.tag : ''}"></div>
+                    <div class="form-group"><label>Gambar</label>
+                        <input type="file" id="pImageFile" accept="image/*" />
+                        <input type="hidden" id="pImageUrl" value="${isEdit ? (product.image || '') : ''}" />
+                        <img id="pImagePreview" src="${isEdit ? product.image : ''}" style="max-height:80px; ${isEdit && product.image ? '' : 'display:none;'}" />
                     </div>
-                    <button class="btn-submit" id="saveProductBtn">Simpan Produk</button>
-                `;
-                openModal(html);
+                    <div class="form-group"><label>Favorite</label><select id="pFavorite"><option value="false" ${isEdit && !product.favorite ? 'selected' : ''}>Tidak</option><option value="true" ${isEdit && product.favorite ? 'selected' : ''}>Ya</option></select></div>
+                    <button class="btn-submit" id="saveProductBtn">Simpan</button>
+                `);
 
-                document.getElementById('pImage').addEventListener('change', function() {
+                document.getElementById('pImageFile').addEventListener('change', function() {
                     const file = this.files[0];
-                    if(file) {
+                    if (file) {
                         const reader = new FileReader();
                         reader.onload = function(e) {
                             document.getElementById('pImagePreview').src = e.target.result;
                             document.getElementById('pImagePreview').style.display = 'block';
+                            document.getElementById('pImageUrl').value = e.target.result;
                         };
                         reader.readAsDataURL(file);
                     }
                 });
 
-                document.getElementById('saveProductBtn').onclick = function() {
+                document.getElementById('saveProductBtn').addEventListener('click', async function() {
                     const name = document.getElementById('pName').value.trim();
-                    const price = parseInt(document.getElementById('pPrice').value);
-                    const original = parseInt(document.getElementById('pOriginal').value) || 0;
-                    const tag = document.getElementById('pTag').value.trim() || 'PRODUK';
+                    const price = parseFloat(document.getElementById('pPrice').value);
+                    const original = parseFloat(document.getElementById('pOriginal').value) || 0;
                     const stock = parseInt(document.getElementById('pStock').value) || 0;
-                    const imageFile = document.getElementById('pImage').files[0];
-                    
-                    if(!name || !price) { showToast('Nama & Harga wajib diisi.', 'error'); return; }
-                    
-                    const reader = new FileReader();
-                    reader.onload = function(e) {
-                        let products = loadProducts();
-                        products.push({
-                            id: getNextId(products),
-                            name: name,
-                            price: price,
-                            original: original,
-                            tag: tag,
-                            stock: stock,
-                            image: e.target.result || null,
-                            icon: 'fa-tshirt',
-                            favorite: false,
-                            sizes: ['30','32'],
-                            colors: ['Indigo Blue']
-                        });
-                        saveProducts(products);
-                        closeModal();
-                        renderAdminProducts();
-                        renderDashboard();
-                        showToast('✅ Produk ditambahkan!', 'success');
-                    };
-                    if(imageFile) reader.readAsDataURL(imageFile);
-                    else {
-                        let products = loadProducts();
-                        products.push({ id: getNextId(products), name, price, original, tag, stock, image: null, icon: 'fa-tshirt', favorite: false, sizes: ['30','32'], colors: ['Indigo Blue'] });
-                        saveProducts(products); closeModal(); renderAdminProducts(); renderDashboard(); showToast('✅ Produk ditambahkan!', 'success');
+                    const tag = document.getElementById('pTag').value.trim() || 'PRODUK';
+                    const image = document.getElementById('pImageUrl').value;
+                    const favorite = document.getElementById('pFavorite').value === 'true';
+                    if (!name || isNaN(price) || price <= 0) {
+                        showToast('Nama dan Harga wajib.', 'error');
+                        return;
                     }
-                };
-            });
+                    try {
+                        if (isEdit) {
+                            const updated = { ...product, name, price, original, stock, tag, image, favorite };
+                            await window.upsertRow('products', updated);
+                        } else {
+                            const newProduct = { id: Date.now(), name, price, original, stock, tag, image, favorite };
+                            await window.upsertRow('products', newProduct);
+                        }
+                        await refreshAdminData();
+                        await renderAdminProducts();
+                        await renderDashboard();
+                        closeModal();
+                        showToast('✅ Produk tersimpan.', 'success');
+                    } catch (e) {
+                        console.error('Save product error:', e);
+                        showToast('Gagal menyimpan produk.', 'error');
+                    }
+                });
+            }
 
-            // SAVE BINDINGS
-            document.getElementById('saveBonusSettings')?.addEventListener('click', function() {
-                let settings = loadSettings(); settings.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value)||0; settings.roBonus = parseFloat(document.getElementById('setRoBonus').value)||0; saveSettings(settings); showToast('✅ Tersimpan', 'success');
-            });
-            document.getElementById('saveBinarySettings')?.addEventListener('click', function() {
-                let settings = loadSettings(); let bLevels = []; for(let i = 1; i <= 10; i++) bLevels.push(parseFloat(document.getElementById(`setBinaryL${i}`).value) || 0); settings.binaryBonusLevels = bLevels; saveSettings(settings); showToast('✅ Tersimpan', 'success');
-            });
-            document.getElementById('saveRewardSettings')?.addEventListener('click', function() {
-                let settings = loadSettings(); let rLevels = []; for(let i = 1; i <= 5; i++) rLevels.push(parseFloat(document.getElementById(`setRewardL${i}`).value) || 0); settings.rewardBonusLevels = rLevels; saveSettings(settings); showToast('✅ Tersimpan', 'success');
-            });
-            document.getElementById('saveAdminAccountSettings')?.addEventListener('click', function() {
-                const newEmail = document.getElementById('setAdminEmail').value.trim(); const newPass = document.getElementById('setAdminPassword').value.trim();
-                let users = loadUsers(); let adminUser = users.find(u => u.role === 'admin' || u.email === 'admin@mlm.com');
-                if(adminUser) { adminUser.email = newEmail; if(newPass) adminUser.password = newPass; saveUsers(users); showToast('✅ Tersimpan', 'success'); }
-            });
-            document.getElementById('saveBrandSettings')?.addEventListener('click', function() {
-                let settings = loadSettings(); 
-                settings.brandName = document.getElementById('setBrandName').value.trim() || 'HEDTRO JEANS';
-                settings.brandLogo = document.getElementById('setBrandLogo').value.trim() || 'fa-tshirt'; 
-                settings.brandIcon = document.getElementById('setBrandIcon').value.trim() || 'fa-tshirt'; 
-                settings.heroTitle = document.getElementById('setHeroTitle').value.trim() || 'HEDTRO JEANS · Premium Denim';
-                
-                const logoFile = document.getElementById('setBrandLogoFile').files[0];
-                if(logoFile) {
-                    const reader = new FileReader();
-                    reader.onload = function(e) { settings.brandLogo = e.target.result; saveSettings(settings); applyBrandSettings(); showToast('✅ Logo tersimpan', 'success'); };
-                    reader.readAsDataURL(logoFile);
-                } else {
-                    saveSettings(settings); applyBrandSettings(); showToast('✅ Tersimpan', 'success');
-                }
-            });
-            document.getElementById('saveAboutBtn')?.addEventListener('click', function() {
-                saveAbout({title: document.getElementById('aboutTitle').value, content: document.getElementById('aboutContent').value}); showToast('✅ Tersimpan', 'success');
-            });
-            document.getElementById('saveFooterBtn')?.addEventListener('click', function() {
-                saveFooter({brand: document.getElementById('footerBrand').value, desc: document.getElementById('footerDesc').value, copyright: document.getElementById('footerCopyright').value, social: {instagram: document.getElementById('sosmedInstagram').value, facebook: document.getElementById('sosmedFacebook').value, youtube: document.getElementById('sosmedYoutube').value, tiktok: document.getElementById('sosmedTiktok').value}}); showToast('✅ Tersimpan', 'success');
-            });
+            document.getElementById('addProductBtn').addEventListener('click', function() { openProductModal(); });
 
-            // LOGIN
-            document.getElementById('adminLoginBtn').addEventListener('click', function(e) {
-                e.preventDefault();
-                const email = document.getElementById('adminLoginEmail').value.trim();
-                const pass = document.getElementById('adminLoginPassword').value.trim();
-                const users = loadUsers();
-                const admin = users.find(u => (u.email === email || u.username === email) && u.password === pass && u.role === 'admin');
-                if (admin || (email === 'admin@mlm.com' && pass === 'admin123')) {
-                    saveSession({ id: 1, role: 'admin' });
-                    document.getElementById('loginOverlay').classList.add('hidden');
-                    document.getElementById('mainApp').style.display = 'block';
-                    applyBrandSettings();
-                    const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
-                    switchTab(savedTab);
-                    showToast('Welcome Admin!', 'success');
-                } else { document.getElementById('adminLoginMsg').innerText = 'Akses ditolak.'; }
-            });
-            document.getElementById('adminLoginPassword').addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') { e.preventDefault(); document.getElementById('adminLoginBtn').click(); }
-            });
+            // ========== VERIFICATION ==========
+            async function renderVerification() {
+                try {
+                    const tbody = document.getElementById('verifTableBody');
+                    if (!tbody) return;
+                    const users = await window.getTable('users');
+                    const pending = users.filter(u => u.status === 'pending' || u.status === 'free');
+                    if (pending.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Semua member sudah terverifikasi.</td></tr>';
+                        document.getElementById('verifPagination').innerHTML = '';
+                        return;
+                    }
+                    const totalItems = pending.length;
+                    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                    statePage.verif = Math.max(1, Math.min(statePage.verif, totalPages));
+                    const startIdx = (statePage.verif - 1) * ITEMS_PER_PAGE;
+                    const paginated = pending.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
-            document.getElementById('sideLogoutBtn').onclick = function() { clearSession(); window.location.reload(); };
-            document.getElementById('refreshDepositBtn')?.addEventListener('click', function() { renderDeposit(); showToast('🔄 Direfresh.', 'info'); });
-            document.getElementById('refreshWithdrawBtn')?.addEventListener('click', function() { renderWithdraw(); showToast('🔄 Direfresh.', 'info'); });
+                    let html = '';
+                    paginated.forEach(u => {
+                        html += `<tr>
+                            <td data-label="ID">${u.id}</td>
+                            <td data-label="Nama">${u.fullname || u.username}</td>
+                            <td data-label="Email">${u.email}</td>
+                            <td data-label="Status"><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td>
+                            <td data-label="Bukti">${u.proof_image ? `<button class="btn-sm btn-sm-gold view-user-proof" data-proof="${u.proof_image}">Lihat</button>` : 'Belum'}</td>
+                            <td data-label="Aksi"><div><button class="btn-sm btn-sm-success verify-user" data-id="${u.id}">Verifikasi</button></div></td>
+                        </tr>`;
+                    });
+                    tbody.innerHTML = html;
+                    buildPagination(totalItems, statePage.verif, 'verifPagination', 'verif', renderVerification);
 
-            // INIT
-            let users = loadUsers();
-            if (users.length === 0) { users.push({ id: 1, username: 'admin', email: 'admin@mlm.com', password: 'admin123', role: 'admin', status: 'verified' }); saveUsers(users); }
-            
-            const session = getSession();
-            if (session && session.role === 'admin') { 
-                document.getElementById('loginOverlay').classList.add('hidden'); 
-                document.getElementById('mainApp').style.display = 'block'; 
-                applyBrandSettings();
-                const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
-                switchTab(savedTab);
+                    tbody.querySelectorAll('.view-user-proof').forEach(btn => {
+                        btn.onclick = function() {
+                            openModal(`<h3>Bukti Verifikasi</h3><div class="proof-image"><img src="${this.dataset.proof}" style="max-width:100%;" /></div><button class="btn-submit" onclick="closeModal()">Tutup</button>`);
+                        };
+                    });
 
-                const savedSubTab = sessionStorage.getItem('adminActiveSubTab');
-                if(savedSubTab) {
-                    const btn = document.querySelector(`.sub-tab-btn[data-subtab="${savedSubTab}"]`);
-                    if(btn) btn.click();
+                    tbody.querySelectorAll('.verify-user').forEach(btn => {
+                        btn.onclick = async function() {
+                            const id = this.dataset.id;
+                            const user = allUsers.find(u => u.id === id);
+                            if (user) {
+                                user.status = 'verified';
+                                await window.upsertRow('users', user);
+                                await refreshAdminData();
+                                await renderVerification();
+                                await renderAdminMembers();
+                                await renderDashboard();
+                                showToast('User diverifikasi!', 'success');
+                            }
+                        };
+                    });
+                } catch (e) {
+                    console.error('Verification error:', e);
+                    showToast('Gagal memuat verifikasi.', 'error');
                 }
             }
+
+            document.getElementById('refreshVerifBtn').addEventListener('click', async function() { await refreshAdminData(); await renderVerification(); showToast('Direfresh!', 'info'); });
+
+            // ========== ORDERS ==========
+            async function renderOrders() {
+                try {
+                    const tbody = document.getElementById('ordersTableBody');
+                    if (!tbody) return;
+                    const orders = await window.getOrders();
+                    const totalItems = orders.length;
+                    if (totalItems === 0) {
+                        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">Belum ada pesanan.</td></tr>`;
+                        document.getElementById('ordersPagination').innerHTML = '';
+                        return;
+                    }
+                    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                    statePage.orders = Math.max(1, Math.min(statePage.orders, totalPages));
+                    const startIdx = (statePage.orders - 1) * ITEMS_PER_PAGE;
+                    const paginatedData = [...orders].reverse().slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+                    let html = '';
+                    paginatedData.forEach((o, idx) => {
+                        const user = allUsers.find(u => u.id === o.user_id);
+                        const userName = user ? (user.fullname || user.username) : o.user_name || 'Guest';
+                        const typeLabel = o.type === 'first_order' ? '🎯 First Order' : (o.type === 'ro' ? '🔄 RO' : '📦 Regular');
+                        const statusClass = 'badge-' + (o.status || 'pending');
+                        const hasProof = o.proof_image ? true : false;
+                        html += `<tr>
+                            <td data-label="#">${startIdx + idx + 1}</td>
+                            <td data-label="Member"><strong>${userName}</strong></td>
+                            <td data-label="Tipe">${typeLabel}</td>
+                            <td data-label="Produk">${o.items ? o.items.map(i => i.name).join(', ') : '-'}</td>
+                            <td data-label="Total">Rp ${(parseFloat(o.total) || 0).toLocaleString()}</td>
+                            <td data-label="Status"><span class="badge-status ${statusClass}">${(o.status||'pending').toUpperCase()}</span></td>
+                            <td data-label="Tanggal">${new Date(o.created_at || Date.now()).toLocaleDateString('id-ID')}</td>
+                            <td data-label="Bukti">${hasProof ? `<button class="btn-sm btn-sm-gold view-order-proof" data-id="${o.id}">Lihat</button>` : 'Belum upload'}</td>
+                            <td data-label="Aksi">
+                                <div>
+                                    ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
+                                    ${o.status === 'processing' ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim</button>` : ''}
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                    tbody.innerHTML = html;
+                    buildPagination(totalItems, statePage.orders, 'ordersPagination', 'orders', renderOrders);
+
+                    tbody.querySelectorAll('.view-order-proof').forEach(btn => {
+                        btn.onclick = function() {
+                            const order = allOrders.find(o => o.id === parseInt(this.dataset.id));
+                            if (order) openModal(`<h3>Bukti Pembayaran</h3><div class="proof-image"><img src="${order.proof_image}" style="max-width:100%;" /></div><button class="btn-submit" onclick="closeModal()">Tutup</button>`);
+                        };
+                    });
+
+                    tbody.querySelectorAll('.approve-order').forEach(btn => {
+                        btn.onclick = async function() {
+                            const id = parseInt(this.dataset.id);
+                            const order = allOrders.find(o => o.id === id);
+                            if (!order) return;
+                            order.status = 'processing';
+                            await window.upsertRow('orders', order);
+                            // Update transaksi terkait
+                            let tx = allTransactions.find(t => t.id === id);
+                            if (tx) { tx.status = 'success'; await window.upsertRow('transactions', tx); }
+                            // Update user
+                            let user = allUsers.find(u => u.id === order.user_id);
+                            if (user) {
+                                if (user.transactions) {
+                                    let utx = user.transactions.find(t => t.id === id);
+                                    if (utx) utx.status = 'success';
+                                }
+                                await window.upsertRow('users', user);
+                            }
+                            await refreshAdminData();
+                            await renderOrders();
+                            await renderDashboard();
+                            showToast('✅ Order disetujui.', 'success');
+                        };
+                    });
+
+                    tbody.querySelectorAll('.ship-order').forEach(btn => {
+                        btn.onclick = async function() {
+                            const id = parseInt(this.dataset.id);
+                            const order = allOrders.find(o => o.id === id);
+                            if (!order) return;
+                            order.status = 'shipped';
+                            await window.upsertRow('orders', order);
+                            await refreshAdminData();
+                            await renderOrders();
+                            await renderDashboard();
+                            showToast('🚚 Order dikirim.', 'success');
+                        };
+                    });
+                } catch (e) {
+                    console.error('Orders error:', e);
+                    showToast('Gagal memuat orders.', 'error');
+                }
+            }
+
+            document.getElementById('refreshOrdersBtn').addEventListener('click', async function() { await refreshAdminData(); await renderOrders(); showToast('Direfresh!', 'info'); });
+
+            // ========== DEPOSIT ==========
+            async function renderDeposit() {
+                try {
+                    const tbody = document.getElementById('depositTableBody');
+                    if (!tbody) return;
+                    const deposits = allTransactions.filter(t => t.type === 'deposit').reverse();
+                    if (deposits.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;">Belum ada data deposit.</td></tr>`;
+                        document.getElementById('depositPagination').innerHTML = '';
+                        return;
+                    }
+                    const totalItems = deposits.length;
+                    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                    statePage.deposit = Math.max(1, Math.min(statePage.deposit, totalPages));
+                    const startIdx = (statePage.deposit - 1) * ITEMS_PER_PAGE;
+                    const paginated = deposits.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+                    let html = '';
+                    paginated.forEach(t => {
+                        const user = allUsers.find(u => u.id === t.user_id);
+                        const userName = user ? (user.fullname || user.username) : 'Pelanggan';
+                        const statusClass = t.status === 'pending' ? 'badge-pending' : (t.status === 'success' ? 'badge-success' : 'badge-failed');
+                        const hasProof = t.proof_image ? true : false;
+                        html += `<tr>
+                            <td data-label="ID Transaksi">${t.id}</td>
+                            <td data-label="Member"><strong>${userName}</strong></td>
+                            <td data-label="Metode">${(t.method || 'bank').toUpperCase()}</td>
+                            <td data-label="Nominal">Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</td>
+                            <td data-label="Status"><span class="badge-status ${statusClass}">${t.status.toUpperCase()}</span></td>
+                            <td data-label="Tanggal">${new Date(t.date || Date.now()).toLocaleDateString('id-ID')}</td>
+                            <td data-label="Bukti TF">${hasProof ? `<button class="btn-sm btn-sm-gold view-tx-proof" data-proof="${t.proof_image}">Lihat</button>` : 'Belum upload'}</td>
+                            <td data-label="Aksi">
+                                <div>
+                                    ${t.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-dp" data-id="${t.id}">Approve</button>
+                                    <button class="btn-sm btn-sm-warning reject-dp" data-id="${t.id}">Reject</button>` : ''}
+                                    <button class="btn-sm btn-sm-danger delete-dp" data-id="${t.id}">Hapus</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                    tbody.innerHTML = html;
+                    buildPagination(totalItems, statePage.deposit, 'depositPagination', 'deposit', renderDeposit);
+
+                    tbody.querySelectorAll('.view-tx-proof').forEach(btn => {
+                        btn.onclick = function() {
+                            openModal(`<h3>Bukti Transfer</h3><div class="proof-image"><img src="${this.dataset.proof}" style="max-width:100%;" /></div><button class="btn-submit" onclick="closeModal()">Tutup</button>`);
+                        };
+                    });
+
+                    tbody.querySelectorAll('.approve-dp').forEach(btn => {
+                        btn.onclick = function() { processTransaction(parseInt(this.dataset.id), 'success', 'deposit'); };
+                    });
+                    tbody.querySelectorAll('.reject-dp').forEach(btn => {
+                        btn.onclick = function() { processTransaction(parseInt(this.dataset.id), 'failed', 'deposit'); };
+                    });
+                    tbody.querySelectorAll('.delete-dp').forEach(btn => {
+                        btn.onclick = function() { deleteTransaction(parseInt(this.dataset.id), 'deposit'); };
+                    });
+                } catch (e) {
+                    console.error('Deposit error:', e);
+                    showToast('Gagal memuat deposit.', 'error');
+                }
+            }
+
+            document.getElementById('refreshDepositBtn').addEventListener('click', async function() { await refreshAdminData(); await renderDeposit(); showToast('Direfresh!', 'info'); });
+
+            // ========== WITHDRAW ==========
+            async function renderWithdraw() {
+                try {
+                    const tbody = document.getElementById('withdrawTableBody');
+                    if (!tbody) return;
+                    const withdraws = allTransactions.filter(t => t.type === 'withdraw').reverse();
+                    if (withdraws.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center;">Belum ada data withdraw.</td></tr>`;
+                        document.getElementById('withdrawPagination').innerHTML = '';
+                        return;
+                    }
+                    const totalItems = withdraws.length;
+                    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                    statePage.withdraw = Math.max(1, Math.min(statePage.withdraw, totalPages));
+                    const startIdx = (statePage.withdraw - 1) * ITEMS_PER_PAGE;
+                    const paginated = withdraws.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+                    let html = '';
+                    paginated.forEach(t => {
+                        const user = allUsers.find(u => u.id === t.user_id);
+                        const userName = user ? (user.fullname || user.username) : 'Pelanggan';
+                        const statusClass = t.status === 'pending' ? 'badge-pending' : (t.status === 'success' ? 'badge-success' : 'badge-failed');
+                        html += `<tr>
+                            <td data-label="ID Transaksi">${t.id}</td>
+                            <td data-label="Member"><strong>${userName}</strong></td>
+                            <td data-label="Rekening Tujuan">${t.account || '-'}</td>
+                            <td data-label="Nominal">Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</td>
+                            <td data-label="Status"><span class="badge-status ${statusClass}">${t.status.toUpperCase()}</span></td>
+                            <td data-label="Tanggal">${new Date(t.date || Date.now()).toLocaleDateString('id-ID')}</td>
+                            <td data-label="Aksi">
+                                <div>
+                                    ${t.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-wd" data-id="${t.id}">Approve</button>
+                                    <button class="btn-sm btn-sm-warning reject-wd" data-id="${t.id}">Reject</button>` : ''}
+                                    <button class="btn-sm btn-sm-danger delete-wd" data-id="${t.id}">Hapus</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                    tbody.innerHTML = html;
+                    buildPagination(totalItems, statePage.withdraw, 'withdrawPagination', 'withdraw', renderWithdraw);
+
+                    tbody.querySelectorAll('.approve-wd').forEach(btn => {
+                        btn.onclick = function() { processTransaction(parseInt(this.dataset.id), 'success', 'withdraw'); };
+                    });
+                    tbody.querySelectorAll('.reject-wd').forEach(btn => {
+                        btn.onclick = function() { processTransaction(parseInt(this.dataset.id), 'failed', 'withdraw'); };
+                    });
+                    tbody.querySelectorAll('.delete-wd').forEach(btn => {
+                        btn.onclick = function() { deleteTransaction(parseInt(this.dataset.id), 'withdraw'); };
+                    });
+                } catch (e) {
+                    console.error('Withdraw error:', e);
+                    showToast('Gagal memuat withdraw.', 'error');
+                }
+            }
+
+            document.getElementById('refreshWithdrawBtn').addEventListener('click', async function() { await refreshAdminData(); await renderWithdraw(); showToast('Direfresh!', 'info'); });
+
+            // ========== PAGE SETTINGS (CMS) ==========
+            async function renderPageSettings() {
+                try {
+                    // Slides
+                    const slides = await window.getSlides();
+                    const slidesContainer = document.getElementById('slideList');
+                    if (slides.length === 0) {
+                        slidesContainer.innerHTML = '<p class="text-muted">Kosong.</p>';
+                    } else {
+                        slidesContainer.innerHTML = slides.map(s =>
+                            `<div class="slide-item">
+                                <div class="slide-img">${s.image ? `<img src="${s.image}" />` : `<i class="fas fa-image"></i>`}</div>
+                                <div class="slide-body"><h4>${s.title}</h4><p>${s.subtitle}</p></div>
+                                <div class="slide-actions">
+                                    <button class="btn-sm btn-sm-warning edit-slide" data-id="${s.id}">Edit</button>
+                                    <button class="btn-sm btn-sm-danger delete-slide" data-id="${s.id}">Hapus</button>
+                                </div>
+                            </div>`
+                        ).join('');
+                        slidesContainer.querySelectorAll('.edit-slide').forEach(btn => {
+                            btn.onclick = function() { openSlideModal(this.dataset.id); };
+                        });
+                        slidesContainer.querySelectorAll('.delete-slide').forEach(btn => {
+                            btn.onclick = async function() {
+                                if (!confirm('Hapus slide ini?')) return;
+                                await window.deleteRow('slides', parseInt(this.dataset.id));
+                                await refreshAdminData();
+                                await renderPageSettings();
+                                showToast('Slide dihapus.', 'info');
+                            };
+                        });
+                    }
+
+                    // About
+                    const about = await window.getAbout();
+                    document.getElementById('aboutTitle').value = about.title || '';
+                    document.getElementById('aboutContent').value = about.content || '';
+
+                    // FAQ
+                    const faqs = await window.getFaqs();
+                    const faqContainer = document.getElementById('faqList');
+                    if (faqs.length === 0) {
+                        faqContainer.innerHTML = '<p class="text-muted">Kosong.</p>';
+                    } else {
+                        faqContainer.innerHTML = faqs.map(f =>
+                            `<div class="faq-item-admin">
+                                <div><strong>${f.question}</strong><br><span class="text-muted">${f.answer}</span></div>
+                                <div class="faq-actions">
+                                    <button class="btn-sm btn-sm-warning edit-faq" data-id="${f.id}">Edit</button>
+                                    <button class="btn-sm btn-sm-danger delete-faq" data-id="${f.id}">Hapus</button>
+                                </div>
+                            </div>`
+                        ).join('');
+                        faqContainer.querySelectorAll('.edit-faq').forEach(btn => {
+                            btn.onclick = function() { openFaqModal(this.dataset.id); };
+                        });
+                        faqContainer.querySelectorAll('.delete-faq').forEach(btn => {
+                            btn.onclick = async function() {
+                                if (!confirm('Hapus FAQ ini?')) return;
+                                await window.deleteRow('faq', parseInt(this.dataset.id));
+                                await refreshAdminData();
+                                await renderPageSettings();
+                                showToast('FAQ dihapus.', 'info');
+                            };
+                        });
+                    }
+
+                    // Features
+                    const features = await window.getFeatures();
+                    const featureContainer = document.getElementById('featureList');
+                    if (features.length === 0) {
+                        featureContainer.innerHTML = '<p class="text-muted">Kosong.</p>';
+                    } else {
+                        featureContainer.innerHTML = features.map(f =>
+                            `<div class="feature-item-admin">
+                                <div><strong>${f.title}</strong><br><span class="text-muted">${f.description}</span></div>
+                                <div class="feature-actions">
+                                    <button class="btn-sm btn-sm-warning edit-feature" data-id="${f.id}">Edit</button>
+                                    <button class="btn-sm btn-sm-danger delete-feature" data-id="${f.id}">Hapus</button>
+                                </div>
+                            </div>`
+                        ).join('');
+                        featureContainer.querySelectorAll('.edit-feature').forEach(btn => {
+                            btn.onclick = function() { openFeatureModal(this.dataset.id); };
+                        });
+                        featureContainer.querySelectorAll('.delete-feature').forEach(btn => {
+                            btn.onclick = async function() {
+                                if (!confirm('Hapus keunggulan ini?')) return;
+                                await window.deleteRow('features', parseInt(this.dataset.id));
+                                await refreshAdminData();
+                                await renderPageSettings();
+                                showToast('Keunggulan dihapus.', 'info');
+                            };
+                        });
+                    }
+
+                    // Footer
+                    const footer = await window.getFooter();
+                    document.getElementById('footerBrand').value = footer.brand || '';
+                    document.getElementById('footerDesc').value = footer.description || '';
+                    document.getElementById('footerCopyright').value = footer.copyright || '';
+                    if (footer.social) {
+                        document.getElementById('sosmedInstagram').value = footer.social.instagram || '';
+                        document.getElementById('sosmedFacebook').value = footer.social.facebook || '';
+                        document.getElementById('sosmedYoutube').value = footer.social.youtube || '';
+                        document.getElementById('sosmedTiktok').value = footer.social.tiktok || '';
+                    }
+                } catch (e) {
+                    console.error('Page settings error:', e);
+                    showToast('Gagal memuat halaman utama.', 'error');
+                }
+            }
+
+            // Slide modal
+            async function openSlideModal(id = null) {
+                let slide = null;
+                if (id) {
+                    slide = allSlides.find(s => s.id === parseInt(id));
+                }
+                const isEdit = !!slide;
+                openModal(`<h3>${isEdit ? 'Edit' : 'Tambah'} Slide</h3>
+                    <div class="form-group"><label>Judul</label><input type="text" id="slideTitle" value="${isEdit ? slide.title : ''}"></div>
+                    <div class="form-group"><label>Sub Judul</label><input type="text" id="slideSub" value="${isEdit ? slide.subtitle : ''}"></div>
+                    <div class="form-group"><label>Tombol Teks</label><input type="text" id="slideBtnText" value="${isEdit ? slide.btn_text : 'Lihat'}" placeholder="Lihat"></div>
+                    <div class="form-group"><label>Tombol Link</label><input type="text" id="slideBtnLink" value="${isEdit ? slide.btn_link : '#products'}" placeholder="#products"></div>
+                    <div class="form-group"><label>Background (CSS gradient/color)</label><input type="text" id="slideBg" value="${isEdit ? slide.bg : 'linear-gradient(135deg, #0b1a2b, #2a4b6e)'}"></div>
+                    <div class="form-group"><label>Gambar (opsional)</label><input type="file" id="slideImageFile" accept="image/*" /></div>
+                    <button class="btn-submit" id="saveSlideBtn">Simpan</button>
+                `);
+
+                document.getElementById('saveSlideBtn').addEventListener('click', async function() {
+                    const title = document.getElementById('slideTitle').value.trim();
+                    const subtitle = document.getElementById('slideSub').value.trim();
+                    const btnText = document.getElementById('slideBtnText').value.trim() || 'Lihat';
+                    const btnLink = document.getElementById('slideBtnLink').value.trim() || '#products';
+                    const bg = document.getElementById('slideBg').value.trim();
+                    let image = isEdit ? slide.image : '';
+                    const fileInput = document.getElementById('slideImageFile');
+                    if (fileInput.files && fileInput.files[0]) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            image = e.target.result;
+                            saveSlideData();
+                        };
+                        reader.readAsDataURL(fileInput.files[0]);
+                    } else {
+                        saveSlideData();
+                    }
+
+                    async function saveSlideData() {
+                        try {
+                            if (isEdit) {
+                                await window.upsertRow('slides', { ...slide, title, subtitle, btn_text: btnText, btn_link: btnLink, bg, image });
+                            } else {
+                                const newSlide = { id: Date.now(), title, subtitle, btn_text: btnText, btn_link: btnLink, bg, image };
+                                await window.upsertRow('slides', newSlide);
+                            }
+                            await refreshAdminData();
+                            await renderPageSettings();
+                            closeModal();
+                            showToast('Slide tersimpan.', 'success');
+                        } catch (e) {
+                            console.error('Save slide error:', e);
+                            showToast('Gagal menyimpan slide.', 'error');
+                        }
+                    }
+                });
+            }
+
+            document.getElementById('addSlideBtn').addEventListener('click', function() { openSlideModal(); });
+
+            // FAQ modal
+            async function openFaqModal(id = null) {
+                let faq = null;
+                if (id) {
+                    faq = allFaqs.find(f => f.id === parseInt(id));
+                }
+                const isEdit = !!faq;
+                openModal(`<h3>${isEdit ? 'Edit' : 'Tambah'} FAQ</h3>
+                    <div class="form-group"><label>Pertanyaan</label><input type="text" id="faqQuestion" value="${isEdit ? faq.question : ''}"></div>
+                    <div class="form-group"><label>Jawaban</label><textarea id="faqAnswer" rows="3">${isEdit ? faq.answer : ''}</textarea></div>
+                    <button class="btn-submit" id="saveFaqBtn">Simpan</button>
+                `);
+                document.getElementById('saveFaqBtn').addEventListener('click', async function() {
+                    const question = document.getElementById('faqQuestion').value.trim();
+                    const answer = document.getElementById('faqAnswer').value.trim();
+                    if (!question || !answer) { showToast('Isi semua field.', 'error'); return; }
+                    try {
+                        if (isEdit) {
+                            await window.upsertRow('faq', { ...faq, question, answer });
+                        } else {
+                            await window.upsertRow('faq', { id: Date.now(), question, answer });
+                        }
+                        await refreshAdminData();
+                        await renderPageSettings();
+                        closeModal();
+                        showToast('FAQ tersimpan.', 'success');
+                    } catch (e) {
+                        console.error('Save faq error:', e);
+                        showToast('Gagal menyimpan FAQ.', 'error');
+                    }
+                });
+            }
+
+            document.getElementById('addFaqBtn').addEventListener('click', function() { openFaqModal(); });
+
+            // Feature modal
+            async function openFeatureModal(id = null) {
+                let feature = null;
+                if (id) {
+                    feature = allFeatures.find(f => f.id === parseInt(id));
+                }
+                const isEdit = !!feature;
+                openModal(`<h3>${isEdit ? 'Edit' : 'Tambah'} Keunggulan</h3>
+                    <div class="form-group"><label>Judul</label><input type="text" id="featureTitle" value="${isEdit ? feature.title : ''}"></div>
+                    <div class="form-group"><label>Deskripsi</label><input type="text" id="featureDesc" value="${isEdit ? feature.description : ''}"></div>
+                    <div class="form-group"><label>Icon (FontAwesome class)</label><input type="text" id="featureIcon" value="${isEdit ? feature.icon : 'fa-check-circle'}" placeholder="fa-check-circle"></div>
+                    <button class="btn-submit" id="saveFeatureBtn">Simpan</button>
+                `);
+                document.getElementById('saveFeatureBtn').addEventListener('click', async function() {
+                    const title = document.getElementById('featureTitle').value.trim();
+                    const description = document.getElementById('featureDesc').value.trim();
+                    const icon = document.getElementById('featureIcon').value.trim() || 'fa-check-circle';
+                    if (!title || !description) { showToast('Isi semua field.', 'error'); return; }
+                    try {
+                        if (isEdit) {
+                            await window.upsertRow('features', { ...feature, title, description, icon });
+                        } else {
+                            await window.upsertRow('features', { id: Date.now(), title, description, icon });
+                        }
+                        await refreshAdminData();
+                        await renderPageSettings();
+                        closeModal();
+                        showToast('Keunggulan tersimpan.', 'success');
+                    } catch (e) {
+                        console.error('Save feature error:', e);
+                        showToast('Gagal menyimpan keunggulan.', 'error');
+                    }
+                });
+            }
+
+            document.getElementById('addFeatureBtn').addEventListener('click', function() { openFeatureModal(); });
+
+            // About save
+            document.getElementById('saveAboutBtn').addEventListener('click', async function() {
+                try {
+                    const about = await window.getAbout();
+                    const title = document.getElementById('aboutTitle').value.trim();
+                    const content = document.getElementById('aboutContent').value.trim();
+                    await window.upsertRow('about', { id: about.id || 1, title, content });
+                    await refreshAdminData();
+                    showToast('Tentang kami tersimpan.', 'success');
+                } catch (e) {
+                    console.error('Save about error:', e);
+                    showToast('Gagal menyimpan tentang kami.', 'error');
+                }
+            });
+
+            // Footer save
+            document.getElementById('saveFooterBtn').addEventListener('click', async function() {
+                try {
+                    const footer = await window.getFooter();
+                    const brand = document.getElementById('footerBrand').value.trim();
+                    const description = document.getElementById('footerDesc').value.trim();
+                    const copyright = document.getElementById('footerCopyright').value.trim();
+                    const social = {
+                        instagram: document.getElementById('sosmedInstagram').value.trim(),
+                        facebook: document.getElementById('sosmedFacebook').value.trim(),
+                        youtube: document.getElementById('sosmedYoutube').value.trim(),
+                        tiktok: document.getElementById('sosmedTiktok').value.trim()
+                    };
+                    await window.upsertRow('footer', { id: footer.id || 1, brand, description, copyright, social });
+                    await refreshAdminData();
+                    showToast('Footer tersimpan.', 'success');
+                } catch (e) {
+                    console.error('Save footer error:', e);
+                    showToast('Gagal menyimpan footer.', 'error');
+                }
+            });
+
+            document.getElementById('refreshSlidesBtn').addEventListener('click', async function() { await refreshAdminData(); await renderPageSettings(); showToast('Preview direfresh.', 'info'); });
+
+            // ========== SETTINGS ==========
+            async function loadSettingsToForm() {
+                try {
+                    const settings = await window.getSettings();
+                    const users = await window.getTable('users');
+                    const adminUser = users.find(u => u.role === 'admin');
+
+                    document.getElementById('setSponsorBonus').value = settings.sponsorBonus || 10;
+                    document.getElementById('setRoBonus').value = settings.roBonus || 3;
+                    const bLevels = settings.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
+                    for (let i = 1; i <= 10; i++) {
+                        const el = document.getElementById(`setBinaryL${i}`);
+                        if (el) el.value = bLevels[i - 1] || 0;
+                    }
+                    const rLevels = settings.rewardBonusLevels || [5, 4, 3, 2, 1];
+                    for (let i = 1; i <= 5; i++) {
+                        const el = document.getElementById(`setRewardL${i}`);
+                        if (el) el.value = rLevels[i - 1] || 0;
+                    }
+                    document.getElementById('setMemberPrice').value = settings.memberPrice || 550000;
+                    document.getElementById('setBrandName').value = settings.brandName || 'HEDTRO JEANS';
+                    document.getElementById('setBrandLogo').value = settings.brandLogo || 'fa-tshirt';
+                    document.getElementById('setBrandIcon').value = settings.brandIcon || 'fa-tshirt';
+                    document.getElementById('setHeroTitle').value = settings.heroTitle || 'HEDTRO JEANS · Premium Denim';
+                    if (adminUser) {
+                        document.getElementById('setAdminEmail').value = adminUser.email || '';
+                    }
+                } catch (e) {
+                    console.error('Load settings error:', e);
+                    showToast('Gagal memuat pengaturan.', 'error');
+                }
+            }
+
+            // ========== BANK SETTINGS ==========
+            async function renderBankSettings() {
+                try {
+                    const banks = await window.getBankInfo();
+                    const tbody = document.getElementById('bankTableBody');
+                    if (!tbody) return;
+                    if (banks.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada rekening/pembayaran.</td></tr>';
+                        return;
+                    }
+                    let html = '';
+                    banks.forEach(b => {
+                        html += `<tr>
+                            <td><strong>${b.bank}</strong></td>
+                            <td>${b.account}</td>
+                            <td>${b.name}</td>
+                            <td>
+                                <div>
+                                    <button class="btn-sm btn-sm-warning edit-bank" data-id="${b.id}">Edit</button>
+                                    <button class="btn-sm btn-sm-danger del-bank" data-id="${b.id}">Hapus</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+                    tbody.innerHTML = html;
+                    tbody.querySelectorAll('.edit-bank').forEach(btn => {
+                        btn.onclick = function() { openBankModal(this.dataset.id); };
+                    });
+                    tbody.querySelectorAll('.del-bank').forEach(btn => {
+                        btn.onclick = async function() {
+                            if (!confirm('Hapus metode pembayaran ini?')) return;
+                            await window.deleteRow('bank_info', parseInt(this.dataset.id));
+                            await refreshAdminData();
+                            await renderBankSettings();
+                            showToast('Metode pembayaran dihapus.', 'info');
+                        };
+                    });
+                } catch (e) {
+                    console.error('Bank settings error:', e);
+                    showToast('Gagal memuat bank.', 'error');
+                }
+            }
+
+            async function openBankModal(id = null) {
+                let bank = null;
+                if (id) {
+                    bank = allBankInfo.find(b => b.id === parseInt(id));
+                }
+                const isEdit = !!bank;
+                openModal(`<h3>${isEdit ? 'Edit' : 'Tambah'} Metode Pembayaran</h3>
+                    <div class="form-group"><label>Nama Bank / E-Wallet</label><input type="text" id="bankName" value="${isEdit ? bank.bank : ''}"></div>
+                    <div class="form-group"><label>No. Rekening / VA</label><input type="text" id="bankAccount" value="${isEdit ? bank.account : ''}"></div>
+                    <div class="form-group"><label>Atas Nama</label><input type="text" id="bankHolder" value="${isEdit ? bank.name : ''}"></div>
+                    <button class="btn-submit" id="saveBankBtn">Simpan</button>
+                `);
+                document.getElementById('saveBankBtn').addEventListener('click', async function() {
+                    const bankName = document.getElementById('bankName').value.trim();
+                    const account = document.getElementById('bankAccount').value.trim();
+                    const name = document.getElementById('bankHolder').value.trim();
+                    if (!bankName || !account || !name) { showToast('Isi semua field.', 'error'); return; }
+                    try {
+                        if (isEdit) {
+                            await window.upsertRow('bank_info', { ...bank, bank: bankName, account, name });
+                        } else {
+                            await window.upsertRow('bank_info', { id: Date.now(), bank: bankName, account, name });
+                        }
+                        await refreshAdminData();
+                        await renderBankSettings();
+                        closeModal();
+                        showToast('Metode pembayaran tersimpan.', 'success');
+                    } catch (e) {
+                        console.error('Save bank error:', e);
+                        showToast('Gagal menyimpan bank.', 'error');
+                    }
+                });
+            }
+
+            document.getElementById('addBankBtn').addEventListener('click', function() { openBankModal(); });
+
+            // ========== SETTINGS SAVE HANDLERS ==========
+            document.getElementById('saveBonusSettings').addEventListener('click', async function() {
+                try {
+                    const settings = await window.getSettings();
+                    settings.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value) || 0;
+                    settings.roBonus = parseFloat(document.getElementById('setRoBonus').value) || 0;
+                    await window.upsertRow('settings', { key: 'sponsorBonus', value: settings.sponsorBonus });
+                    await window.upsertRow('settings', { key: 'roBonus', value: settings.roBonus });
+                    await refreshAdminData();
+                    showToast('Bonus tersimpan.', 'success');
+                } catch (e) {
+                    console.error('Save bonus error:', e);
+                    showToast('Gagal menyimpan bonus.', 'error');
+                }
+            });
+
+            document.getElementById('saveBinarySettings').addEventListener('click', async function() {
+                try {
+                    const levels = [];
+                    for (let i = 1; i <= 10; i++) {
+                        const el = document.getElementById(`setBinaryL${i}`);
+                        levels.push(parseFloat(el.value) || 0);
+                    }
+                    await window.upsertRow('settings', { key: 'binaryBonusLevels', value: levels });
+                    await refreshAdminData();
+                    showToast('Binary tersimpan.', 'success');
+                } catch (e) {
+                    console.error('Save binary error:', e);
+                    showToast('Gagal menyimpan binary.', 'error');
+                }
+            });
+
+            document.getElementById('saveRewardSettings').addEventListener('click', async function() {
+                try {
+                    const levels = [];
+                    for (let i = 1; i <= 5; i++) {
+                        const el = document.getElementById(`setRewardL${i}`);
+                        levels.push(parseFloat(el.value) || 0);
+                    }
+                    await window.upsertRow('settings', { key: 'rewardBonusLevels', value: levels });
+                    await refreshAdminData();
+                    showToast('Reward tersimpan.', 'success');
+                } catch (e) {
+                    console.error('Save reward error:', e);
+                    showToast('Gagal menyimpan reward.', 'error');
+                }
+            });
+
+            document.getElementById('saveShopSettings').addEventListener('click', async function() {
+                try {
+                    const price = parseFloat(document.getElementById('setMemberPrice').value) || 550000;
+                    await window.upsertRow('settings', { key: 'memberPrice', value: price });
+                    await refreshAdminData();
+                    showToast('Harga member tersimpan.', 'success');
+                } catch (e) {
+                    console.error('Save shop error:', e);
+                    showToast('Gagal menyimpan harga member.', 'error');
+                }
+            });
+
+            document.getElementById('saveBrandSettings').addEventListener('click', async function() {
+                try {
+                    const brandName = document.getElementById('setBrandName').value.trim() || 'HEDTRO JEANS';
+                    const brandLogo = document.getElementById('setBrandLogo').value.trim() || 'fa-tshirt';
+                    const brandIcon = document.getElementById('setBrandIcon').value.trim() || 'fa-tshirt';
+                    const heroTitle = document.getElementById('setHeroTitle').value.trim() || 'HEDTRO JEANS · Premium Denim';
+                    await window.upsertRow('settings', { key: 'brandName', value: brandName });
+                    await window.upsertRow('settings', { key: 'brandLogo', value: brandLogo });
+                    await window.upsertRow('settings', { key: 'brandIcon', value: brandIcon });
+                    await window.upsertRow('settings', { key: 'heroTitle', value: heroTitle });
+                    await refreshAdminData();
+                    // Apply brand to UI
+                    document.querySelectorAll('#brandLogo, #sideBrandLogo').forEach(el => {
+                        el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
+                    });
+                    document.getElementById('navUserName').textContent = currentAdmin?.fullname || 'Admin';
+                    showToast('Brand tersimpan.', 'success');
+                } catch (e) {
+                    console.error('Save brand error:', e);
+                    showToast('Gagal menyimpan brand.', 'error');
+                }
+            });
+
+            document.getElementById('saveAdminAccountSettings').addEventListener('click', async function() {
+                try {
+                    const email = document.getElementById('setAdminEmail').value.trim();
+                    const newPass = document.getElementById('setAdminPassword').value.trim();
+                    const users = await window.getTable('users');
+                    const admin = users.find(u => u.role === 'admin');
+                    if (!admin) { showToast('Admin tidak ditemukan.', 'error'); return; }
+                    if (email) admin.email = email;
+                    if (newPass) admin.password = newPass; // Note: ini plaintext, tapi Supabase Auth seharusnya hash, untuk keperluan demo kita simpan di tabel users juga
+                    // Di sini kita update email di auth juga? Sebaiknya kita update di auth.users juga, tapi sulit karena tidak ada API langsung.
+                    // Kita update di tabel users saja, dan jika perlu, user bisa login dengan email baru.
+                    await window.upsertRow('users', admin);
+                    await refreshAdminData();
+                    showToast('Kredensial admin tersimpan.', 'success');
+                } catch (e) {
+                    console.error('Save admin account error:', e);
+                    showToast('Gagal menyimpan kredensial admin.', 'error');
+                }
+            });
+
+            // ========== INIT ==========
+            (async function init() {
+                const isAuthenticated = await checkAdminAuth();
+                if (!isAuthenticated) return;
+                try {
+                    await refreshAdminData();
+                    const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
+                    await switchTab(savedTab);
+                    const savedSubTab = sessionStorage.getItem('adminActiveSubTab');
+                    if (savedSubTab) {
+                        const btn = document.querySelector(`.sub-tab-btn[data-subtab="${savedSubTab}"]`);
+                        if (btn) btn.click();
+                    }
+                } catch (e) {
+                    console.error('Init error:', e);
+                    showToast('Gagal memuat aplikasi.', 'error');
+                }
+            })();
+
         })();
     </script>
 </body>
