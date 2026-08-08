@@ -2,11 +2,7 @@
 const SUPABASE_URL = 'https://dbfwcsuptitytlposubo.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRiZndjc3VwdGl0eXRscG9zdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4NTgyMjMsImV4cCI6MjEwMTQzNDIyM30.TGAANDziz0olPdPIwAgtfiOPzfqxGVIfvNoLFhOsGQY';
 
-// Pastikan Supabase SDK sudah di-load
-if (typeof window.supabase === 'undefined') {
-    console.error('Supabase SDK tidak ditemukan! Pastikan script src supabase-js dipanggil.');
-}
-
+// Buat client Supabase
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 // ========== AUTH ==========
@@ -61,8 +57,8 @@ async function getUserByEmail(email) {
     .from('users')
     .select('*')
     .eq('email', email)
-    .maybeSingle();
-  if (error) throw error;
+    .single();
+  if (error && error.code !== 'PGRST116') throw error;
   return data;
 }
 
@@ -140,7 +136,9 @@ async function saveSettings(settings) {
   await Promise.all(promises);
 }
 
-// ========== EXPOSE KE GLOBAL ==========
+// =====================================================
+// ⚠️ PASTIKAN SEMUA FUNGSI DIEXPOS KE WINDOW
+// =====================================================
 window.supabase = supabase;
 window.signUp = signUp;
 window.signIn = signIn;
@@ -181,4 +179,11 @@ window.getTable = getTable;
 window.upsertRow = upsertRow;
 window.deleteRow = deleteRow;
 
-console.log('✅ Supabase.js loaded with all functions exported to window.');
+// =====================================================
+// LOG UNTUK CEK APAKAH BERHASIL
+// =====================================================
+console.log('✅ supabase.js loaded!');
+console.log('✅ window.getProducts:', typeof window.getProducts);
+console.log('✅ window.getSession:', typeof window.getSession);
+console.log('✅ window.getSettings:', typeof window.getSettings);
+console.log('✅ window.getSlides:', typeof window.getSlides);
