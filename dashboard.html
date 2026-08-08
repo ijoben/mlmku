@@ -7,7 +7,6 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <style>
-    /* ===== RESET & VARIABEL ===== */
     * { margin:0; padding:0; box-sizing:border-box; }
     :root {
       --denim-dark: #0b1a2b; --denim-navy: #15283c; --denim-blue: #2a4b6e; --denim-light: #f0f4f8;
@@ -15,12 +14,12 @@
       --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
       --cream: #faf8f5; --white: #ffffff;
       --shadow-sm: 0 4px 15px rgba(0,0,0,0.05); --shadow: 0 8px 24px rgba(11,26,43,0.08); --shadow-lg: 0 16px 32px rgba(11,26,43,0.12);
-      --radius: 16px; --radius-sm: 10px; --transition: all 0.3s cubic-bezier(0.4,0,0.2,1); --sidebar-width: 260px;
+      --radius: 14px; --radius-sm: 10px; --transition: all 0.3s cubic-bezier(0.4,0,0.2,1); --sidebar-width: 240px;
     }
-    body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background: #f4f6f9; color: var(--denim-dark); padding-top: 70px; overflow-x: hidden; }
+    body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background: #f4f6f9; color: var(--denim-dark); padding-top: 64px; overflow-x: hidden; }
     a { text-decoration:none; color:inherit; }
     button { cursor:pointer; font-family:inherit; border:none; background:none; }
-    ::-webkit-scrollbar { width:6px; }
+    ::-webkit-scrollbar { width:5px; }
     ::-webkit-scrollbar-track { background:#f4f6f9; }
     ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
 
@@ -28,28 +27,29 @@
     .navbar {
       position: fixed; top:0; left:0; right:0; z-index:1100;
       background: rgba(11, 26, 43, 0.95); backdrop-filter: blur(10px);
-      padding: 10px 20px; display: flex; align-items:center; justify-content:space-between;
+      padding: 8px 20px; display: flex; align-items:center; justify-content:space-between;
       border-bottom:2px solid var(--gold-accent); height:64px;
     }
-    .navbar .logo { display:flex; align-items:center; gap:8px; color:var(--white); font-weight:800; font-size:1.2rem; letter-spacing:-0.5px; }
-    .navbar .logo i { color:var(--gold-accent); font-size:1.4rem; }
-    .navbar .logo span { font-weight:400; color:var(--gold-light); font-size:0.7rem; margin-left:2px; letter-spacing:1px; }
-    .navbar .logo img { height:36px; width:auto; object-fit:contain; }
-    .nav-right { display:flex; align-items:center; gap:10px; }
+    .navbar .logo { display:flex; align-items:center; gap:8px; color:var(--white); font-weight:800; font-size:1.1rem; }
+    .navbar .logo i { color:var(--gold-accent); font-size:1.3rem; }
+    .navbar .logo span { font-weight:400; color:var(--gold-light); font-size:0.65rem; margin-left:2px; }
+    .navbar .logo img { height:32px; width:auto; object-fit:contain; }
+    .nav-right { display:flex; align-items:center; gap:8px; }
     .nav-right .user-badge {
-      display:flex; align-items:center; gap:6px; color:var(--cream); font-size:0.8rem; font-weight:600;
-      background:rgba(255,255,255,0.08); padding:6px 14px; border-radius:60px;
-      border:1px solid rgba(255,255,255,0.12); cursor:pointer; transition:var(--transition);
+      display:flex; align-items:center; gap:6px; color:var(--cream); font-size:0.75rem; font-weight:600;
+      background:rgba(255,255,255,0.08); padding:5px 12px; border-radius:60px;
+      border:1px solid rgba(255,255,255,0.1); cursor:pointer; transition:var(--transition);
     }
     .nav-right .user-badge:hover { background:rgba(255,255,255,0.15); }
     .nav-right .user-badge i { color:var(--gold-accent); }
 
-    .burger-btn { display:none; flex-direction:column; gap:4px; padding:5px; background:transparent; border:none; cursor:pointer; z-index:1101; }
-    .burger-btn span { display:block; width:24px; height:2.5px; background:var(--cream); border-radius:4px; transition:var(--transition); transform-origin:center; }
-    .burger-btn.active span:nth-child(1) { transform:translateY(6.5px) rotate(45deg); }
+    .burger-btn { display:none; flex-direction:column; gap:4px; padding:4px; background:transparent; border:none; cursor:pointer; z-index:1101; }
+    .burger-btn span { display:block; width:22px; height:2.5px; background:var(--cream); border-radius:4px; transition:var(--transition); transform-origin:center; }
+    .burger-btn.active span:nth-child(1) { transform:translateY(6px) rotate(45deg); }
     .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
-    .burger-btn.active span:nth-child(3) { transform:translateY(-6.5px) rotate(-45deg); }
+    .burger-btn.active span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }
 
+    /* ===== SIDEBAR ===== */
     .sidebar-overlay {
       display:none; position:fixed; top:0; left:0; width:100%; height:100%;
       background:rgba(11,26,43,0.6); z-index:1050; opacity:0; pointer-events:none;
@@ -58,220 +58,489 @@
     .sidebar-overlay.active { opacity:1; pointer-events:all; }
     .sidebar {
       position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-width);
-      background:var(--denim-dark); z-index:1060; padding:20px 16px;
-      overflow-y:auto; border-right:1px solid rgba(212,175,55,0.2);
-      display:flex; flex-direction:column; gap:4px; transition:left 0.3s ease; left:0;
+      background:var(--denim-dark); z-index:1060; padding:16px 14px;
+      overflow-y:auto; border-right:1px solid rgba(212,175,55,0.15);
+      display:flex; flex-direction:column; gap:3px; transition:left 0.3s ease; left:0;
     }
     @media (max-width: 768px) {
-      .sidebar { left:-320px; } .sidebar.open { left:0; }
+      .sidebar { left:-300px; width:280px; } .sidebar.open { left:0; }
       .burger-btn { display:flex; } .sidebar-overlay { display:block; }
     }
     .sidebar .sidebar-header {
       display:flex; align-items:center; justify-content:space-between;
-      padding-bottom:12px; border-bottom:1px solid rgba(255,255,255,0.08); margin-bottom:8px;
+      padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.06); margin-bottom:6px;
     }
-    .sidebar .sidebar-header .logo-side { color:var(--white); font-weight:800; font-size:1.1rem; display:flex; align-items:center; gap:8px; }
+    .sidebar .sidebar-header .logo-side { color:var(--white); font-weight:800; font-size:1rem; display:flex; align-items:center; gap:6px; }
     .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
-    .sidebar .sidebar-header .logo-side img { height:28px; width:auto; object-fit:contain; }
-    .sidebar .sidebar-header .close-side { display:none; color:var(--cream); font-size:1.4rem; cursor:pointer; opacity:0.8; }
+    .sidebar .sidebar-header .logo-side img { height:26px; width:auto; object-fit:contain; }
+    .sidebar .sidebar-header .close-side { display:none; color:var(--cream); font-size:1.4rem; cursor:pointer; opacity:0.7; }
     @media (max-width: 768px) { .sidebar .sidebar-header .close-side { display:block; } }
     .sidebar .menu-item {
-      display:flex; align-items:center; gap:10px; padding:10px 14px; border-radius:10px;
-      color:rgba(255,255,255,0.7); font-weight:600; font-size:0.85rem; transition:var(--transition); cursor:pointer;
+      display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;
+      color:rgba(255,255,255,0.65); font-weight:600; font-size:0.8rem; transition:var(--transition); cursor:pointer;
     }
     .sidebar .menu-item:hover { background:rgba(255,255,255,0.06); color:var(--white); }
-    .sidebar .menu-item i { width:18px; text-align:center; color:var(--gold-accent); font-size:0.95rem; }
-    .sidebar .menu-item.active { background:linear-gradient(90deg, rgba(212,175,55,0.15) 0%, rgba(212,175,55,0.02) 100%); color:var(--gold-accent); border-left:3px solid var(--gold-accent); border-radius:4px 10px 10px 4px; }
-    .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:4px 0; }
+    .sidebar .menu-item i { width:16px; text-align:center; color:var(--gold-accent); font-size:0.85rem; }
+    .sidebar .menu-item.active { background:linear-gradient(90deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.02) 100%); color:var(--gold-accent); border-left:3px solid var(--gold-accent); border-radius:3px 8px 8px 3px; }
+    .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.05); margin:4px 0; }
     .sidebar .menu-item.logout { margin-top:auto; color:#ff6b6b; }
     .sidebar .menu-item.logout i { color:#ff6b6b; }
-    .sidebar .menu-item.logout:hover { background:rgba(255,107,107,0.1); }
+    .sidebar .menu-item.logout:hover { background:rgba(255,107,107,0.08); }
 
     /* ===== MAIN CONTENT ===== */
     .main-content {
-      margin-left: var(--sidebar-width); padding: 20px 24px 40px;
+      margin-left: var(--sidebar-width); padding: 16px 24px 30px;
       transition: margin-left 0.3s ease; max-width: calc(100% - var(--sidebar-width));
     }
-    @media (max-width: 768px) { .main-content { margin-left: 0; max-width: 100%; padding: 16px 14px 30px; } }
-    .page-title { font-size:1.3rem; font-weight:800; color:var(--denim-dark); margin-bottom:16px; display:flex; align-items:center; gap:8px; letter-spacing:-0.5px; }
-    .page-title i { color:var(--gold-accent); font-size:1.2rem; }
+    @media (max-width: 768px) { .main-content { margin-left:0; max-width:100%; padding:12px 12px 24px; } }
+
+    .page-title { font-size:1.2rem; font-weight:800; color:var(--denim-dark); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
+    .page-title i { color:var(--gold-accent); font-size:1.1rem; }
 
     /* ===== BUTTONS ===== */
-    .btn-sm { padding:8px 16px; border-radius:60px; font-weight:700; font-size:0.8rem; transition:var(--transition); font-family:inherit; display:inline-flex; align-items:center; gap:6px; box-shadow:0 4px 12px rgba(0,0,0,0.08); cursor: pointer; }
+    .btn-sm { padding:6px 14px; border-radius:60px; font-weight:700; font-size:0.75rem; transition:var(--transition); font-family:inherit; display:inline-flex; align-items:center; gap:5px; box-shadow:0 3px 10px rgba(0,0,0,0.06); cursor:pointer; }
     .btn-sm-success { background:#2e7d32; color:#fff; } .btn-sm-success:hover { background:#1b5e20; transform:translateY(-1px); }
-    .btn-sm-primary { background:var(--denim-blue); color:#fff; border: 1px solid rgba(255,255,255,0.1); } .btn-sm-primary:hover { background:var(--denim-dark); transform:translateY(-2px); box-shadow:0 6px 16px rgba(0,0,0,0.15); }
-    .btn-sm-gold { background:var(--gold-gradient); color:var(--denim-dark); font-weight:800; border: none; } .btn-sm-gold:hover { transform:translateY(-2px); box-shadow:0 6px 16px rgba(212,175,55,0.3); }
+    .btn-sm-primary { background:var(--denim-blue); color:#fff; } .btn-sm-primary:hover { background:var(--denim-dark); transform:translateY(-1px); }
+    .btn-sm-gold { background:var(--gold-gradient); color:var(--denim-dark); font-weight:800; } .btn-sm-gold:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(212,175,55,0.3); }
     .btn-sm-danger { background:#e53e3e; color:#fff; }
-    .btn-sm-info { background:#3182ce; color:#fff; } .btn-sm-info:hover { background:#2b6cb0; transform:translateY(-1px); }
+    .btn-sm-info { background:#3182ce; color:#fff; } .btn-sm-info:hover { background:#2b6cb0; }
 
-    /* ===== WALLET CARD (COMPACT) ===== */
+    /* ===== WALLET CARD - MODEL BARU (HORIZONTAL COMPACT) ===== */
     .wallet-card {
-      background: linear-gradient(135deg, #0f2237 0%, #1a324b 100%); color: var(--cream);
-      border-radius: var(--radius); padding: 20px 24px; margin-bottom: 18px;
-      display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 14px;
-      border: 1px solid rgba(212,175,55,0.3); box-shadow: 0 10px 30px rgba(11,26,43,0.12);
-      position: relative; overflow: hidden;
+      background: linear-gradient(135deg, #0f2237 0%, #1a324b 100%);
+      border-radius: var(--radius);
+      padding: 14px 20px;
+      margin-bottom: 16px;
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+      border: 1px solid rgba(212,175,55,0.25);
+      box-shadow: 0 8px 24px rgba(11,26,43,0.1);
+      position: relative;
+      overflow: hidden;
     }
-    .wallet-card::before { content: ''; position: absolute; top: -50%; right: -10%; width: 200px; height: 200px; background: radial-gradient(circle, rgba(212,175,55,0.12) 0%, rgba(255,255,255,0) 70%); pointer-events: none; }
-    .wallet-card .wallet-label { font-size: 0.75rem; text-transform: uppercase; letter-spacing: 1px; color: rgba(255,255,255,0.7); font-weight: 700; display: flex; align-items: center; gap: 6px; }
-    .wallet-card .wallet-label i { color: var(--gold-accent); }
-    .wallet-card .wallet-amount { font-size: 2rem; font-weight: 800; color: var(--white); margin-top: 2px; letter-spacing: -1px; text-shadow: 0 2px 10px rgba(0,0,0,0.2); }
-    .wallet-card .profile-mini { display:flex; align-items:center; gap:12px; }
-    .wallet-card .profile-mini img { width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid var(--gold-accent); }
-    .wallet-card .profile-mini .info { color:var(--cream); }
-    .wallet-card .profile-mini .info .name { font-weight:700; font-size:0.9rem; }
-    .wallet-card .profile-mini .info .id { font-size:0.7rem; opacity:0.6; font-family:monospace; }
-    .ref-link-container { margin-top:10px; background:rgba(0,0,0,0.2); padding:8px 12px; border-radius:8px; display:flex; align-items:center; gap:8px; font-size:0.8rem; border:1px solid rgba(255,255,255,0.08); }
-    .ref-link-input { background:transparent; border:none; color:var(--gold-light); flex-grow:1; font-family:monospace; outline:none; font-size:0.8rem; }
-    .copy-btn { background:var(--gold-gradient); color:var(--denim-dark); border:none; padding:4px 12px; border-radius:6px; cursor:pointer; font-size:0.7rem; font-weight:800; transition:var(--transition); }
+    .wallet-card::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -5%;
+      width: 150px;
+      height: 150px;
+      background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, rgba(255,255,255,0) 70%);
+      pointer-events: none;
+    }
+    .wallet-card .wallet-left {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+      flex: 1;
+      min-width: 160px;
+      z-index: 1;
+    }
+    .wallet-card .wallet-top {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+    .wallet-card .wallet-top .avatar-mini {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 2px solid var(--gold-accent);
+      background: var(--denim-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: var(--denim-blue);
+      font-size: 1.2rem;
+      flex-shrink: 0;
+    }
+    .wallet-card .wallet-top .user-info .name {
+      font-weight: 700;
+      font-size: 0.9rem;
+      color: var(--cream);
+    }
+    .wallet-card .wallet-top .user-info .id {
+      font-size: 0.6rem;
+      opacity: 0.5;
+      font-family: monospace;
+      color: var(--cream);
+    }
+    .wallet-card .wallet-balance {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .wallet-card .wallet-balance .label {
+      font-size: 0.65rem;
+      text-transform: uppercase;
+      letter-spacing: 0.8px;
+      color: rgba(255,255,255,0.5);
+      font-weight: 700;
+    }
+    .wallet-card .wallet-balance .amount {
+      font-size: 1.6rem;
+      font-weight: 800;
+      color: var(--white);
+      letter-spacing: -0.5px;
+      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+    }
+    .wallet-card .wallet-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      z-index: 1;
+    }
+    .wallet-card .wallet-actions .btn-sm {
+      padding: 5px 12px;
+      font-size: 0.7rem;
+    }
+    .wallet-card .ref-box {
+      margin-top: 4px;
+      background: rgba(0,0,0,0.15);
+      padding: 4px 10px;
+      border-radius: 6px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 0.7rem;
+      border: 1px solid rgba(255,255,255,0.06);
+      max-width: 100%;
+    }
+    .wallet-card .ref-box input {
+      background: transparent;
+      border: none;
+      color: var(--gold-light);
+      font-family: monospace;
+      outline: none;
+      font-size: 0.7rem;
+      flex: 1;
+      min-width: 80px;
+    }
+    .wallet-card .ref-box .copy-btn {
+      background: var(--gold-gradient);
+      color: var(--denim-dark);
+      border: none;
+      padding: 2px 10px;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 0.6rem;
+      font-weight: 800;
+      white-space: nowrap;
+    }
 
-    /* ===== STATS GRID (COMPACT) ===== */
-    .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr)); gap:14px; margin-bottom:18px; }
-    .stat-card { background:var(--white); border-radius:var(--radius-sm); padding:16px 16px; box-shadow:0 6px 20px rgba(11,26,43,0.04); border:1px solid rgba(212,175,55,0.08); border-top:3px solid var(--gold-accent); transition:var(--transition); }
-    .stat-card:hover { transform:translateY(-3px); box-shadow:var(--shadow-lg); }
-    .stat-card .icon-wrapper { width:36px; height:36px; border-radius:10px; background:linear-gradient(135deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.02) 100%); color:var(--gold-accent); border:1px solid rgba(212,175,55,0.15); display:flex; align-items:center; justify-content:center; margin-bottom:10px; font-size:1rem; }
-    .stat-card .label { font-size:0.7rem; text-transform:uppercase; color:#718096; font-weight:700; letter-spacing:0.3px; }
-    .stat-card .value { font-size:1.4rem; font-weight:800; color:var(--denim-dark); margin-top:2px; letter-spacing:-0.5px; }
+    /* ===== STATS GRID - MODEL BARU (KOTAK KECIL) ===== */
+    .stats-grid {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 768px) {
+      .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
+    }
+    .stat-card {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 12px 14px;
+      box-shadow: 0 4px 12px rgba(11,26,43,0.04);
+      border: 1px solid rgba(212,175,55,0.06);
+      transition: var(--transition);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .stat-card .icon-box {
+      width: 32px;
+      height: 32px;
+      border-radius: 8px;
+      background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.02) 100%);
+      color: var(--gold-accent);
+      border: 1px solid rgba(212,175,55,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 0.85rem;
+      flex-shrink: 0;
+    }
+    .stat-card .stat-info { display: flex; flex-direction: column; flex:1; min-width:0; }
+    .stat-card .stat-info .label { font-size:0.6rem; text-transform:uppercase; color:#718096; font-weight:700; letter-spacing:0.3px; }
+    .stat-card .stat-info .value { font-size:1.2rem; font-weight:800; color:var(--denim-dark); letter-spacing:-0.3px; line-height:1.2; }
 
     /* ===== HISTORY TABLE ===== */
-    .history-card { background:var(--white); border-radius:var(--radius-sm); padding:16px 18px; box-shadow:0 6px 20px rgba(11,26,43,0.04); border:1px solid rgba(0,0,0,0.03); margin-bottom:18px; }
-    .history-card h3 { font-size:1rem; font-weight:800; margin-bottom:12px; display:flex; align-items:center; gap:8px; color:var(--denim-dark); }
-    .history-card h3 i { color:var(--gold-accent); }
+    .history-card {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 14px 16px;
+      box-shadow: 0 4px 12px rgba(11,26,43,0.04);
+      border: 1px solid rgba(0,0,0,0.03);
+      margin-bottom: 16px;
+    }
+    .history-card .header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+    .history-card .header h3 {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--denim-dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .history-card .header h3 i { color: var(--gold-accent); }
+    .history-card .header .badge-count {
+      font-size: 0.65rem;
+      background: var(--denim-light);
+      color: var(--denim-navy);
+      padding: 2px 10px;
+      border-radius: 20px;
+      font-weight: 700;
+    }
     .history-table-wrap { overflow-x:auto; }
-    .history-table { width:100%; border-collapse:collapse; font-size:0.85rem; }
-    .history-table th { text-align:left; padding:8px 10px; background:#f8fafc; color:#718096; font-weight:700; font-size:0.7rem; text-transform:uppercase; border-bottom:2px solid #edf2f7; }
-    .history-table td { padding:10px 10px; border-bottom:1px solid #edf2f7; vertical-align:middle; }
-    .history-table .amount { font-weight:700; }
-    .history-table .amount.plus { color:#2e7d32; }
-    .history-table .amount.minus { color:#e53e3e; }
-    .history-table .resi { font-size:0.7rem; font-family:monospace; color:var(--denim-blue); background:#f0f4f8; padding:2px 8px; border-radius:4px; }
+    .history-table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 0.8rem;
+    }
+    .history-table th {
+      text-align: left;
+      padding: 6px 8px;
+      background: #f8fafc;
+      color: #718096;
+      font-weight: 700;
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      border-bottom: 2px solid #edf2f7;
+    }
+    .history-table td {
+      padding: 8px 8px;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: middle;
+      font-size: 0.8rem;
+    }
+    .history-table .amount { font-weight: 700; }
+    .history-table .amount.plus { color: #2e7d32; }
+    .history-table .amount.minus { color: #e53e3e; }
+    .history-table .resi { font-size:0.6rem; font-family:monospace; color:var(--denim-blue); background:#f0f4f8; padding:1px 6px; border-radius:3px; }
 
-    .status-badge { padding:3px 10px; border-radius:20px; font-size:0.65rem; font-weight:800; display:inline-block; letter-spacing:0.3px; text-transform:uppercase; }
+    .status-badge {
+      padding: 2px 8px;
+      border-radius: 20px;
+      font-size: 0.6rem;
+      font-weight: 800;
+      display: inline-block;
+      letter-spacing: 0.3px;
+      text-transform: uppercase;
+    }
     .status-pending { background:#feebc8; color:#dd6b20; }
     .status-success, .status-verified { background:#c6f6d5; color:#2f855a; }
     .status-failed, .status-free { background:#fed7d7; color:#c53030; }
     .status-shipped { background:#bee3f8; color:#2a69ac; }
 
-    .pagination { display:flex; justify-content:center; align-items:center; gap:8px; padding:10px 0 0; }
-    .page-btn { padding:4px 12px; border:1px solid #e2e8f0; background:var(--white); border-radius:6px; cursor:pointer; font-size:0.8rem; color:var(--denim-navy); }
-    .page-btn:disabled { opacity:0.5; cursor:not-allowed; }
+    .pagination {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 6px;
+      padding: 8px 0 0;
+    }
+    .page-btn {
+      padding: 3px 10px;
+      border: 1px solid #e2e8f0;
+      background: var(--white);
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 0.75rem;
+      color: var(--denim-navy);
+    }
+    .page-btn:disabled { opacity:0.4; cursor:not-allowed; }
+    .page-info { font-size:0.75rem; color:#718096; }
 
     /* ===== FORM ===== */
-    .form-section-card { background:var(--white); border-radius:var(--radius-sm); padding:16px 20px; margin-bottom:16px; box-shadow:0 6px 20px rgba(11,26,43,0.04); border:1px solid rgba(0,0,0,0.05); }
-    .form-section-card .section-title { font-size:0.9rem; font-weight:700; color:var(--denim-dark); margin-bottom:12px; display:flex; align-items:center; gap:8px; border-bottom:1px solid #edf2f7; padding-bottom:8px; }
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:10px 16px; }
-    .form-group { margin-bottom:10px; }
+    .form-section-card {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      padding: 14px 18px;
+      margin-bottom: 14px;
+      box-shadow: 0 4px 12px rgba(11,26,43,0.04);
+      border: 1px solid rgba(0,0,0,0.04);
+    }
+    .form-section-card .section-title {
+      font-size: 0.85rem;
+      font-weight: 700;
+      color: var(--denim-dark);
+      margin-bottom: 10px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      border-bottom: 1px solid #edf2f7;
+      padding-bottom: 6px;
+    }
+    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:8px 14px; }
+    .form-group { margin-bottom:8px; }
     .form-group.full-width { grid-column:1 / -1; }
-    .form-group label { display:block; font-weight:600; color:var(--denim-navy); font-size:0.75rem; margin-bottom:3px; }
-    .form-group input, .form-group select, .form-group textarea { width:100%; padding:8px 14px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:0.85rem; background:#f8fafc; font-family:inherit; transition:var(--transition); color:var(--denim-dark); }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color:var(--denim-blue); outline:none; background:var(--white); }
+    .form-group label { display:block; font-weight:600; color:var(--denim-navy); font-size:0.7rem; margin-bottom:2px; }
+    .form-group input, .form-group select, .form-group textarea {
+      width:100%; padding:6px 12px; border:1.5px solid #e2e8f0; border-radius:7px;
+      font-size:0.8rem; background:#f8fafc; font-family:inherit; transition:var(--transition); color:var(--denim-dark);
+    }
+    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
+      border-color:var(--denim-blue); outline:none; background:var(--white);
+    }
     .profile-upload-area { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
-    .profile-upload-area .avatar-preview { width:64px; height:64px; border-radius:50%; object-fit:cover; border:3px solid var(--gold-accent); background:var(--denim-light); display:flex; align-items:center; justify-content:center; font-size:1.6rem; color:var(--denim-blue); }
-
-    /* ===== PRODUCT GRID ===== */
-    .product-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(180px,1fr)); gap:16px; margin:12px 0; }
-    .product-card { background:var(--white); border-radius:var(--radius-sm); overflow:hidden; box-shadow:0 6px 20px rgba(11,26,43,0.04); border:1px solid rgba(0,0,0,0.05); transition:var(--transition); display:flex; flex-direction:column; }
-    .product-card .img-placeholder { height:140px; background:var(--denim-light); display:flex; align-items:center; justify-content:center; color:var(--denim-blue); font-size:2.4rem; overflow:hidden; }
-    .product-card .img-placeholder img { width:100%; height:100%; object-fit:cover; }
-    .product-card .body { padding:12px 14px; display:flex; flex-direction:column; flex:1; }
-    .product-card .body .tag { align-self:flex-start; background:var(--gold-light); color:#744210; font-size:0.55rem; font-weight:800; padding:2px 10px; border-radius:20px; text-transform:uppercase; margin-bottom:4px; }
-    .product-card .body h4 { font-size:0.85rem; font-weight:700; margin-bottom:4px; color:var(--denim-dark); }
-    .product-card .body .price { font-weight:800; color:var(--denim-blue); font-size:0.95rem; margin-bottom:4px; }
-    .product-card .body .btn-sm { margin-top:auto; width:100%; justify-content:center; padding:6px 12px; font-size:0.7rem; }
+    .profile-upload-area .avatar-preview {
+      width:56px; height:56px; border-radius:50%; object-fit:cover;
+      border:3px solid var(--gold-accent); background:var(--denim-light);
+      display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:var(--denim-blue);
+    }
 
     /* ===== TABLE CONTAINER ===== */
-    .table-container { background:var(--white); border-radius:var(--radius-sm); box-shadow:0 6px 20px rgba(11,26,43,0.04); border:1px solid rgba(0,0,0,0.05); overflow-x:auto; margin-bottom:18px; }
-    table { width:100%; border-collapse:collapse; min-width:550px; }
-    th, td { padding:10px 14px; text-align:left; border-bottom:1px solid #edf2f7; vertical-align:middle; }
-    th { background:#f8fafc; color:#718096; font-weight:700; font-size:0.7rem; text-transform:uppercase; }
-    td { font-size:0.85rem; color:var(--denim-dark); font-weight:500; }
+    .table-container {
+      background: var(--white);
+      border-radius: var(--radius-sm);
+      box-shadow: 0 4px 12px rgba(11,26,43,0.04);
+      border: 1px solid rgba(0,0,0,0.04);
+      overflow-x: auto;
+      margin-bottom: 14px;
+    }
+    table { width:100%; border-collapse:collapse; min-width:500px; }
+    th, td { padding:8px 12px; text-align:left; border-bottom:1px solid #edf2f7; vertical-align:middle; }
+    th { background:#f8fafc; color:#718096; font-weight:700; font-size:0.65rem; text-transform:uppercase; }
+    td { font-size:0.8rem; color:var(--denim-dark); }
 
     /* ===== TREE ===== */
-    .tree-wrapper { overflow-x:auto; padding:20px 10px; background:var(--white); border-radius:var(--radius-sm); box-shadow:0 6px 20px rgba(11,26,43,0.04); border:1px solid rgba(212,175,55,0.08); margin-bottom:18px; }
-    .binary-tree { display:flex; flex-direction:column; align-items:center; min-width:700px; transition:transform 0.3s ease; transform-origin:top center; }
+    .tree-wrapper { overflow-x:auto; padding:16px 8px; background:var(--white); border-radius:var(--radius-sm); box-shadow:0 4px 12px rgba(11,26,43,0.04); border:1px solid rgba(212,175,55,0.06); margin-bottom:14px; }
+    .binary-tree { display:flex; flex-direction:column; align-items:center; min-width:600px; transition:transform 0.3s ease; transform-origin:top center; }
     .node-wrapper { display:flex; flex-direction:column; align-items:center; position:relative; }
-    .tree-node-card { background:linear-gradient(145deg, #0b1a2b, #15283c); color:var(--white); padding:12px 16px; border-radius:14px; text-align:center; border:2px solid rgba(212,175,55,0.5); min-width:120px; box-shadow:0 8px 20px rgba(0,0,0,0.15); z-index:2; position:relative; transition:var(--transition); }
-    .tree-node-card .avatar { width:36px; height:36px; border-radius:50%; background:var(--gold-gradient); color:var(--denim-dark); display:flex; align-items:center; justify-content:center; margin:0 auto 8px; font-size:1rem; font-weight:900; }
-    .tree-node-card .node-name { font-weight:800; font-size:0.8rem; letter-spacing:0.3px; }
-    .tree-node-card .node-id { font-size:0.65rem; color:var(--gold-light); margin-top:2px; font-weight:500; font-family:monospace; }
-    .tree-node-card .node-status { font-size:0.55rem; padding:3px 8px; border-radius:20px; margin-top:6px; display:inline-block; text-transform:uppercase; font-weight:800; letter-spacing:0.5px; }
+    .tree-node-card {
+      background:linear-gradient(145deg, #0b1a2b, #15283c);
+      color:var(--white); padding:8px 14px; border-radius:12px; text-align:center;
+      border:2px solid rgba(212,175,55,0.4); min-width:100px;
+      box-shadow:0 6px 16px rgba(0,0,0,0.12); z-index:2; position:relative;
+    }
+    .tree-node-card .avatar { width:30px; height:30px; border-radius:50%; background:var(--gold-gradient); color:var(--denim-dark); display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:0.85rem; font-weight:900; }
+    .tree-node-card .node-name { font-weight:800; font-size:0.75rem; }
+    .tree-node-card .node-id { font-size:0.6rem; color:var(--gold-light); font-family:monospace; }
+    .tree-node-card .node-status { font-size:0.5rem; padding:2px 6px; border-radius:20px; margin-top:4px; display:inline-block; text-transform:uppercase; font-weight:800; }
     .tree-node-card.empty { background:rgba(240,244,248,0.7); color:#a0aec0; border:2px dashed #cbd5e0; box-shadow:none; cursor:pointer; }
     .tree-node-card.empty:hover { background:rgba(212,175,55,0.05); border-color:var(--gold-accent); color:var(--gold-accent); }
     .tree-node-card.empty .avatar { background:#e2e8f0; color:#a0aec0; }
-    .tree-node-card.empty .node-name { font-size:0.75rem; margin-top:4px; }
-    .binary-children { display:flex; justify-content:center; width:100%; margin-top:0; padding-top:20px; position:relative; }
-    .binary-child { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; padding:0 10px; }
-    .binary-children::before { content:''; position:absolute; top:0; left:25%; right:25%; height:2px; background:rgba(212,175,55,0.5); }
-    .binary-child::before { content:''; position:absolute; top:0; height:20px; width:2px; background:rgba(212,175,55,0.5); }
-    .binary-children::after { content:''; position:absolute; top:-20px; left:50%; width:2px; height:20px; background:rgba(212,175,55,0.5); transform:translateX(-50%); }
+    .tree-node-card.empty .node-name { font-size:0.7rem; }
+    .binary-children { display:flex; justify-content:center; width:100%; padding-top:16px; position:relative; }
+    .binary-child { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; padding:0 8px; }
+    .binary-children::before { content:''; position:absolute; top:0; left:25%; right:25%; height:2px; background:rgba(212,175,55,0.4); }
+    .binary-child::before { content:''; position:absolute; top:0; height:16px; width:2px; background:rgba(212,175,55,0.4); }
+    .binary-children::after { content:''; position:absolute; top:-16px; left:50%; width:2px; height:16px; background:rgba(212,175,55,0.4); transform:translateX(-50%); }
+
+    /* ===== PRODUCT GRID ===== */
+    .product-grid {
+      display:grid;
+      grid-template-columns:repeat(auto-fill, minmax(160px,1fr));
+      gap:12px;
+      margin:10px 0;
+    }
+    .product-card {
+      background:var(--white);
+      border-radius:var(--radius-sm);
+      overflow:hidden;
+      box-shadow:0 4px 12px rgba(11,26,43,0.04);
+      border:1px solid rgba(0,0,0,0.04);
+      transition:var(--transition);
+      display:flex;
+      flex-direction:column;
+    }
+    .product-card .img-placeholder { height:120px; background:var(--denim-light); display:flex; align-items:center; justify-content:center; color:var(--denim-blue); font-size:2rem; overflow:hidden; }
+    .product-card .img-placeholder img { width:100%; height:100%; object-fit:cover; }
+    .product-card .body { padding:10px 12px; display:flex; flex-direction:column; flex:1; }
+    .product-card .body .tag { align-self:flex-start; background:var(--gold-light); color:#744210; font-size:0.5rem; font-weight:800; padding:1px 8px; border-radius:20px; text-transform:uppercase; margin-bottom:3px; }
+    .product-card .body h4 { font-size:0.8rem; font-weight:700; margin-bottom:2px; color:var(--denim-dark); }
+    .product-card .body .price { font-weight:800; color:var(--denim-blue); font-size:0.85rem; }
+    .product-card .body .btn-sm { margin-top:auto; width:100%; justify-content:center; padding:4px 10px; font-size:0.65rem; }
 
     /* ===== MODAL ===== */
-    .custom-modal-overlay { position:fixed; top:0; left:0; right:0; bottom:0; background:rgba(11,26,43,0.7); backdrop-filter:blur(6px); z-index:2000; display:flex; align-items:center; justify-content:center; padding:20px; opacity:0; pointer-events:none; transition:var(--transition); }
+    .custom-modal-overlay {
+      position:fixed; top:0; left:0; right:0; bottom:0;
+      background:rgba(11,26,43,0.7); backdrop-filter:blur(6px);
+      z-index:2000; display:flex; align-items:center; justify-content:center; padding:16px;
+      opacity:0; pointer-events:none; transition:var(--transition);
+    }
     .custom-modal-overlay.active { opacity:1; pointer-events:all; }
-    .custom-modal { background:var(--white); border-radius:var(--radius); width:100%; max-width:440px; box-shadow:var(--shadow-lg); overflow:hidden; transform:translateY(20px); transition:var(--transition); border:1px solid rgba(212,175,55,0.3); }
+    .custom-modal {
+      background:var(--white); border-radius:var(--radius); width:100%; max-width:420px;
+      box-shadow:var(--shadow-lg); overflow:hidden; transform:translateY(16px);
+      transition:var(--transition); border:1px solid rgba(212,175,55,0.2);
+    }
     .custom-modal-overlay.active .custom-modal { transform:translateY(0); }
-    .custom-modal-header { background:var(--denim-dark); color:var(--white); padding:14px 20px; display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--gold-accent); }
-    .custom-modal-header h3 { font-size:1rem; font-weight:700; display:flex; align-items:center; gap:8px; }
+    .custom-modal-header { background:var(--denim-dark); color:var(--white); padding:12px 18px; display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--gold-accent); }
+    .custom-modal-header h3 { font-size:0.95rem; font-weight:700; display:flex; align-items:center; gap:6px; }
     .custom-modal-header h3 i { color:var(--gold-accent); }
-    .custom-modal-body { padding:20px; color:var(--denim-dark); max-height:70vh; overflow-y:auto; }
-    .custom-modal-footer { padding:12px 20px; background:#f8fafc; display:flex; justify-content:flex-end; gap:8px; border-top:1px solid #edf2f7; }
+    .custom-modal-body { padding:16px 18px; color:var(--denim-dark); max-height:65vh; overflow-y:auto; }
+    .custom-modal-footer { padding:10px 18px; background:#f8fafc; display:flex; justify-content:flex-end; gap:6px; border-top:1px solid #edf2f7; }
 
-    .text-muted { color:#718096; font-size:0.8rem; }
-    .mt-16 { margin-top:12px; }
+    .text-muted { color:#718096; font-size:0.75rem; }
+    .mt-16 { margin-top:10px; }
 
     .section-content { display:none; animation:fadeIn 0.3s ease; }
     .section-content.active { display:block; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
+    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
 
-    /* ===== RO MODAL DETAIL & ZOOM ===== */
-    .ro-detail-grid { display:flex; flex-direction:column; gap:12px; }
-    .ro-detail-grid .ro-image { background:var(--denim-light); border-radius:var(--radius-sm); display:flex; align-items:center; justify-content:center; min-height:180px; position:relative; overflow:hidden; cursor:pointer; }
+    /* ===== RO MODAL ===== */
+    .ro-detail-grid { display:flex; flex-direction:column; gap:10px; }
+    .ro-detail-grid .ro-image {
+      background:var(--denim-light); border-radius:var(--radius-sm);
+      display:flex; align-items:center; justify-content:center;
+      min-height:140px; position:relative; overflow:hidden; cursor:pointer;
+    }
     .ro-detail-grid .ro-image img { width:100%; height:100%; object-fit:cover; }
-    .ro-detail-grid .ro-image .ro-icon { font-size:4rem; color:var(--denim-blue); }
-    .ro-detail-grid .ro-image .zoom-hint { position:absolute; bottom:8px; right:8px; background:rgba(0,0,0,0.5); color:#fff; padding:2px 10px; border-radius:40px; font-size:0.6rem; backdrop-filter:blur(4px); }
-    .ro-detail-grid .ro-info h4 { font-size:1rem; font-weight:700; color:var(--denim-dark); }
-    .ro-detail-grid .ro-info .ro-price { font-size:1.1rem; font-weight:800; color:var(--denim-blue); }
-    .ro-detail-grid .ro-info .ro-desc { font-size:0.8rem; color:#718096; margin:4px 0; }
-    .ro-detail-grid .ro-options { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
-    .ro-detail-grid .ro-options select { padding:6px 12px; border:1.5px solid #e2e8f0; border-radius:8px; font-size:0.8rem; background:#f8fafc; font-family:inherit; outline:none; }
+    .ro-detail-grid .ro-image .ro-icon { font-size:3rem; color:var(--denim-blue); }
+    .ro-detail-grid .ro-image .zoom-hint {
+      position:absolute; bottom:6px; right:6px;
+      background:rgba(0,0,0,0.5); color:#fff; padding:1px 8px; border-radius:40px;
+      font-size:0.55rem; backdrop-filter:blur(4px);
+    }
+    .ro-detail-grid .ro-info h4 { font-size:0.95rem; font-weight:700; }
+    .ro-detail-grid .ro-info .ro-price { font-size:1rem; font-weight:800; color:var(--denim-blue); }
+    .ro-detail-grid .ro-info .ro-desc { font-size:0.75rem; color:#718096; }
+    .ro-detail-grid .ro-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
+    .ro-detail-grid .ro-options select { padding:5px 10px; border:1.5px solid #e2e8f0; border-radius:6px; font-size:0.75rem; background:#f8fafc; font-family:inherit; outline:none; }
 
-    /* ===== RESPONSIVE ===== */
+    /* ===== RESPONSIVE HP ===== */
     @media (max-width: 768px) {
-      .stats-grid { grid-template-columns:1fr 1fr; gap:10px; }
-      .wallet-card { padding:16px 18px; flex-direction:column; align-items:stretch; }
-      .wallet-card .wallet-amount { font-size:1.8rem; }
-      .product-grid { grid-template-columns:1fr 1fr; gap:10px; }
+      .wallet-card { flex-direction:column; align-items:stretch; padding:12px 16px; }
+      .wallet-card .wallet-top .avatar-mini { width:32px; height:32px; font-size:1rem; }
+      .wallet-card .wallet-balance .amount { font-size:1.4rem; }
+      .wallet-card .wallet-actions { justify-content:flex-start; }
+      .product-grid { grid-template-columns:1fr 1fr; gap:8px; }
       .form-row { grid-template-columns:1fr; gap:0; }
+      .ro-detail-grid .ro-options { grid-template-columns:1fr; }
+      /* Table HP */
       .table-container { background:transparent !important; border:none !important; box-shadow:none !important; padding:0 !important; overflow-x:hidden !important; }
       table { min-width:0 !important; width:100% !important; }
       table, thead, tbody, th, td, tr { display:block; width:100%; box-sizing:border-box; }
       thead { display:none; }
-      tbody { display:flex; flex-direction:column; gap:12px; width:100%; }
+      tbody { display:flex; flex-direction:column; gap:10px; width:100%; }
       tbody tr {
-          display:grid; grid-template-columns:repeat(2, 1fr); gap:8px 10px; padding:14px;
-          border:1px solid #e2e8f0; border-radius:var(--radius-sm); background:var(--white);
-          box-shadow:0 4px 12px rgba(0,0,0,0.04);
+        display:grid; grid-template-columns:repeat(2, 1fr); gap:6px 8px; padding:12px;
+        border:1px solid #e2e8f0; border-radius:var(--radius-sm); background:var(--white);
+        box-shadow:0 4px 12px rgba(0,0,0,0.04);
       }
-      tbody td {
-          padding:0 !important; border:none !important; text-align:left !important; font-size:0.8rem;
-          display:flex; flex-direction:column; align-items:flex-start; justify-content:flex-start;
-          word-break:break-word; overflow-wrap:anywhere;
-      }
-      tbody td::before {
-          content:attr(data-label); font-size:0.6rem; color:var(--denim-navy); text-transform:uppercase; font-weight:700; margin-bottom:4px; opacity:0.7;
-      }
-      tbody td[data-label="Aksi"] {
-          grid-column:1 / -1; margin-top:6px; padding-top:8px !important; border-top:1px dashed #e2e8f0 !important;
-          flex-direction:row; justify-content:flex-end; align-items:center; gap:6px;
-      }
+      tbody td { padding:0 !important; border:none !important; text-align:left !important; font-size:0.75rem; display:flex; flex-direction:column; align-items:flex-start; }
+      tbody td::before { content:attr(data-label); font-size:0.55rem; color:var(--denim-navy); text-transform:uppercase; font-weight:700; margin-bottom:2px; opacity:0.6; }
+      tbody td[data-label="Aksi"] { grid-column:1 / -1; margin-top:4px; padding-top:6px !important; border-top:1px dashed #e2e8f0 !important; flex-direction:row; justify-content:flex-end; gap:4px; }
       tbody td[data-label="Aksi"]::before { display:none; }
-      .tree-wrapper { padding:10px 5px; border:none; box-shadow:none; overflow-x:auto; }
-      .ro-detail-grid .ro-options { grid-template-columns:1fr; }
+      .tree-wrapper { padding:8px 4px; border:none; box-shadow:none; }
     }
 
     @media (min-width: 769px) {
       .wallet-card { flex-direction:row; }
-      .wallet-card .wallet-left { flex:1; }
     }
   </style>
 </head>
@@ -292,22 +561,20 @@
       <span class="close-side" id="closeSidebar">&times;</span>
     </div>
 
-    <div style="padding:4px 0 8px;">
-      <div class="profile-mini" style="display:flex; align-items:center; gap:10px; margin-bottom:8px;">
-        <img id="sideProfileImg" src="" alt="Foto" style="display:none; width:36px; height:36px; border-radius:50%; object-fit:cover; border:2px solid var(--gold-accent);">
-        <div id="sideProfilePlaceholder" style="width:36px; height:36px; border-radius:50%; background:var(--denim-light); display:flex; align-items:center; justify-content:center; color:var(--denim-blue); font-size:1.2rem;"><i class="fas fa-user"></i></div>
+    <div style="padding:4px 0 6px;">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
+        <img id="sideProfileImg" src="" alt="Foto" style="display:none; width:30px; height:30px; border-radius:50%; object-fit:cover; border:2px solid var(--gold-accent);">
+        <div id="sideProfilePlaceholder" style="width:30px; height:30px; border-radius:50%; background:var(--denim-light); display:flex; align-items:center; justify-content:center; color:var(--denim-blue); font-size:1rem;"><i class="fas fa-user"></i></div>
         <div style="color:var(--cream);">
-          <div style="font-weight:700; font-size:0.85rem;" id="sideProfileName">Member</div>
-          <div style="font-size:0.65rem; opacity:0.6; font-family:monospace;" id="sideProfileId">ID: -</div>
+          <div style="font-weight:700; font-size:0.75rem;" id="sideProfileName">Member</div>
+          <div style="font-size:0.55rem; opacity:0.5; font-family:monospace;" id="sideProfileId">ID: -</div>
         </div>
       </div>
-      <div class="wallet-card" style="padding:12px 14px; border-radius:12px; flex-direction:column; align-items:stretch; gap:6px; background:#15283c; box-shadow:none;">
-        <div style="display:flex; justify-content:space-between; align-items:center;">
-          <div class="wallet-label" style="font-size:0.65rem;"><i class="fas fa-wallet"></i> Dompet</div>
-          <span id="sideUserStatusBadge" class="status-badge status-free" style="padding:2px 8px; font-size:0.55rem;">FREE</span>
-        </div>
-        <div class="wallet-amount" id="sideWalletAmount" style="font-size:1.2rem; margin-top:0; text-shadow:none;">Rp 0</div>
+      <div style="background:#15283c; border-radius:10px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
+        <span style="font-size:0.6rem; color:rgba(255,255,255,0.5);"><i class="fas fa-wallet" style="color:var(--gold-accent);"></i> Dompet</span>
+        <span id="sideUserStatusBadge" class="status-badge status-free" style="padding:1px 6px; font-size:0.5rem;">FREE</span>
       </div>
+      <div style="color:var(--cream); font-weight:800; font-size:1.1rem; padding:2px 12px 4px;" id="sideWalletAmount">Rp 0</div>
     </div>
 
     <div class="menu-item active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
@@ -328,41 +595,74 @@
     <!-- DASHBOARD -->
     <div class="section-content active" id="sec-dashboard">
       <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
-      
+
+      <!-- WALLET CARD - MODEL BARU -->
       <div class="wallet-card">
-        <div class="wallet-left" style="flex:1;">
-          <div class="profile-mini">
-            <img id="dashProfileImg" src="" alt="Foto" style="display:none; width:40px; height:40px; border-radius:50%; object-fit:cover; border:2px solid var(--gold-accent);">
-            <div id="dashProfilePlaceholder" style="width:40px; height:40px; border-radius:50%; background:var(--denim-light); display:flex; align-items:center; justify-content:center; color:var(--denim-blue); font-size:1.4rem;"><i class="fas fa-user"></i></div>
-            <div class="info">
+        <div class="wallet-left">
+          <div class="wallet-top">
+            <div class="avatar-mini" id="dashAvatar">
+              <i class="fas fa-user" id="dashAvatarIcon"></i>
+              <img id="dashAvatarImg" src="" alt="Foto" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
+            </div>
+            <div class="user-info">
               <div class="name" id="dashProfileName">Member</div>
               <div class="id" id="dashProfileId">ID: -</div>
             </div>
           </div>
-          <div class="wallet-label" style="margin-top:6px;"><i class="fas fa-wallet"></i> Saldo Dompet</div>
-          <div class="wallet-amount" id="walletAmount">Rp 0</div>
-          
-          <div class="ref-link-container">
-            <i class="fas fa-link"></i>
-            <input type="text" id="refLink" class="ref-link-input" readonly value="">
-            <button class="copy-btn" onclick="copyRefLink()"><i class="fas fa-copy"></i> Salin</button>
+          <div class="wallet-balance">
+            <span class="label">Saldo</span>
+            <span class="amount" id="walletAmount">Rp 0</span>
+          </div>
+          <div class="ref-box">
+            <i class="fas fa-link" style="color:var(--gold-accent); font-size:0.6rem;"></i>
+            <input type="text" id="refLink" readonly value="">
+            <button class="copy-btn" onclick="copyRefLink()">Salin</button>
           </div>
         </div>
-        <div style="display:flex; gap:8px; flex-wrap:wrap; z-index:2;">
-          <button class="btn-sm btn-sm-gold" id="depositBtnCard" onclick="window.showSection('deposit')"><i class="fas fa-plus-circle"></i> Deposit</button>
-          <button class="btn-sm btn-sm-primary" id="withdrawBtnCard" onclick="window.showSection('withdraw')"><i class="fas fa-minus-circle"></i> Withdraw</button>
+        <div class="wallet-actions">
+          <button class="btn-sm btn-sm-gold" onclick="window.showSection('deposit')"><i class="fas fa-plus-circle"></i> Deposit</button>
+          <button class="btn-sm btn-sm-primary" onclick="window.showSection('withdraw')"><i class="fas fa-minus-circle"></i> Withdraw</button>
         </div>
       </div>
 
+      <!-- STATS - MODEL BARU -->
       <div class="stats-grid">
-        <div class="stat-card"><div class="icon-wrapper"><i class="fas fa-hand-holding-usd"></i></div><div class="label">Sponsor Bonus</div><div class="value" id="sponsorBonus">0</div></div>
-        <div class="stat-card"><div class="icon-wrapper"><i class="fas fa-network-wired"></i></div><div class="label">Binary Bonus</div><div class="value" id="binaryBonus">0</div></div>
-        <div class="stat-card"><div class="icon-wrapper"><i class="fas fa-trophy"></i></div><div class="label">Reward 5L</div><div class="value" id="rewardBonus">0</div></div>
-        <div class="stat-card"><div class="icon-wrapper"><i class="fas fa-shopping-bag"></i></div><div class="label">RO Produk</div><div class="value" id="roBonus">0</div></div>
+        <div class="stat-card">
+          <div class="icon-box"><i class="fas fa-hand-holding-usd"></i></div>
+          <div class="stat-info">
+            <span class="label">Sponsor</span>
+            <span class="value" id="sponsorBonus">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-box"><i class="fas fa-network-wired"></i></div>
+          <div class="stat-info">
+            <span class="label">Binary</span>
+            <span class="value" id="binaryBonus">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-box"><i class="fas fa-trophy"></i></div>
+          <div class="stat-info">
+            <span class="label">Reward 5L</span>
+            <span class="value" id="rewardBonus">0</span>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="icon-box"><i class="fas fa-shopping-bag"></i></div>
+          <div class="stat-info">
+            <span class="label">RO Produk</span>
+            <span class="value" id="roBonus">0</span>
+          </div>
+        </div>
       </div>
 
+      <!-- HISTORY TABLE -->
       <div class="history-card">
-        <h3><i class="fas fa-history"></i> Riwayat Transaksi Terbaru</h3>
+        <div class="header">
+          <h3><i class="fas fa-history"></i> Riwayat Transaksi</h3>
+          <span class="badge-count" id="dashTotalTx">0</span>
+        </div>
         <div class="history-table-wrap">
           <table class="history-table">
             <thead><tr><th>Tanggal</th><th>Jenis</th><th>Detail</th><th>Nominal</th><th>Status</th></tr></thead>
@@ -382,13 +682,13 @@
       <h1 class="page-title"><i class="fas fa-store"></i> Toko Online</h1>
       <div class="product-grid" id="productGridDashboard"></div>
     </div>
-    
+
     <!-- RIWAYAT RO -->
     <div class="section-content" id="sec-ro-history">
-      <h1 class="page-title"><i class="fas fa-box"></i> Riwayat Pembelian RO</h1>
+      <h1 class="page-title"><i class="fas fa-box"></i> Riwayat RO</h1>
       <div class="table-container">
         <table>
-          <thead><tr><th>Tanggal</th><th>Produk & No. Seri</th><th>Total (Rp)</th><th>Status</th><th>Resi</th><th>Aksi</th></tr></thead>
+          <thead><tr><th>Tanggal</th><th>Produk</th><th>Total</th><th>Status</th><th>Resi</th><th>Aksi</th></tr></thead>
           <tbody id="roHistoryBody"></tbody>
         </table>
         <div class="pagination"><button class="page-btn" id="prevRoHistoryBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="roHistoryPageInfo">1/1</span><button class="page-btn" id="nextRoHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
@@ -397,11 +697,11 @@
 
     <!-- JARINGAN -->
     <div class="section-content" id="sec-network">
-      <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary (2 Kaki)</h1>
-      <div style="background:#fffaf0; padding:10px 14px; border-radius:var(--radius-sm); border-left:3px solid #dd6b20; margin-bottom:12px;">
-        <p style="font-size:0.8rem; color:#dd6b20; margin:0;"><i class="fas fa-lightbulb"></i> <strong>Tips:</strong> Klik kotak kosong bertuliskan <strong>"Tambah"</strong> untuk mendaftarkan member baru.</p>
+      <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary</h1>
+      <div style="background:#fffaf0; padding:8px 12px; border-radius:var(--radius-sm); border-left:3px solid #dd6b20; margin-bottom:10px;">
+        <p style="font-size:0.75rem; color:#dd6b20; margin:0;"><i class="fas fa-lightbulb"></i> Klik <strong>"Tambah"</strong> untuk daftarkan member baru.</p>
       </div>
-      <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:10px;">
+      <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:8px;">
         <button class="btn-sm btn-sm-primary" id="zoomOutBtn"><i class="fas fa-search-minus"></i> Zoom Out</button>
         <button class="btn-sm btn-sm-primary" id="zoomInBtn"><i class="fas fa-search-plus"></i> Zoom In</button>
       </div>
@@ -410,33 +710,32 @@
 
     <!-- DOWNLINE -->
     <div class="section-content" id="sec-downline">
-      <h1 class="page-title"><i class="fas fa-users"></i> Downline Saya</h1>
-      <div class="form-section-card" style="margin-bottom:16px;"><p>Total Downline Disponsori: <strong id="totalDownlineCount" style="font-size:1.1rem; color:var(--denim-blue);">0</strong></p></div>
+      <h1 class="page-title"><i class="fas fa-users"></i> Downline</h1>
+      <div style="background:var(--white); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:12px; box-shadow:0 4px 12px rgba(11,26,43,0.04);">
+        <p style="font-size:0.85rem;">Total Downline: <strong id="totalDownlineCount" style="color:var(--denim-blue);">0</strong></p>
+      </div>
       <div class="table-container">
         <table>
-          <thead><tr><th>Tanggal Daftar</th><th>Username</th><th>Nama Lengkap</th><th>Status</th></tr></thead>
+          <thead><tr><th>Tanggal</th><th>Username</th><th>Nama</th><th>Status</th></tr></thead>
           <tbody id="downlineTableBody"></tbody>
         </table>
-        <div class="pagination"><button class="page-btn" id="prevDownlineBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="downlinePageInfo">Halaman 1 dari 1</span><button class="page-btn" id="nextDownlineBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
+        <div class="pagination"><button class="page-btn" id="prevDownlineBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="downlinePageInfo">1/1</span><button class="page-btn" id="nextDownlineBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
       </div>
     </div>
 
     <!-- DEPOSIT -->
     <div class="section-content" id="sec-deposit">
       <h1 class="page-title"><i class="fas fa-plus-circle"></i> Deposit</h1>
-      <div class="form-section-card" style="max-width:500px;">
-        <div class="form-group"><label>Nominal Deposit (Rp)</label><input type="number" id="depositAmount" placeholder="Masukkan nominal" min="10000" /></div>
-        <div class="form-group">
-          <label>Pilih Metode Pembayaran / Bank</label>
-          <select id="depositMethod"></select>
-        </div>
-        <button class="btn-sm btn-sm-success" id="submitDeposit" style="width:100%; padding:12px; justify-content:center;">Buat Deposit</button>
+      <div class="form-section-card" style="max-width:480px;">
+        <div class="form-group"><label>Nominal Deposit (Rp)</label><input type="number" id="depositAmount" placeholder="Minimal 10.000" min="10000" /></div>
+        <div class="form-group"><label>Metode Pembayaran</label><select id="depositMethod"></select></div>
+        <button class="btn-sm btn-sm-success" id="submitDeposit" style="width:100%; padding:10px; justify-content:center;">Buat Deposit</button>
         <p class="text-muted mt-16">Minimal deposit Rp 10.000</p>
       </div>
-      <h3 style="font-size:1rem; color:var(--denim-dark); margin-bottom:10px;"><i class="fas fa-list"></i> Konfirmasi Deposit</h3>
+      <h3 style="font-size:0.95rem; margin-bottom:8px;"><i class="fas fa-list"></i> Konfirmasi Deposit</h3>
       <div class="table-container">
         <table>
-          <thead><tr><th>Tanggal</th><th>Nominal & Kode Unik</th><th>Status</th><th>Aksi</th></tr></thead>
+          <thead><tr><th>Tanggal</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
           <tbody id="depositHistoryBody"></tbody>
         </table>
         <div class="pagination"><button class="page-btn" id="prevDpHistoryBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="dpHistoryPageInfo">1/1</span><button class="page-btn" id="nextDpHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
@@ -446,24 +745,20 @@
     <!-- WITHDRAW -->
     <div class="section-content" id="sec-withdraw">
       <h1 class="page-title"><i class="fas fa-minus-circle"></i> Withdraw</h1>
-      <div style="background:#fffaf0; padding:10px 14px; border-radius:var(--radius-sm); border-left:3px solid #dd6b20; margin-bottom:16px; max-width:500px;">
-        <p style="font-size:0.8rem; color:#dd6b20; margin:0;"><i class="fas fa-info-circle"></i> Setiap pengajuan withdraw membutuhkan <strong>persetujuan Admin</strong>.</p>
+      <div style="background:#fffaf0; padding:8px 12px; border-radius:var(--radius-sm); border-left:3px solid #dd6b20; margin-bottom:12px; max-width:480px;">
+        <p style="font-size:0.75rem; color:#dd6b20; margin:0;"><i class="fas fa-info-circle"></i> Withdraw membutuhkan persetujuan Admin.</p>
       </div>
-      <div class="form-section-card" style="max-width:500px;">
-        <div class="form-group"><label>Sisa Saldo Anda</label><input type="text" id="wdAvailableBal" disabled style="font-weight:bold; color:var(--denim-blue);" /></div>
-        <div class="form-group"><label>Nominal Withdraw (Rp)</label><input type="number" id="withdrawAmount" placeholder="Masukkan nominal" min="50000" /></div>
-        <div class="form-group">
-          <label>Rekening Tujuan <span class="helper">(Diambil dari Profil)</span></label>
-          <input type="text" id="withdrawAccount" disabled placeholder="Isi data bank di profil terlebih dahulu" />
-          <small class="text-muted" style="display:block; margin-top:3px;">Atas Nama: <span id="withdrawAccountName">-</span></small>
-        </div>
-        <button class="btn-sm btn-sm-primary" id="submitWithdrawBtn" style="width:100%; padding:12px; justify-content:center;">Ajukan Withdraw</button>
+      <div class="form-section-card" style="max-width:480px;">
+        <div class="form-group"><label>Sisa Saldo</label><input type="text" id="wdAvailableBal" disabled style="font-weight:bold; color:var(--denim-blue);" /></div>
+        <div class="form-group"><label>Nominal Withdraw (Rp)</label><input type="number" id="withdrawAmount" placeholder="Minimal 50.000" min="50000" /></div>
+        <div class="form-group"><label>Rekening Tujuan</label><input type="text" id="withdrawAccount" disabled placeholder="Isi di Profil" /></div>
+        <button class="btn-sm btn-sm-primary" id="submitWithdrawBtn" style="width:100%; padding:10px; justify-content:center;">Ajukan Withdraw</button>
         <p class="text-muted mt-16">Minimal withdraw Rp 50.000</p>
       </div>
-      <h3 style="font-size:1rem; color:var(--denim-dark); margin-bottom:10px;"><i class="fas fa-list"></i> Riwayat Withdraw</h3>
+      <h3 style="font-size:0.95rem; margin-bottom:8px;"><i class="fas fa-list"></i> Riwayat Withdraw</h3>
       <div class="table-container">
         <table>
-          <thead><tr><th>Tanggal</th><th>Rekening Tujuan</th><th>Nominal</th><th>Status</th></tr></thead>
+          <thead><tr><th>Tanggal</th><th>Rekening</th><th>Nominal</th><th>Status</th></tr></thead>
           <tbody id="withdrawHistoryBody"></tbody>
         </table>
         <div class="pagination"><button class="page-btn" id="prevWdHistoryBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="wdHistoryPageInfo">1/1</span><button class="page-btn" id="nextWdHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
@@ -475,65 +770,63 @@
       <h1 class="page-title"><i class="fas fa-history"></i> Riwayat Transaksi</h1>
       <div class="table-container">
         <table>
-          <thead><tr><th>Tanggal</th><th>Jenis Transaksi</th><th>Detail</th><th>Nominal</th><th>Status</th></tr></thead>
+          <thead><tr><th>Tanggal</th><th>Jenis</th><th>Detail</th><th>Nominal</th><th>Status</th></tr></thead>
           <tbody id="historyTableBody"></tbody>
         </table>
-        <div class="pagination"><button class="page-btn" id="prevHistoryBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="historyPageInfo">Halaman 1 dari 1</span><button class="page-btn" id="nextHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
+        <div class="pagination"><button class="page-btn" id="prevHistoryBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="historyPageInfo">1/1</span><button class="page-btn" id="nextHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
       </div>
     </div>
 
     <!-- PROFIL -->
     <div class="section-content" id="sec-profile">
       <h1 class="page-title"><i class="fas fa-id-card"></i> Profil Saya</h1>
-      <div style="max-width:850px;">
+      <div style="max-width:780px;">
         <div class="form-section-card">
           <div class="section-title"><i class="fas fa-user-circle"></i> Foto Profil</div>
-          <div class="form-group full-width">
-            <div class="profile-upload-area">
-              <img id="profileImagePreview" class="avatar-preview" src="" alt="Foto Profil" style="display:none;">
-              <div id="profileImagePlaceholder" class="avatar-preview" style="display:flex;"><i class="fas fa-user"></i></div>
-              <div>
-                <input type="file" id="profileImageInput" accept="image/*" style="margin-bottom:4px;" />
-                <button class="btn-sm btn-sm-primary" id="uploadProfileImageBtn">Upload Foto</button>
-                <p style="font-size:0.65rem; color:#718096; margin-top:4px;">Max 2MB, JPG/PNG</p>
-              </div>
+          <div class="profile-upload-area">
+            <img id="profileImagePreview" class="avatar-preview" src="" alt="Foto" style="display:none;">
+            <div id="profileImagePlaceholder" class="avatar-preview" style="display:flex;"><i class="fas fa-user"></i></div>
+            <div>
+              <input type="file" id="profileImageInput" accept="image/*" style="margin-bottom:4px;" />
+              <button class="btn-sm btn-sm-primary" id="uploadProfileImageBtn">Upload</button>
+              <p style="font-size:0.6rem; color:#718096; margin-top:2px;">Max 2MB, JPG/PNG</p>
             </div>
           </div>
         </div>
         <div class="form-section-card">
-          <div class="section-title"><i class="fas fa-lock"></i> Akun & Keamanan</div>
+          <div class="section-title"><i class="fas fa-lock"></i> Akun</div>
           <div class="form-row">
             <div class="form-group"><label>Username</label><input type="text" id="profUsername" disabled /></div>
             <div class="form-group"><label>Email</label><input type="email" id="profEmail" disabled /></div>
             <div class="form-group"><label>Kata Sandi Baru</label><input type="password" id="profPassword" placeholder="Kosongkan jika tidak diubah" /></div>
-            <div class="form-group"><label>Konfirmasi Sandi Baru</label><input type="password" id="profConfirmPassword" placeholder="Ulangi sandi baru" /></div>
+            <div class="form-group"><label>Konfirmasi</label><input type="password" id="profConfirmPassword" placeholder="Ulangi sandi baru" /></div>
           </div>
         </div>
         <div class="form-section-card">
-          <div class="section-title"><i class="fas fa-id-card"></i> Identitas & Kontak</div>
+          <div class="section-title"><i class="fas fa-id-card"></i> Identitas</div>
           <div class="form-row">
             <div class="form-group"><label>Nama Lengkap</label><input type="text" id="profFullname" /></div>
-            <div class="form-group"><label>NIK (16 Digit)</label><input type="text" id="profNik" maxlength="16" /></div>
+            <div class="form-group"><label>NIK</label><input type="text" id="profNik" maxlength="16" /></div>
             <div class="form-group"><label>No. HP</label><input type="text" id="profPhone" /></div>
-            <div class="form-group"><label>No. WhatsApp</label><input type="text" id="profWhatsapp" /></div>
+            <div class="form-group"><label>WhatsApp</label><input type="text" id="profWhatsapp" /></div>
           </div>
         </div>
         <div class="form-section-card">
           <div class="section-title"><i class="fas fa-university"></i> Rekening Bank</div>
           <div class="form-row">
-            <div class="form-group"><label>Nama Bank</label><input type="text" id="profBankName" placeholder="BCA" /></div>
+            <div class="form-group"><label>Bank</label><input type="text" id="profBankName" placeholder="BCA" /></div>
             <div class="form-group"><label>No. Rekening</label><input type="text" id="profBankAccount" /></div>
             <div class="form-group full-width"><label>Atas Nama</label><input type="text" id="profBankHolder" /></div>
           </div>
         </div>
         <div class="form-section-card">
-          <div class="section-title"><i class="fas fa-map-pin"></i> Alamat Pengiriman</div>
+          <div class="section-title"><i class="fas fa-map-pin"></i> Alamat</div>
           <div class="form-row">
             <div class="form-group full-width"><label>Alamat Lengkap</label><textarea id="profAddress" rows="2"></textarea></div>
             <div class="form-group full-width"><label>Kota & Provinsi</label><input type="text" id="profCity" /></div>
           </div>
         </div>
-        <button class="btn-sm btn-sm-gold" id="btnSaveProfile" style="width:100%; padding:14px; justify-content:center; font-size:0.95rem;"><i class="fas fa-save"></i> Simpan Perubahan Profil</button>
+        <button class="btn-sm btn-sm-gold" id="btnSaveProfile" style="width:100%; padding:12px; justify-content:center; font-size:0.9rem;"><i class="fas fa-save"></i> Simpan Profil</button>
       </div>
     </div>
 
@@ -550,31 +843,26 @@
     </div>
   </div>
 
-  <!-- MODAL UPLOAD BUKTI -->
+  <!-- MODAL UPLOAD -->
   <div class="custom-modal-overlay" id="uploadModalOverlay">
-    <div class="custom-modal" style="max-width:460px;">
+    <div class="custom-modal" style="max-width:420px;">
       <div class="custom-modal-header"><h3><i class="fas fa-upload"></i> Konfirmasi Transfer</h3></div>
       <div class="custom-modal-body">
-        <div id="uploadBankInfo" style="background:#f8fafc; padding:14px; border-radius:8px; border:1px solid #e2e8f0; margin-bottom:12px; font-size:0.85rem; line-height:1.5;"></div>
-        <div class="form-group">
-          <label>Upload Bukti Transfer (Image)</label>
-          <input type="file" id="uploadProofFile" accept="image/*" style="padding:8px;" />
-        </div>
+        <div id="uploadBankInfo" style="background:#f8fafc; padding:12px; border-radius:6px; border:1px solid #e2e8f0; margin-bottom:10px; font-size:0.8rem; line-height:1.5;"></div>
+        <div class="form-group"><label>Upload Bukti</label><input type="file" id="uploadProofFile" accept="image/*" style="padding:6px;" /></div>
       </div>
       <div class="custom-modal-footer">
         <button class="btn-sm btn-sm-danger" id="uploadCancelBtn">Batal</button>
-        <button class="btn-sm btn-sm-success" id="uploadSubmitBtn">Kirim Bukti</button>
+        <button class="btn-sm btn-sm-success" id="uploadSubmitBtn">Kirim</button>
       </div>
     </div>
   </div>
 
-  <!-- MODAL RO (dengan detail & zoom) -->
+  <!-- MODAL RO -->
   <div class="custom-modal-overlay" id="roModalOverlay">
-    <div class="custom-modal" style="max-width:520px;">
+    <div class="custom-modal" style="max-width:480px;">
       <div class="custom-modal-header"><h3><i class="fas fa-shopping-cart"></i> Pembelian RO</h3></div>
-      <div class="custom-modal-body" id="roModalBody">
-        <!-- Detail produk + zoom akan diisi JS -->
-      </div>
+      <div class="custom-modal-body" id="roModalBody"></div>
       <div class="custom-modal-footer" id="roModalFooter">
         <button class="btn-sm btn-sm-danger" id="roModalCancelBtn">Batal</button>
         <button class="btn-sm btn-sm-gold" id="roModalNextBtn">Lanjut Bayar</button>
@@ -607,7 +895,7 @@
         document.querySelectorAll('#navbarLogo, #sidebarLogo').forEach(el => {
           if (el) {
             if (isImage) {
-              el.innerHTML = `<img src="${brandLogo}" alt="${brandName}" style="height:36px;width:auto;object-fit:contain;" />`;
+              el.innerHTML = `<img src="${brandLogo}" alt="${brandName}" style="height:32px;width:auto;object-fit:contain;" />`;
             } else {
               const icon = el.querySelector('i');
               if (icon) icon.className = 'fas ' + brandLogo;
@@ -620,9 +908,6 @@
               }
             }
           }
-        });
-        document.querySelectorAll('.logo i').forEach(el => {
-          if (!isImage) el.className = 'fas ' + brandLogo;
         });
       }
 
@@ -666,10 +951,10 @@
         document.getElementById('sideProfileName').textContent = currentUser.fullname || currentUser.name || currentUser.username;
         document.getElementById('sideProfileId').textContent = 'ID: ' + currentUser.id;
 
-        const dashImg = document.getElementById('dashProfileImg');
-        const dashPlaceholder = document.getElementById('dashProfilePlaceholder');
-        if (currentUser.profile_image) { dashImg.src = currentUser.profile_image; dashImg.style.display = 'block'; dashPlaceholder.style.display = 'none'; } 
-        else { dashImg.style.display = 'none'; dashPlaceholder.style.display = 'flex'; }
+        const dashImg = document.getElementById('dashAvatarImg');
+        const dashIcon = document.getElementById('dashAvatarIcon');
+        if (currentUser.profile_image) { dashImg.src = currentUser.profile_image; dashImg.style.display = 'block'; dashIcon.style.display = 'none'; } 
+        else { dashImg.style.display = 'none'; dashIcon.style.display = 'flex'; }
         document.getElementById('dashProfileName').textContent = currentUser.fullname || currentUser.name || currentUser.username;
         document.getElementById('dashProfileId').textContent = 'ID: ' + currentUser.id;
 
@@ -685,12 +970,12 @@
 
       // ===== REF LINK =====
       window.copyRefLink = function() {
-        const copyText = document.getElementById("refLink");
+        const copyText = document.getElementById('refLink');
         copyText.select(); copyText.setSelectionRange(0, 99999);
         navigator.clipboard.writeText(copyText.value).then(() => showModalAlert('Berhasil', 'Tautan Referal disalin!'));
       };
 
-      // ===== MODAL ALERT =====
+      // ===== MODAL =====
       const modalOverlay = document.getElementById('customModalOverlay');
       const modalTitle = document.getElementById('modalTitle');
       const modalBodyText = document.getElementById('modalBodyText');
@@ -791,8 +1076,9 @@
       function renderDashboardHistory() {
         const tbody = document.getElementById('transactionHistoryBody');
         const txs = (currentUser.transactions || []).slice().reverse();
+        document.getElementById('dashTotalTx').textContent = txs.length;
         if (txs.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:16px; color:#718096;">Belum ada transaksi.</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:12px; color:#718096;">Belum ada transaksi.</td></tr>';
           document.getElementById('dashHistoryPageInfo').textContent = '1/1';
           return;
         }
@@ -824,7 +1110,7 @@
       document.getElementById('prevDashHistoryBtn').addEventListener('click', () => { if(dashPage > 1) { dashPage--; renderDashboardHistory(); } });
       document.getElementById('nextDashHistoryBtn').addEventListener('click', () => { const max = Math.ceil((currentUser.transactions||[]).length/5)||1; if(dashPage < max) { dashPage++; renderDashboardHistory(); } });
 
-      // ===== TREE ZOOM =====
+      // ===== TREE =====
       function applyTreeZoom() { const tree = document.querySelector('.binary-tree'); if (tree) tree.style.transform = `scale(${currentZoom})`; }
       document.getElementById('zoomInBtn').addEventListener('click', () => { currentZoom += 0.1; applyTreeZoom(); });
       document.getElementById('zoomOutBtn').addEventListener('click', () => { currentZoom = Math.max(0.3, currentZoom - 0.1); applyTreeZoom(); });
@@ -897,7 +1183,7 @@
         paginated.forEach(u => {
           const date = u.registeredAt ? new Date(u.registeredAt).toLocaleDateString('id-ID') : '-';
           let badge = u.status === 'verified' ? 'status-success' : (u.status === 'pending' ? 'status-pending' : 'status-free');
-          html += `<tr><td data-label="Tanggal Daftar">${date}</td><td data-label="Username"><strong>${u.username}</strong></td><td data-label="Nama">${u.fullname || u.name}</td><td data-label="Status"><span class="status-badge ${badge}">${u.status}</span></td></tr>`;
+          html += `<tr><td data-label="Tanggal">${date}</td><td data-label="Username"><strong>${u.username}</strong></td><td data-label="Nama">${u.fullname || u.name}</td><td data-label="Status"><span class="status-badge ${badge}">${u.status}</span></td></tr>`;
         });
         tbody.innerHTML = html;
         document.getElementById('downlinePageInfo').textContent = `${downlineCurrentPage}/${Math.ceil(downlineData.length/10)||1}`;
@@ -926,7 +1212,7 @@
         document.getElementById('depositAmount').value = '';
         renderDepositHistory();
         renderDashboard();
-        showModalAlert('Pesanan Dibuat', '✅ Deposit berhasil dibuat. Silakan klik "Konfirmasi TF" di tabel riwayat.');
+        showModalAlert('Pesanan Dibuat', '✅ Deposit berhasil dibuat.');
       });
 
       function renderDepositHistory() {
@@ -940,9 +1226,9 @@
           const date = new Date(t.date).toLocaleDateString('id-ID');
           let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' ? 'status-success' : 'status-failed');
           let aksi = '-';
-          if(t.status === 'pending' && !t.proofUploaded) aksi = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload(${t.id}, 'deposit')" style="padding:4px 10px;">Konfirmasi TF</button>`;
-          else if(t.status === 'pending' && t.proofUploaded) aksi = `<span style="font-size:0.7rem; color:#dd6b20;"><i class="fas fa-clock"></i> Cek Admin</span>`;
-          html += `<tr><td data-label="Tanggal">${date}</td><td data-label="Nominal & Kode"><strong style="color:var(--denim-blue);">Rp ${(t.amount||0).toLocaleString()}</strong><br><small class="text-muted">Kode: ${t.uniqueCode||'-'} | ${t.method}</small></td><td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td><td data-label="Aksi">${aksi}</td></tr>`;
+          if(t.status === 'pending' && !t.proofUploaded) aksi = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload(${t.id}, 'deposit')" style="padding:3px 8px; font-size:0.65rem;">Konfirmasi TF</button>`;
+          else if(t.status === 'pending' && t.proofUploaded) aksi = `<span style="font-size:0.65rem; color:#dd6b20;"><i class="fas fa-clock"></i> Cek Admin</span>`;
+          html += `<tr><td data-label="Tanggal">${date}</td><td data-label="Nominal"><strong style="color:var(--denim-blue);">Rp ${(t.amount||0).toLocaleString()}</strong><br><small class="text-muted">${t.method}</small></td><td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td><td data-label="Aksi">${aksi}</td></tr>`;
         });
         tbody.innerHTML = html;
         document.getElementById('dpHistoryPageInfo').textContent = `${dpPage}/${maxPage}`;
@@ -957,15 +1243,14 @@
         const availBal = currentUser.wallet || 0;
         document.getElementById('wdAvailableBal').value = 'Rp ' + availBal.toLocaleString();
         const wdAccInput = document.getElementById('withdrawAccount');
-        const wdNameSpan = document.getElementById('withdrawAccountName');
-        if (currentUser.bankName && currentUser.bankAccount && currentUser.bankHolder) {
-          wdAccInput.value = `${currentUser.bankName} - ${currentUser.bankAccount}`; wdNameSpan.textContent = currentUser.bankHolder;
-        } else { wdAccInput.value = ''; wdNameSpan.textContent = 'Isi data bank di profil.'; }
+        if (currentUser.bankName && currentUser.bankAccount) {
+          wdAccInput.value = `${currentUser.bankName} - ${currentUser.bankAccount}`;
+        } else { wdAccInput.value = 'Isi data bank di profil.'; }
       }
 
       document.getElementById('submitWithdrawBtn').addEventListener('click', function() {
         const amount = parseInt(document.getElementById('withdrawAmount').value);
-        if (!currentUser.bankName || !currentUser.bankAccount) { showModalAlert('Error', 'Lengkapi Rekening Bank di menu Profil.'); return; }
+        if (!currentUser.bankName || !currentUser.bankAccount) { showModalAlert('Error', 'Lengkapi Rekening Bank di Profil.'); return; }
         if (amount < 50000) { showModalAlert('Kesalahan', 'Minimal withdraw Rp 50.000'); return; }
         if ((currentUser.wallet || 0) < amount) { showModalAlert('Gagal', 'Saldo tidak cukup.'); return; }
         showModalConfirm('Konfirmasi Withdraw', `Tarik <strong>Rp ${amount.toLocaleString()}</strong> ke <strong>${currentUser.bankName}</strong>?`, function() {
@@ -1018,9 +1303,9 @@
           else if (t.status === 'shipped') { statusText = 'Dikirim'; badgeClass = 'status-shipped'; }
           let actionHtml = '-';
           if(t.status === 'pending') {
-            if (t.paymentMethod === 'bank' && !t.proofUploaded) actionHtml = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload(${t.id}, 'ro')" style="padding:4px 10px;">Upload Bukti</button>`;
-            else if (t.paymentMethod === 'bank' && t.proofUploaded) actionHtml = `<span style="font-size:0.7rem; color:#dd6b20;"><i class="fas fa-clock"></i> Cek Admin</span>`;
-            else actionHtml = `<span style="font-size:0.7rem; color:#2e7d32;"><i class="fas fa-check"></i> Lunas (Dompet)</span>`;
+            if (t.paymentMethod === 'bank' && !t.proofUploaded) actionHtml = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload(${t.id}, 'ro')" style="padding:3px 8px; font-size:0.65rem;">Upload Bukti</button>`;
+            else if (t.paymentMethod === 'bank' && t.proofUploaded) actionHtml = `<span style="font-size:0.65rem; color:#dd6b20;"><i class="fas fa-clock"></i> Cek Admin</span>`;
+            else actionHtml = `<span style="font-size:0.65rem; color:#2e7d32;"><i class="fas fa-check"></i> Lunas</span>`;
           }
           let resiHtml = t.resi ? `<span class="resi"><i class="fas fa-truck"></i> ${t.resi}</span>` : '-';
           html += `<tr><td data-label="Tanggal">${date}</td><td data-label="Produk"><strong>${t.productName}</strong><br><small class="text-muted">Seri: ${t.serialNumber||'-'}</small></td><td data-label="Total" style="color:var(--denim-blue); font-weight:bold;">Rp ${(t.price||0).toLocaleString()}</td><td data-label="Status"><span class="status-badge ${badgeClass}">${statusText}</span></td><td data-label="Resi">${resiHtml}</td><td data-label="Aksi">${actionHtml}</td></tr>`;
@@ -1042,13 +1327,13 @@
         if (type === 'deposit') {
           const tx = currentUser.transactions.find(t => t.id === id);
           if(!tx) return; nominal = tx.amount;
-          note = `Transfer <b>TEPAT Rp ${nominal.toLocaleString()}</b> (sudah termasuk kode unik).`;
+          note = `Transfer <b>TEPAT Rp ${nominal.toLocaleString()}</b> (termasuk kode unik).`;
         } else if (type === 'ro') {
           const tx = currentUser.purchase_history.find(t => t.id === id);
           if(!tx) return; nominal = tx.price;
-          note = `Transfer <b>Rp ${nominal.toLocaleString()}</b> untuk produk ${tx.productName}.`;
+          note = `Transfer <b>Rp ${nominal.toLocaleString()}</b> untuk ${tx.productName}.`;
         }
-        document.getElementById('uploadBankInfo').innerHTML = `${note}<br><br><strong>Transfer ke salah satu rekening berikut:</strong><br><br><div style="background:#fff; border:1px dashed #ccc; padding:10px; border-radius:8px;">${bankHtml}</div>`;
+        document.getElementById('uploadBankInfo').innerHTML = `${note}<br><br><strong>Transfer ke:</strong><br><br><div style="background:#fff; border:1px dashed #ccc; padding:8px; border-radius:6px;">${bankHtml}</div>`;
         document.getElementById('uploadProofFile').value = '';
         document.getElementById('uploadModalOverlay').classList.add('active');
       };
@@ -1155,7 +1440,7 @@
         prods.forEach(p => {
           const card = document.createElement('div'); card.className = 'product-card';
           let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
-          card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag || 'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div style="font-size:0.7rem; color:#718096; margin-bottom:8px;">Stok: ${p.stock||0}</div><button class="btn-sm btn-sm-gold buy-ro-btn" data-id="${p.id}" data-price="${p.price}"><i class="fas fa-shopping-cart"></i> Beli (RO)</button></div>`;
+          card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag || 'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div style="font-size:0.6rem; color:#718096; margin-bottom:4px;">Stok: ${p.stock||0}</div><button class="btn-sm btn-sm-gold buy-ro-btn" data-id="${p.id}" data-price="${p.price}"><i class="fas fa-shopping-cart"></i> Beli RO</button></div>`;
           grid.appendChild(card);
         });
         document.querySelectorAll('.buy-ro-btn').forEach(btn => {
@@ -1166,11 +1451,10 @@
         });
       }
 
-      // ===== RO MODAL dengan DETAIL & ZOOM =====
+      // ===== RO MODAL =====
       const roModalOverlay = document.getElementById('roModalOverlay');
       const roModalBody = document.getElementById('roModalBody');
-      const roModalFooter = document.getElementById('roModalFooter');
-      let roPid = null, roPrice = 0, roPayMethod = null;
+      let roPid = null, roPrice = 0;
       let roZoomed = false;
 
       function openROModal(productId, price) {
@@ -1190,18 +1474,18 @@
               <h4>${prod.name}</h4>
               <div class="ro-price">Rp ${price.toLocaleString()}</div>
               <div class="ro-desc">${prod.desc || 'Deskripsi produk.'}</div>
-              <div style="font-size:0.75rem; color:#718096; margin:4px 0;">Stok: ${prod.stock||0} | Seri: ${prod.serial||'-'}</div>
+              <div style="font-size:0.7rem; color:#718096;">Stok: ${prod.stock||0} | Seri: ${prod.serial||'-'}</div>
             </div>
             <div class="ro-options">
               <div class="form-group"><label>Ukuran</label><select id="roSizeSelect">${(prod.sizes || ['30','32']).map(s => `<option value="${s}">Size ${s}</option>`).join('')}</select></div>
               <div class="form-group"><label>Warna</label><select id="roColorSelect">${(prod.colors || ['Indigo Blue']).map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
             </div>
-            <div class="form-group"><label>Nomor Seri (Opsional)</label><input type="text" id="roSerialNumber" placeholder="Masukkan kode seri" /></div>
-            <div id="roPaymentSelection" style="display:none; margin-top:10px; border-top:2px dashed #edf2f7; padding-top:12px;">
-              <p style="font-weight:700; margin-bottom:8px;">Pilih Metode Pembayaran:</p>
-              <div style="display:flex; gap:8px; flex-direction:column;">
-                <button class="btn-sm" id="btnPayWallet" style="background:#2e7d32; color:#fff; justify-content:space-between; padding:10px 16px;"><span><i class="fas fa-wallet"></i> Saldo Dompet</span><span id="roWalletBal" style="font-weight:600;">(Rp ${(currentUser.wallet||0).toLocaleString()})</span></button>
-                <button class="btn-sm" id="btnPayBank" style="background:var(--denim-blue); color:#fff; justify-content:space-between; padding:10px 16px;"><span><i class="fas fa-university"></i> Transfer Bank Manual</span></button>
+            <div class="form-group"><label>Nomor Seri (Opsional)</label><input type="text" id="roSerialNumber" placeholder="Kode seri" /></div>
+            <div id="roPaymentSelection" style="display:none; margin-top:8px; border-top:2px dashed #edf2f7; padding-top:10px;">
+              <p style="font-weight:700; margin-bottom:6px; font-size:0.85rem;">Pilih Metode:</p>
+              <div style="display:flex; gap:6px; flex-direction:column;">
+                <button class="btn-sm" id="btnPayWallet" style="background:#2e7d32; color:#fff; justify-content:space-between; padding:8px 14px;"><span><i class="fas fa-wallet"></i> Saldo Dompet</span><span id="roWalletBal" style="font-weight:600;">(Rp ${(currentUser.wallet||0).toLocaleString()})</span></button>
+                <button class="btn-sm" id="btnPayBank" style="background:var(--denim-blue); color:#fff; justify-content:space-between; padding:8px 14px;"><span><i class="fas fa-university"></i> Transfer Bank</span></button>
               </div>
             </div>
           </div>
@@ -1209,26 +1493,18 @@
         document.getElementById('roModalNextBtn').style.display = 'block';
         document.getElementById('roModalConfirmBankBtn').style.display = 'none';
 
-        // Zoom handler
+        // Zoom
         const roImage = document.getElementById('roImageContainer');
         if (roImage) {
           roImage.addEventListener('click', function() {
             roZoomed = !roZoomed;
-            if (roZoomed) {
-              this.style.transform = 'scale(1.5)';
-              this.style.transition = 'transform 0.3s ease';
-              this.style.zIndex = '10';
-              this.style.position = 'relative';
-            } else {
-              this.style.transform = 'scale(1)';
-              this.style.zIndex = '1';
-            }
+            if (roZoomed) { this.style.transform = 'scale(1.8)'; this.style.transition = 'transform 0.3s ease'; this.style.zIndex = '10'; this.style.position = 'relative'; } 
+            else { this.style.transform = 'scale(1)'; this.style.zIndex = '1'; }
           });
         }
 
         roModalOverlay.classList.add('active');
 
-        // Payment buttons
         document.getElementById('roModalNextBtn').onclick = function() {
           document.getElementById('roModalNextBtn').style.display = 'none';
           document.getElementById('roPaymentSelection').style.display = 'block';
@@ -1238,7 +1514,6 @@
           showModalConfirm('Konfirmasi', 'Bayar dengan saldo?', () => { roModalOverlay.classList.remove('active'); prosesRO('wallet'); });
         };
         document.getElementById('btnPayBank').onclick = function() {
-          roPayMethod = 'bank';
           document.getElementById('btnPayWallet').style.opacity = '0.5';
           document.getElementById('roModalConfirmBankBtn').style.display = 'block';
         };
