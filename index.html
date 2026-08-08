@@ -6,7 +6,6 @@
     <title>HEDTRO JEANS · Premium Denim</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <!-- SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <style>
@@ -26,6 +25,7 @@
         ::-webkit-scrollbar-track { background: var(--cream); }
         ::-webkit-scrollbar-thumb { background: var(--denim-blue); border-radius: 10px; }
 
+        /* ===== NAVBAR ===== */
         .navbar {
             position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
             background: var(--denim-dark); padding: 10px 28px;
@@ -36,7 +36,7 @@
         .navbar .logo i { color: var(--gold-accent); font-size: 1.6rem; }
         .navbar .logo span { font-weight: 300; color: var(--gold-light); font-size: 0.75rem; margin-left: 2px; }
         .nav-menu { display: flex; align-items: center; gap: 4px; list-style: none; }
-        .nav-menu li a { color: var(--cream); font-size: 0.78rem; font-weight: 500; padding: 8px 14px; border-radius: 60px; transition: var(--transition); display: flex; align-items: center; gap: 6px; }
+        .nav-menu li a { color: var(--cream); font-size: 0.78rem; font-weight: 500; padding: 8px 14px; border-radius: 60px; transition: var(--transition); display: flex; align-items: center; gap: 6px; cursor: pointer; }
         .nav-menu li a:hover, .nav-menu li a.active { background: rgba(201, 168, 76, 0.12); color: var(--gold-accent); }
         .nav-actions { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
         .nav-actions .search-box { display: flex; align-items: center; background: rgba(255, 255, 255, 0.06); border-radius: 60px; padding: 4px 6px 4px 16px; border: 1px solid rgba(255, 255, 255, 0.06); transition: var(--transition); }
@@ -59,6 +59,7 @@
         .burger-btn.active span:nth-child(1) { transform: translateY(6.5px) rotate(45deg); }
         .burger-btn.active span:nth-child(2) { opacity: 0; transform: scaleX(0); }
         .burger-btn.active span:nth-child(3) { transform: translateY(-6.5px) rotate(-45deg); }
+
         .sidebar-overlay { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.5); z-index: 999; opacity: 0; pointer-events: none; transition: var(--transition); }
         .sidebar-overlay.active { opacity: 1; pointer-events: all; }
         .sidebar { display: none; position: fixed; top: 0; left: -320px; width: 300px; height: 100%; background: var(--denim-dark); z-index: 1000; padding: 24px 20px; transition: var(--transition); overflow-y: auto; border-right: 3px solid var(--gold-accent); flex-direction: column; gap: 4px; }
@@ -76,6 +77,7 @@
         .cart-hp { display: none; color: var(--cream); font-size: 1.1rem; padding: 8px 10px; border-radius: 60px; transition: var(--transition); position: relative; cursor: pointer; }
         .cart-hp .badge { position: absolute; top: 0; right: 0; background: var(--gold-accent); color: var(--denim-dark); font-size: 0.55rem; font-weight: 700; width: 16px; height: 16px; border-radius: 50%; display: flex; align-items: center; justify-content: center; }
 
+        /* ===== POPUPS ===== */
         .popup-overlay { display: none; position: fixed; inset: 0; background: rgba(0, 0, 0, 0.5); backdrop-filter: blur(8px); z-index: 2000; align-items: center; justify-content: center; padding: 20px; }
         .popup-overlay.show { display: flex; }
         .popup-overlay .popup-box { background: var(--white); max-width: 560px; width: 100%; max-height: 85vh; overflow-y: auto; border-radius: var(--radius); padding: 28px 30px 32px; box-shadow: var(--shadow-lg); position: relative; animation: popupIn 0.3s ease; }
@@ -91,6 +93,7 @@
         .popup-overlay .popup-box .popup-form button:hover { background: #b8963a; transform: scale(0.98); }
         .popup-overlay .popup-box .popup-result { margin-top: 14px; font-size: 0.9rem; color: var(--denim-navy); }
 
+        /* ===== PRODUCT DETAIL ===== */
         .product-detail-popup .popup-box { max-width: 700px; }
         .product-detail-popup .popup-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-top: 8px; }
         .product-detail-popup .popup-image { background: var(--denim-light); border-radius: var(--radius-sm); display: flex; align-items: center; justify-content: center; font-size: 5rem; color: var(--denim-blue); min-height: 260px; position: relative; overflow: hidden; cursor: pointer; user-select: none; }
@@ -108,8 +111,8 @@
         .product-detail-popup .popup-info .popup-options { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin: 10px 0; }
         .product-detail-popup .popup-info .popup-options select { padding: 8px 12px; border: 1.5px solid var(--denim-light); border-radius: 60px; font-size: 0.85rem; background: var(--cream); color: var(--denim-dark); font-family: inherit; outline: none; width: 100%; }
         .product-detail-popup .popup-info .btn-buy-large { width: 100%; padding: 14px; background: var(--gold-accent); color: var(--denim-dark); border-radius: 60px; font-weight: 700; font-size: 1rem; transition: var(--transition); margin-top: 10px; font-family: inherit; }
-        .product-detail-popup .popup-info .btn-buy-large:hover { background: #b8963a; transform: scale(0.98); }
 
+        /* ===== TOAST ===== */
         .toast-container { position: fixed; top: 100px; right: 20px; z-index: 9999; display: flex; flex-direction: column; gap: 10px; max-width: 360px; width: 100%; pointer-events: none; }
         .toast-item { background: var(--denim-dark); color: var(--cream); padding: 16px 20px; border-radius: var(--radius-sm); border-left: 4px solid var(--gold-accent); box-shadow: var(--shadow-lg); animation: slideInRight 0.4s ease; pointer-events: all; display: flex; align-items: center; gap: 12px; }
         .toast-item.success { border-left-color: #2ecc71; }
@@ -122,29 +125,37 @@
         @keyframes slideOutRight { from { opacity: 1; transform: translateX(0) scale(1); } to { opacity: 0; transform: translateX(60px) scale(0.9); } }
         .toast-item.removing { animation: slideOutRight 0.3s ease forwards; }
 
-        .carousel-section { position: relative; width: 100%; height: 70vh; min-height: 400px; overflow: hidden; background: var(--denim-dark); border-radius: var(--radius); margin-bottom: 20px; margin-top: 8px; touch-action: pan-y; user-select: none; }
-        @media (max-width: 768px) { .carousel-section { border-radius: 0 !important; margin-top: 0; height: 75vh; } }
-        .carousel-track { display: flex; height: 100%; transition: transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; }
-        .carousel-slide { min-width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 60px; background-size: cover; background-position: center; position: relative; flex-direction: column; }
-        .carousel-slide .overlay-dark { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11, 26, 43, 0.6) 0%, rgba(11, 26, 43, 0.2) 100%); z-index: 1; }
-        .slide-image { font-size: 10rem; color: var(--white); opacity: 0.2; position: absolute; right: -20px; bottom: -30px; z-index: 1; transform: rotate(-10deg); }
-        .slide-image-left { font-size: 8rem; color: var(--white); opacity: 0.15; position: absolute; left: -20px; top: -10px; z-index: 1; transform: rotate(15deg); }
-        .carousel-slide .slide-content { text-align: center; color: var(--white); z-index: 2; max-width: 700px; position: relative; }
+        /* ===== CAROUSEL ===== */
+        .carousel-section { position: relative; width: 100%; height: 70vh; min-height: 400px; max-height: 600px; overflow: hidden; background: var(--denim-dark); border-radius: var(--radius); margin-bottom: 20px; margin-top: 8px; touch-action: pan-y; user-select: none; }
+        @media (max-width: 768px) { .carousel-section { border-radius: 0 !important; margin-top: 0; height: 60vh; min-height: 300px; max-height: 450px; } }
+        .carousel-track { display: flex; height: 100%; width: 100%; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; }
+        .carousel-slide { min-width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 40px 60px; background-size: cover; background-position: center; position: relative; flex-shrink: 0; }
+        @media (max-width: 768px) { .carousel-slide { padding: 30px 24px; } }
+        .carousel-slide .overlay-dark { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11, 26, 43, 0.5) 0%, rgba(11, 26, 43, 0.15) 100%); z-index: 1; }
+        .carousel-slide .slide-content { text-align: center; color: var(--white); z-index: 2; max-width: 700px; position: relative; padding: 20px; }
         .carousel-slide .slide-content h2 { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
+        @media (max-width: 768px) { .carousel-slide .slide-content h2 { font-size: 2.2rem; } }
         .carousel-slide .slide-content p { font-size: 1.2rem; opacity: 0.9; color: var(--gold-light); text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); }
+        @media (max-width: 768px) { .carousel-slide .slide-content p { font-size: 1rem; } }
         .carousel-slide .slide-content .btn-slide { display: inline-block; margin-top: 20px; background: var(--gold-accent); color: var(--denim-dark); padding: 14px 44px; border-radius: 60px; font-weight: 700; font-size: 1rem; transition: var(--transition); }
         .carousel-slide .slide-content .btn-slide:hover { transform: scale(1.05); background: #b8963a; }
-        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.08); backdrop-filter: blur(12px); color: #fff; border: 1px solid rgba(255, 255, 255, 0.1); width: 50px; height: 50px; border-radius: 50%; font-size: 1.3rem; cursor: pointer; z-index: 10; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
-        .carousel-btn:hover { background: var(--gold-accent); border-color: var(--gold-accent); color: var(--denim-dark); }
-        .carousel-btn.prev { left: 20px; } .carousel-btn.next { right: 20px; }
-        .carousel-dots { position: absolute; bottom: 24px; left: 50%; transform: translateX(-50%); display: flex; gap: 12px; z-index: 10; }
-        .carousel-dots .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.2); cursor: pointer; transition: var(--transition); border: 2px solid transparent; }
-        .carousel-dots .dot.active { background: var(--gold-accent); border-color: var(--gold-light); transform: scale(1.15); }
 
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); width: 48px; height: 48px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 10; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
+        .carousel-btn:hover { background: var(--gold-accent); border-color: var(--gold-accent); color: var(--denim-dark); }
+        .carousel-btn.prev { left: 16px; } .carousel-btn.next { right: 16px; }
+        @media (max-width: 768px) { .carousel-btn { width: 36px; height: 36px; font-size: 0.9rem; } .carousel-btn.prev { left: 8px; } .carousel-btn.next { right: 8px; } }
+
+        .carousel-dots { position: absolute; bottom: 20px; left: 50%; transform: translateX(-50%); display: flex; gap: 10px; z-index: 10; }
+        .carousel-dots .dot { width: 12px; height: 12px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); cursor: pointer; transition: var(--transition); border: 2px solid transparent; }
+        .carousel-dots .dot.active { background: var(--gold-accent); border-color: var(--gold-light); transform: scale(1.15); }
+        @media (max-width: 768px) { .carousel-dots .dot { width: 10px; height: 10px; } }
+
+        /* ===== PRODUCT SECTIONS ===== */
         .section-title { font-size: 1.6rem; font-weight: 700; color: var(--denim-dark); padding: 32px 0 16px; display: flex; align-items: center; gap: 12px; }
         .section-title i { color: var(--gold-accent); }
+
         .product-carousel-wrapper { position: relative; padding: 0 0 20px; overflow: hidden; }
-        .product-carousel { display: flex; gap: 20px; overflow-x: auto; scroll-behavior: smooth; padding: 8px 4px 20px; scrollbar-width: none; }
+        .product-carousel { display: flex; gap: 20px; overflow-x: auto; scroll-behavior: smooth; padding: 8px 4px 20px; scrollbar-width: none; -webkit-overflow-scrolling: touch; }
         .product-carousel::-webkit-scrollbar { display: none; }
         .product-carousel .product-card { flex: 0 0 220px; min-width: 200px; background: var(--white); border-radius: var(--radius-sm); overflow: hidden; box-shadow: var(--shadow); transition: var(--transition); border: 1px solid #e8edf2; }
         .product-carousel .product-card:hover { transform: translateY(-6px); box-shadow: var(--shadow-lg); }
@@ -156,11 +167,13 @@
         .product-carousel .product-card .body .price { font-weight: 700; color: var(--denim-blue); font-size: 1rem; }
         .product-carousel .product-card .body .price del { color: #8a9aa8; font-weight: 400; font-size: 0.75rem; margin-left: 8px; }
         .product-carousel .product-card .body .btn-group { display: flex; gap: 8px; margin-top: 10px; }
-        .product-carousel .product-card .body .btn-group .btn-detail { flex: 1; background: var(--denim-dark); color: #fff; padding: 5px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 600; text-align: center; }
-        .product-carousel .product-card .body .btn-group .btn-buy { flex: 1; background: var(--gold-accent); color: var(--denim-dark); padding: 5px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 700; text-align: center; }
+        .product-carousel .product-card .body .btn-group .btn-detail { flex: 1; background: var(--denim-dark); color: #fff; padding: 5px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 600; text-align: center; cursor: pointer; }
+        .product-carousel .product-card .body .btn-group .btn-buy { flex: 1; background: var(--gold-accent); color: var(--denim-dark); padding: 5px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 700; text-align: center; cursor: pointer; }
 
         .carousel-scroll-btn { position: absolute; top: 50%; transform: translateY(-50%); background: var(--white); color: var(--denim-dark); border: 1px solid var(--denim-light); width: 40px; height: 40px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 5; box-shadow: var(--shadow); transition: var(--transition); display: flex; align-items: center; justify-content: center; }
-        .carousel-scroll-btn.left { left: 8px; } .carousel-scroll-btn.right { right: 8px; }
+        .carousel-scroll-btn:hover { background: var(--gold-accent); color: var(--denim-dark); border-color: var(--gold-accent); }
+        .carousel-scroll-btn.left { left: 4px; } .carousel-scroll-btn.right { right: 4px; }
+        @media (max-width: 768px) { .carousel-scroll-btn { width: 30px; height: 30px; font-size: 0.8rem; } }
 
         .product-grid-wrapper { padding: 0 0 40px; }
         .product-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: 20px; }
@@ -174,19 +187,24 @@
         .product-grid .product-card .body .price { font-weight: 700; color: var(--denim-blue); font-size: 1.05rem; }
         .product-grid .product-card .body .price del { color: #8a9aa8; font-weight: 400; font-size: 0.8rem; margin-left: 8px; }
         .product-grid .product-card .body .btn-group { display: flex; gap: 8px; margin-top: 10px; }
-        .product-grid .product-card .body .btn-group .btn-detail { flex: 1; background: var(--denim-dark); color: #fff; padding: 6px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 600; text-align: center; }
-        .product-grid .product-card .body .btn-group .btn-buy { flex: 1; background: var(--gold-accent); color: var(--denim-dark); padding: 6px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 700; text-align: center; }
+        .product-grid .product-card .body .btn-group .btn-detail { flex: 1; background: var(--denim-dark); color: #fff; padding: 6px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 600; text-align: center; cursor: pointer; }
+        .product-grid .product-card .body .btn-group .btn-buy { flex: 1; background: var(--gold-accent); color: var(--denim-dark); padding: 6px 12px; border-radius: 60px; font-size: 0.7rem; font-weight: 700; text-align: center; cursor: pointer; }
 
+        /* ===== PAGINATION ===== */
         .pagination { display: flex; justify-content: center; align-items: center; gap: 8px; margin-top: 24px; flex-wrap: wrap; }
         .pagination button { padding: 8px 16px; border-radius: 60px; font-weight: 600; font-size: 0.85rem; background: var(--white); color: var(--denim-dark); border: 1px solid var(--denim-light); transition: var(--transition); cursor: pointer; }
+        .pagination button:hover { background: var(--denim-light); }
         .pagination button.active { background: var(--gold-accent); color: var(--denim-dark); border-color: var(--gold-accent); }
+        .pagination button:disabled { opacity: 0.5; cursor: not-allowed; }
 
+        /* ===== FEATURES ===== */
         .features { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 16px; padding: 20px 0 40px; }
         .feature-item { background: var(--white); border-radius: var(--radius-sm); padding: 20px 16px; text-align: center; box-shadow: var(--shadow); border: 1px solid #e8edf2; }
         .feature-item i { font-size: 2rem; color: var(--gold-accent); margin-bottom: 8px; }
         .feature-item h4 { font-weight: 600; font-size: 0.95rem; }
         .feature-item p { font-size: 0.8rem; color: #5a7a8a; }
 
+        /* ===== ABOUT & FAQ ===== */
         .about-section, .faq-section { padding: 40px 30px 50px; background: var(--white); margin: 0 0 20px; border-radius: var(--radius); box-shadow: var(--shadow); border: 1px solid var(--denim-light); }
         .about-section h2, .faq-section h2 { font-family: 'Playfair Display', serif; font-size: 2rem; font-weight: 800; color: var(--denim-dark); margin-bottom: 16px; }
         .about-section h2 i, .faq-section h2 i { color: var(--gold-accent); }
@@ -200,6 +218,7 @@
         .faq-item .faq-answer { display: none; padding-top: 10px; color: var(--denim-navy); line-height: 1.6; font-size: 0.95rem; }
         .faq-item .faq-answer.open { display: block; }
 
+        /* ===== FOOTER ===== */
         .footer { background: var(--denim-dark); color: var(--cream); padding: 40px 28px 20px; border-top: 3px solid var(--gold-accent); margin-top: 20px; }
         .footer-grid { display: grid; grid-template-columns: 1.5fr 1fr 1fr 1.2fr; gap: 30px; max-width: 1280px; margin: 0 auto 30px; }
         .footer-col h4 { font-size: 0.9rem; font-weight: 700; color: var(--gold-light); margin-bottom: 12px; }
@@ -209,15 +228,13 @@
         .footer-col .social-icons a { width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.06); display: flex; align-items: center; justify-content: center; color: rgba(255, 255, 255, 0.5); transition: var(--transition); }
         .footer-bottom { border-top: 1px solid rgba(255, 255, 255, 0.06); padding-top: 16px; text-align: center; font-size: 0.75rem; color: rgba(255, 255, 255, 0.3); max-width: 1280px; margin: 0 auto; }
 
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             body { padding-top: 64px; }
             .navbar { padding: 10px 16px; height: 64px; }
             .nav-menu, .nav-actions, .btn-nav { display: none !important; }
             .burger-btn, .search-icon-hp, .cart-hp { display: flex !important; }
             .sidebar, .sidebar-overlay { display: block; }
-            .carousel-section { height: 75vh; min-height: 350px; border-radius: 0 !important; }
-            .carousel-slide { padding: 30px 24px; }
-            .carousel-slide .slide-content h2 { font-size: 2.5rem; }
             .product-carousel .product-card { flex: 0 0 170px; min-width: 150px; }
             .product-grid { grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 14px; }
             .footer-grid { grid-template-columns: 1fr 1fr; gap: 20px; }
@@ -227,12 +244,20 @@
             .product-detail-popup .popup-info h2 { font-size: 1.1rem; }
             .product-detail-popup .popup-price { font-size: 1.1rem; }
         }
+        @media (max-width: 480px) {
+            .product-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+            .product-grid .product-card .img-placeholder { height: 140px; }
+            .product-grid .product-card .body { padding: 10px; }
+            .product-grid .product-card .body h4 { font-size: 0.8rem; }
+            .product-grid .product-card .body .price { font-size: 0.85rem; }
+        }
     </style>
 </head>
 <body>
 
     <div class="toast-container" id="toastContainer"></div>
 
+    <!-- ===== NAVBAR ===== -->
     <header class="navbar" id="navbar">
         <div class="logo" id="headerLogo">
             <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
@@ -273,6 +298,7 @@
         </div>
     </header>
 
+    <!-- ===== SIDEBAR ===== -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
     <nav class="sidebar" id="sidebar">
         <div class="sidebar-header">
@@ -289,6 +315,7 @@
         <a href="register.html" class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</a>
     </nav>
 
+    <!-- ===== POPUPS ===== -->
     <div class="popup-overlay" id="searchPopup">
         <div class="popup-box">
             <button class="close-popup" id="closeSearchPopup">&times;</button>
@@ -352,8 +379,10 @@
         </div>
     </div>
 
+    <!-- ===== MAIN CONTENT ===== -->
     <div class="app-container" id="home">
 
+        <!-- CAROUSEL -->
         <section class="carousel-section" id="carouselSection">
             <div class="carousel-track" id="carouselTrack"></div>
             <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
@@ -361,33 +390,39 @@
             <div class="carousel-dots" id="carouselDots"></div>
         </section>
 
-        <h2 class="section-title"><i class="fas fa-heart" style="color:var(--gold-accent);"></i> PRODUK FAVORIT</h2>
+        <!-- PRODUK FAVORIT -->
+        <h2 class="section-title" id="sectionFavorite"><i class="fas fa-heart" style="color:var(--gold-accent);"></i> PRODUK FAVORIT</h2>
         <div class="product-carousel-wrapper">
             <button class="carousel-scroll-btn left" id="favScrollLeft"><i class="fas fa-chevron-left"></i></button>
             <button class="carousel-scroll-btn right" id="favScrollRight"><i class="fas fa-chevron-right"></i></button>
             <div class="product-carousel" id="favoriteCarousel"></div>
         </div>
 
-        <h2 class="section-title" id="products"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
+        <!-- TOP TRENDING -->
+        <h2 class="section-title" id="sectionTrending"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
         <div class="product-grid-wrapper">
             <div class="product-grid" id="productGrid"></div>
-            <div class="pagination" id="pagination"></div>
+            <div class="pagination" id="paginationContainer"></div>
         </div>
 
+        <!-- ABOUT -->
         <div class="about-section" id="about">
             <h2><i class="fas fa-info-circle"></i> Tentang Kami</h2>
             <div id="aboutContainer"></div>
         </div>
 
+        <!-- FAQ -->
         <div class="faq-section" id="faq">
             <h2><i class="fas fa-question-circle"></i> Pertanyaan yang Sering Diajukan</h2>
             <div id="faqContainer"></div>
         </div>
 
+        <!-- FEATURES -->
         <div class="features" id="featuresContainer"></div>
 
     </div>
 
+    <!-- ===== FOOTER ===== -->
     <footer class="footer" id="mainFooter">
         <div class="footer-grid">
             <div class="footer-col">
@@ -436,6 +471,9 @@
             let currentSlide = 0;
             let slideInterval = null;
             let currentUserProfile = null;
+            let currentPage = 1;
+            const itemsPerPage = 6;
+
             const track = document.getElementById('carouselTrack');
             const dots = document.getElementById('carouselDots');
 
@@ -451,14 +489,13 @@
                 setTimeout(() => toast.remove(), duration);
             }
 
-            // ========== FUNGSI TAMBAHAN UNTUK INDEX.HTML ==========
+            // ========== BRAND SETTINGS ==========
             async function applyBrandSettings() {
                 try {
                     const settings = await window.getSettings();
                     const brandName = settings.brandName || 'HEDTRO JEANS';
                     const brandLogo = settings.brandLogo || 'fa-tshirt';
                     const isImage = brandLogo && brandLogo.startsWith('data:image');
-                    
                     document.querySelectorAll('#headerLogo, #sidebarLogo').forEach(el => {
                         if (el) {
                             if (isImage) {
@@ -481,6 +518,7 @@
                 }
             }
 
+            // ========== NAV AUTH ==========
             async function updateNavAuth() {
                 try {
                     const session = await window.getSession();
@@ -511,7 +549,7 @@
                 }
             }
 
-            // ========== LOAD DATA FROM SUPABASE ==========
+            // ========== LOAD DATA ==========
             async function loadAllData() {
                 try {
                     console.log('🔵 Starting loadAllData...');
@@ -543,15 +581,15 @@
                     console.log('Footer loaded:', footer.brand);
 
                     renderCarousel(slides.length > 0 ? slides : [
-                        { id: 1, title: '501® ORIGINAL DENIM', subtitle: 'Ikonik sejak 1873', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #0b1a2b, #2a4b6e)' },
-                        { id: 2, title: 'TRUCKER JACKET', subtitle: 'Gaya ikonik denim modern', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #1a2e44, #3a5f7e)' }
+                        { id: 1, title: '501® ORIGINAL DENIM', subtitle: 'Ikonik sejak 1873', btnText: 'Lihat Koleksi', btnLink: '#sectionTrending', bg: 'linear-gradient(135deg, #0b1a2b, #2a4b6e)' },
+                        { id: 2, title: 'TRUCKER JACKET', subtitle: 'Gaya ikonik denim modern', btnText: 'Lihat Koleksi', btnLink: '#sectionTrending', bg: 'linear-gradient(135deg, #1a2e44, #3a5f7e)' }
                     ]);
                     renderAbout(about);
                     renderFaq(faqs);
                     renderFeatures(features);
                     renderFooter(footer);
                     renderFavoriteCarousel();
-                    renderProductGrid(1);
+                    renderProductGrid(currentPage);
                     updateCartUI();
                     await updateNavAuth();
 
@@ -563,11 +601,11 @@
                 }
             }
 
-            // ========== RENDER FUNCTIONS ==========
+            // ========== CAROUSEL ==========
             function renderCarousel(slides) {
                 const displaySlides = slides.length > 0 ? slides : [
-                    { id: 1, title: '501® ORIGINAL DENIM', subtitle: 'Ikonik sejak 1873', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #0b1a2b, #2a4b6e)' },
-                    { id: 2, title: 'TRUCKER JACKET', subtitle: 'Gaya ikonik denim modern', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #1a2e44, #3a5f7e)' }
+                    { id: 1, title: '501® ORIGINAL DENIM', subtitle: 'Ikonik sejak 1873', btnText: 'Lihat Koleksi', btnLink: '#sectionTrending', bg: 'linear-gradient(135deg, #0b1a2b, #2a4b6e)' },
+                    { id: 2, title: 'TRUCKER JACKET', subtitle: 'Gaya ikonik denim modern', btnText: 'Lihat Koleksi', btnLink: '#sectionTrending', bg: 'linear-gradient(135deg, #1a2e44, #3a5f7e)' }
                 ];
                 track.innerHTML = '';
                 displaySlides.forEach(s => {
@@ -575,7 +613,7 @@
                     div.className = 'carousel-slide';
                     div.style.background = s.bg || 'linear-gradient(135deg, #0b1a2b, #2a4b6e)';
                     let imgHtml = s.image ? `<img src="${s.image}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" />` : '';
-                    div.innerHTML = `${imgHtml}<div class="overlay-dark"></div><div class="slide-content"><h2>${s.title}</h2><p>${s.subtitle}</p><a href="${s.btnLink || '#products'}" class="btn-slide">${s.btnText || 'Beli'}</a></div>`;
+                    div.innerHTML = `${imgHtml}<div class="overlay-dark"></div><div class="slide-content"><h2>${s.title}</h2><p>${s.subtitle}</p><a href="${s.btnLink || '#sectionTrending'}" class="btn-slide">${s.btnText || 'Beli'}</a></div>`;
                     track.appendChild(div);
                 });
                 dots.innerHTML = '';
@@ -599,6 +637,36 @@
                 dots.querySelectorAll('.dot').forEach((d, idx) => d.classList.toggle('active', idx === currentSlide));
             }
 
+            // ========== CAROUSEL TOUCH SWIPE ==========
+            let touchStartX = 0;
+            let touchEndX = 0;
+            const carouselSection = document.getElementById('carouselSection');
+
+            carouselSection.addEventListener('touchstart', function(e) {
+                touchStartX = e.changedTouches[0].screenX;
+            }, { passive: true });
+
+            carouselSection.addEventListener('touchend', function(e) {
+                touchEndX = e.changedTouches[0].screenX;
+                const diff = touchStartX - touchEndX;
+                if (Math.abs(diff) > 50) {
+                    if (diff > 0) {
+                        goToSlide(currentSlide + 1);
+                    } else {
+                        goToSlide(currentSlide - 1);
+                    }
+                }
+            }, { passive: true });
+
+            // ========== CAROUSEL BUTTONS ==========
+            document.getElementById('carouselPrev').addEventListener('click', function() {
+                goToSlide(currentSlide - 1);
+            });
+            document.getElementById('carouselNext').addEventListener('click', function() {
+                goToSlide(currentSlide + 1);
+            });
+
+            // ========== RENDER FUNCTIONS ==========
             function renderAbout(about) {
                 document.getElementById('aboutContainer').innerHTML = about.content || '<p>Brand denim premium HEDTRO JEANS.</p>';
             }
@@ -635,10 +703,15 @@
                 if (f.copyright) document.getElementById('footerCopy').innerHTML = f.copyright;
             }
 
+            // ========== FAVORITE CAROUSEL ==========
             function renderFavoriteCarousel() {
                 const container = document.getElementById('favoriteCarousel');
                 const favorites = allProducts.filter(p => p.favorite === true);
                 container.innerHTML = '';
+                if (favorites.length === 0) {
+                    container.innerHTML = '<p class="text-muted" style="padding:20px;">Belum ada produk favorit.</p>';
+                    return;
+                }
                 favorites.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
@@ -649,23 +722,58 @@
                 bindProductButtons();
             }
 
-            const itemsPerPage = 6;
-            let currentPage = 1;
+            // ========== PRODUCT GRID WITH PAGINATION ==========
             function renderProductGrid(page) {
                 const grid = document.getElementById('productGrid');
                 const products = allProducts.filter(p => p.favorite !== true);
+                const totalItems = products.length;
+                const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
+                
+                if (page < 1) page = 1;
+                if (page > totalPages) page = totalPages;
+                currentPage = page;
+
                 const start = (page - 1) * itemsPerPage;
                 const pageItems = products.slice(start, start + itemsPerPage);
+                
                 grid.innerHTML = '';
-                pageItems.forEach(p => {
-                    const card = document.createElement('div');
-                    card.className = 'product-card';
-                    let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon||'fa-tshirt'}"></i>`;
-                    card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
-                    grid.appendChild(card);
-                });
+                if (pageItems.length === 0) {
+                    grid.innerHTML = '<p class="text-muted" style="padding:20px;">Belum ada produk.</p>';
+                } else {
+                    pageItems.forEach(p => {
+                        const card = document.createElement('div');
+                        card.className = 'product-card';
+                        let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon||'fa-tshirt'}"></i>`;
+                        card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
+                        grid.appendChild(card);
+                    });
+                }
                 bindProductButtons();
+                renderPagination(totalPages, page);
             }
+
+            function renderPagination(totalPages, currentPage) {
+                const container = document.getElementById('paginationContainer');
+                if (totalPages <= 1) {
+                    container.innerHTML = '';
+                    return;
+                }
+                let html = '';
+                html += `<button class="page-btn" onclick="window._changePage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+                for (let i = 1; i <= totalPages; i++) {
+                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="window._changePage(${i})">${i}</button>`;
+                }
+                html += `<button class="page-btn" onclick="window._changePage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+                container.innerHTML = html;
+            }
+
+            window._changePage = function(page) {
+                const products = allProducts.filter(p => p.favorite !== true);
+                const totalPages = Math.ceil(products.length / itemsPerPage) || 1;
+                if (page < 1 || page > totalPages) return;
+                renderProductGrid(page);
+                document.getElementById('sectionTrending').scrollIntoView({ behavior: 'smooth', block: 'start' });
+            };
 
             // ========== PRODUCT BUTTONS ==========
             function bindProductButtons() {
@@ -782,7 +890,6 @@
 
                 try {
                     await window.saveOrder(newOrder);
-                    // Update stock produk
                     for (let ci of cartItems) {
                         const p = allProducts.find(x => x.id === ci.id);
                         if (p && p.stock !== undefined) {
@@ -790,7 +897,6 @@
                             await window.saveProduct(p);
                         }
                     }
-                    // Reload products
                     allProducts = await window.getProducts();
 
                     cartItems = [];
@@ -846,7 +952,7 @@
                     html += `<div style="display:flex; align-items:center; gap:12px; padding:8px 0; border-bottom:1px solid #eee;">
                         <span style="font-weight:600;">${p.name}</span>
                         <span style="color:var(--denim-blue);">Rp ${p.price.toLocaleString()}</span>
-                        <button class="btn-sm btn-sm-gold" onclick="openProductDetail(${p.id}); document.getElementById('closeSearchPopup').click();">Lihat</button>
+                        <button class="btn-sm btn-sm-gold" onclick="openProductDetail(${p.id}); document.getElementById('closeSearchPopup').click();" style="padding:4px 12px; background:var(--gold-accent); color:var(--denim-dark); border-radius:60px; font-weight:600; font-size:0.7rem; cursor:pointer;">Lihat</button>
                     </div>`;
                 });
                 resultEl.innerHTML = html;
@@ -865,6 +971,16 @@
                 if (e.key === 'Enter') document.getElementById('searchBtnDesktop').click();
             });
 
+            // ========== FAVORITE CAROUSEL SCROLL ==========
+            document.getElementById('favScrollLeft').addEventListener('click', function() {
+                const container = document.getElementById('favoriteCarousel');
+                container.scrollBy({ left: -280, behavior: 'smooth' });
+            });
+            document.getElementById('favScrollRight').addEventListener('click', function() {
+                const container = document.getElementById('favoriteCarousel');
+                container.scrollBy({ left: 280, behavior: 'smooth' });
+            });
+
             // ========== BURGER MENU ==========
             const burgerBtn = document.getElementById('burgerBtn');
             const sidebar = document.getElementById('sidebar');
@@ -872,6 +988,27 @@
             burgerBtn.onclick = () => { sidebar.classList.toggle('open'); sidebarOverlay.classList.toggle('active'); };
             document.getElementById('closeSidebar').onclick = () => { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); };
             sidebarOverlay.onclick = () => { sidebar.classList.remove('open'); sidebarOverlay.classList.remove('active'); };
+
+            // ========== NAV MENU TABS ==========
+            document.querySelectorAll('#navMenu li a[data-page], .sidebar .menu-item[data-page]').forEach(item => {
+                item.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const page = this.dataset.page;
+                    document.querySelectorAll('#navMenu li a[data-page]').forEach(a => a.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    if (page === 'home') {
+                        window.scrollTo({ top: 0, behavior: 'smooth' });
+                    } else if (page === 'products') {
+                        document.getElementById('sectionTrending').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else if (page === 'about') {
+                        document.getElementById('about').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    } else if (page === 'faq') {
+                        document.getElementById('faq').scrollIntoView({ behavior: 'smooth', block: 'start' });
+                    }
+                    if (window.innerWidth <= 768) toggleSidebar(false);
+                });
+            });
 
             // ========== FAQ TOGGLE ==========
             window.toggleFaq = function(el) {
