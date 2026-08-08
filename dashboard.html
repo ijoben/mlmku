@@ -6,6 +6,9 @@
   <title>Dashboard · HEDTRO JEANS</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <!-- SUPABASE -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
   <style>
     * { margin:0; padding:0; box-sizing:border-box; }
     :root {
@@ -890,130 +893,61 @@
     (function() {
       'use strict';
 
-      const DB_KEY = 'hedtro_mlm_users';
-      const PRODUCT_KEY = 'hedtro_products';
-      const BANK_KEY = 'hedtro_bank_info';
-      const ORDER_KEY = 'hedtro_orders';
-      const TRANSACTION_KEY = 'hedtro_transactions';
-      const SESSION_KEY = 'mlm_session';
-      const SETTINGS_KEY = 'hedtro_settings';
-
-      function loadSettings() {
-        try { return JSON.parse(localStorage.getItem(SETTINGS_KEY) || '{}'); } catch(e) { return {}; }
-      }
-
-      function applyBrandSettings() {
-        const settings = loadSettings();
-        const brandName = settings.brandName || 'HEDTRO JEANS';
-        const brandLogo = settings.brandLogo || 'fa-tshirt';
-        const isImage = brandLogo && brandLogo.startsWith('data:image');
-        document.querySelectorAll('#navbarLogo, #sidebarLogo').forEach(el => {
-          if (el) {
-            if (isImage) {
-              el.innerHTML = `<img src="${brandLogo}" alt="${brandName}" style="height:32px;width:auto;object-fit:contain;" />`;
-            } else {
-              const icon = el.querySelector('i');
-              if (icon) icon.className = 'fas ' + brandLogo;
-              const textSpan = el.querySelector('span');
-              if (textSpan && textSpan.tagName === 'SPAN') {
-                textSpan.innerText = brandName.replace('HEDTRO', '').trim();
-              }
-              if (!el.querySelector('span')) {
-                el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
-              }
-            }
-          }
-        });
-      }
-
-      function loadUsers() { try { return JSON.parse(localStorage.getItem(DB_KEY) || '[]'); } catch(e) { return []; } }
-      function saveUsers(u) { localStorage.setItem(DB_KEY, JSON.stringify(u)); }
-      function loadProducts() { try { return JSON.parse(localStorage.getItem(PRODUCT_KEY) || '[]'); } catch(e) { return []; } }
-      function saveProducts(p) { localStorage.setItem(PRODUCT_KEY, JSON.stringify(p)); }
-      function loadOrders() { try { return JSON.parse(localStorage.getItem(ORDER_KEY) || '[]'); } catch(e) { return []; } }
-      function saveOrders(o) { localStorage.setItem(ORDER_KEY, JSON.stringify(o)); }
-      function loadTransactions() { try { return JSON.parse(localStorage.getItem(TRANSACTION_KEY) || '[]'); } catch(e) { return []; } }
-      function saveTransactions(t) { localStorage.setItem(TRANSACTION_KEY, JSON.stringify(t)); }
-      function loadBankInfo() {
-        try { let data = JSON.parse(localStorage.getItem(BANK_KEY)); if (!data) return [{id:1, bank:'BCA', account:'1234567890', name:'HEDTRO JEANS'}]; if (!Array.isArray(data)) return [{id:1, bank:data.bank, account:data.account, name:data.name}]; return data; } 
-        catch(e) { return [{id:1, bank:'BCA', account:'1234567890', name:'HEDTRO JEANS'}]; }
-      }
-      function pushGlobalTransaction(txObj) { let txs = loadTransactions(); txs.push(txObj); saveTransactions(txs); }
-      function updateGlobalTransaction(txId, updates) { let txs = loadTransactions(); const idx = txs.findIndex(t => t.id === txId); if (idx !== -1) { txs[idx] = { ...txs[idx], ...updates }; saveTransactions(txs); } }
-
-      let users = loadUsers();
-      let products = loadProducts();
-      const session = localStorage.getItem('mlm_session');
+      // ========== GLOBAL STATE ==========
       let currentUser = null;
-      if (session) {
-        try { const { id } = JSON.parse(session); currentUser = users.find(u => u.id === id); if (!currentUser || currentUser.role === 'admin') { window.location.href = 'index.html'; return; } } 
-        catch (_) { window.location.href = 'index.html'; return; }
-      } else { window.location.href = 'index.html'; return; }
+      let allUsers = [];
+      let allProducts = [];
+      let allOrders = [];
+      let allTransactions = [];
+      let allBankInfo = [];
+      let currentZoom = 1;
 
-      let historyData = [], historyCurrentPage = 1;
-      let downlineData = [], downlineCurrentPage = 1;
-      let dashPage = 1, dpPage = 1, wdPage = 1, roPage = 1;
-      let uploadTxId = null, uploadType = null;
-      let currentZoom = window.innerWidth <= 768 ? 0.6 : 1;
+      // Pagination state
+      let dashPage = 1;
+      let historyCurrentPage = 1;
+      let downlineCurrentPage = 1;
+      let dpPage = 1;
+      let wdPage = 1;
+      let roPage = 1;
+      const ITEMS_PER_PAGE = 10;
 
-      // ===== PROFILE UI =====
-      function updateProfileUI() {
-        if (!currentUser) return;
-        const sideImg = document.getElementById('sideProfileImg');
-        const sidePlaceholder = document.getElementById('sideProfilePlaceholder');
-        if (currentUser.profile_image) { sideImg.src = currentUser.profile_image; sideImg.style.display = 'block'; sidePlaceholder.style.display = 'none'; } 
-        else { sideImg.style.display = 'none'; sidePlaceholder.style.display = 'flex'; }
-        document.getElementById('sideProfileName').textContent = currentUser.fullname || currentUser.name || currentUser.username;
-        document.getElementById('sideProfileId').textContent = 'ID: ' + currentUser.id;
-
-        const dashImg = document.getElementById('dashAvatarImg');
-        const dashIcon = document.getElementById('dashAvatarIcon');
-        if (currentUser.profile_image) { dashImg.src = currentUser.profile_image; dashImg.style.display = 'block'; dashIcon.style.display = 'none'; } 
-        else { dashImg.style.display = 'none'; dashIcon.style.display = 'flex'; }
-        document.getElementById('dashProfileName').textContent = currentUser.fullname || currentUser.name || currentUser.username;
-        document.getElementById('dashProfileId').textContent = 'ID: ' + currentUser.id;
-
-        document.getElementById('navUserName').textContent = currentUser.fullname || currentUser.name || currentUser.username;
-        const isVerified = currentUser.status === 'verified';
-        const badge = document.getElementById('sideUserStatusBadge');
-        if (badge) { badge.textContent = isVerified ? 'VERIFIED' : 'FREE'; badge.className = isVerified ? 'status-badge status-verified' : 'status-badge status-free'; }
-        document.getElementById('sideWalletAmount').textContent = 'Rp ' + (currentUser.wallet || 0).toLocaleString();
+      // ========== HELPER ==========
+      function showToast(message, type = 'info', duration = 3000) {
+        const container = document.getElementById('toastContainer');
+        if (!container) return;
+        const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
+        const toast = document.createElement('div');
+        toast.className = `toast-item ${type}`;
+        toast.innerHTML = `<span class="toast-icon"><i class="fas ${icons[type] || icons.info}"></i></span><span class="toast-msg">${message}</span><span class="toast-close">&times;</span>`;
+        container.appendChild(toast);
+        toast.querySelector('.toast-close').addEventListener('click', () => toast.remove());
+        setTimeout(() => toast.remove(), duration);
       }
-      updateProfileUI();
-
-      window.showSection = showSection;
-
-      // ===== REF LINK =====
-      window.copyRefLink = function() {
-        const copyText = document.getElementById('refLink');
-        copyText.select(); copyText.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(copyText.value).then(() => showModalAlert('Berhasil', 'Tautan Referal disalin!'));
-      };
-
-      // ===== MODAL =====
-      const modalOverlay = document.getElementById('customModalOverlay');
-      const modalTitle = document.getElementById('modalTitle');
-      const modalBodyText = document.getElementById('modalBodyText');
-      const modalFooter = document.getElementById('modalFooter');
 
       function showModalAlert(title, message, callback) {
-        modalTitle.innerHTML = `<i class="fas fa-info-circle"></i> ${title}`;
-        modalBodyText.innerHTML = message;
-        modalFooter.innerHTML = `<button class="btn-sm btn-sm-gold" id="modalOkBtn">OK</button>`;
-        modalOverlay.classList.add('active');
-        document.getElementById('modalOkBtn').onclick = function() { modalOverlay.classList.remove('active'); if (callback) callback(); };
+        document.getElementById('modalTitle').innerHTML = `<i class="fas fa-info-circle"></i> ${title}`;
+        document.getElementById('modalBodyText').innerHTML = message;
+        document.getElementById('modalFooter').innerHTML = `<button class="btn-sm btn-sm-gold" id="modalOkBtn">OK</button>`;
+        document.getElementById('customModalOverlay').classList.add('active');
+        document.getElementById('modalOkBtn').onclick = function() {
+          document.getElementById('customModalOverlay').classList.remove('active');
+          if (callback) callback();
+        };
       }
 
       function showModalConfirm(title, message, onConfirm) {
-        modalTitle.innerHTML = `<i class="fas fa-question-circle"></i> ${title}`;
-        modalBodyText.innerHTML = message;
-        modalFooter.innerHTML = `<button class="btn-sm btn-sm-danger" id="modalCancelBtn">Batal</button><button class="btn-sm btn-sm-gold" id="modalConfirmBtn">Lanjutkan</button>`;
-        modalOverlay.classList.add('active');
-        document.getElementById('modalCancelBtn').onclick = () => modalOverlay.classList.remove('active');
-        document.getElementById('modalConfirmBtn').onclick = () => { modalOverlay.classList.remove('active'); if(onConfirm) onConfirm(); };
+        document.getElementById('modalTitle').innerHTML = `<i class="fas fa-question-circle"></i> ${title}`;
+        document.getElementById('modalBodyText').innerHTML = message;
+        document.getElementById('modalFooter').innerHTML = `<button class="btn-sm btn-sm-danger" id="modalCancelBtn">Batal</button><button class="btn-sm btn-sm-gold" id="modalConfirmBtn">Lanjutkan</button>`;
+        document.getElementById('customModalOverlay').classList.add('active');
+        document.getElementById('modalCancelBtn').onclick = () => document.getElementById('customModalOverlay').classList.remove('active');
+        document.getElementById('modalConfirmBtn').onclick = () => {
+          document.getElementById('customModalOverlay').classList.remove('active');
+          if (onConfirm) onConfirm();
+        };
       }
 
-      // ===== SIDEBAR =====
+      // ========== SIDEBAR ==========
       const sidebar = document.getElementById('sidebar');
       const sidebarOverlay = document.getElementById('sidebarOverlay');
       const burgerBtn = document.getElementById('burgerBtn');
@@ -1030,60 +964,171 @@
       document.getElementById('closeSidebar').addEventListener('click', () => toggleSidebar(false));
       sidebarOverlay.addEventListener('click', () => toggleSidebar(false));
 
-      // ===== NAVIGASI =====
+      // ========== NAVIGASI ==========
       const sections = {
-        dashboard: document.getElementById('sec-dashboard'), products: document.getElementById('sec-products'),
+        dashboard: document.getElementById('sec-dashboard'),
+        products: document.getElementById('sec-products'),
         'ro-history': document.getElementById('sec-ro-history'),
-        network: document.getElementById('sec-network'), downline: document.getElementById('sec-downline'),
-        deposit: document.getElementById('sec-deposit'), withdraw: document.getElementById('sec-withdraw'),
-        history: document.getElementById('sec-history'), profile: document.getElementById('sec-profile')
+        network: document.getElementById('sec-network'),
+        downline: document.getElementById('sec-downline'),
+        deposit: document.getElementById('sec-deposit'),
+        withdraw: document.getElementById('sec-withdraw'),
+        history: document.getElementById('sec-history'),
+        profile: document.getElementById('sec-profile')
       };
 
-      function showSection(sectionId) {
+      window.showSection = function(sectionId) {
         Object.values(sections).forEach(el => el.classList.remove('active'));
         if (sections[sectionId]) sections[sectionId].classList.add('active');
         document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(el => el.classList.remove('active'));
         const activeMenuItem = document.querySelector(`.sidebar .menu-item[data-section="${sectionId}"]`);
         if (activeMenuItem) activeMenuItem.classList.add('active');
         if (window.innerWidth <= 768) toggleSidebar(false);
+        sessionStorage.setItem('memberActiveTab', sectionId);
 
         if (sectionId === 'profile') renderProfileForm();
-        if (sectionId === 'network') renderNetwork();
-        if (sectionId === 'downline') { downlineCurrentPage = 1; renderDownlineTable(); }
-        if (sectionId === 'history') { historyCurrentPage = 1; renderHistoryTable(); }
-        if (sectionId === 'dashboard') { dashPage = 1; renderDashboard(); }
-        if (sectionId === 'products') renderProductsDashboard();
-        if (sectionId === 'ro-history') { roPage = 1; renderRoHistory(); }
-        if (sectionId === 'deposit') { dpPage = 1; populateDepositBanks(); renderDepositHistory(); }
-        if (sectionId === 'withdraw') { wdPage = 1; prepareWithdrawForm(); renderWithdrawHistory(); }
-        sessionStorage.setItem('memberActiveTab', sectionId);
-      }
+        else if (sectionId === 'network') renderNetwork();
+        else if (sectionId === 'downline') renderDownlineTable();
+        else if (sectionId === 'history') renderHistoryTable();
+        else if (sectionId === 'dashboard') renderDashboard();
+        else if (sectionId === 'products') renderProductsDashboard();
+        else if (sectionId === 'ro-history') renderRoHistory();
+        else if (sectionId === 'deposit') { populateDepositBanks(); renderDepositHistory(); }
+        else if (sectionId === 'withdraw') { prepareWithdrawForm(); renderWithdrawHistory(); }
+      };
 
       document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(item => {
-        item.addEventListener('click', function() { showSection(this.dataset.section); });
+        item.addEventListener('click', function() { window.showSection(this.dataset.section); });
       });
 
-      document.getElementById('sideLogoutBtn').addEventListener('click', function() {
-        localStorage.removeItem('mlm_session'); window.location.href = 'index.html';
+      // ========== LOGOUT ==========
+      document.getElementById('sideLogoutBtn').addEventListener('click', async function() {
+        await window.signOut();
+        window.location.href = 'index.html';
       });
 
-      // ===== DEPOSIT BANK =====
-      function populateDepositBanks() {
-        const methodSelect = document.getElementById('depositMethod');
-        if(!methodSelect) return;
-        const banks = loadBankInfo();
-        methodSelect.innerHTML = banks.map(b => `<option value="${b.bank}">${b.bank} - ${b.account} (a.n ${b.name})</option>`).join('');
+      // ========== COPY REF ==========
+      window.copyRefLink = function() {
+        const copyText = document.getElementById('refLink');
+        copyText.select();
+        copyText.setSelectionRange(0, 99999);
+        navigator.clipboard.writeText(copyText.value).then(() => showModalAlert('Berhasil', 'Tautan Referal disalin!'));
+      };
+
+      // ========== AUTH GUARD ==========
+      async function checkAuth() {
+        try {
+          const session = await window.getSession();
+          if (!session) {
+            window.location.href = 'login.html';
+            return;
+          }
+          const profile = await window.getUserProfile();
+          if (!profile) {
+            window.location.href = 'login.html';
+            return;
+          }
+          if (profile.role === 'admin') {
+            window.location.href = 'admin.html';
+            return;
+          }
+          currentUser = profile;
+          // Load data
+          allUsers = await window.getTable('users');
+          allProducts = await window.getProducts();
+          allOrders = await window.getOrders();
+          allTransactions = await window.getTransactions();
+          allBankInfo = await window.getBankInfo();
+          // Apply UI
+          document.body.style.display = 'block';
+          applyBrandSettings();
+          updateProfileUI();
+          const savedTab = sessionStorage.getItem('memberActiveTab') || 'dashboard';
+          window.showSection(savedTab);
+        } catch (e) {
+          console.error('Auth error:', e);
+          window.location.href = 'login.html';
+        }
       }
 
-      // ===== DASHBOARD =====
-      function renderDashboard() {
-        const domain = window.location.origin;
-        document.getElementById('refLink').value = `${domain}/ref/${currentUser.username}`;
-        document.getElementById('walletAmount').textContent = 'Rp ' + (currentUser.wallet || 0).toLocaleString();
+      // ========== BRAND SETTINGS ==========
+      async function applyBrandSettings() {
+        try {
+          const settings = await window.getSettings();
+          const brandName = settings.brandName || 'HEDTRO JEANS';
+          const brandLogo = settings.brandLogo || 'fa-tshirt';
+          const isImage = brandLogo && brandLogo.startsWith('data:image');
+          document.querySelectorAll('#navbarLogo, #sidebarLogo').forEach(el => {
+            if (el) {
+              if (isImage) {
+                el.innerHTML = `<img src="${brandLogo}" alt="${brandName}" style="height:32px;width:auto;object-fit:contain;" />`;
+              } else {
+                const icon = el.querySelector('i');
+                if (icon) icon.className = 'fas ' + brandLogo;
+                const textSpan = el.querySelector('span');
+                if (textSpan && textSpan.tagName === 'SPAN') {
+                  textSpan.innerText = brandName.replace('HEDTRO', '').trim();
+                }
+                if (!el.querySelector('span')) {
+                  el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
+                }
+              }
+            }
+          });
+        } catch (e) { console.warn('Brand settings not applied:', e); }
+      }
+
+      // ========== PROFILE UI ==========
+      function updateProfileUI() {
+        if (!currentUser) return;
+        const sideImg = document.getElementById('sideProfileImg');
+        const sidePlaceholder = document.getElementById('sideProfilePlaceholder');
+        if (currentUser.profile_image) {
+          sideImg.src = currentUser.profile_image;
+          sideImg.style.display = 'block';
+          sidePlaceholder.style.display = 'none';
+        } else {
+          sideImg.style.display = 'none';
+          sidePlaceholder.style.display = 'flex';
+        }
+        document.getElementById('sideProfileName').textContent = currentUser.fullname || currentUser.username;
+        document.getElementById('sideProfileId').textContent = 'ID: ' + currentUser.id;
+        document.getElementById('navUserName').textContent = currentUser.fullname || currentUser.username;
+        const isVerified = currentUser.status === 'verified';
+        const badge = document.getElementById('sideUserStatusBadge');
+        if (badge) {
+          badge.textContent = isVerified ? 'VERIFIED' : 'FREE';
+          badge.className = isVerified ? 'status-badge status-verified' : 'status-badge status-free';
+        }
+        document.getElementById('sideWalletAmount').textContent = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString();
+
+        const dashImg = document.getElementById('dashAvatarImg');
+        const dashIcon = document.getElementById('dashAvatarIcon');
+        if (currentUser.profile_image) {
+          dashImg.src = currentUser.profile_image;
+          dashImg.style.display = 'block';
+          dashIcon.style.display = 'none';
+        } else {
+          dashImg.style.display = 'none';
+          dashIcon.style.display = 'flex';
+        }
+        document.getElementById('dashProfileName').textContent = currentUser.fullname || currentUser.username;
+        document.getElementById('dashProfileId').textContent = 'ID: ' + currentUser.id;
+        document.getElementById('walletAmount').textContent = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString();
         document.getElementById('sponsorBonus').textContent = currentUser.bonus_sponsor || 0;
         document.getElementById('binaryBonus').textContent = currentUser.bonus_binary || 0;
         document.getElementById('rewardBonus').textContent = currentUser.bonus_reward || 0;
         document.getElementById('roBonus').textContent = currentUser.bonus_ro || 0;
+        document.getElementById('refLink').value = window.location.origin + '/ref/' + currentUser.username;
+        // Update wallet di withdraw
+        const wdBal = document.getElementById('wdAvailableBal');
+        if (wdBal) wdBal.value = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString();
+      }
+
+      // ========== DASHBOARD ==========
+      async function renderDashboard() {
+        // Refresh user
+        currentUser = await window.getUserProfile();
         updateProfileUI();
         renderDashboardHistory();
       }
@@ -1102,17 +1147,17 @@
         const paginated = txs.slice((dashPage - 1) * limit, dashPage * limit);
         let html = '';
         paginated.forEach(t => {
-          const isPlus = (t.type === 'deposit' || t.type === 'bonus');
+          const isPlus = (t.type === 'deposit' || t.type === 'bonus' || t.type === 'ro_purchase');
           const colorClass = isPlus ? 'plus' : 'minus';
           const sign = isPlus ? '+' : '-';
           let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' || t.status === 'verified' ? 'status-success' : 'status-failed');
-          const date = new Date(t.date || t.createdAt || Date.now()).toLocaleDateString('id-ID');
+          const date = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID');
           let resiHtml = t.resi ? `<span class="resi"><i class="fas fa-truck"></i> ${t.resi}</span>` : '';
           html += `<tr>
             <td data-label="Tanggal">${date}</td>
             <td data-label="Jenis"><strong>${(t.type||'').toUpperCase()}</strong></td>
             <td data-label="Detail">${t.note || t.method || '-'} ${resiHtml}</td>
-            <td data-label="Nominal" class="amount ${colorClass}">${sign} Rp ${(t.amount||0).toLocaleString()}</td>
+            <td data-label="Nominal" class="amount ${colorClass}">${sign} Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</td>
             <td data-label="Status"><span class="status-badge ${badge}">${t.status||'pending'}</span></td>
           </tr>`;
         });
@@ -1122,360 +1167,53 @@
         document.getElementById('nextDashHistoryBtn').disabled = dashPage === totalPages;
       }
 
-      document.getElementById('prevDashHistoryBtn').addEventListener('click', () => { if(dashPage > 1) { dashPage--; renderDashboardHistory(); } });
-      document.getElementById('nextDashHistoryBtn').addEventListener('click', () => { const max = Math.ceil((currentUser.transactions||[]).length/5)||1; if(dashPage < max) { dashPage++; renderDashboardHistory(); } });
-
-      // ===== TREE =====
-      function applyTreeZoom() { const tree = document.querySelector('.binary-tree'); if (tree) tree.style.transform = `scale(${currentZoom})`; }
-      document.getElementById('zoomInBtn').addEventListener('click', () => { currentZoom += 0.1; applyTreeZoom(); });
-      document.getElementById('zoomOutBtn').addEventListener('click', () => { currentZoom = Math.max(0.3, currentZoom - 0.1); applyTreeZoom(); });
-
-      function renderNetwork() {
-        const container = document.getElementById('treeContainer');
-        const treeData = buildBinaryTree(currentUser.id, 0, 3, null, null);
-        container.innerHTML = `<div class="binary-tree">${renderBinaryTreeHTML(treeData)}</div>`;
-        applyTreeZoom();
-      }
-
-      function buildBinaryTree(nodeId, level, maxDepth, parentUplineUsername, position) {
-        if (level > maxDepth) return null;
-        if (!nodeId) return { empty: true, parentUpline: parentUplineUsername, position: position };
-        const user = users.find(u => u.id === nodeId);
-        if (!user) return { empty: true, parentUpline: parentUplineUsername, position: position };
-        return {
-          id: user.id, username: user.username, name: user.fullname || user.name || user.username, status: user.status || 'free',
-          left: buildBinaryTree(user.left, level + 1, maxDepth, user.username, 'left'),
-          right: buildBinaryTree(user.right, level + 1, maxDepth, user.username, 'right')
-        };
-      }
-
-      function renderBinaryTreeHTML(node) {
-        if (!node) return '';
-        if (node.empty) {
-          const baseUrl = window.location.origin + window.location.pathname.replace('dashboard.html', '');
-          const refUrl = `${baseUrl}/register.html?ref=${currentUser.username}&upline=${node.parentUpline}&pos=${node.position}`;
-          const posText = node.position === 'left' ? 'Kiri' : 'Kanan';
-          return `<a href="${refUrl}" class="tree-node-card empty" style="display:block; text-decoration:none;"><div class="avatar"><i class="fas fa-plus"></i></div><div class="node-name">TAMBAH ${posText.toUpperCase()}</div></a>`;
-        }
-        const isVerified = node.status === 'verified';
-        const badgeClass = isVerified ? 'status-success' : 'status-free';
-        const badgeText = isVerified ? 'VERIFIED' : 'FREE';
-        let html = `<div class="node-wrapper"><div class="tree-node-card"><div class="avatar"><i class="fas fa-user-tie"></i></div><div class="node-name">${node.name}</div><div class="node-id">${node.username}</div><div class="node-status ${badgeClass}" style="color:#fff;">${badgeText}</div></div>`;
-        if (node.left || node.right) html += `<div class="binary-children"><div class="binary-child">${renderBinaryTreeHTML(node.left)}</div><div class="binary-child">${renderBinaryTreeHTML(node.right)}</div></div>`;
-        html += `</div>`;
-        return html;
-      }
-
-      // ===== HISTORY =====
-      function renderHistoryTable() {
-        const tbody = document.getElementById('historyTableBody');
-        historyData = (currentUser.transactions || []).slice().reverse();
-        if(historyData.length === 0) { tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Kosong</td></tr>'; return; }
-        const paginated = historyData.slice((historyCurrentPage - 1) * 10, historyCurrentPage * 10);
-        let html = '';
-        paginated.forEach(t => {
-          const date = new Date(t.date || Date.now()).toLocaleDateString('id-ID');
-          let sign = (t.type === 'deposit' || t.type === 'bonus') ? '+' : '-';
-          let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' || t.status === 'verified' ? 'status-success' : 'status-failed');
-          html += `<tr><td data-label="Tanggal">${date}</td><td data-label="Jenis"><strong>${(t.type||'').toUpperCase()}</strong></td><td data-label="Detail">${t.note || t.method || '-'}</td><td data-label="Nominal" style="font-weight:700;">${sign} Rp ${(t.amount||0).toLocaleString()}</td><td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td></tr>`;
-        });
-        tbody.innerHTML = html;
-        document.getElementById('historyPageInfo').textContent = `${historyCurrentPage}/${Math.ceil(historyData.length/10)||1}`;
-        document.getElementById('prevHistoryBtn').disabled = historyCurrentPage === 1;
-        document.getElementById('nextHistoryBtn').disabled = historyCurrentPage === Math.ceil(historyData.length/10);
-      }
-      document.getElementById('prevHistoryBtn').addEventListener('click', () => { if(historyCurrentPage > 1) { historyCurrentPage--; renderHistoryTable(); }});
-      document.getElementById('nextHistoryBtn').addEventListener('click', () => { if(historyCurrentPage < Math.ceil(historyData.length/10)) { historyCurrentPage++; renderHistoryTable(); }});
-
-      // ===== DOWNLINE =====
-      function renderDownlineTable() {
-        const tbody = document.getElementById('downlineTableBody');
-        downlineData = users.filter(u => u.sponsor_id === currentUser.id);
-        document.getElementById('totalDownlineCount').textContent = downlineData.length;
-        if(downlineData.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada downline.</td></tr>'; return; }
-        const paginated = downlineData.slice((downlineCurrentPage - 1) * 10, downlineCurrentPage * 10);
-        let html = '';
-        paginated.forEach(u => {
-          const date = u.registeredAt ? new Date(u.registeredAt).toLocaleDateString('id-ID') : '-';
-          let badge = u.status === 'verified' ? 'status-success' : (u.status === 'pending' ? 'status-pending' : 'status-free');
-          html += `<tr><td data-label="Tanggal">${date}</td><td data-label="Username"><strong>${u.username}</strong></td><td data-label="Nama">${u.fullname || u.name}</td><td data-label="Status"><span class="status-badge ${badge}">${u.status}</span></td></tr>`;
-        });
-        tbody.innerHTML = html;
-        document.getElementById('downlinePageInfo').textContent = `${downlineCurrentPage}/${Math.ceil(downlineData.length/10)||1}`;
-        document.getElementById('prevDownlineBtn').disabled = downlineCurrentPage === 1;
-        document.getElementById('nextDownlineBtn').disabled = downlineCurrentPage === Math.ceil(downlineData.length/10);
-      }
-      document.getElementById('prevDownlineBtn').addEventListener('click', () => { if(downlineCurrentPage > 1) { downlineCurrentPage--; renderDownlineTable(); }});
-      document.getElementById('nextDownlineBtn').addEventListener('click', () => { if(downlineCurrentPage < Math.ceil(downlineData.length/10)) { downlineCurrentPage++; renderDownlineTable(); }});
-
-      // ===== DEPOSIT =====
-      document.getElementById('submitDeposit').addEventListener('click', function() {
-        const amount = parseInt(document.getElementById('depositAmount').value);
-        if (amount <= 0 || isNaN(amount)) { showModalAlert('Kesalahan', 'Masukkan nominal valid.'); return; }
-        if (amount < 10000) { showModalAlert('Kesalahan', 'Minimal Rp 10.000'); return; }
-        const uniqueCode = Math.floor(Math.random() * 900) + 100;
-        const total = amount + uniqueCode;
-        const txId = Date.now();
-        const selectedMethod = document.getElementById('depositMethod').value;
-        const txObj = { id: txId, user_id: currentUser.id, type: 'deposit', amount: total, originalAmount: amount, uniqueCode, method: selectedMethod, date: new Date().toISOString(), status: 'pending', proofUploaded: false };
-        if (!currentUser.transactions) currentUser.transactions = [];
-        currentUser.transactions.push(txObj);
-        const userIndex = users.findIndex(u => u.id === currentUser.id);
-        if (userIndex !== -1) users[userIndex] = currentUser;
-        saveUsers(users);
-        pushGlobalTransaction(txObj);
-        document.getElementById('depositAmount').value = '';
-        renderDepositHistory();
-        renderDashboard();
-        showModalAlert('Pesanan Dibuat', '✅ Deposit berhasil dibuat.');
+      document.getElementById('prevDashHistoryBtn').addEventListener('click', () => { if (dashPage > 1) { dashPage--; renderDashboardHistory(); } });
+      document.getElementById('nextDashHistoryBtn').addEventListener('click', () => {
+        const max = Math.ceil(((currentUser.transactions || []).length) / 5) || 1;
+        if (dashPage < max) { dashPage++; renderDashboardHistory(); }
       });
 
-      function renderDepositHistory() {
-        const tbody = document.getElementById('depositHistoryBody');
-        const dpTxs = (currentUser.transactions || []).filter(t => t.type === 'deposit').slice().reverse();
-        if(dpTxs.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Kosong</td></tr>'; return; }
-        const maxPage = Math.ceil(dpTxs.length/10) || 1;
-        const paginated = dpTxs.slice((dpPage - 1) * 10, dpPage * 10);
-        let html = '';
-        paginated.forEach(t => {
-          const date = new Date(t.date).toLocaleDateString('id-ID');
-          let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' ? 'status-success' : 'status-failed');
-          let aksi = '-';
-          if(t.status === 'pending' && !t.proofUploaded) aksi = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload(${t.id}, 'deposit')" style="padding:3px 8px; font-size:0.65rem;">Konfirmasi TF</button>`;
-          else if(t.status === 'pending' && t.proofUploaded) aksi = `<span style="font-size:0.65rem; color:#dd6b20;"><i class="fas fa-clock"></i> Cek Admin</span>`;
-          html += `<tr><td data-label="Tanggal">${date}</td><td data-label="Nominal"><strong style="color:var(--denim-blue);">Rp ${(t.amount||0).toLocaleString()}</strong><br><small class="text-muted">${t.method}</small></td><td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td><td data-label="Aksi">${aksi}</td></tr>`;
-        });
-        tbody.innerHTML = html;
-        document.getElementById('dpHistoryPageInfo').textContent = `${dpPage}/${maxPage}`;
-        document.getElementById('prevDpHistoryBtn').disabled = dpPage === 1;
-        document.getElementById('nextDpHistoryBtn').disabled = dpPage === maxPage;
-      }
-      document.getElementById('prevDpHistoryBtn').addEventListener('click', () => { if(dpPage > 1) { dpPage--; renderDepositHistory(); }});
-      document.getElementById('nextDpHistoryBtn').addEventListener('click', () => { const max = Math.ceil(((currentUser.transactions||[]).filter(t => t.type === 'deposit')).length/10)||1; if(dpPage < max) { dpPage++; renderDepositHistory(); }});
-
-      // ===== WITHDRAW =====
-      function prepareWithdrawForm() {
-        const availBal = currentUser.wallet || 0;
-        document.getElementById('wdAvailableBal').value = 'Rp ' + availBal.toLocaleString();
-        const wdAccInput = document.getElementById('withdrawAccount');
-        if (currentUser.bankName && currentUser.bankAccount) {
-          wdAccInput.value = `${currentUser.bankName} - ${currentUser.bankAccount}`;
-        } else { wdAccInput.value = 'Isi data bank di profil.'; }
-      }
-
-      document.getElementById('submitWithdrawBtn').addEventListener('click', function() {
-        const amount = parseInt(document.getElementById('withdrawAmount').value);
-        if (!currentUser.bankName || !currentUser.bankAccount) { showModalAlert('Error', 'Lengkapi Rekening Bank di Profil.'); return; }
-        if (amount < 50000) { showModalAlert('Kesalahan', 'Minimal withdraw Rp 50.000'); return; }
-        if ((currentUser.wallet || 0) < amount) { showModalAlert('Gagal', 'Saldo tidak cukup.'); return; }
-        showModalConfirm('Konfirmasi Withdraw', `Tarik <strong>Rp ${amount.toLocaleString()}</strong> ke <strong>${currentUser.bankName}</strong>?`, function() {
-          currentUser.wallet -= amount;
-          const txObj = { id: Date.now(), user_id: currentUser.id, type: 'withdraw', amount, date: new Date().toISOString(), status: 'pending', account: `${currentUser.bankName} - ${currentUser.bankAccount}` };
-          if (!currentUser.transactions) currentUser.transactions = [];
-          currentUser.transactions.push(txObj);
-          const userIndex = users.findIndex(u => u.id === currentUser.id);
-          if (userIndex !== -1) users[userIndex] = currentUser;
-          saveUsers(users); pushGlobalTransaction(txObj);
-          renderDashboard(); renderWithdrawHistory();
-          document.getElementById('withdrawAmount').value = '';
-          showModalAlert('Berhasil', 'Permintaan withdraw dikirim ke Admin.');
-        });
-      });
-
-      function renderWithdrawHistory() {
-        const tbody = document.getElementById('withdrawHistoryBody');
-        const wdTxs = (currentUser.transactions || []).filter(t => t.type === 'withdraw').slice().reverse();
-        if(wdTxs.length === 0) { tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Kosong</td></tr>'; return; }
-        const maxPage = Math.ceil(wdTxs.length/10) || 1;
-        const paginated = wdTxs.slice((wdPage - 1) * 10, wdPage * 10);
-        let html = '';
-        paginated.forEach(t => {
-          const date = new Date(t.date).toLocaleDateString('id-ID');
-          let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' ? 'status-success' : 'status-failed');
-          html += `<tr><td data-label="Tanggal">${date}</td><td data-label="Rekening">${t.account}</td><td data-label="Nominal" style="color:#e53e3e; font-weight:bold;">Rp ${(t.amount||0).toLocaleString()}</td><td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td></tr>`;
-        });
-        tbody.innerHTML = html;
-        document.getElementById('wdHistoryPageInfo').textContent = `${wdPage}/${maxPage}`;
-        document.getElementById('prevWdHistoryBtn').disabled = wdPage === 1;
-        document.getElementById('nextWdHistoryBtn').disabled = wdPage === maxPage;
-      }
-      document.getElementById('prevWdHistoryBtn').addEventListener('click', () => { if(wdPage > 1) { wdPage--; renderWithdrawHistory(); }});
-      document.getElementById('nextWdHistoryBtn').addEventListener('click', () => { const max = Math.ceil(((currentUser.transactions||[]).filter(t => t.type === 'withdraw')).length/10)||1; if(wdPage < max) { wdPage++; renderWithdrawHistory(); }});
-
-      // ===== RO HISTORY =====
-      function renderRoHistory() {
-        const tbody = document.getElementById('roHistoryBody');
-        const roTxs = (currentUser.purchase_history || []).slice().reverse();
-        if(roTxs.length === 0) { tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Belum ada riwayat RO.</td></tr>'; return; }
-        const maxPage = Math.ceil(roTxs.length/10) || 1;
-        const paginated = roTxs.slice((roPage - 1) * 10, roPage * 10);
-        let html = '';
-        paginated.forEach(t => {
-          const date = new Date(t.date).toLocaleDateString('id-ID');
-          let statusText = 'Diproses'; let badgeClass = 'status-pending';
-          if (t.status === 'success' || t.status === 'verified') { statusText = 'Selesai'; badgeClass = 'status-success'; } 
-          else if (t.status === 'failed') { statusText = 'Dibatalkan'; badgeClass = 'status-failed'; }
-          else if (t.status === 'shipped') { statusText = 'Dikirim'; badgeClass = 'status-shipped'; }
-          let actionHtml = '-';
-          if(t.status === 'pending') {
-            if (t.paymentMethod === 'bank' && !t.proofUploaded) actionHtml = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload(${t.id}, 'ro')" style="padding:3px 8px; font-size:0.65rem;">Upload Bukti</button>`;
-            else if (t.paymentMethod === 'bank' && t.proofUploaded) actionHtml = `<span style="font-size:0.65rem; color:#dd6b20;"><i class="fas fa-clock"></i> Cek Admin</span>`;
-            else actionHtml = `<span style="font-size:0.65rem; color:#2e7d32;"><i class="fas fa-check"></i> Lunas</span>`;
-          }
-          let resiHtml = t.resi ? `<span class="resi"><i class="fas fa-truck"></i> ${t.resi}</span>` : '-';
-          html += `<tr><td data-label="Tanggal">${date}</td><td data-label="Produk"><strong>${t.productName}</strong><br><small class="text-muted">Seri: ${t.serialNumber||'-'}</small></td><td data-label="Total" style="color:var(--denim-blue); font-weight:bold;">Rp ${(t.price||0).toLocaleString()}</td><td data-label="Status"><span class="status-badge ${badgeClass}">${statusText}</span></td><td data-label="Resi">${resiHtml}</td><td data-label="Aksi">${actionHtml}</td></tr>`;
-        });
-        tbody.innerHTML = html;
-        document.getElementById('roHistoryPageInfo').textContent = `${roPage}/${maxPage}`;
-        document.getElementById('prevRoHistoryBtn').disabled = roPage === 1;
-        document.getElementById('nextRoHistoryBtn').disabled = roPage === maxPage;
-      }
-      document.getElementById('prevRoHistoryBtn').addEventListener('click', () => { if(roPage > 1) { roPage--; renderRoHistory(); }});
-      document.getElementById('nextRoHistoryBtn').addEventListener('click', () => { const max = Math.ceil(((currentUser.purchase_history||[])).length/10)||1; if(roPage < max) { roPage++; renderRoHistory(); }});
-
-      // ===== UPLOAD BUKTI =====
-      window.bukaModalUpload = function(id, type) {
-        uploadTxId = id; uploadType = type;
-        let banks = loadBankInfo();
-        let bankHtml = banks.map(b => `<strong>${b.bank}</strong> - ${b.account} (a.n ${b.name})`).join('<br>');
-        let nominal = 0; let note = '';
-        if (type === 'deposit') {
-          const tx = currentUser.transactions.find(t => t.id === id);
-          if(!tx) return; nominal = tx.amount;
-          note = `Transfer <b>TEPAT Rp ${nominal.toLocaleString()}</b> (termasuk kode unik).`;
-        } else if (type === 'ro') {
-          const tx = currentUser.purchase_history.find(t => t.id === id);
-          if(!tx) return; nominal = tx.price;
-          note = `Transfer <b>Rp ${nominal.toLocaleString()}</b> untuk ${tx.productName}.`;
-        }
-        document.getElementById('uploadBankInfo').innerHTML = `${note}<br><br><strong>Transfer ke:</strong><br><br><div style="background:#fff; border:1px dashed #ccc; padding:8px; border-radius:6px;">${bankHtml}</div>`;
-        document.getElementById('uploadProofFile').value = '';
-        document.getElementById('uploadModalOverlay').classList.add('active');
-      };
-
-      document.getElementById('uploadCancelBtn').addEventListener('click', () => document.getElementById('uploadModalOverlay').classList.remove('active'));
-      document.getElementById('uploadSubmitBtn').addEventListener('click', function() {
-        const fileInput = document.getElementById('uploadProofFile');
-        if(!fileInput.files || !fileInput.files[0]) { showModalAlert('Error', 'Pilih file bukti.'); return; }
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          const proofDataUrl = e.target.result;
-          if (uploadType === 'deposit') {
-            let tx = currentUser.transactions.find(t => t.id === uploadTxId);
-            if(tx) { tx.proofUploaded = true; tx.proof_image = proofDataUrl; }
-            updateGlobalTransaction(uploadTxId, { proofUploaded: true, proof_image: proofDataUrl });
-            renderDepositHistory();
-          } else if (uploadType === 'ro') {
-            let txRO = currentUser.purchase_history.find(t => t.id === uploadTxId);
-            if(txRO) { txRO.proofUploaded = true; txRO.proof_image = proofDataUrl; }
-            let txMain = currentUser.transactions.find(t => t.id === uploadTxId);
-            if(txMain) { txMain.proofUploaded = true; txMain.proof_image = proofDataUrl; }
-            updateGlobalTransaction(uploadTxId, { proofUploaded: true, proof_image: proofDataUrl });
-            let globalOrders = loadOrders(); let ord = globalOrders.find(o => o.id === uploadTxId);
-            if (ord) { ord.proof_image = proofDataUrl; saveOrders(globalOrders); }
-            renderRoHistory();
-          }
-          const userIndex = users.findIndex(u => u.id === currentUser.id);
-          if (userIndex !== -1) users[userIndex] = currentUser; saveUsers(users);
-          document.getElementById('uploadModalOverlay').classList.remove('active');
-          showModalAlert('Berhasil', '✅ Bukti transfer terkirim.');
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-      });
-
-      // ===== PROFIL =====
-      function renderProfileForm() {
-        users = loadUsers(); currentUser = users.find(u => u.id === currentUser.id) || currentUser;
-        document.getElementById('profUsername').value = currentUser.username || '';
-        document.getElementById('profEmail').value = currentUser.email || '';
-        document.getElementById('profPassword').value = ''; document.getElementById('profConfirmPassword').value = '';
-        document.getElementById('profFullname').value = currentUser.fullname || currentUser.name || '';
-        document.getElementById('profNik').value = currentUser.nik || '';
-        document.getElementById('profPhone').value = currentUser.phone || '';
-        document.getElementById('profWhatsapp').value = currentUser.whatsapp || '';
-        document.getElementById('profBankName').value = currentUser.bankName || '';
-        document.getElementById('profBankAccount').value = currentUser.bankAccount || '';
-        document.getElementById('profBankHolder').value = currentUser.bankHolder || '';
-        document.getElementById('profAddress').value = currentUser.address || '';
-        document.getElementById('profCity').value = currentUser.city || '';
-        const preview = document.getElementById('profileImagePreview');
-        const placeholder = document.getElementById('profileImagePlaceholder');
-        if (currentUser.profile_image) { preview.src = currentUser.profile_image; preview.style.display = 'block'; placeholder.style.display = 'none'; } 
-        else { preview.style.display = 'none'; placeholder.style.display = 'flex'; }
-        updateProfileUI();
-      }
-
-      document.getElementById('uploadProfileImageBtn').addEventListener('click', function() {
-        const fileInput = document.getElementById('profileImageInput');
-        if(!fileInput.files || !fileInput.files[0]) { showModalAlert('Error', 'Pilih gambar.'); return; }
-        const file = fileInput.files[0];
-        if(file.size > 2 * 1024 * 1024) { showModalAlert('Error', 'Ukuran maksimal 2MB.'); return; }
-        const reader = new FileReader();
-        reader.onload = function(e) {
-          currentUser.profile_image = e.target.result;
-          const userIndex = users.findIndex(u => u.id === currentUser.id);
-          if (userIndex !== -1) users[userIndex] = currentUser;
-          saveUsers(users);
-          renderProfileForm();
-          showModalAlert('Berhasil', 'Foto profil diperbarui!');
-        };
-        reader.readAsDataURL(file);
-      });
-
-      document.getElementById('btnSaveProfile').addEventListener('click', function() {
-        const password = document.getElementById('profPassword').value.trim();
-        const confirmPassword = document.getElementById('profConfirmPassword').value.trim();
-        const fullname = document.getElementById('profFullname').value.trim();
-        const nik = document.getElementById('profNik').value.trim();
-        const phone = document.getElementById('profPhone').value.trim();
-        const whatsapp = document.getElementById('profWhatsapp').value.trim();
-        const bankName = document.getElementById('profBankName').value.trim();
-        const bankAccount = document.getElementById('profBankAccount').value.trim();
-        const bankHolder = document.getElementById('profBankHolder').value.trim();
-        const address = document.getElementById('profAddress').value.trim();
-        const city = document.getElementById('profCity').value.trim();
-        if (!fullname || !nik || !phone || !whatsapp || !bankAccount || !bankHolder || !address || !city || !bankName) { showModalAlert('Peringatan', 'Isi semua data.'); return; }
-        if (password !== '' && password !== confirmPassword) { showModalAlert('Peringatan', 'Sandi baru tidak cocok.'); return; }
-        if (password !== '') currentUser.password = password;
-        currentUser.fullname = fullname; currentUser.name = fullname; currentUser.nik = nik;
-        currentUser.phone = phone; currentUser.whatsapp = whatsapp;
-        currentUser.bankName = bankName; currentUser.bankAccount = bankAccount; currentUser.bankHolder = bankHolder;
-        currentUser.address = address; currentUser.city = city;
-        const userIndex = users.findIndex(u => u.id === currentUser.id);
-        if (userIndex !== -1) { users[userIndex] = currentUser; saveUsers(users); }
-        updateProfileUI();
-        showModalAlert('Berhasil', 'Profil diperbarui.');
-      });
-
-      // ===== TOKO ONLINE =====
-      function renderProductsDashboard() {
+      // ========== TOKO ONLINE ==========
+      async function renderProductsDashboard() {
         const grid = document.getElementById('productGridDashboard');
-        const prods = loadProducts(); grid.innerHTML = '';
-        if (prods.length === 0) return;
+        const prods = await window.getProducts();
+        grid.innerHTML = '';
+        if (prods.length === 0) {
+          grid.innerHTML = '<p class="text-muted">Belum ada produk.</p>';
+          return;
+        }
         prods.forEach(p => {
-          const card = document.createElement('div'); card.className = 'product-card';
+          const card = document.createElement('div');
+          card.className = 'product-card';
           let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
-          card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag || 'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div style="font-size:0.6rem; color:#718096; margin-bottom:4px;">Stok: ${p.stock||0}</div><button class="btn-sm btn-sm-gold buy-ro-btn" data-id="${p.id}" data-price="${p.price}"><i class="fas fa-shopping-cart"></i> Beli RO</button></div>`;
+          card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag || 'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(parseFloat(p.price) || 0).toLocaleString()}</div><div style="font-size:0.6rem; color:#718096; margin-bottom:4px;">Stok: ${p.stock||0}</div><button class="btn-sm btn-sm-gold buy-ro-btn" data-id="${p.id}" data-price="${p.price}"><i class="fas fa-shopping-cart"></i> Beli RO</button></div>`;
           grid.appendChild(card);
         });
         document.querySelectorAll('.buy-ro-btn').forEach(btn => {
           btn.addEventListener('click', function() {
-            if(currentUser.status !== 'verified') { showModalAlert('Ditolak', 'Akun Anda belum VERIFIED.'); return; }
+            if (currentUser.status !== 'verified') {
+              showModalAlert('Ditolak', 'Akun Anda belum VERIFIED.');
+              return;
+            }
             openROModal(parseInt(this.dataset.id), parseInt(this.dataset.price));
           });
         });
       }
 
-      // ===== RO MODAL =====
+      // ========== RO MODAL ==========
       const roModalOverlay = document.getElementById('roModalOverlay');
       const roModalBody = document.getElementById('roModalBody');
       let roPid = null, roPrice = 0;
       let roZoomed = false;
 
       function openROModal(productId, price) {
-        if (currentUser.status !== 'verified') { showModalAlert('Ditolak', 'Status akun Anda harus VERIFIED.'); return; }
-        roPid = productId; roPrice = price;
-        const prod = products.find(p => p.id === productId);
+        if (currentUser.status !== 'verified') {
+          showModalAlert('Ditolak', 'Status akun Anda harus VERIFIED.');
+          return;
+        }
+        roPid = productId;
+        roPrice = price;
+        const prod = allProducts.find(p => p.id === productId);
         if (!prod) return;
 
         let imgHtml = prod.image ? `<img src="${prod.image}" alt="${prod.name}" />` : `<div class="ro-icon"><i class="fas ${prod.icon || 'fa-tshirt'}"></i></div>`;
@@ -1488,14 +1226,13 @@
             <div class="ro-info">
               <h4>${prod.name}</h4>
               <div class="ro-price">Rp ${price.toLocaleString()}</div>
-              <div class="ro-desc">${prod.desc || 'Deskripsi produk.'}</div>
-              <div style="font-size:0.7rem; color:#718096;">Stok: ${prod.stock||0} | Seri: ${prod.serial||'-'}</div>
+              <div class="ro-desc">${prod.description || 'Deskripsi produk.'}</div>
+              <div style="font-size:0.7rem; color:#718096;">Stok: ${prod.stock||0}</div>
             </div>
             <div class="ro-options">
               <div class="form-group"><label>Ukuran</label><select id="roSizeSelect">${(prod.sizes || ['30','32']).map(s => `<option value="${s}">Size ${s}</option>`).join('')}</select></div>
               <div class="form-group"><label>Warna</label><select id="roColorSelect">${(prod.colors || ['Indigo Blue']).map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
             </div>
-            <div class="form-group"><label>Nomor Seri (Opsional)</label><input type="text" id="roSerialNumber" placeholder="Kode seri" /></div>
             <div id="roPaymentSelection" style="display:none; margin-top:8px; border-top:2px dashed #edf2f7; padding-top:10px;">
               <p style="font-weight:700; margin-bottom:6px; font-size:0.85rem;">Pilih Metode:</p>
               <div style="display:flex; gap:6px; flex-direction:column;">
@@ -1513,7 +1250,7 @@
         if (roImage) {
           roImage.addEventListener('click', function() {
             roZoomed = !roZoomed;
-            if (roZoomed) { this.style.transform = 'scale(1.8)'; this.style.transition = 'transform 0.3s ease'; this.style.zIndex = '10'; this.style.position = 'relative'; } 
+            if (roZoomed) { this.style.transform = 'scale(1.8)'; this.style.transition = 'transform 0.3s ease'; this.style.zIndex = '10'; this.style.position = 'relative'; }
             else { this.style.transform = 'scale(1)'; this.style.zIndex = '1'; }
           });
         }
@@ -1539,58 +1276,547 @@
         document.getElementById('roModalCancelBtn').onclick = function() { roModalOverlay.classList.remove('active'); };
       }
 
-      function prosesRO(method) {
-        const prod = products.find(p => p.id === roPid); if (!prod) return;
-        const sn = document.getElementById('roSerialNumber')?.value?.trim() || '';
+      async function prosesRO(method) {
+        const prod = allProducts.find(p => p.id === roPid);
+        if (!prod) return;
         const size = document.getElementById('roSizeSelect')?.value || '30';
         const color = document.getElementById('roColorSelect')?.value || 'Indigo Blue';
-        prod.stock = Math.max(0, (prod.stock || 1) - 1); saveProducts(products);
+        prod.stock = Math.max(0, (prod.stock || 1) - 1);
+        await window.upsertRow('products', prod);
         const txId = Date.now();
-        if (method === 'wallet') currentUser.wallet -= roPrice;
+        if (method === 'wallet') {
+          currentUser.wallet = (parseFloat(currentUser.wallet) || 0) - roPrice;
+        }
         const txObj = {
-          id: txId, user_id: currentUser.id, type: 'ro_purchase', productId: roPid, productName: `${prod.name} (${size} - ${color})`,
-          amount: roPrice, price: roPrice, date: new Date().toISOString(), status: method === 'wallet' ? 'success' : 'pending',
-          serialNumber: sn, paymentMethod: method, proofUploaded: method === 'wallet' ? true : false, resi: null, size, color
+          id: txId,
+          user_id: currentUser.id,
+          type: 'ro_purchase',
+          productId: roPid,
+          productName: `${prod.name} (${size} - ${color})`,
+          amount: roPrice,
+          price: roPrice,
+          date: new Date().toISOString(),
+          status: method === 'wallet' ? 'success' : 'pending',
+          paymentMethod: method,
+          proof_uploaded: method === 'wallet' ? true : false,
+          resi: null,
+          size,
+          color
         };
         if (!currentUser.transactions) currentUser.transactions = [];
         currentUser.transactions.push(txObj);
         if (!currentUser.purchase_history) currentUser.purchase_history = [];
         currentUser.purchase_history.push(txObj);
-        const userIndex = users.findIndex(u => u.id === currentUser.id);
-        if (userIndex !== -1) users[userIndex] = currentUser; saveUsers(users);
-        pushGlobalTransaction(txObj);
-        let globalOrders = loadOrders();
-        globalOrders.push({
-          id: txId, order_number: 'RO-' + txId.toString().slice(-6), user_id: currentUser.id, user_name: currentUser.fullname || currentUser.name || currentUser.username,
-          type: 'ro', items: [{ product_id: prod.id, name: prod.name, price: roPrice, qty: 1, size, color }], total: roPrice, status: method === 'wallet' ? 'processing' : 'pending',
-          createdAt: new Date().toISOString(), proof_image: null, resi: null
-        });
-        saveOrders(globalOrders);
-        if(method === 'wallet') showModalAlert('Sukses', 'RO lunas dari dompet.', () => { renderDashboard(); showSection('ro-history'); });
-        else showModalAlert('Pesanan Dibuat', 'Buka <b>Riwayat RO</b> untuk upload bukti.', () => { renderDashboard(); showSection('ro-history'); });
-      }
+        await window.upsertRow('users', currentUser);
+        await window.upsertRow('transactions', txObj);
 
-      // ===== REFRESH =====
-      function refreshUserData() {
-        users = loadUsers(); currentUser = users.find(u => u.id === currentUser.id);
-        if (currentUser) {
-          localStorage.setItem(SESSION_KEY, JSON.stringify({ id: currentUser.id, role: currentUser.role }));
-          updateProfileUI();
-          const activeSec = document.querySelector('.sidebar .menu-item.active')?.dataset.section || 'dashboard';
-          if (activeSec === 'dashboard') renderDashboard();
-          else if (activeSec === 'ro-history') renderRoHistory();
-          else if (activeSec === 'deposit') renderDepositHistory();
-          else if (activeSec === 'withdraw') renderWithdrawHistory();
-          else if (activeSec === 'downline') renderDownlineTable();
-          else if (activeSec === 'history') renderHistoryTable();
+        // Simpan ke orders
+        const orderObj = {
+          id: txId,
+          order_number: 'RO-' + txId.toString().slice(-6),
+          user_id: currentUser.id,
+          user_name: currentUser.fullname || currentUser.username,
+          type: 'ro',
+          items: [{ product_id: prod.id, name: prod.name, price: roPrice, qty: 1, size, color }],
+          total: roPrice,
+          status: method === 'wallet' ? 'processing' : 'pending',
+          created_at: new Date().toISOString(),
+          proof_image: null,
+          resi: null
+        };
+        await window.upsertRow('orders', orderObj);
+
+        // Refresh data
+        currentUser = await window.getUserProfile();
+        allProducts = await window.getProducts();
+        allTransactions = await window.getTransactions();
+        allOrders = await window.getOrders();
+
+        if (method === 'wallet') {
+          showModalAlert('Sukses', 'RO lunas dari dompet.', () => { renderDashboard(); window.showSection('ro-history'); });
+        } else {
+          showModalAlert('Pesanan Dibuat', 'Buka <b>Riwayat RO</b> untuk upload bukti.', () => { renderDashboard(); window.showSection('ro-history'); });
         }
       }
 
-      // ===== INIT =====
-      applyBrandSettings();
-      const savedTab = sessionStorage.getItem('memberActiveTab') || 'dashboard';
-      showSection(savedTab);
-      setInterval(refreshUserData, 15000);
+      // ========== RO HISTORY ==========
+      async function renderRoHistory() {
+        const tbody = document.getElementById('roHistoryBody');
+        const roTxs = (currentUser.purchase_history || []).slice().reverse();
+        if (roTxs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="6" style="text-align:center;">Belum ada riwayat RO.</td></tr>';
+          document.getElementById('roHistoryPageInfo').textContent = '1/1';
+          return;
+        }
+        const maxPage = Math.ceil(roTxs.length / 10) || 1;
+        const paginated = roTxs.slice((roPage - 1) * 10, roPage * 10);
+        let html = '';
+        paginated.forEach(t => {
+          const date = new Date(t.date).toLocaleDateString('id-ID');
+          let statusText = 'Diproses';
+          let badgeClass = 'status-pending';
+          if (t.status === 'success' || t.status === 'verified') { statusText = 'Selesai'; badgeClass = 'status-success'; }
+          else if (t.status === 'failed') { statusText = 'Dibatalkan'; badgeClass = 'status-failed'; }
+          else if (t.status === 'shipped') { statusText = 'Dikirim'; badgeClass = 'status-shipped'; }
+          let actionHtml = '-';
+          if (t.status === 'pending') {
+            if (t.paymentMethod === 'bank' && !t.proof_uploaded) {
+              actionHtml = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload(${t.id}, 'ro')" style="padding:3px 8px; font-size:0.65rem;">Upload Bukti</button>`;
+            } else if (t.paymentMethod === 'bank' && t.proof_uploaded) {
+              actionHtml = `<span style="font-size:0.65rem; color:#dd6b20;"><i class="fas fa-clock"></i> Cek Admin</span>`;
+            } else {
+              actionHtml = `<span style="font-size:0.65rem; color:#2e7d32;"><i class="fas fa-check"></i> Lunas</span>`;
+            }
+          }
+          let resiHtml = t.resi ? `<span class="resi"><i class="fas fa-truck"></i> ${t.resi}</span>` : '-';
+          html += `<tr>
+            <td data-label="Tanggal">${date}</td>
+            <td data-label="Produk"><strong>${t.productName}</strong></td>
+            <td data-label="Total" style="color:var(--denim-blue); font-weight:bold;">Rp ${(parseFloat(t.price) || 0).toLocaleString()}</td>
+            <td data-label="Status"><span class="status-badge ${badgeClass}">${statusText}</span></td>
+            <td data-label="Resi">${resiHtml}</td>
+            <td data-label="Aksi">${actionHtml}</td>
+          </tr>`;
+        });
+        tbody.innerHTML = html;
+        document.getElementById('roHistoryPageInfo').textContent = `${roPage}/${maxPage}`;
+        document.getElementById('prevRoHistoryBtn').disabled = roPage === 1;
+        document.getElementById('nextRoHistoryBtn').disabled = roPage === maxPage;
+      }
+      document.getElementById('prevRoHistoryBtn').addEventListener('click', () => { if (roPage > 1) { roPage--; renderRoHistory(); } });
+      document.getElementById('nextRoHistoryBtn').addEventListener('click', () => {
+        const max = Math.ceil(((currentUser.purchase_history || []).length) / 10) || 1;
+        if (roPage < max) { roPage++; renderRoHistory(); }
+      });
+
+      // ========== TREE ==========
+      function applyTreeZoom() {
+        const tree = document.querySelector('.binary-tree');
+        if (tree) tree.style.transform = `scale(${currentZoom})`;
+      }
+      document.getElementById('zoomInBtn').addEventListener('click', () => { currentZoom += 0.1; applyTreeZoom(); });
+      document.getElementById('zoomOutBtn').addEventListener('click', () => { currentZoom = Math.max(0.3, currentZoom - 0.1); applyTreeZoom(); });
+
+      function renderNetwork() {
+        const container = document.getElementById('treeContainer');
+        const treeData = buildBinaryTree(currentUser.id, 0, 3);
+        container.innerHTML = `<div class="binary-tree">${renderBinaryTreeHTML(treeData)}</div>`;
+        applyTreeZoom();
+      }
+
+      function buildBinaryTree(nodeId, level, maxDepth) {
+        if (level > maxDepth) return null;
+        if (!nodeId) return { empty: true };
+        const user = allUsers.find(u => u.id === nodeId);
+        if (!user) return { empty: true };
+        return {
+          id: user.id,
+          username: user.username,
+          name: user.fullname || user.username,
+          status: user.status || 'free',
+          left: buildBinaryTree(user.left_id, level + 1, maxDepth),
+          right: buildBinaryTree(user.right_id, level + 1, maxDepth)
+        };
+      }
+
+      function renderBinaryTreeHTML(node) {
+        if (!node) return '';
+        if (node.empty) {
+          const baseUrl = window.location.origin + window.location.pathname.replace('dashboard.html', '');
+          const refUrl = `${baseUrl}/register.html?ref=${currentUser.username}&upline=${currentUser.username}`;
+          return `<a href="${refUrl}" class="tree-node-card empty" style="display:block; text-decoration:none;"><div class="avatar"><i class="fas fa-plus"></i></div><div class="node-name">TAMBAH</div></a>`;
+        }
+        const isVerified = node.status === 'verified';
+        const badgeClass = isVerified ? 'status-success' : 'status-free';
+        const badgeText = isVerified ? 'VERIFIED' : 'FREE';
+        let html = `<div class="node-wrapper"><div class="tree-node-card"><div class="avatar"><i class="fas fa-user-tie"></i></div><div class="node-name">${node.name}</div><div class="node-id">${node.username}</div><div class="node-status ${badgeClass}" style="color:#fff;">${badgeText}</div></div>`;
+        if (node.left || node.right) {
+          html += `<div class="binary-children"><div class="binary-child">${renderBinaryTreeHTML(node.left)}</div><div class="binary-child">${renderBinaryTreeHTML(node.right)}</div></div>`;
+        }
+        html += `</div>`;
+        return html;
+      }
+
+      // ========== DOWNLINE ==========
+      async function renderDownlineTable() {
+        const tbody = document.getElementById('downlineTableBody');
+        const downlines = allUsers.filter(u => u.sponsor_id === currentUser.id);
+        document.getElementById('totalDownlineCount').textContent = downlines.length;
+        if (downlines.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada downline.</td></tr>';
+          document.getElementById('downlinePageInfo').textContent = '1/1';
+          return;
+        }
+        const maxPage = Math.ceil(downlines.length / 10) || 1;
+        const paginated = downlines.slice((downlineCurrentPage - 1) * 10, downlineCurrentPage * 10);
+        let html = '';
+        paginated.forEach(u => {
+          const date = u.registered_at ? new Date(u.registered_at).toLocaleDateString('id-ID') : '-';
+          const badge = u.status === 'verified' ? 'status-success' : (u.status === 'pending' ? 'status-pending' : 'status-free');
+          html += `<tr>
+            <td data-label="Tanggal">${date}</td>
+            <td data-label="Username"><strong>${u.username}</strong></td>
+            <td data-label="Nama">${u.fullname || u.name}</td>
+            <td data-label="Status"><span class="status-badge ${badge}">${u.status}</span></td>
+          </tr>`;
+        });
+        tbody.innerHTML = html;
+        document.getElementById('downlinePageInfo').textContent = `${downlineCurrentPage}/${maxPage}`;
+        document.getElementById('prevDownlineBtn').disabled = downlineCurrentPage === 1;
+        document.getElementById('nextDownlineBtn').disabled = downlineCurrentPage === maxPage;
+      }
+      document.getElementById('prevDownlineBtn').addEventListener('click', () => { if (downlineCurrentPage > 1) { downlineCurrentPage--; renderDownlineTable(); } });
+      document.getElementById('nextDownlineBtn').addEventListener('click', () => {
+        const max = Math.ceil((allUsers.filter(u => u.sponsor_id === currentUser.id).length) / 10) || 1;
+        if (downlineCurrentPage < max) { downlineCurrentPage++; renderDownlineTable(); }
+      });
+
+      // ========== DEPOSIT ==========
+      async function populateDepositBanks() {
+        const methodSelect = document.getElementById('depositMethod');
+        if (!methodSelect) return;
+        const banks = await window.getBankInfo();
+        methodSelect.innerHTML = banks.map(b => `<option value="${b.bank}">${b.bank} - ${b.account} (a.n ${b.name})</option>`).join('');
+      }
+
+      document.getElementById('submitDeposit').addEventListener('click', async function() {
+        const amount = parseInt(document.getElementById('depositAmount').value);
+        if (amount < 10000) { showModalAlert('Kesalahan', 'Minimal Rp 10.000'); return; }
+        const uniqueCode = Math.floor(Math.random() * 900) + 100;
+        const total = amount + uniqueCode;
+        const txId = Date.now();
+        const selectedMethod = document.getElementById('depositMethod').value;
+        const txObj = {
+          id: txId,
+          user_id: currentUser.id,
+          type: 'deposit',
+          amount: total,
+          original_amount: amount,
+          unique_code: uniqueCode,
+          method: selectedMethod,
+          date: new Date().toISOString(),
+          status: 'pending',
+          proof_uploaded: false
+        };
+        if (!currentUser.transactions) currentUser.transactions = [];
+        currentUser.transactions.push(txObj);
+        await window.upsertRow('users', currentUser);
+        await window.upsertRow('transactions', txObj);
+        document.getElementById('depositAmount').value = '';
+        await renderDepositHistory();
+        await renderDashboard();
+        showModalAlert('Pesanan Dibuat', '✅ Deposit berhasil dibuat.');
+      });
+
+      async function renderDepositHistory() {
+        const tbody = document.getElementById('depositHistoryBody');
+        const dpTxs = (currentUser.transactions || []).filter(t => t.type === 'deposit').slice().reverse();
+        if (dpTxs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Kosong</td></tr>';
+          document.getElementById('dpHistoryPageInfo').textContent = '1/1';
+          return;
+        }
+        const maxPage = Math.ceil(dpTxs.length / 10) || 1;
+        const paginated = dpTxs.slice((dpPage - 1) * 10, dpPage * 10);
+        let html = '';
+        paginated.forEach(t => {
+          const date = new Date(t.date).toLocaleDateString('id-ID');
+          let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' ? 'status-success' : 'status-failed');
+          let aksi = '-';
+          if (t.status === 'pending' && !t.proof_uploaded) {
+            aksi = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload(${t.id}, 'deposit')" style="padding:3px 8px; font-size:0.65rem;">Konfirmasi TF</button>`;
+          } else if (t.status === 'pending' && t.proof_uploaded) {
+            aksi = `<span style="font-size:0.65rem; color:#dd6b20;"><i class="fas fa-clock"></i> Cek Admin</span>`;
+          }
+          html += `<tr>
+            <td data-label="Tanggal">${date}</td>
+            <td data-label="Nominal"><strong style="color:var(--denim-blue);">Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</strong><br><small class="text-muted">${t.method}</small></td>
+            <td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td>
+            <td data-label="Aksi">${aksi}</td>
+          </tr>`;
+        });
+        tbody.innerHTML = html;
+        document.getElementById('dpHistoryPageInfo').textContent = `${dpPage}/${maxPage}`;
+        document.getElementById('prevDpHistoryBtn').disabled = dpPage === 1;
+        document.getElementById('nextDpHistoryBtn').disabled = dpPage === maxPage;
+      }
+      document.getElementById('prevDpHistoryBtn').addEventListener('click', () => { if (dpPage > 1) { dpPage--; renderDepositHistory(); } });
+      document.getElementById('nextDpHistoryBtn').addEventListener('click', () => {
+        const max = Math.ceil(((currentUser.transactions || []).filter(t => t.type === 'deposit').length) / 10) || 1;
+        if (dpPage < max) { dpPage++; renderDepositHistory(); }
+      });
+
+      // ========== WITHDRAW ==========
+      function prepareWithdrawForm() {
+        const availBal = currentUser.wallet || 0;
+        document.getElementById('wdAvailableBal').value = 'Rp ' + availBal.toLocaleString();
+        const wdAccInput = document.getElementById('withdrawAccount');
+        if (currentUser.bank_name && currentUser.bank_account) {
+          wdAccInput.value = `${currentUser.bank_name} - ${currentUser.bank_account}`;
+        } else {
+          wdAccInput.value = 'Isi data bank di profil.';
+        }
+      }
+
+      document.getElementById('submitWithdrawBtn').addEventListener('click', async function() {
+        const amount = parseInt(document.getElementById('withdrawAmount').value);
+        if (!currentUser.bank_name || !currentUser.bank_account) {
+          showModalAlert('Error', 'Lengkapi Rekening Bank di Profil.');
+          return;
+        }
+        if (amount < 50000) { showModalAlert('Kesalahan', 'Minimal withdraw Rp 50.000'); return; }
+        if ((currentUser.wallet || 0) < amount) { showModalAlert('Gagal', 'Saldo tidak cukup.'); return; }
+        showModalConfirm('Konfirmasi Withdraw', `Tarik <strong>Rp ${amount.toLocaleString()}</strong> ke <strong>${currentUser.bank_name}</strong>?`, async function() {
+          currentUser.wallet = (parseFloat(currentUser.wallet) || 0) - amount;
+          const txObj = {
+            id: Date.now(),
+            user_id: currentUser.id,
+            type: 'withdraw',
+            amount: amount,
+            date: new Date().toISOString(),
+            status: 'pending',
+            account: `${currentUser.bank_name} - ${currentUser.bank_account}`
+          };
+          if (!currentUser.transactions) currentUser.transactions = [];
+          currentUser.transactions.push(txObj);
+          await window.upsertRow('users', currentUser);
+          await window.upsertRow('transactions', txObj);
+          document.getElementById('withdrawAmount').value = '';
+          await renderWithdrawHistory();
+          await renderDashboard();
+          showModalAlert('Berhasil', 'Permintaan withdraw dikirim ke Admin.');
+        });
+      });
+
+      async function renderWithdrawHistory() {
+        const tbody = document.getElementById('withdrawHistoryBody');
+        const wdTxs = (currentUser.transactions || []).filter(t => t.type === 'withdraw').slice().reverse();
+        if (wdTxs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Kosong</td></tr>';
+          document.getElementById('wdHistoryPageInfo').textContent = '1/1';
+          return;
+        }
+        const maxPage = Math.ceil(wdTxs.length / 10) || 1;
+        const paginated = wdTxs.slice((wdPage - 1) * 10, wdPage * 10);
+        let html = '';
+        paginated.forEach(t => {
+          const date = new Date(t.date).toLocaleDateString('id-ID');
+          let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' ? 'status-success' : 'status-failed');
+          html += `<tr>
+            <td data-label="Tanggal">${date}</td>
+            <td data-label="Rekening">${t.account}</td>
+            <td data-label="Nominal" style="color:#e53e3e; font-weight:bold;">Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</td>
+            <td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td>
+          </tr>`;
+        });
+        tbody.innerHTML = html;
+        document.getElementById('wdHistoryPageInfo').textContent = `${wdPage}/${maxPage}`;
+        document.getElementById('prevWdHistoryBtn').disabled = wdPage === 1;
+        document.getElementById('nextWdHistoryBtn').disabled = wdPage === maxPage;
+      }
+      document.getElementById('prevWdHistoryBtn').addEventListener('click', () => { if (wdPage > 1) { wdPage--; renderWithdrawHistory(); } });
+      document.getElementById('nextWdHistoryBtn').addEventListener('click', () => {
+        const max = Math.ceil(((currentUser.transactions || []).filter(t => t.type === 'withdraw').length) / 10) || 1;
+        if (wdPage < max) { wdPage++; renderWithdrawHistory(); }
+      });
+
+      // ========== UPLOAD BUKTI ==========
+      window.bukaModalUpload = function(id, type) {
+        uploadTxId = id;
+        uploadType = type;
+        let banks = allBankInfo;
+        let bankHtml = banks.map(b => `<strong>${b.bank}</strong> - ${b.account} (a.n ${b.name})`).join('<br>');
+        let nominal = 0;
+        let note = '';
+        if (type === 'deposit') {
+          const tx = currentUser.transactions.find(t => t.id === id);
+          if (!tx) return;
+          nominal = tx.amount;
+          note = `Transfer <b>TEPAT Rp ${nominal.toLocaleString()}</b> (termasuk kode unik).`;
+        } else if (type === 'ro') {
+          const tx = currentUser.purchase_history.find(t => t.id === id);
+          if (!tx) return;
+          nominal = tx.price;
+          note = `Transfer <b>Rp ${nominal.toLocaleString()}</b> untuk ${tx.productName}.`;
+        }
+        document.getElementById('uploadBankInfo').innerHTML = `${note}<br><br><strong>Transfer ke:</strong><br><br><div style="background:#fff; border:1px dashed #ccc; padding:8px; border-radius:6px;">${bankHtml}</div>`;
+        document.getElementById('uploadProofFile').value = '';
+        document.getElementById('uploadModalOverlay').classList.add('active');
+      };
+
+      let uploadTxId = null, uploadType = null;
+      document.getElementById('uploadCancelBtn').addEventListener('click', () => document.getElementById('uploadModalOverlay').classList.remove('active'));
+      document.getElementById('uploadSubmitBtn').addEventListener('click', async function() {
+        const fileInput = document.getElementById('uploadProofFile');
+        if (!fileInput.files || !fileInput.files[0]) { showModalAlert('Error', 'Pilih file bukti.'); return; }
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          const proofDataUrl = e.target.result;
+          if (uploadType === 'deposit') {
+            let tx = currentUser.transactions.find(t => t.id === uploadTxId);
+            if (tx) { tx.proof_uploaded = true; tx.proof_image = proofDataUrl; }
+            await window.upsertRow('transactions', tx);
+            await renderDepositHistory();
+          } else if (uploadType === 'ro') {
+            let txRO = currentUser.purchase_history.find(t => t.id === uploadTxId);
+            if (txRO) { txRO.proof_uploaded = true; txRO.proof_image = proofDataUrl; }
+            let txMain = currentUser.transactions.find(t => t.id === uploadTxId);
+            if (txMain) { txMain.proof_uploaded = true; txMain.proof_image = proofDataUrl; }
+            await window.upsertRow('transactions', txMain);
+            await window.upsertRow('users', currentUser);
+            // Update orders juga
+            let order = allOrders.find(o => o.id === uploadTxId);
+            if (order) { order.proof_image = proofDataUrl; await window.upsertRow('orders', order); }
+            await renderRoHistory();
+          }
+          document.getElementById('uploadModalOverlay').classList.remove('active');
+          showModalAlert('Berhasil', '✅ Bukti transfer terkirim.');
+        };
+        reader.readAsDataURL(fileInput.files[0]);
+      });
+
+      // ========== HISTORY ==========
+      async function renderHistoryTable() {
+        const tbody = document.getElementById('historyTableBody');
+        const txs = (currentUser.transactions || []).slice().reverse();
+        if (txs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Kosong</td></tr>';
+          document.getElementById('historyPageInfo').textContent = '1/1';
+          return;
+        }
+        const maxPage = Math.ceil(txs.length / 10) || 1;
+        const paginated = txs.slice((historyCurrentPage - 1) * 10, historyCurrentPage * 10);
+        let html = '';
+        paginated.forEach(t => {
+          const date = new Date(t.date || Date.now()).toLocaleDateString('id-ID');
+          let sign = (t.type === 'deposit' || t.type === 'bonus' || t.type === 'ro_purchase') ? '+' : '-';
+          let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' || t.status === 'verified' ? 'status-success' : 'status-failed');
+          html += `<tr>
+            <td data-label="Tanggal">${date}</td>
+            <td data-label="Jenis"><strong>${(t.type||'').toUpperCase()}</strong></td>
+            <td data-label="Detail">${t.note || t.method || '-'}</td>
+            <td data-label="Nominal" style="font-weight:700;">${sign} Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</td>
+            <td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td>
+          </tr>`;
+        });
+        tbody.innerHTML = html;
+        document.getElementById('historyPageInfo').textContent = `${historyCurrentPage}/${maxPage}`;
+        document.getElementById('prevHistoryBtn').disabled = historyCurrentPage === 1;
+        document.getElementById('nextHistoryBtn').disabled = historyCurrentPage === maxPage;
+      }
+      document.getElementById('prevHistoryBtn').addEventListener('click', () => { if (historyCurrentPage > 1) { historyCurrentPage--; renderHistoryTable(); } });
+      document.getElementById('nextHistoryBtn').addEventListener('click', () => {
+        const max = Math.ceil(((currentUser.transactions || []).length) / 10) || 1;
+        if (historyCurrentPage < max) { historyCurrentPage++; renderHistoryTable(); }
+      });
+
+      // ========== PROFIL ==========
+      async function renderProfileForm() {
+        currentUser = await window.getUserProfile();
+        document.getElementById('profUsername').value = currentUser.username || '';
+        document.getElementById('profEmail').value = currentUser.email || '';
+        document.getElementById('profPassword').value = '';
+        document.getElementById('profConfirmPassword').value = '';
+        document.getElementById('profFullname').value = currentUser.fullname || '';
+        document.getElementById('profNik').value = currentUser.nik || '';
+        document.getElementById('profPhone').value = currentUser.phone || '';
+        document.getElementById('profWhatsapp').value = currentUser.whatsapp || '';
+        document.getElementById('profBankName').value = currentUser.bank_name || '';
+        document.getElementById('profBankAccount').value = currentUser.bank_account || '';
+        document.getElementById('profBankHolder').value = currentUser.bank_holder || '';
+        document.getElementById('profAddress').value = currentUser.address || '';
+        document.getElementById('profCity').value = currentUser.city || '';
+        const preview = document.getElementById('profileImagePreview');
+        const placeholder = document.getElementById('profileImagePlaceholder');
+        if (currentUser.profile_image) {
+          preview.src = currentUser.profile_image;
+          preview.style.display = 'block';
+          placeholder.style.display = 'none';
+        } else {
+          preview.style.display = 'none';
+          placeholder.style.display = 'flex';
+        }
+        updateProfileUI();
+      }
+
+      document.getElementById('uploadProfileImageBtn').addEventListener('click', function() {
+        const fileInput = document.getElementById('profileImageInput');
+        if (!fileInput.files || !fileInput.files[0]) { showModalAlert('Error', 'Pilih gambar.'); return; }
+        const file = fileInput.files[0];
+        if (file.size > 2 * 1024 * 1024) { showModalAlert('Error', 'Ukuran maksimal 2MB.'); return; }
+        const reader = new FileReader();
+        reader.onload = async function(e) {
+          currentUser.profile_image = e.target.result;
+          await window.upsertRow('users', currentUser);
+          await renderProfileForm();
+          showModalAlert('Berhasil', 'Foto profil diperbarui!');
+        };
+        reader.readAsDataURL(file);
+      });
+
+      document.getElementById('btnSaveProfile').addEventListener('click', async function() {
+        const password = document.getElementById('profPassword').value.trim();
+        const confirmPassword = document.getElementById('profConfirmPassword').value.trim();
+        const fullname = document.getElementById('profFullname').value.trim();
+        const nik = document.getElementById('profNik').value.trim();
+        const phone = document.getElementById('profPhone').value.trim();
+        const whatsapp = document.getElementById('profWhatsapp').value.trim();
+        const bankName = document.getElementById('profBankName').value.trim();
+        const bankAccount = document.getElementById('profBankAccount').value.trim();
+        const bankHolder = document.getElementById('profBankHolder').value.trim();
+        const address = document.getElementById('profAddress').value.trim();
+        const city = document.getElementById('profCity').value.trim();
+        if (!fullname || !nik || !phone || !whatsapp || !bankAccount || !bankHolder || !address || !city || !bankName) {
+          showModalAlert('Peringatan', 'Isi semua data.');
+          return;
+        }
+        if (password !== '' && password !== confirmPassword) {
+          showModalAlert('Peringatan', 'Sandi baru tidak cocok.');
+          return;
+        }
+        if (password !== '') currentUser.password = password;
+        currentUser.fullname = fullname;
+        currentUser.nik = nik;
+        currentUser.phone = phone;
+        currentUser.whatsapp = whatsapp;
+        currentUser.bank_name = bankName;
+        currentUser.bank_account = bankAccount;
+        currentUser.bank_holder = bankHolder;
+        currentUser.address = address;
+        currentUser.city = city;
+        await window.upsertRow('users', currentUser);
+        await renderProfileForm();
+        showModalAlert('Berhasil', 'Profil diperbarui.');
+      });
+
+      // ========== INIT ==========
+      document.body.style.display = 'none';
+      checkAuth();
+
+      // Auto refresh tiap 30 detik
+      setInterval(async function() {
+        try {
+          currentUser = await window.getUserProfile();
+          allUsers = await window.getTable('users');
+          allProducts = await window.getProducts();
+          allOrders = await window.getOrders();
+          allTransactions = await window.getTransactions();
+          allBankInfo = await window.getBankInfo();
+          // Refresh current active section
+          const activeSection = document.querySelector('.sidebar .menu-item.active')?.dataset.section || 'dashboard';
+          if (activeSection === 'dashboard') renderDashboard();
+          else if (activeSection === 'products') renderProductsDashboard();
+          else if (activeSection === 'ro-history') renderRoHistory();
+          else if (activeSection === 'deposit') renderDepositHistory();
+          else if (activeSection === 'withdraw') renderWithdrawHistory();
+          else if (activeSection === 'downline') renderDownlineTable();
+          else if (activeSection === 'history') renderHistoryTable();
+          else if (activeSection === 'profile') renderProfileForm();
+          else if (activeSection === 'network') renderNetwork();
+          updateProfileUI();
+        } catch (e) { console.warn('Auto refresh error:', e); }
+      }, 30000);
+
     })();
   </script>
 </body>
