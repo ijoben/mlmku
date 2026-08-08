@@ -1443,7 +1443,7 @@
         if (!node) return '';
         if (node.empty) {
           const baseUrl = window.location.origin + window.location.pathname.replace('/dashboard', '');
-          const refUrl = `${baseUrl}/register.html?ref=${currentUser.username}&upline=${currentUser.username}`;
+          const refUrl = `${baseUrl}/register?ref=${currentUser.username}&upline=${currentUser.username}`;
           return `<a href="${refUrl}" class="tree-node-card empty" style="display:block; text-decoration:none;"><div class="avatar"><i class="fas fa-plus"></i></div><div class="node-name">TAMBAH</div></a>`;
         }
         const isVerified = node.status === 'verified';
