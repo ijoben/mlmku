@@ -175,7 +175,7 @@
                 try {
                     console.log('🔵 Mencoba register:', email);
                     
-                    // Registrasi via Supabase Auth
+                    // Registrasi via Supabase Auth dengan redirect ke confirm-email.html
                     const { user, session } = await window.signUp(email, password, {
                         username: username,
                         fullname: fullname,
@@ -185,7 +185,7 @@
                     console.log('✅ Register berhasil:', user.email);
                     
                     msgEl.className = 'msg success';
-                    msgEl.innerText = '✅ Pendaftaran berhasil! Silakan cek email untuk verifikasi.';
+                    msgEl.innerHTML = '✅ Pendaftaran berhasil!<br><small>📧 Email verifikasi telah dikirim ke <strong>' + email + '</strong><br>Silakan cek inbox atau spam Anda.</small>';
                     
                     // Reset form
                     usernameInput.value = '';
@@ -200,10 +200,10 @@
                     regBtn.innerHTML = '<i class="fas fa-user-plus"></i> Daftar';
                     regBtn.classList.remove('loading');
                     
-                    // Redirect setelah 3 detik
+                    // Redirect setelah 5 detik
                     setTimeout(() => {
                         window.location.href = 'login.html';
-                    }, 3000);
+                    }, 5000);
 
                 } catch (error) {
                     console.error('❌ Register error:', error);
@@ -216,6 +216,8 @@
                         errorMsg = 'Password minimal 6 karakter.';
                     } else if (errorMsg.includes('Invalid email')) {
                         errorMsg = 'Format email tidak valid.';
+                    } else if (errorMsg.includes('rate limit')) {
+                        errorMsg = 'Terlalu banyak percobaan. Tunggu beberapa saat.';
                     }
                     
                     msgEl.className = 'msg error';
