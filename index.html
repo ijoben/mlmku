@@ -432,12 +432,12 @@
 
             // ========== GLOBAL STATE ==========
             let allProducts = [];
+            let cartItems = [];
             let currentSlide = 0;
             let slideInterval = null;
+            let currentUserProfile = null;
             const track = document.getElementById('carouselTrack');
             const dots = document.getElementById('carouselDots');
-            let cartItems = [];
-            let currentUserProfile = null;
 
             // ========== HELPER FUNCTIONS ==========
             function showToast(message, type = 'info', duration = 3000) {
@@ -451,34 +451,101 @@
                 setTimeout(() => toast.remove(), duration);
             }
 
+            // ========== FUNGSI TAMBAHAN UNTUK INDEX.HTML ==========
+            async function applyBrandSettings() {
+                try {
+                    const settings = await window.getSettings();
+                    const brandName = settings.brandName || 'HEDTRO JEANS';
+                    const brandLogo = settings.brandLogo || 'fa-tshirt';
+                    const isImage = brandLogo && brandLogo.startsWith('data:image');
+                    
+                    document.querySelectorAll('#headerLogo, #sidebarLogo').forEach(el => {
+                        if (el) {
+                            if (isImage) {
+                                el.innerHTML = `<img src="${brandLogo}" alt="${brandName}" style="height:32px;width:auto;object-fit:contain;" />`;
+                            } else {
+                                const icon = el.querySelector('i');
+                                if (icon) icon.className = 'fas ' + brandLogo;
+                                const textSpan = el.querySelector('span');
+                                if (textSpan && textSpan.tagName === 'SPAN') {
+                                    textSpan.innerText = brandName.replace('HEDTRO', '').trim();
+                                }
+                                if (!el.querySelector('span')) {
+                                    el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
+                                }
+                            }
+                        }
+                    });
+                } catch (e) {
+                    console.warn('Brand settings not applied:', e);
+                }
+            }
+
+            async function updateNavAuth() {
+                try {
+                    const session = await window.getSession();
+                    const navAuth = document.getElementById('navAuthBtn');
+                    const navReg = document.getElementById('navRegBtn');
+                    if (session) {
+                        const profile = await window.getUserProfile();
+                        if (profile) {
+                            currentUserProfile = profile;
+                            navAuth.textContent = profile.role === 'admin' ? 'Admin Panel' : 'Dashboard';
+                            navAuth.href = profile.role === 'admin' ? 'admin.html' : 'dashboard.html';
+                            navReg.textContent = 'Keluar';
+                            navReg.onclick = async function(e) {
+                                e.preventDefault();
+                                await window.signOut();
+                                window.location.reload();
+                            };
+                        }
+                    } else {
+                        navAuth.textContent = 'Login';
+                        navAuth.href = 'login.html';
+                        navReg.textContent = 'Daftar';
+                        navReg.href = 'register.html';
+                        navReg.onclick = null;
+                    }
+                } catch (e) {
+                    console.warn('Update nav auth error:', e);
+                }
+            }
+
             // ========== LOAD DATA FROM SUPABASE ==========
             async function loadAllData() {
                 try {
+                    console.log('🔵 Starting loadAllData...');
+                    
                     // Products
                     const products = await window.getProducts();
+                    console.log('Products loaded:', products.length);
                     if (products.length === 0) {
-                        // Seed default jika kosong
-                        const defaults = [
+                        console.log('⚠️ Products kosong, menggunakan data default.');
+                        allProducts = [
                             { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', favorite: true, stock: 45, sizes: ['28','29','30','31','32'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'], description: 'Celana jeans premium dengan potongan slim-fit modern.' },
                             { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', favorite: true, stock: 30, sizes: ['30','32','34'], colors: ['Raw Denim', 'Dark Navy'], description: 'Model straight cut klasik legendaris.' },
                             { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', favorite: true, stock: 25, sizes: ['29','30','31','32'], colors: ['Black Stretch', 'Grey Stone'], description: 'Warna hitam legam pekat yang elegan.' }
                         ];
-                        for (let p of defaults) {
-                            await window.saveProduct(p);
-                        }
-                        allProducts = await window.getProducts();
                     } else {
                         allProducts = products;
                     }
 
                     // Slides, About, FAQ, Features, Footer
                     const slides = await window.getSlides();
+                    console.log('Slides loaded:', slides.length);
                     const about = await window.getAbout();
+                    console.log('About loaded:', about.title);
                     const faqs = await window.getFaqs();
+                    console.log('Faqs loaded:', faqs.length);
                     const features = await window.getFeatures();
+                    console.log('Features loaded:', features.length);
                     const footer = await window.getFooter();
+                    console.log('Footer loaded:', footer.brand);
 
-                    renderCarousel(slides);
+                    renderCarousel(slides.length > 0 ? slides : [
+                        { id: 1, title: '501® ORIGINAL DENIM', subtitle: 'Ikonik sejak 1873', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #0b1a2b, #2a4b6e)' },
+                        { id: 2, title: 'TRUCKER JACKET', subtitle: 'Gaya ikonik denim modern', btnText: 'Lihat Koleksi', btnLink: '#products', bg: 'linear-gradient(135deg, #1a2e44, #3a5f7e)' }
+                    ]);
                     renderAbout(about);
                     renderFaq(faqs);
                     renderFeatures(features);
@@ -486,11 +553,13 @@
                     renderFavoriteCarousel();
                     renderProductGrid(1);
                     updateCartUI();
-                    updateNavAuth();
+                    await updateNavAuth();
 
+                    console.log('✅ loadAllData selesai!');
                 } catch (error) {
-                    console.error('Gagal load data:', error);
-                    showToast('Gagal memuat data dari server.', 'error');
+                    console.error('❌ loadAllData error:', error);
+                    showToast('Error: ' + error.message, 'error');
+                    throw error;
                 }
             }
 
@@ -608,7 +677,6 @@
                         const id = parseInt(this.dataset.id);
                         const product = allProducts.find(p => p.id === id);
                         if (product) {
-                            // Cek login dulu
                             window.getSession().then(session => {
                                 if (!session) { showToast('Silakan login terlebih dahulu.', 'error'); window.location.href='login.html'; return; }
                                 openProductDetail(id);
@@ -735,33 +803,6 @@
                 }
             });
 
-            // ========== NAV AUTH ==========
-            async function updateNavAuth() {
-                const session = await window.getSession();
-                const navAuth = document.getElementById('navAuthBtn');
-                const navReg = document.getElementById('navRegBtn');
-                if (session) {
-                    const profile = await window.getUserProfile();
-                    if (profile) {
-                        currentUserProfile = profile;
-                        navAuth.textContent = profile.role === 'admin' ? 'Admin Panel' : 'Dashboard';
-                        navAuth.href = profile.role === 'admin' ? 'admin.html' : 'dashboard.html';
-                        navReg.textContent = 'Keluar';
-                        navReg.onclick = async (e) => {
-                            e.preventDefault();
-                            await window.signOut();
-                            window.location.reload();
-                        };
-                    }
-                } else {
-                    navAuth.textContent = 'Login';
-                    navAuth.href = 'login.html';
-                    navReg.textContent = 'Daftar';
-                    navReg.href = 'register.html';
-                    navReg.onclick = null;
-                }
-            }
-
             // ========== TRACKING ==========
             document.getElementById('trackBtnPopup').addEventListener('click', async function() {
                 const input = document.getElementById('trackInputPopup').value.trim().toUpperCase();
@@ -840,43 +881,17 @@
                 if (!isOpen) answer.classList.add('open');
             };
 
-            // ========== BRAND SETTINGS ==========
-            async function applyBrandSettings() {
-                try {
-                    const settings = await window.getSettings();
-                    const brandName = settings.brandName || 'HEDTRO JEANS';
-                    const brandLogo = settings.brandLogo || 'fa-tshirt';
-                    const isImage = brandLogo && brandLogo.startsWith('data:image');
-                    document.querySelectorAll('#headerLogo, #sidebarLogo').forEach(el => {
-                        if (el) {
-                            if (isImage) {
-                                el.innerHTML = `<img src="${brandLogo}" alt="${brandName}" style="height:32px;width:auto;object-fit:contain;" />`;
-                            } else {
-                                const icon = el.querySelector('i');
-                                if (icon) icon.className = 'fas ' + brandLogo;
-                                const textSpan = el.querySelector('span');
-                                if (textSpan && textSpan.tagName === 'SPAN') {
-                                    textSpan.innerText = brandName.replace('HEDTRO', '').trim();
-                                }
-                                if (!el.querySelector('span')) {
-                                    el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
-                                }
-                            }
-                        }
-                    });
-                } catch (e) { console.warn('Brand settings not applied:', e); }
-            }
-
             // ========== INIT ==========
             (async function init() {
                 try {
+                    console.log('🔵 Initializing index.html...');
                     await applyBrandSettings();
                     await loadAllData();
-                    // Update nav auth after data loaded
                     await updateNavAuth();
+                    console.log('✅ Index.html initialized successfully!');
                 } catch (error) {
-                    console.error('Init error:', error);
-                    showToast('Gagal memuat halaman.', 'error');
+                    console.error('❌ Init error:', error);
+                    showToast('Error: ' + error.message, 'error');
                 }
             })();
 
