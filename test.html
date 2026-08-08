@@ -1,228 +1,70 @@
-// supabase.js - VERSI SEDERHANA
-const SUPABASE_URL = 'https://dbfwcsuptitytlposubo.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRiZndjc3VwdGl0eXRscG9zdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4NTgyMjMsImV4cCI6MjEwMTQzNDIyM30.TGAANDziz0olPdPIwAgtfiOPzfqxGVIfvNoLFhOsGQY';
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Supabase Connection</title>
+  <meta charset="UTF-8">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+</head>
+<body>
+  <h1>🔍 Test Supabase Connection</h1>
+  <div id="result" style="font-family: monospace; padding: 20px; background: #f5f5f5; border-radius: 8px;"></div>
 
-// Buat client Supabase
-const _supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  <script>
+    (async function() {
+      const resultDiv = document.getElementById('result');
+      let log = '';
 
-// ============================================
-// FUNGSI AUTH
-// ============================================
-window.signUp = async function(email, password, metadata = {}) {
-  const { data, error } = await _supabase.auth.signUp({
-    email,
-    password,
-    options: { data: metadata }
-  });
-  if (error) throw error;
-  return data;
-};
+      function addLog(msg, isError = false) {
+        const prefix = isError ? '❌' : '✅';
+        log += `<div style="color: ${isError ? 'red' : 'green'}">${prefix} ${msg}</div>`;
+        resultDiv.innerHTML = log;
+        console.log(msg);
+      }
 
-window.signIn = async function(email, password) {
-  const { data, error } = await _supabase.auth.signInWithPassword({ email, password });
-  if (error) throw error;
-  return data;
-};
+      try {
+        addLog('1. Cek window.supabase: ' + typeof window.supabase);
+        addLog('2. Cek window.getProducts: ' + typeof window.getProducts);
+        addLog('3. Cek window.getSession: ' + typeof window.getSession);
+        addLog('4. Cek window.getSettings: ' + typeof window.getSettings);
+        addLog('5. Cek window.getSlides: ' + typeof window.getSlides);
 
-window.signOut = async function() {
-  const { error } = await _supabase.auth.signOut();
-  if (error) throw error;
-};
+        if (typeof window.getProducts !== 'function') {
+          addLog('ERROR: window.getProducts is not a function!', true);
+          addLog('Pastikan supabase.js sudah benar dan tidak error.', true);
+          return;
+        }
 
-window.getSession = async function() {
-  const { data: { session }, error } = await _supabase.auth.getSession();
-  if (error) throw error;
-  return session;
-};
+        addLog('6. Mencoba ambil Products...');
+        const products = await window.getProducts();
+        addLog('Products berhasil: ' + products.length + ' item');
 
-window.getCurrentUser = async function() {
-  const { data: { user }, error } = await _supabase.auth.getUser();
-  if (error) throw error;
-  return user;
-};
+        addLog('7. Mencoba ambil Slides...');
+        const slides = await window.getSlides();
+        addLog('Slides berhasil: ' + slides.length + ' item');
 
-// ============================================
-// FUNGSI USER PROFILE
-// ============================================
-window.getUserProfile = async function() {
-  const session = await window.getSession();
-  if (!session) return null;
-  const { data, error } = await _supabase
-    .from('users')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-  if (error && error.code !== 'PGRST116') throw error;
-  return data;
-};
+        addLog('8. Mencoba ambil Settings...');
+        const settings = await window.getSettings();
+        addLog('Settings berhasil: ' + Object.keys(settings).length + ' key');
 
-window.getUserByEmail = async function(email) {
-  const { data, error } = await _supabase
-    .from('users')
-    .select('*')
-    .eq('email', email)
-    .single();
-  if (error && error.code !== 'PGRST116') throw error;
-  return data;
-};
+        addLog('9. Mencoba ambil About...');
+        const about = await window.getAbout();
+        addLog('About berhasil: ' + (about.title || 'no title'));
 
-window.updateUserProfile = async function(data) {
-  const session = await window.getSession();
-  if (!session) throw new Error('Unauthorized');
-  const { error } = await _supabase.from('users').update(data).eq('id', session.user.id);
-  if (error) throw error;
-};
+        addLog('10. Mencoba ambil Footer...');
+        const footer = await window.getFooter();
+        addLog('Footer berhasil: ' + (footer.brand || 'no brand'));
 
-// ============================================
-// FUNGSI CRUD GENERIC
-// ============================================
-window.getTable = async function(table, select = '*', filter = null, order = null) {
-  let query = _supabase.from(table).select(select);
-  if (filter) {
-    Object.keys(filter).forEach(k => query = query.eq(k, filter[k]));
-  }
-  if (order) {
-    query = query.order(order.by, { ascending: order.ascending });
-  }
-  const { data, error } = await query;
-  if (error) throw error;
-  return data;
-};
+        addLog('========================================');
+        addLog('🎉 SEMUA BERHASIL! Supabase connected!');
+        addLog('Sekarang buka index.html');
 
-window.upsertRow = async function(table, data) {
-  const { data: result, error } = await _supabase.from(table).upsert(data).select();
-  if (error) throw error;
-  return result[0];
-};
-
-window.deleteRow = async function(table, id) {
-  const { error } = await _supabase.from(table).delete().eq('id', id);
-  if (error) throw error;
-};
-
-// ============================================
-// FUNGSI KHUSUS UNTUK APLIKASI
-// ============================================
-window.getProducts = async function() {
-  return await window.getTable('products', '*', null, { by: 'id', ascending: true });
-};
-
-window.saveProduct = async function(p) {
-  return await window.upsertRow('products', p);
-};
-
-window.deleteProduct = async function(id) {
-  await window.deleteRow('products', id);
-};
-
-window.getOrders = async function() {
-  return await window.getTable('orders', '*', null, { by: 'created_at', ascending: false });
-};
-
-window.saveOrder = async function(o) {
-  return await window.upsertRow('orders', o);
-};
-
-window.deleteOrder = async function(id) {
-  await window.deleteRow('orders', id);
-};
-
-window.getTransactions = async function() {
-  return await window.getTable('transactions', '*', null, { by: 'date', ascending: false });
-};
-
-window.saveTransaction = async function(t) {
-  return await window.upsertRow('transactions', t);
-};
-
-window.deleteTransaction = async function(id) {
-  await window.deleteRow('transactions', id);
-};
-
-window.getBankInfo = async function() {
-  return await window.getTable('bank_info', '*');
-};
-
-window.saveBankInfo = async function(b) {
-  return await window.upsertRow('bank_info', b);
-};
-
-window.deleteBankInfo = async function(id) {
-  await window.deleteRow('bank_info', id);
-};
-
-window.getSlides = async function() {
-  return await window.getTable('slides', '*');
-};
-
-window.saveSlide = async function(s) {
-  return await window.upsertRow('slides', s);
-};
-
-window.deleteSlide = async function(id) {
-  await window.deleteRow('slides', id);
-};
-
-window.getFaqs = async function() {
-  return await window.getTable('faq', '*');
-};
-
-window.saveFaq = async function(f) {
-  return await window.upsertRow('faq', f);
-};
-
-window.deleteFaq = async function(id) {
-  await window.deleteRow('faq', id);
-};
-
-window.getFeatures = async function() {
-  return await window.getTable('features', '*');
-};
-
-window.saveFeature = async function(f) {
-  return await window.upsertRow('features', f);
-};
-
-window.deleteFeature = async function(id) {
-  await window.deleteRow('features', id);
-};
-
-window.getAbout = async function() {
-  const d = await window.getTable('about', '*');
-  return d.length ? d[0] : { id: 1, title: '', content: '' };
-};
-
-window.saveAbout = async function(a) {
-  return await window.upsertRow('about', a);
-};
-
-window.getFooter = async function() {
-  const d = await window.getTable('footer', '*');
-  return d.length ? d[0] : { id: 1, brand: '', description: '', copyright: '', social: {} };
-};
-
-window.saveFooter = async function(f) {
-  return await window.upsertRow('footer', f);
-};
-
-window.getSettings = async function() {
-  const rows = await window.getTable('settings');
-  const settings = {};
-  rows.forEach(r => settings[r.key] = r.value);
-  return settings;
-};
-
-window.saveSettings = async function(settings) {
-  const promises = Object.keys(settings).map(key => window.upsertRow('settings', { key, value: settings[key] }));
-  await Promise.all(promises);
-};
-
-// ============================================
-// LOG KONFIRMASI
-// ============================================
-console.log('✅ supabase.js loaded successfully!');
-console.log('✅ window.getProducts:', typeof window.getProducts);
-console.log('✅ window.getSession:', typeof window.getSession);
-console.log('✅ window.getSettings:', typeof window.getSettings);
-console.log('✅ window.getSlides:', typeof window.getSlides);
-console.log('✅ window.getFaqs:', typeof window.getFaqs);
+      } catch (error) {
+        addLog('ERROR: ' + error.message, true);
+        addLog('Stack: ' + (error.stack || 'no stack'), true);
+        console.error('Full error:', error);
+      }
+    })();
+  </script>
+</body>
+</html>
