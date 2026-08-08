@@ -274,6 +274,53 @@ window.saveSettings = async function(settings) {
 };
 
 // ============================================================
+// EXPOSE KE WINDOW
+// ============================================================
+window.supabase = supabaseClient;  // <-- TAMBAHKAN INI!
+window.signUp = signUp;
+window.signIn = signIn;
+window.signOut = signOut;
+window.getCurrentUser = getCurrentUser;
+window.getSession = getSession;
+window.getUserProfile = getUserProfile;
+window.getUserByEmail = getUserByEmail;
+window.updateUserProfile = updateUserProfile;
+window.getProducts = getProducts;
+window.saveProduct = saveProduct;
+window.deleteProduct = deleteProduct;
+window.getOrders = getOrders;
+window.saveOrder = saveOrder;
+window.deleteOrder = deleteOrder;
+window.getTransactions = getTransactions;
+window.saveTransaction = saveTransaction;
+window.deleteTransaction = deleteTransaction;
+window.getBankInfo = getBankInfo;
+window.saveBankInfo = saveBankInfo;
+window.deleteBankInfo = deleteBankInfo;
+window.getSlides = getSlides;
+window.saveSlide = saveSlide;
+window.deleteSlide = deleteSlide;
+window.getFaqs = getFaqs;
+window.saveFaq = saveFaq;
+window.deleteFaq = deleteFaq;
+window.getFeatures = getFeatures;
+window.saveFeature = saveFeature;
+window.deleteFeature = deleteFeature;
+window.getAbout = getAbout;
+window.saveAbout = saveAbout;
+window.getFooter = getFooter;
+window.saveFooter = saveFooter;
+window.getSettings = getSettings;
+window.saveSettings = saveSettings;
+window.getTable = getTable;
+window.upsertRow = upsertRow;
+window.deleteRow = deleteRow;
+
+console.log('✅ supabase.js loaded!');
+console.log('✅ window.supabase:', typeof window.supabase);
+console.log('✅ window.getProducts:', typeof window.getProducts);
+console.log('✅ window.getSession:', typeof window.getSession);
+// ============================================================
 // LOG KONFIRMASI
 // ============================================================
 console.log('✅ supabase.js selesai dieksekusi!');
