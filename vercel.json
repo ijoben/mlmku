@@ -5,6 +5,7 @@
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/register", "destination": "/register.html" },
     { "source": "/debug", "destination": "/debug.html" },
-    { "source": "/(.*)", "destination": "/index.html" }
+    { "source": "/confirm-email", "destination": "/confirm-email.html" },
+    { "source": "/ref/:username", "destination": "/register.html?ref=:username" }
   ]
 }
