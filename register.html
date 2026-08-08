@@ -31,11 +31,13 @@
         .form-group textarea { border-radius: var(--radius-sm); resize: vertical; min-height: 60px; }
         .btn-login { width: 100%; padding: 14px; border: none; border-radius: 60px; background: var(--gold-accent); color: var(--denim-dark); font-weight: 700; font-size: 1rem; cursor: pointer; transition: var(--transition); margin-top: 4px; }
         .btn-login:hover { background: #b8963a; transform: scale(0.98); }
+        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
         .login-footer { text-align: center; margin-top: 24px; font-size: 0.85rem; color: var(--denim-navy); }
         .login-footer a { color: var(--gold-accent); font-weight: 600; text-decoration: none; }
         .msg { margin-top: 12px; text-align: center; font-size: 0.85rem; min-height: 24px; padding: 8px; border-radius: var(--radius-sm); }
         .msg.error { background: #fde8e8; color: #b13e3e; }
         .msg.success { background: #e8f5ed; color: #1f7a4b; }
+        .msg.warning { background: #fff3cd; color: #856404; }
         .back-link { display: inline-block; margin-top: 16px; color: var(--denim-navy); font-size: 0.8rem; opacity: 0.6; text-decoration: none; }
         .back-link:hover { opacity: 1; color: var(--gold-accent); }
         .loading { opacity: 0.7; pointer-events: none; }
@@ -48,6 +50,11 @@
         .section-title small { font-weight: 700; color: var(--denim-blue); }
         @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; gap: 0; } .form-row-3 { grid-template-columns: 1fr; gap: 0; } }
         .info-box { background: #fff8e7; border-left: 4px solid var(--gold-accent); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 0.85rem; color: var(--denim-navy); }
+        .bonus-summary { background: #e8f5ed; border-left: 4px solid #2e7d32; padding: 12px 16px; border-radius: var(--radius-sm); margin: 12px 0; font-size: 0.8rem; display: none; }
+        .bonus-summary.show { display: block; }
+        .bonus-summary .bonus-item { display: flex; justify-content: space-between; padding: 2px 0; }
+        .bonus-summary .bonus-item .label { font-weight: 600; }
+        .bonus-summary .bonus-item .value { color: #2e7d32; font-weight: 700; }
     </style>
 </head>
 <body>
@@ -64,6 +71,15 @@
                     <i class="fas fa-user-plus" style="color:var(--gold-accent);"></i> 
                     Anda didaftarkan oleh: <strong id="sponsorNameDisplay">-</strong> (ID: <span id="sponsorIdDisplay">-</span>)
                     <br><small>Posisi: <span id="sponsorPositionDisplay">-</span></small>
+                </div>
+
+                <!-- BONUS SUMMARY -->
+                <div class="bonus-summary" id="bonusSummary">
+                    <p style="font-weight:700; margin-bottom:6px;"><i class="fas fa-gift" style="color:var(--gold-accent);"></i> Ringkasan Bonus yang akan Diterima:</p>
+                    <div class="bonus-item"><span class="label">👤 Sponsor Bonus</span><span class="value" id="bonusSponsorPreview">Rp 0</span></div>
+                    <div class="bonus-item"><span class="label">🌳 Binary Bonus (10 Level)</span><span class="value" id="bonusBinaryPreview">Rp 0</span></div>
+                    <div class="bonus-item"><span class="label">🏆 Reward Bonus (5 Level)</span><span class="value" id="bonusRewardPreview">Rp 0</span></div>
+                    <div style="margin-top:6px; font-size:0.7rem; color:#718096;">* Bonus akan otomatis masuk ke wallet setelah registrasi</div>
                 </div>
 
                 <!-- ===== AKUN ===== -->
@@ -219,6 +235,26 @@
         (function() {
             'use strict';
 
+            // ========== TOAST NOTIFICATION ==========
+            function showToast(message, type = 'info', duration = 5000) {
+                const container = document.getElementById('toastContainer');
+                if (!container) {
+                    // Buat container jika belum ada
+                    const newContainer = document.createElement('div');
+                    newContainer.id = 'toastContainer';
+                    newContainer.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:380px;width:100%;pointer-events:none;';
+                    document.body.appendChild(newContainer);
+                }
+                const toastContainer = document.getElementById('toastContainer');
+                const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
+                const toast = document.createElement('div');
+                toast.className = `toast-item ${type}`;
+                toast.style.cssText = 'background:#0b1a2b;color:#f7f4ef;padding:14px 18px;border-radius:12px;border-left:4px solid #c9a84c;box-shadow:0 10px 40px rgba(0,0,0,0.2);animation:slideInRight 0.4s ease;pointer-events:all;display:flex;align-items:center;gap:12px;font-size:0.85rem;';
+                toast.innerHTML = `<span style="font-size:1.2rem;flex-shrink:0;"><i class="fas ${icons[type] || icons.info}" style="color:${type === 'success' ? '#2ecc71' : type === 'error' ? '#e74c3c' : type === 'warning' ? '#f39c12' : '#c9a84c'};"></i></span><span style="flex:1;">${message}</span><span style="color:rgba(255,255,255,0.4);font-size:1.2rem;cursor:pointer;" onclick="this.parentElement.remove()">&times;</span>`;
+                toastContainer.appendChild(toast);
+                setTimeout(() => toast.remove(), duration);
+            }
+
             // ========== CEK SESSION ==========
             async function checkSession() {
                 try {
@@ -256,31 +292,99 @@
                             `<option value="${p.id}">${p.name} - Rp ${(p.price||0).toLocaleString()}</option>`
                         ).join('');
                     }
+                    
+                    // Auto preview bonus saat produk berubah
+                    select.addEventListener('change', previewBonus);
                 } catch (e) {
                     console.warn('Load products error:', e);
                 }
             }
 
+            // ========== PREVIEW BONUS ==========
+            async function previewBonus() {
+                try {
+                    const productSelect = document.getElementById('regProduct');
+                    const sponsorInput = document.getElementById('regSponsor');
+                    const products = await window.getProducts();
+                    const product = products.find(p => p.id === parseInt(productSelect.value));
+                    const settings = await window.getSettings();
+                    
+                    if (!product) return;
+                    
+                    const memberPrice = parseFloat(settings.memberPrice) || 550000;
+                    const sponsorBonusPercent = parseFloat(settings.sponsorBonus) || 10;
+                    const binaryLevels = settings.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
+                    const rewardLevels = settings.rewardBonusLevels || [5, 4, 3, 2, 1];
+                    
+                    const sponsorBonus = (product.price * sponsorBonusPercent) / 100;
+                    let binaryBonus = 0;
+                    let rewardBonus = 0;
+                    
+                    binaryLevels.forEach(level => {
+                        binaryBonus += (product.price * level) / 100;
+                    });
+                    
+                    rewardLevels.forEach(level => {
+                        rewardBonus += (product.price * level) / 100;
+                    });
+                    
+                    document.getElementById('bonusSponsorPreview').textContent = 'Rp ' + sponsorBonus.toLocaleString();
+                    document.getElementById('bonusBinaryPreview').textContent = 'Rp ' + binaryBonus.toLocaleString();
+                    document.getElementById('bonusRewardPreview').textContent = 'Rp ' + rewardBonus.toLocaleString();
+                    
+                    document.getElementById('bonusSummary').classList.add('show');
+                } catch (e) {
+                    console.warn('Preview bonus error:', e);
+                }
+            }
+
             // ========== CEK SPONSOR DARI URL ==========
-            function checkSponsorFromURL() {
+            async function checkSponsorFromURL() {
                 const params = new URLSearchParams(window.location.search);
                 const sponsorId = params.get('ref') || params.get('sponsor');
                 const position = params.get('pos') || 'left';
                 
                 if (sponsorId) {
-                    document.getElementById('regSponsor').value = sponsorId;
-                    document.getElementById('regPosition').value = position;
-                    
-                    document.getElementById('sponsorInfo').style.display = 'block';
-                    document.getElementById('sponsorNameDisplay').textContent = 'Loading...';
-                    document.getElementById('sponsorIdDisplay').textContent = sponsorId;
-                    document.getElementById('sponsorPositionDisplay').textContent = position === 'left' ? 'Kiri' : 'Kanan';
-                    
-                    window.getUserByUsername(sponsorId).then(user => {
-                        if (user) {
-                            document.getElementById('sponsorNameDisplay').textContent = user.fullname || user.username;
+                    try {
+                        // VALIDASI SPONSOR - CEK APAKAH ADA DI DATABASE
+                        const sponsor = await window.getUserByUsername(sponsorId);
+                        if (!sponsor) {
+                            document.getElementById('sponsorInfo').style.display = 'block';
+                            document.getElementById('sponsorNameDisplay').textContent = '❌ SPONSOR TIDAK DITEMUKAN';
+                            document.getElementById('sponsorIdDisplay').textContent = sponsorId;
+                            document.getElementById('sponsorPositionDisplay').textContent = '⚠️ INVALID';
+                            document.getElementById('sponsorInfo').style.borderLeftColor = '#e53e3e';
+                            document.getElementById('sponsorInfo').style.background = '#fde8e8';
+                            
+                            // Kosongkan field sponsor karena tidak valid
+                            document.getElementById('regSponsor').value = '';
+                            showToast('⚠️ Sponsor tidak ditemukan. Silakan daftar tanpa sponsor.', 'warning');
+                            return;
                         }
-                    }).catch(() => {});
+                        
+                        // SPONSOR VALID
+                        document.getElementById('regSponsor').value = sponsorId;
+                        document.getElementById('regPosition').value = position;
+                        
+                        document.getElementById('sponsorInfo').style.display = 'block';
+                        document.getElementById('sponsorNameDisplay').textContent = sponsor.fullname || sponsor.username;
+                        document.getElementById('sponsorIdDisplay').textContent = sponsorId;
+                        document.getElementById('sponsorPositionDisplay').textContent = position === 'left' ? 'Kiri' : 'Kanan';
+                        document.getElementById('sponsorInfo').style.borderLeftColor = 'var(--gold-accent)';
+                        document.getElementById('sponsorInfo').style.background = '#fff8e7';
+                        
+                        showToast(`✅ Sponsor: ${sponsor.fullname || sponsor.username}`, 'success');
+                        
+                        // Preview bonus setelah sponsor valid
+                        await previewBonus();
+                        
+                    } catch (e) {
+                        console.error('Check sponsor error:', e);
+                        showToast('⚠️ Gagal memverifikasi sponsor.', 'error');
+                    }
+                } else {
+                    // Preview bonus tanpa sponsor
+                    await previewBonus();
                 }
             }
 
@@ -338,7 +442,7 @@
                 const bankName = bankNameInput.value.trim();
                 const bankAccount = bankAccountInput.value.trim();
                 const bankHolder = bankHolderInput.value.trim();
-                const sponsorId = sponsorInput.value.trim();
+                const sponsorUsername = sponsorInput.value.trim();
                 const position = positionInput.value;
                 const productId = productSelect.value;
                 const size = sizeSelect.value;
@@ -393,6 +497,24 @@
                     return;
                 }
 
+                // ===== VALIDASI SPONSOR =====
+                let sponsorData = null;
+                if (sponsorUsername) {
+                    try {
+                        sponsorData = await window.getUserByUsername(sponsorUsername);
+                        if (!sponsorData) {
+                            msgEl.className = 'msg error';
+                            msgEl.innerText = '⚠️ Sponsor tidak ditemukan. Periksa kembali ID Sponsor.';
+                            return;
+                        }
+                        console.log('✅ Sponsor valid:', sponsorData.username);
+                    } catch (e) {
+                        msgEl.className = 'msg error';
+                        msgEl.innerText = '⚠️ Gagal memverifikasi sponsor: ' + e.message;
+                        return;
+                    }
+                }
+
                 // Loading state
                 regBtn.disabled = true;
                 regBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
@@ -414,7 +536,8 @@
                         bank_name: bankName,
                         bank_account: bankAccount,
                         bank_holder: bankHolder,
-                        sponsor_id: sponsorId || null,
+                        sponsor_id: sponsorData ? sponsorData.id : null,
+                        sponsor_username: sponsorUsername || null,
                         position: position,
                         product_id: productId,
                         size: size,
@@ -425,7 +548,7 @@
                     console.log('✅ Register berhasil:', user.email);
 
                     // ===== TUNGGU TRIGGER MEMBUAT USER DI TABEL USERS =====
-                    await new Promise(r => setTimeout(r, 2000));
+                    await new Promise(r => setTimeout(r, 3000));
 
                     // ===== AMBIL PROFILE USER =====
                     const profile = await window.getUserProfile();
@@ -453,95 +576,140 @@
                         bank_name: bankName,
                         bank_account: bankAccount,
                         bank_holder: bankHolder,
-                        sponsor_id: sponsorId || null,
+                        sponsor_id: sponsorData ? sponsorData.id : null,
+                        sponsor_username: sponsorUsername || null,
                         position: position,
                         status: 'pending'
                     });
                     console.log('✅ Profile updated with full data');
 
                     // ============================================================
-                    // ===== UPDATE LEFT_ID / RIGHT_ID DI SPONSOR (BINARY TREE) =====
+                    // ===== BONUS CALCULATIONS =====
                     // ============================================================
-                    if (sponsorId) {
+                    const settings = await window.getSettings();
+                    const memberPrice = parseFloat(settings.memberPrice) || 550000;
+                    
+                    // Ambil produk yang dipilih
+                    const products = await window.getProducts();
+                    const product = products.find(p => p.id === parseInt(productId));
+                    const productPrice = product ? product.price : memberPrice;
+                    
+                    let bonusResults = {
+                        sponsor: 0,
+                        binary: 0,
+                        reward: 0
+                    };
+
+                    // ===== 1. SPONSOR BONUS =====
+                    if (sponsorData) {
                         try {
-                            // Cari sponsor berdasarkan username
-                            const sponsor = await window.getUserByUsername(sponsorId);
-                            if (sponsor) {
+                            await window.calculateSponsorBonus(profile.id, sponsorData.id, productPrice, settings);
+                            const sponsorBonusPercent = parseFloat(settings.sponsorBonus) || 10;
+                            bonusResults.sponsor = (productPrice * sponsorBonusPercent) / 100;
+                            console.log('✅ Sponsor bonus calculated: Rp', bonusResults.sponsor);
+                        } catch (bonusError) {
+                            console.error('❌ Sponsor bonus failed:', bonusError);
+                            showToast('⚠️ Sponsor bonus gagal dihitung, tapi registrasi tetap berhasil.', 'warning');
+                        }
+                    }
+
+                    // ===== 2. UPDATE BINARY TREE (LEFT_ID / RIGHT_ID) =====
+                    if (sponsorData) {
+                        try {
+                            // Refresh data sponsor terbaru
+                            const freshSponsor = await window.getUserById(sponsorData.id);
+                            if (freshSponsor) {
                                 const updateData = {};
                                 if (position === 'left') {
                                     updateData.left_id = profile.id;
                                 } else {
                                     updateData.right_id = profile.id;
                                 }
-                                await window.upsertRow('users', { ...sponsor, ...updateData });
-                                console.log(`✅ ${position} position updated for sponsor ${sponsorId}`);
-                                
-                                // ===== HITUNG BONUS SPONSOR =====
-                                const settings = await window.getSettings();
-                                const memberPrice = parseFloat(settings.memberPrice) || 550000;
-                                await window.calculateSponsorBonus(profile.id, sponsorId, memberPrice, settings);
-                                console.log('✅ Sponsor bonus calculated');
-                            } else {
-                                console.warn('⚠️ Sponsor not found:', sponsorId);
+                                await window.upsertRow('users', { ...freshSponsor, ...updateData });
+                                console.log(`✅ ${position} position updated for sponsor ${sponsorData.username}`);
                             }
-                        } catch (e) {
-                            console.warn('⚠️ Gagal update left/right id atau hitung bonus:', e);
+                        } catch (treeError) {
+                            console.error('❌ Binary tree update failed:', treeError);
+                            showToast('⚠️ Posisi binary gagal diupdate, tapi registrasi tetap berhasil.', 'warning');
                         }
+                    }
+
+                    // ===== 3. BINARY BONUS (10 LEVEL) =====
+                    try {
+                        await window.calculateBinaryBonus(profile.id, productPrice, settings);
+                        const binaryLevels = settings.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
+                        binaryLevels.forEach(level => {
+                            bonusResults.binary += (productPrice * level) / 100;
+                        });
+                        console.log('✅ Binary bonus calculated: Rp', bonusResults.binary);
+                    } catch (bonusError) {
+                        console.error('❌ Binary bonus failed:', bonusError);
+                        showToast('⚠️ Binary bonus gagal dihitung, tapi registrasi tetap berhasil.', 'warning');
+                    }
+
+                    // ===== 4. REWARD BONUS (5 LEVEL) =====
+                    try {
+                        await window.calculateRewardBonus(profile.id, productPrice, settings);
+                        const rewardLevels = settings.rewardBonusLevels || [5, 4, 3, 2, 1];
+                        rewardLevels.forEach(level => {
+                            bonusResults.reward += (productPrice * level) / 100;
+                        });
+                        console.log('✅ Reward bonus calculated: Rp', bonusResults.reward);
+                    } catch (bonusError) {
+                        console.error('❌ Reward bonus failed:', bonusError);
+                        showToast('⚠️ Reward bonus gagal dihitung, tapi registrasi tetap berhasil.', 'warning');
                     }
 
                     // ============================================================
                     // ===== BUAT FIRST ORDER =====
                     // ============================================================
-                    const products = await window.getProducts();
-                    const product = products.find(p => p.id === parseInt(productId));
-                    
                     if (product) {
-                        const orderId = Date.now();
-                        const orderNum = 'ORD-' + Date.now().toString().slice(-6);
-                        const newOrder = {
-                            id: orderId,
-                            order_number: orderNum,
-                            user_id: profile.id,
-                            user_name: fullname || username,
-                            type: 'first_order',
-                            items: [{
-                                product_id: product.id,
-                                name: product.name,
-                                price: product.price,
-                                qty: 1,
-                                size: size,
-                                color: color,
-                                serial: serial || null
-                            }],
-                            total: product.price || 0,
-                            status: 'pending',
-                            created_at: new Date().toISOString()
-                        };
-                        
-                        console.log('🔵 Menyimpan order:', newOrder);
-                        
                         try {
+                            const orderId = Date.now();
+                            const orderNum = 'ORD-' + Date.now().toString().slice(-6);
+                            const newOrder = {
+                                id: orderId,
+                                order_number: orderNum,
+                                user_id: profile.id,
+                                user_name: fullname || username,
+                                type: 'first_order',
+                                items: [{
+                                    product_id: product.id,
+                                    name: product.name,
+                                    price: product.price,
+                                    qty: 1,
+                                    size: size,
+                                    color: color,
+                                    serial: serial || null
+                                }],
+                                total: product.price || 0,
+                                status: 'pending',
+                                created_at: new Date().toISOString()
+                            };
+                            
                             await window.saveOrder(newOrder);
                             console.log('✅ First order created:', orderNum);
                             
-                            // ============================================================
-                            // ===== HITUNG BINARY & REWARD BONUS DARI FIRST ORDER =====
-                            // ============================================================
-                            const settings = await window.getSettings();
-                            await window.calculateBinaryBonus(profile.id, product.price, settings);
-                            await window.calculateRewardBonus(profile.id, product.price, settings);
-                            console.log('✅ Binary & Reward bonus calculated for first order');
-                            
                         } catch (orderError) {
-                            console.error('❌ Gagal membuat order atau hitung bonus:', orderError);
-                            // Jangan gagalkan registrasi, tapi tampilkan warning
-                            showToast('Registrasi berhasil tapi order/bonus gagal: ' + orderError.message, 'warning');
+                            console.error('❌ Gagal membuat order:', orderError);
+                            showToast('⚠️ Order gagal dibuat, tapi registrasi tetap berhasil.', 'warning');
                         }
                     }
 
                     // ===== SUKSES =====
+                    const totalBonus = bonusResults.sponsor + bonusResults.binary + bonusResults.reward;
                     msgEl.className = 'msg success';
-                    msgEl.innerHTML = '✅ Pendaftaran berhasil!<br><small>📧 Email verifikasi telah dikirim ke <strong>' + email + '</strong><br>Silakan cek inbox atau spam Anda.</small>';
+                    msgEl.innerHTML = `
+                        ✅ Pendaftaran berhasil!<br>
+                        <small>
+                            📧 Email verifikasi telah dikirim ke <strong>${email}</strong><br>
+                            Silakan cek inbox atau spam Anda.<br><br>
+                            💰 Total Bonus: <strong>Rp ${totalBonus.toLocaleString()}</strong>
+                            ${bonusResults.sponsor > 0 ? `<br>👤 Sponsor: Rp ${bonusResults.sponsor.toLocaleString()}` : ''}
+                            ${bonusResults.binary > 0 ? `<br>🌳 Binary: Rp ${bonusResults.binary.toLocaleString()}` : ''}
+                            ${bonusResults.reward > 0 ? `<br>🏆 Reward: Rp ${bonusResults.reward.toLocaleString()}` : ''}
+                        </small>
+                    `;
                     
                     // Reset form
                     usernameInput.value = '';
@@ -609,9 +777,57 @@
                 }
             });
 
+            // Auto preview bonus saat sponsor berubah
+            sponsorInput.addEventListener('input', async function() {
+                const val = this.value.trim();
+                if (val) {
+                    try {
+                        const sponsor = await window.getUserByUsername(val);
+                        if (sponsor) {
+                            document.getElementById('sponsorInfo').style.display = 'block';
+                            document.getElementById('sponsorNameDisplay').textContent = sponsor.fullname || sponsor.username;
+                            document.getElementById('sponsorIdDisplay').textContent = val;
+                            document.getElementById('sponsorPositionDisplay').textContent = positionInput.value === 'left' ? 'Kiri' : 'Kanan';
+                            document.getElementById('sponsorInfo').style.borderLeftColor = 'var(--gold-accent)';
+                            document.getElementById('sponsorInfo').style.background = '#fff8e7';
+                        } else {
+                            document.getElementById('sponsorInfo').style.display = 'block';
+                            document.getElementById('sponsorNameDisplay').textContent = '❌ SPONSOR TIDAK DITEMUKAN';
+                            document.getElementById('sponsorIdDisplay').textContent = val;
+                            document.getElementById('sponsorPositionDisplay').textContent = '⚠️ INVALID';
+                            document.getElementById('sponsorInfo').style.borderLeftColor = '#e53e3e';
+                            document.getElementById('sponsorInfo').style.background = '#fde8e8';
+                        }
+                        await previewBonus();
+                    } catch (e) {
+                        console.warn('Sponsor check error:', e);
+                    }
+                } else {
+                    document.getElementById('sponsorInfo').style.display = 'none';
+                }
+            });
+
+            // Auto preview bonus saat posisi berubah
+            positionInput.addEventListener('change', previewBonus);
+
             // ========== INIT ==========
             loadProducts();
             checkSponsorFromURL();
+
+            // Tambahkan style untuk toast animation
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes slideInRight {
+                    from { opacity: 0; transform: translateX(60px) scale(0.9); }
+                    to { opacity: 1; transform: translateX(0) scale(1); }
+                }
+                @keyframes slideOutRight {
+                    from { opacity: 1; transform: translateX(0) scale(1); }
+                    to { opacity: 0; transform: translateX(60px) scale(0.9); }
+                }
+                .toast-item.removing { animation: slideOutRight 0.3s ease forwards; }
+            `;
+            document.head.appendChild(style);
 
         })();
     </script>
