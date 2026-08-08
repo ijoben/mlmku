@@ -136,7 +136,6 @@ async function saveSettings(settings) {
 }
 
 // ========== EXPOSE KE GLOBAL ==========
-window.supabase = supabase;
 window.signUp = signUp;
 window.signIn = signIn;
 window.signOut = signOut;
