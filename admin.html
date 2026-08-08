@@ -249,22 +249,22 @@
             <div class="logo-icon"><i class="fas fa-tshirt"></i></div>
             <h2>Admin Panel</h2>
             <p class="sub">Masuk sebagai administrator</p>
-            <form id="adminLoginForm">
+            <div id="adminLoginForm">
                 <div class="form-group">
-                    <label>Email atau Username</label>
-                    <input type="text" id="adminLoginEmail" placeholder="admin@mlm.com" value="admin@mlm.com" />
+                    <label>Email</label>
+                    <input type="email" id="adminLoginEmail" placeholder="admin@hedtro.com" />
                 </div>
                 <div class="form-group">
                     <label>Kata Sandi</label>
-                    <input type="password" id="adminLoginPassword" placeholder="••••••••" value="admin123" />
+                    <input type="password" id="adminLoginPassword" placeholder="••••••••" />
                 </div>
                 <button type="button" class="btn-login" id="adminLoginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
                 <div class="msg" id="adminLoginMsg"></div>
-            </form>
-            <div class="demo-hint" style="margin-top:16px;">
-                🔑 Demo: <span id="adminDemoBtn" style="color:var(--gold-accent);font-weight:bold;cursor:pointer;">admin@mlm.com / admin123</span>
             </div>
-            <a href="index.html" class="back-to-home" style="display:inline-block;margin-top:12px;color:var(--denim-blue);font-size:0.8rem;"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+            <div class="demo-hint" style="margin-top:16px;">
+                🔑 Gunakan akun dengan role <strong>admin</strong>
+            </div>
+            <a href="index.html" class="back-to-home" style="display:inline-block;margin-top:12px;color:var(--denim-blue);font-size:0.8rem;text-decoration:none;"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
         </div>
     </div>
 
@@ -603,9 +603,9 @@
                 <div class="sub-tab-content" id="subAdminAcc">
                     <div class="settings-card" style="border-left: 4px solid #e74c3c;">
                         <h4><i class="fas fa-user-shield"></i> User & Password Admin</h4>
-                        <div class="form-group"><label>Username / Email Admin</label><input type="text" id="setAdminEmail" /></div>
-                        <div class="form-group"><label>Kata Sandi Baru</label><input type="password" id="setAdminPassword" placeholder="Kosongkan jika tidak diubah" /></div>
-                        <button class="btn-sm btn-sm-danger" id="saveAdminAccountSettings">Simpan Kredensial Admin</button>
+                        <p class="text-muted" style="margin-bottom:8px;">Untuk mengubah password admin, gunakan fitur reset password di Supabase atau update di dashboard.</p>
+                        <div class="form-group"><label>Email Admin</label><input type="text" id="setAdminEmail" placeholder="admin@hedtro.com" /></div>
+                        <button class="btn-sm btn-sm-primary" id="saveAdminAccountSettings">Simpan Email Admin</button>
                     </div>
                 </div>
 
@@ -754,26 +754,34 @@
             // ========== AUTH GUARD ==========
             async function checkAdminAuth() {
                 try {
+                    console.log('🔵 Checking admin auth...');
                     const session = await window.getSession();
+                    console.log('🔵 Session:', !!session);
+                    
                     if (!session) {
                         document.getElementById('loginOverlay').classList.remove('hidden');
                         document.getElementById('mainApp').style.display = 'none';
                         return false;
                     }
+                    
                     const profile = await window.getUserProfile();
+                    console.log('🔵 Profile:', profile);
+                    
                     if (!profile || profile.role !== 'admin') {
                         document.getElementById('loginOverlay').classList.remove('hidden');
                         document.getElementById('mainApp').style.display = 'none';
                         showToast('Anda bukan admin.', 'error');
                         return false;
                     }
+                    
                     currentAdmin = profile;
                     document.getElementById('loginOverlay').classList.add('hidden');
                     document.getElementById('mainApp').style.display = 'block';
-                    document.getElementById('navUserName').textContent = profile.fullname || profile.username;
+                    document.getElementById('navUserName').textContent = profile.fullname || profile.username || 'Admin';
+                    console.log('✅ Admin authenticated:', profile.email);
                     return true;
                 } catch (e) {
-                    console.error('Auth error:', e);
+                    console.error('❌ Auth error:', e);
                     document.getElementById('loginOverlay').classList.remove('hidden');
                     document.getElementById('mainApp').style.display = 'none';
                     return false;
@@ -785,9 +793,24 @@
                 const email = document.getElementById('adminLoginEmail').value.trim();
                 const password = document.getElementById('adminLoginPassword').value.trim();
                 const msgEl = document.getElementById('adminLoginMsg');
+
+                if (!email || !password) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ Isi email dan password.';
+                    return;
+                }
+
+                msgEl.className = 'msg';
+                msgEl.innerText = '⏳ Memproses...';
+
                 try {
-                    await window.signIn(email, password);
+                    console.log('🔵 Admin login attempt:', email);
+                    const { user, session } = await window.signIn(email, password);
+                    console.log('✅ Login success:', user.email);
+                    
                     const profile = await window.getUserProfile();
+                    console.log('🔵 Profile:', profile);
+                    
                     if (profile && profile.role === 'admin') {
                         msgEl.className = 'msg success';
                         msgEl.innerText = '✅ Login berhasil!';
@@ -798,15 +821,16 @@
                         msgEl.innerText = '❌ Akun ini bukan admin.';
                     }
                 } catch (error) {
+                    console.error('❌ Login error:', error);
+                    let errorMsg = error.message || 'Terjadi kesalahan.';
+                    if (errorMsg.includes('Invalid login credentials')) {
+                        errorMsg = 'Email atau password salah.';
+                    } else if (errorMsg.includes('Email not confirmed')) {
+                        errorMsg = 'Email belum diverifikasi. Cek inbox Anda.';
+                    }
                     msgEl.className = 'msg error';
-                    msgEl.innerText = '❌ ' + error.message;
+                    msgEl.innerText = '❌ ' + errorMsg;
                 }
-            });
-
-            document.getElementById('adminDemoBtn').addEventListener('click', function() {
-                document.getElementById('adminLoginEmail').value = 'admin@mlm.com';
-                document.getElementById('adminLoginPassword').value = 'admin123';
-                document.getElementById('adminLoginBtn').click();
             });
 
             document.getElementById('adminLoginPassword').addEventListener('keydown', function(e) {
@@ -819,14 +843,30 @@
                 window.location.reload();
             });
 
+            // ========== REFRESH DATA ==========
+            async function refreshAdminData() {
+                try {
+                    allUsers = await window.getTable('users');
+                    allProducts = await window.getProducts();
+                    allOrders = await window.getOrders();
+                    allTransactions = await window.getTransactions();
+                    allBankInfo = await window.getBankInfo();
+                    allSlides = await window.getSlides();
+                    allFaqs = await window.getFaqs();
+                    allFeatures = await window.getFeatures();
+                    allSettings = await window.getSettings();
+                    console.log('✅ Data refreshed');
+                } catch (e) {
+                    console.error('❌ Refresh data error:', e);
+                    showToast('Gagal refresh data: ' + e.message, 'error');
+                }
+            }
+
             // ========== DASHBOARD ==========
             async function renderDashboard() {
                 try {
-                    allUsers = await window.getTable('users');
-                    allOrders = await window.getOrders();
-                    allProducts = await window.getProducts();
-                    allTransactions = await window.getTransactions();
-
+                    await refreshAdminData();
+                    
                     document.getElementById('statTotalMember').textContent = allUsers.length;
                     document.getElementById('statVerifiedMember').textContent = allUsers.filter(u => u.status === 'verified').length;
                     document.getElementById('statTotalOrders').textContent = allOrders.length;
@@ -844,7 +884,7 @@
                     let html = '';
                     sorted.forEach(t => {
                         const user = allUsers.find(u => u.id === t.user_id);
-                        const userName = user ? (user.fullname || user.username) : 'Pelanggan';
+                        const userName = user ? (user.fullname || user.username || 'Pelanggan') : 'Pelanggan';
                         const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'withdraw' ? 'Withdraw' : (t.type === 'order' ? 'Order' : 'RO'));
                         const amountClass = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase') ? 'plus' : 'minus';
                         const sign = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase') ? '+' : '-';
@@ -895,12 +935,10 @@
                             let utx = user.transactions.find(t => t.id === id);
                             if (utx) utx.status = newStatus;
                         }
-                        // Update user di database
                         await window.upsertRow('users', user);
                     }
                     tx.status = newStatus;
                     await window.upsertRow('transactions', tx);
-                    // Refresh data
                     await refreshAdminData();
                     await renderDeposit();
                     await renderWithdraw();
@@ -910,40 +948,6 @@
                     console.error('Process transaction error:', e);
                     showToast('Gagal memproses transaksi.', 'error');
                 }
-            }
-
-            async function deleteTransaction(id, type) {
-                if (!confirm('Hapus transaksi ini dari sistem?')) return;
-                try {
-                    await window.deleteRow('transactions', id);
-                    // Hapus dari array user.transactions juga
-                    let user = allUsers.find(u => u.transactions && u.transactions.some(t => t.id === id));
-                    if (user) {
-                        user.transactions = user.transactions.filter(t => t.id !== id);
-                        await window.upsertRow('users', user);
-                    }
-                    await refreshAdminData();
-                    if (type === 'deposit') await renderDeposit();
-                    if (type === 'withdraw') await renderWithdraw();
-                    await renderDashboard();
-                    showToast('Transaksi dihapus.', 'info');
-                } catch (e) {
-                    console.error('Delete tx error:', e);
-                    showToast('Gagal menghapus transaksi.', 'error');
-                }
-            }
-
-            // ========== REFRESH DATA ==========
-            async function refreshAdminData() {
-                allUsers = await window.getTable('users');
-                allProducts = await window.getProducts();
-                allOrders = await window.getOrders();
-                allTransactions = await window.getTransactions();
-                allBankInfo = await window.getBankInfo();
-                allSlides = await window.getSlides();
-                allFaqs = await window.getFaqs();
-                allFeatures = await window.getFeatures();
-                allSettings = await window.getSettings();
             }
 
             // ========== MEMBERS ==========
@@ -1051,16 +1055,15 @@
                     try {
                         if (isEdit) {
                             const updated = { ...user, fullname: name, username, email, status, wallet, role };
-                            if (password) updated.password = password;
                             await window.upsertRow('users', updated);
                         } else {
                             if (!password || password.length < 6) {
                                 showToast('Password minimal 6 karakter.', 'error');
                                 return;
                             }
-                            // Daftar via Supabase Auth (akan otomatis create profile via trigger)
                             await window.signUp(email, password, { username, fullname: name, role });
-                            // Tunggu trigger membuat user, lalu ambil user baru
+                            // Tunggu trigger membuat user
+                            await new Promise(r => setTimeout(r, 1000));
                             const newUser = await window.getUserByEmail(email);
                             if (newUser) {
                                 await window.upsertRow('users', { ...newUser, wallet, status });
@@ -1080,54 +1083,6 @@
 
             document.getElementById('addMemberBtn').addEventListener('click', function() { openMemberModal(); });
             document.getElementById('refreshBtn').addEventListener('click', async function() { await refreshAdminData(); await renderAdminMembers(); showToast('Direfresh!', 'info'); });
-            document.getElementById('seedDemoBtn').addEventListener('click', async function() {
-                try {
-                    const demoNames = ['Budi', 'Siti', 'Agus', 'Rina'];
-                    for (let n of demoNames) {
-                        const email = n.toLowerCase() + '@mail.com';
-                        const existing = allUsers.find(u => u.email === email);
-                        if (!existing) {
-                            await window.signUp(email, '123456', { username: n.toLowerCase(), fullname: n, role: 'user' });
-                            // Tunggu trigger
-                            await new Promise(r => setTimeout(r, 500));
-                            const newUser = await window.getUserByEmail(email);
-                            if (newUser) {
-                                await window.upsertRow('users', { ...newUser, status: 'verified', wallet: 10000 });
-                            }
-                        }
-                    }
-                    await refreshAdminData();
-                    await renderAdminMembers();
-                    await renderDashboard();
-                    showToast('✅ Demo members added.', 'success');
-                } catch (e) {
-                    console.error('Seed demo error:', e);
-                    showToast('Gagal seed demo.', 'error');
-                }
-            });
-            document.getElementById('resetAllBtn').addEventListener('click', async function() {
-                if (!confirm('⚠️ Hapus SEMUA data (kecuali admin)?')) return;
-                try {
-                    // Hapus semua user kecuali admin
-                    const adminUser = allUsers.find(u => u.role === 'admin');
-                    for (let u of allUsers) {
-                        if (u.id !== adminUser.id) {
-                            await window.deleteRow('users', u.id);
-                        }
-                    }
-                    // Hapus semua produk, order, transaksi
-                    for (let p of allProducts) await window.deleteRow('products', p.id);
-                    for (let o of allOrders) await window.deleteRow('orders', o.id);
-                    for (let t of allTransactions) await window.deleteRow('transactions', t.id);
-                    await refreshAdminData();
-                    await renderAdminMembers();
-                    await renderDashboard();
-                    showToast('Semua data direset.', 'info');
-                } catch (e) {
-                    console.error('Reset error:', e);
-                    showToast('Gagal reset data.', 'error');
-                }
-            });
 
             // ========== PRODUCTS ==========
             async function renderAdminProducts() {
@@ -1377,16 +1332,12 @@
                             if (!order) return;
                             order.status = 'processing';
                             await window.upsertRow('orders', order);
-                            // Update transaksi terkait
                             let tx = allTransactions.find(t => t.id === id);
                             if (tx) { tx.status = 'success'; await window.upsertRow('transactions', tx); }
-                            // Update user
                             let user = allUsers.find(u => u.id === order.user_id);
-                            if (user) {
-                                if (user.transactions) {
-                                    let utx = user.transactions.find(t => t.id === id);
-                                    if (utx) utx.status = 'success';
-                                }
+                            if (user && user.transactions) {
+                                let utx = user.transactions.find(t => t.id === id);
+                                if (utx) utx.status = 'success';
                                 await window.upsertRow('users', user);
                             }
                             await refreshAdminData();
@@ -1540,6 +1491,27 @@
             }
 
             document.getElementById('refreshWithdrawBtn').addEventListener('click', async function() { await refreshAdminData(); await renderWithdraw(); showToast('Direfresh!', 'info'); });
+
+            // ========== DELETE TRANSACTION ==========
+            async function deleteTransaction(id, type) {
+                if (!confirm('Hapus transaksi ini dari sistem?')) return;
+                try {
+                    await window.deleteRow('transactions', id);
+                    let user = allUsers.find(u => u.transactions && u.transactions.some(t => t.id === id));
+                    if (user) {
+                        user.transactions = user.transactions.filter(t => t.id !== id);
+                        await window.upsertRow('users', user);
+                    }
+                    await refreshAdminData();
+                    if (type === 'deposit') await renderDeposit();
+                    if (type === 'withdraw') await renderWithdraw();
+                    await renderDashboard();
+                    showToast('Transaksi dihapus.', 'info');
+                } catch (e) {
+                    console.error('Delete tx error:', e);
+                    showToast('Gagal menghapus transaksi.', 'error');
+                }
+            }
 
             // ========== PAGE SETTINGS (CMS) ==========
             async function renderPageSettings() {
@@ -1938,11 +1910,10 @@
             // ========== SETTINGS SAVE HANDLERS ==========
             document.getElementById('saveBonusSettings').addEventListener('click', async function() {
                 try {
-                    const settings = await window.getSettings();
-                    settings.sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value) || 0;
-                    settings.roBonus = parseFloat(document.getElementById('setRoBonus').value) || 0;
-                    await window.upsertRow('settings', { key: 'sponsorBonus', value: settings.sponsorBonus });
-                    await window.upsertRow('settings', { key: 'roBonus', value: settings.roBonus });
+                    const sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value) || 0;
+                    const roBonus = parseFloat(document.getElementById('setRoBonus').value) || 0;
+                    await window.upsertRow('settings', { key: 'sponsorBonus', value: sponsorBonus });
+                    await window.upsertRow('settings', { key: 'roBonus', value: roBonus });
                     await refreshAdminData();
                     showToast('Bonus tersimpan.', 'success');
                 } catch (e) {
@@ -2021,17 +1992,15 @@
             document.getElementById('saveAdminAccountSettings').addEventListener('click', async function() {
                 try {
                     const email = document.getElementById('setAdminEmail').value.trim();
-                    const newPass = document.getElementById('setAdminPassword').value.trim();
                     const users = await window.getTable('users');
                     const admin = users.find(u => u.role === 'admin');
                     if (!admin) { showToast('Admin tidak ditemukan.', 'error'); return; }
-                    if (email) admin.email = email;
-                    if (newPass) admin.password = newPass; // Note: ini plaintext, tapi Supabase Auth seharusnya hash, untuk keperluan demo kita simpan di tabel users juga
-                    // Di sini kita update email di auth juga? Sebaiknya kita update di auth.users juga, tapi sulit karena tidak ada API langsung.
-                    // Kita update di tabel users saja, dan jika perlu, user bisa login dengan email baru.
-                    await window.upsertRow('users', admin);
-                    await refreshAdminData();
-                    showToast('Kredensial admin tersimpan.', 'success');
+                    if (email) {
+                        admin.email = email;
+                        await window.upsertRow('users', admin);
+                        await refreshAdminData();
+                        showToast('Email admin tersimpan.', 'success');
+                    }
                 } catch (e) {
                     console.error('Save admin account error:', e);
                     showToast('Gagal menyimpan kredensial admin.', 'error');
@@ -2040,9 +2009,14 @@
 
             // ========== INIT ==========
             (async function init() {
-                const isAuthenticated = await checkAdminAuth();
-                if (!isAuthenticated) return;
                 try {
+                    console.log('🔵 Admin panel initializing...');
+                    const isAuthenticated = await checkAdminAuth();
+                    if (!isAuthenticated) {
+                        console.log('🔵 Not authenticated as admin');
+                        return;
+                    }
+                    console.log('✅ Admin authenticated, loading data...');
                     await refreshAdminData();
                     const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
                     await switchTab(savedTab);
@@ -2051,9 +2025,10 @@
                         const btn = document.querySelector(`.sub-tab-btn[data-subtab="${savedSubTab}"]`);
                         if (btn) btn.click();
                     }
+                    console.log('✅ Admin panel ready!');
                 } catch (e) {
-                    console.error('Init error:', e);
-                    showToast('Gagal memuat aplikasi.', 'error');
+                    console.error('❌ Init error:', e);
+                    showToast('Gagal memuat aplikasi: ' + e.message, 'error');
                 }
             })();
 
