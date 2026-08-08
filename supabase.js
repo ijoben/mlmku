@@ -3,7 +3,7 @@ const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
 const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ---------- AUTH (NATIVE SUPABASE) ----------
+// ---------- AUTH ----------
 async function signUp(email, password, metadata = {}) {
   const { data, error } = await supabase.auth.signUp({
     email,
@@ -21,10 +21,7 @@ async function signUp(email, password, metadata = {}) {
 }
 
 async function signIn(email, password) {
-  const { data, error } = await supabase.auth.signInWithPassword({
-    email,
-    password
-  });
+  const { data, error } = await supabase.auth.signInWithPassword({ email, password });
   if (error) throw error;
   return data;
 }
@@ -46,7 +43,7 @@ async function getSession() {
   return session;
 }
 
-// ---------- CRUD DENGAN RLS (otomatis pakai token user) ----------
+// ---------- CRUD DENGAN RLS ----------
 async function getTable(table, select = '*', filter = null) {
   let query = supabase.from(table).select(select);
   if (filter) {
@@ -68,7 +65,7 @@ async function deleteRow(table, id) {
   if (error) throw error;
 }
 
-// ----- Fungsi Khusus Users (menggunakan RLS) -----
+// ---------- FUNGSI KHUSUS USER (dengan RLS) ----------
 async function getUserProfile() {
   const session = await getSession();
   if (!session) return null;
@@ -84,19 +81,18 @@ async function getUserProfile() {
 async function updateUserProfile(data) {
   const session = await getSession();
   if (!session) throw new Error('Not authenticated');
-  const { error } = await supabase
-    .from('users')
-    .update(data)
-    .eq('id', session.user.id);
+  const { error } = await supabase.from('users').update(data).eq('id', session.user.id);
   if (error) throw error;
 }
 
-// ----- Fungsi lain (Products, Orders, dll) tetap sama, tapi RLS otomatis jalan -----
+// ---------- FUNGSI UNTUK PRODUK, ORDER, DLL ----------
 async function getProducts() { return await getTable('products'); }
 async function getOrders() { return await getTable('orders'); }
-// ... dan seterusnya
+async function getTransactions() { return await getTable('transactions'); }
+async function getBankInfo() { return await getTable('bank_info'); }
+// ... tambahkan fungsi lain sesuai kebutuhan
 
-// Export ke global
+// EXPOSE KE GLOBAL
 window.supabase = supabase;
 window.signUp = signUp;
 window.signIn = signIn;
@@ -107,4 +103,6 @@ window.getUserProfile = getUserProfile;
 window.updateUserProfile = updateUserProfile;
 window.getProducts = getProducts;
 window.getOrders = getOrders;
-// ... export semua fungsi
+window.getTransactions = getTransactions;
+window.getBankInfo = getBankInfo;
+// ... export semua yang dibutuhkan
