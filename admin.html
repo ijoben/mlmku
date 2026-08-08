@@ -6,10 +6,10 @@
     <title>Admin · HEDTRO JEANS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
-    <!-- SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <style>
+        /* ===== STYLE SAMA SEPERTI SEBELUMNYA ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2;
@@ -633,6 +633,8 @@
             let allFaqs = [];
             let allFeatures = [];
             let allSettings = {};
+            let allAbout = {};
+            let allFooter = {};
             let currentAdmin = null;
             let statePage = {
                 members: 1, products: 1, verif: 1, orders: 1, deposit: 1, withdraw: 1
@@ -778,9 +780,6 @@
                 });
             });
 
-            // ========== SUPABASE CLIENT ==========
-            const supabase = window.supabase;
-
             // ========== AUTH GUARD ==========
             async function checkAdminAuth() {
                 try {
@@ -876,44 +875,35 @@
             // ========== REFRESH DATA ==========
             async function refreshAdminData() {
                 try {
-                    const { data: users, error: uErr } = await supabase.from('users').select('*');
-                    if (uErr) throw uErr;
-                    allUsers = users || [];
-
-                    const { data: products, error: pErr } = await supabase.from('products').select('*');
-                    if (pErr) throw pErr;
-                    allProducts = products || [];
-
-                    const { data: orders, error: oErr } = await supabase.from('orders').select('*');
-                    if (oErr) throw oErr;
-                    allOrders = orders || [];
-
-                    const { data: transactions, error: tErr } = await supabase.from('transactions').select('*');
-                    if (tErr) throw tErr;
-                    allTransactions = transactions || [];
-
-                    const { data: bankInfo, error: bErr } = await supabase.from('bank_info').select('*');
-                    if (bErr) throw bErr;
-                    allBankInfo = bankInfo || [];
-
-                    const { data: slides, error: sErr } = await supabase.from('slides').select('*');
-                    if (sErr) throw sErr;
-                    allSlides = slides || [];
-
-                    const { data: faqs, error: fErr } = await supabase.from('faq').select('*');
-                    if (fErr) throw fErr;
-                    allFaqs = faqs || [];
-
-                    const { data: features, error: feErr } = await supabase.from('features').select('*');
-                    if (feErr) throw feErr;
-                    allFeatures = features || [];
-
-                    const { data: settings, error: seErr } = await supabase.from('settings').select('*');
-                    if (seErr) throw seErr;
-                    allSettings = {};
-                    (settings || []).forEach(r => allSettings[r.key] = r.value);
-
-                    console.log('✅ Data refreshed');
+                    console.log('🔄 Refreshing data...');
+                    
+                    // Gunakan fungsi dari window
+                    allUsers = await window.getTable('users') || [];
+                    allProducts = await window.getProducts() || [];
+                    allOrders = await window.getOrders() || [];
+                    allTransactions = await window.getTransactions() || [];
+                    allBankInfo = await window.getBankInfo() || [];
+                    allSlides = await window.getSlides() || [];
+                    allFaqs = await window.getFaqs() || [];
+                    allFeatures = await window.getFeatures() || [];
+                    
+                    // About
+                    allAbout = await window.getAbout() || {};
+                    
+                    // Footer
+                    allFooter = await window.getFooter() || {};
+                    
+                    // Settings
+                    allSettings = await window.getSettings() || {};
+                    
+                    console.log('✅ Data refreshed:');
+                    console.log('  Users:', allUsers.length);
+                    console.log('  Products:', allProducts.length);
+                    console.log('  Orders:', allOrders.length);
+                    console.log('  Transactions:', allTransactions.length);
+                    console.log('  Slides:', allSlides.length);
+                    console.log('  FAQ:', allFaqs.length);
+                    console.log('  Features:', allFeatures.length);
                 } catch (e) {
                     console.error('❌ Refresh data error:', e);
                     showToast('Gagal refresh data: ' + e.message, 'error');
@@ -981,22 +971,15 @@
             async function processTransaction(id, newStatus, type) {
                 try {
                     // Update transaksi
-                    const { error: txError } = await supabase
-                        .from('transactions')
-                        .update({ status: newStatus })
-                        .eq('id', id);
-                    if (txError) throw txError;
+                    const tx = allTransactions.find(t => t.id === id);
+                    if (!tx) { showToast('Transaksi tidak ditemukan.', 'error'); return; }
+                    
+                    // Update status di database
+                    await window.upsertRow('transactions', { ...tx, status: newStatus });
                     
                     // Cari user terkait
-                    const tx = allTransactions.find(t => t.id === id);
-                    if (tx && tx.user_id) {
-                        const { data: user, error: userError } = await supabase
-                            .from('users')
-                            .select('*')
-                            .eq('id', tx.user_id)
-                            .single();
-                        if (userError && userError.code !== 'PGRST116') throw userError;
-                        
+                    if (tx.user_id) {
+                        const user = allUsers.find(u => u.id === tx.user_id);
                         if (user) {
                             let newWallet = parseFloat(user.wallet) || 0;
                             if (type === 'deposit' && newStatus === 'success' && tx.status === 'pending') {
@@ -1004,11 +987,7 @@
                             } else if (type === 'withdraw' && newStatus === 'failed' && tx.status === 'pending') {
                                 newWallet += parseFloat(tx.amount) || 0;
                             }
-                            const { error: updateError } = await supabase
-                                .from('users')
-                                .update({ wallet: newWallet })
-                                .eq('id', user.id);
-                            if (updateError) throw updateError;
+                            await window.upsertRow('users', { ...user, wallet: newWallet });
                         }
                     }
                     
@@ -1071,8 +1050,7 @@
                             if (!confirm('Hapus member ini dari database?')) return;
                             const id = this.dataset.id;
                             try {
-                                const { error } = await supabase.from('users').delete().eq('id', id);
-                                if (error) throw error;
+                                await window.deleteRow('users', id);
                                 await refreshAdminData();
                                 await renderAdminMembers();
                                 await renderDashboard();
@@ -1135,38 +1113,36 @@
 
                     try {
                         if (isEdit) {
-                            const { error } = await supabase
-                                .from('users')
-                                .update({ 
-                                    fullname: name, 
-                                    username, 
-                                    email, 
-                                    status, 
-                                    wallet, 
-                                    role 
-                                })
-                                .eq('id', user.id);
-                            if (error) throw error;
+                            await window.upsertRow('users', {
+                                ...user,
+                                fullname: name,
+                                username,
+                                email,
+                                status,
+                                wallet,
+                                role
+                            });
                             showToast('✅ Member berhasil diupdate!', 'success');
                         } else {
                             if (!password || password.length < 6) {
                                 showToast('Password minimal 6 karakter.', 'error');
                                 return;
                             }
-                            const { data, error } = await supabase.auth.signUp({
-                                email: email,
-                                password: password,
-                                options: {
-                                    data: { username, fullname: name, role }
-                                }
+                            await window.signUp(email, password, {
+                                username,
+                                fullname: name,
+                                role
                             });
-                            if (error) throw error;
+                            // Tunggu trigger membuat user di tabel users
                             await new Promise(r => setTimeout(r, 1500));
-                            const { error: updateError } = await supabase
-                                .from('users')
-                                .update({ wallet, status })
-                                .eq('email', email);
-                            if (updateError) throw updateError;
+                            const newUser = await window.getUserByEmail(email);
+                            if (newUser) {
+                                await window.upsertRow('users', {
+                                    ...newUser,
+                                    wallet,
+                                    status
+                                });
+                            }
                             showToast('✅ Member berhasil ditambahkan!', 'success');
                         }
                         await refreshAdminData();
@@ -1228,8 +1204,7 @@
                             if (!confirm('Hapus produk ini?')) return;
                             const id = parseInt(this.dataset.id);
                             try {
-                                const { error } = await supabase.from('products').delete().eq('id', id);
-                                if (error) throw error;
+                                await window.deleteRow('products', id);
                                 await refreshAdminData();
                                 await renderAdminProducts();
                                 await renderDashboard();
@@ -1316,8 +1291,7 @@
                             colors: ['Indigo Blue', 'Black Stretch', 'Raw Denim', 'Dark Navy', 'Grey Stone']
                         };
                         
-                        const { error } = await supabase.from('products').upsert(productData);
-                        if (error) throw error;
+                        await window.upsertRow('products', productData);
                         
                         await refreshAdminData();
                         await renderAdminProducts();
@@ -1375,16 +1349,15 @@
                         btn.onclick = async function() {
                             const id = this.dataset.id;
                             try {
-                                const { error } = await supabase
-                                    .from('users')
-                                    .update({ status: 'verified' })
-                                    .eq('id', id);
-                                if (error) throw error;
-                                await refreshAdminData();
-                                await renderVerification();
-                                await renderAdminMembers();
-                                await renderDashboard();
-                                showToast('User diverifikasi!', 'success');
+                                const user = allUsers.find(u => u.id === id);
+                                if (user) {
+                                    await window.upsertRow('users', { ...user, status: 'verified' });
+                                    await refreshAdminData();
+                                    await renderVerification();
+                                    await renderAdminMembers();
+                                    await renderDashboard();
+                                    showToast('User diverifikasi!', 'success');
+                                }
                             } catch (e) {
                                 console.error('Verify user error:', e);
                                 showToast('Gagal verifikasi user.', 'error');
@@ -1454,15 +1427,14 @@
                         btn.onclick = async function() {
                             const id = parseInt(this.dataset.id);
                             try {
-                                const { error } = await supabase
-                                    .from('orders')
-                                    .update({ status: 'processing' })
-                                    .eq('id', id);
-                                if (error) throw error;
-                                await refreshAdminData();
-                                await renderOrders();
-                                await renderDashboard();
-                                showToast('✅ Order disetujui.', 'success');
+                                const order = allOrders.find(o => o.id === id);
+                                if (order) {
+                                    await window.upsertRow('orders', { ...order, status: 'processing' });
+                                    await refreshAdminData();
+                                    await renderOrders();
+                                    await renderDashboard();
+                                    showToast('✅ Order disetujui.', 'success');
+                                }
                             } catch (e) {
                                 console.error('Approve order error:', e);
                                 showToast('Gagal approve order.', 'error');
@@ -1474,15 +1446,14 @@
                         btn.onclick = async function() {
                             const id = parseInt(this.dataset.id);
                             try {
-                                const { error } = await supabase
-                                    .from('orders')
-                                    .update({ status: 'shipped' })
-                                    .eq('id', id);
-                                if (error) throw error;
-                                await refreshAdminData();
-                                await renderOrders();
-                                await renderDashboard();
-                                showToast('🚚 Order dikirim.', 'success');
+                                const order = allOrders.find(o => o.id === id);
+                                if (order) {
+                                    await window.upsertRow('orders', { ...order, status: 'shipped' });
+                                    await refreshAdminData();
+                                    await renderOrders();
+                                    await renderDashboard();
+                                    showToast('🚚 Order dikirim.', 'success');
+                                }
                             } catch (e) {
                                 console.error('Ship order error:', e);
                                 showToast('Gagal kirim order.', 'error');
@@ -1557,8 +1528,7 @@
                             if (!confirm('Hapus transaksi ini?')) return;
                             try {
                                 const id = parseInt(this.dataset.id);
-                                const { error } = await supabase.from('transactions').delete().eq('id', id);
-                                if (error) throw error;
+                                await window.deleteRow('transactions', id);
                                 await refreshAdminData();
                                 await renderDeposit();
                                 await renderDashboard();
@@ -1629,8 +1599,7 @@
                             if (!confirm('Hapus transaksi ini?')) return;
                             try {
                                 const id = parseInt(this.dataset.id);
-                                const { error } = await supabase.from('transactions').delete().eq('id', id);
-                                if (error) throw error;
+                                await window.deleteRow('transactions', id);
                                 await refreshAdminData();
                                 await renderWithdraw();
                                 await renderDashboard();
@@ -1676,8 +1645,7 @@
                                 if (!confirm('Hapus slide ini?')) return;
                                 try {
                                     const id = parseInt(this.dataset.id);
-                                    const { error } = await supabase.from('slides').delete().eq('id', id);
-                                    if (error) throw error;
+                                    await window.deleteRow('slides', id);
                                     await refreshAdminData();
                                     await renderPageSettings();
                                     showToast('Slide dihapus.', 'info');
@@ -1690,9 +1658,8 @@
                     }
 
                     // About
-                    const about = allAbout || { title: '', content: '' };
-                    document.getElementById('aboutTitle').value = about.title || '';
-                    document.getElementById('aboutContent').value = about.content || '';
+                    document.getElementById('aboutTitle').value = allAbout.title || '';
+                    document.getElementById('aboutContent').value = allAbout.content || '';
 
                     // FAQ
                     const faqs = allFaqs;
@@ -1717,8 +1684,7 @@
                                 if (!confirm('Hapus FAQ ini?')) return;
                                 try {
                                     const id = parseInt(this.dataset.id);
-                                    const { error } = await supabase.from('faq').delete().eq('id', id);
-                                    if (error) throw error;
+                                    await window.deleteRow('faq', id);
                                     await refreshAdminData();
                                     await renderPageSettings();
                                     showToast('FAQ dihapus.', 'info');
@@ -1753,8 +1719,7 @@
                                 if (!confirm('Hapus keunggulan ini?')) return;
                                 try {
                                     const id = parseInt(this.dataset.id);
-                                    const { error } = await supabase.from('features').delete().eq('id', id);
-                                    if (error) throw error;
+                                    await window.deleteRow('features', id);
                                     await refreshAdminData();
                                     await renderPageSettings();
                                     showToast('Keunggulan dihapus.', 'info');
@@ -1767,15 +1732,14 @@
                     }
 
                     // Footer
-                    const footer = allFooter || { brand: '', description: '', copyright: '', social: {} };
-                    document.getElementById('footerBrand').value = footer.brand || '';
-                    document.getElementById('footerDesc').value = footer.description || '';
-                    document.getElementById('footerCopyright').value = footer.copyright || '';
-                    if (footer.social) {
-                        document.getElementById('sosmedInstagram').value = footer.social.instagram || '';
-                        document.getElementById('sosmedFacebook').value = footer.social.facebook || '';
-                        document.getElementById('sosmedYoutube').value = footer.social.youtube || '';
-                        document.getElementById('sosmedTiktok').value = footer.social.tiktok || '';
+                    document.getElementById('footerBrand').value = allFooter.brand || '';
+                    document.getElementById('footerDesc').value = allFooter.description || '';
+                    document.getElementById('footerCopyright').value = allFooter.copyright || '';
+                    if (allFooter.social) {
+                        document.getElementById('sosmedInstagram').value = allFooter.social.instagram || '';
+                        document.getElementById('sosmedFacebook').value = allFooter.social.facebook || '';
+                        document.getElementById('sosmedYoutube').value = allFooter.social.youtube || '';
+                        document.getElementById('sosmedTiktok').value = allFooter.social.tiktok || '';
                     }
                 } catch (e) {
                     console.error('Page settings error:', e);
@@ -1882,8 +1846,7 @@
                         image: image || null
                     };
                     
-                    const { error } = await supabase.from('slides').upsert(slideData);
-                    if (error) throw error;
+                    await window.upsertRow('slides', slideData);
                     
                     await refreshAdminData();
                     await renderPageSettings();
@@ -1921,8 +1884,7 @@
                             question,
                             answer
                         };
-                        const { error } = await supabase.from('faq').upsert(faqData);
-                        if (error) throw error;
+                        await window.upsertRow('faq', faqData);
                         await refreshAdminData();
                         await renderPageSettings();
                         closeModal();
@@ -1962,8 +1924,7 @@
                             description,
                             icon
                         };
-                        const { error } = await supabase.from('features').upsert(featureData);
-                        if (error) throw error;
+                        await window.upsertRow('features', featureData);
                         await refreshAdminData();
                         await renderPageSettings();
                         closeModal();
@@ -1985,8 +1946,7 @@
                         title: document.getElementById('aboutTitle').value.trim(),
                         content: document.getElementById('aboutContent').value.trim()
                     };
-                    const { error } = await supabase.from('about').upsert(aboutData);
-                    if (error) throw error;
+                    await window.upsertRow('about', aboutData);
                     await refreshAdminData();
                     showToast('Tentang kami tersimpan.', 'success');
                 } catch (e) {
@@ -2010,8 +1970,7 @@
                             tiktok: document.getElementById('sosmedTiktok').value.trim()
                         }
                     };
-                    const { error } = await supabase.from('footer').upsert(footerData);
-                    if (error) throw error;
+                    await window.upsertRow('footer', footerData);
                     await refreshAdminData();
                     showToast('Footer tersimpan.', 'success');
                 } catch (e) {
@@ -2088,8 +2047,7 @@
                             if (!confirm('Hapus metode pembayaran ini?')) return;
                             try {
                                 const id = parseInt(this.dataset.id);
-                                const { error } = await supabase.from('bank_info').delete().eq('id', id);
-                                if (error) throw error;
+                                await window.deleteRow('bank_info', id);
                                 await refreshAdminData();
                                 await renderBankSettings();
                                 showToast('Metode pembayaran dihapus.', 'info');
@@ -2130,8 +2088,7 @@
                             account: account,
                             name: name
                         };
-                        const { error } = await supabase.from('bank_info').upsert(bankData);
-                        if (error) throw error;
+                        await window.upsertRow('bank_info', bankData);
                         await refreshAdminData();
                         await renderBankSettings();
                         closeModal();
@@ -2150,8 +2107,8 @@
                 try {
                     const sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value) || 0;
                     const roBonus = parseFloat(document.getElementById('setRoBonus').value) || 0;
-                    await supabase.from('settings').upsert({ key: 'sponsorBonus', value: sponsorBonus });
-                    await supabase.from('settings').upsert({ key: 'roBonus', value: roBonus });
+                    await window.upsertRow('settings', { key: 'sponsorBonus', value: sponsorBonus });
+                    await window.upsertRow('settings', { key: 'roBonus', value: roBonus });
                     await refreshAdminData();
                     showToast('Bonus tersimpan.', 'success');
                 } catch (e) {
@@ -2167,7 +2124,7 @@
                         const el = document.getElementById(`setBinaryL${i}`);
                         levels.push(parseFloat(el.value) || 0);
                     }
-                    await supabase.from('settings').upsert({ key: 'binaryBonusLevels', value: levels });
+                    await window.upsertRow('settings', { key: 'binaryBonusLevels', value: levels });
                     await refreshAdminData();
                     showToast('Binary tersimpan.', 'success');
                 } catch (e) {
@@ -2183,7 +2140,7 @@
                         const el = document.getElementById(`setRewardL${i}`);
                         levels.push(parseFloat(el.value) || 0);
                     }
-                    await supabase.from('settings').upsert({ key: 'rewardBonusLevels', value: levels });
+                    await window.upsertRow('settings', { key: 'rewardBonusLevels', value: levels });
                     await refreshAdminData();
                     showToast('Reward tersimpan.', 'success');
                 } catch (e) {
@@ -2195,7 +2152,7 @@
             document.getElementById('saveShopSettings').addEventListener('click', async function() {
                 try {
                     const price = parseFloat(document.getElementById('setMemberPrice').value) || 550000;
-                    await supabase.from('settings').upsert({ key: 'memberPrice', value: price });
+                    await window.upsertRow('settings', { key: 'memberPrice', value: price });
                     await refreshAdminData();
                     showToast('Harga member tersimpan.', 'success');
                 } catch (e) {
@@ -2210,10 +2167,12 @@
                     const brandLogo = document.getElementById('setBrandLogo').value.trim() || 'fa-tshirt';
                     const brandIcon = document.getElementById('setBrandIcon').value.trim() || 'fa-tshirt';
                     const heroTitle = document.getElementById('setHeroTitle').value.trim() || 'HEDTRO JEANS · Premium Denim';
-                    await supabase.from('settings').upsert({ key: 'brandName', value: brandName });
-                    await supabase.from('settings').upsert({ key: 'brandLogo', value: brandLogo });
-                    await supabase.from('settings').upsert({ key: 'brandIcon', value: brandIcon });
-                    await supabase.from('settings').upsert({ key: 'heroTitle', value: heroTitle });
+                    
+                    await window.upsertRow('settings', { key: 'brandName', value: brandName });
+                    await window.upsertRow('settings', { key: 'brandLogo', value: brandLogo });
+                    await window.upsertRow('settings', { key: 'brandIcon', value: brandIcon });
+                    await window.upsertRow('settings', { key: 'heroTitle', value: heroTitle });
+                    
                     await refreshAdminData();
                     document.querySelectorAll('#brandLogo, #sideBrandLogo').forEach(el => {
                         el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
@@ -2232,8 +2191,7 @@
                     const admin = allUsers.find(u => u.role === 'admin');
                     if (!admin) { showToast('Admin tidak ditemukan.', 'error'); return; }
                     if (email) {
-                        const { error } = await supabase.from('users').update({ email: email }).eq('id', admin.id);
-                        if (error) throw error;
+                        await window.upsertRow('users', { ...admin, email });
                         await refreshAdminData();
                         showToast('Email admin tersimpan.', 'success');
                     }
