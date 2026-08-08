@@ -1,4 +1,4 @@
-// supabase.js
+// supabase.js - FULL LENGKAP
 console.log('🔵 supabase.js mulai dieksekusi...');
 
 var SUPABASE_URL = 'https://dbfwcsuptitytlposubo.supabase.co';
@@ -7,6 +7,11 @@ var SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYm
 // Buat client
 var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 console.log('🔵 Supabase client created:', !!supabaseClient);
+
+// ============================================================
+// EXPOSE SUPABASE CLIENT KE WINDOW (PENTING!)
+// ============================================================
+window.supabase = supabaseClient;
 
 // ============================================================
 // AUTH FUNCTIONS
@@ -19,7 +24,7 @@ window.signUp = async function(email, password, metadata = {}) {
     password: password,
     options: {
       data: metadata,
-      emailRedirectTo: 'https://hedtro.com/confirm-email.html'  // Redirect ke halaman konfirmasi
+      emailRedirectTo: 'https://hedtro.com/confirm-email.html'
     }
   });
   if (error) {
@@ -200,64 +205,96 @@ window.deleteRow = async function(table, id) {
 window.getProducts = async function() {
   return await window.getTable('products', '*', null, { by: 'id', ascending: true });
 };
-window.saveProduct = async function(p) { return await window.upsertRow('products', p); };
-window.deleteProduct = async function(id) { await window.deleteRow('products', id); };
+window.saveProduct = async function(p) { 
+  return await window.upsertRow('products', p); 
+};
+window.deleteProduct = async function(id) { 
+  await window.deleteRow('products', id); 
+};
 
 // Orders
 window.getOrders = async function() {
   return await window.getTable('orders', '*', null, { by: 'created_at', ascending: false });
 };
-window.saveOrder = async function(o) { return await window.upsertRow('orders', o); };
-window.deleteOrder = async function(id) { await window.deleteRow('orders', id); };
+window.saveOrder = async function(o) { 
+  return await window.upsertRow('orders', o); 
+};
+window.deleteOrder = async function(id) { 
+  await window.deleteRow('orders', id); 
+};
 
 // Transactions
 window.getTransactions = async function() {
   return await window.getTable('transactions', '*', null, { by: 'date', ascending: false });
 };
-window.saveTransaction = async function(t) { return await window.upsertRow('transactions', t); };
-window.deleteTransaction = async function(id) { await window.deleteRow('transactions', id); };
+window.saveTransaction = async function(t) { 
+  return await window.upsertRow('transactions', t); 
+};
+window.deleteTransaction = async function(id) { 
+  await window.deleteRow('transactions', id); 
+};
 
 // Bank Info
 window.getBankInfo = async function() {
   return await window.getTable('bank_info', '*');
 };
-window.saveBankInfo = async function(b) { return await window.upsertRow('bank_info', b); };
-window.deleteBankInfo = async function(id) { await window.deleteRow('bank_info', id); };
+window.saveBankInfo = async function(b) { 
+  return await window.upsertRow('bank_info', b); 
+};
+window.deleteBankInfo = async function(id) { 
+  await window.deleteRow('bank_info', id); 
+};
 
 // Slides
 window.getSlides = async function() {
   return await window.getTable('slides', '*');
 };
-window.saveSlide = async function(s) { return await window.upsertRow('slides', s); };
-window.deleteSlide = async function(id) { await window.deleteRow('slides', id); };
+window.saveSlide = async function(s) { 
+  return await window.upsertRow('slides', s); 
+};
+window.deleteSlide = async function(id) { 
+  await window.deleteRow('slides', id); 
+};
 
 // FAQ
 window.getFaqs = async function() {
   return await window.getTable('faq', '*');
 };
-window.saveFaq = async function(f) { return await window.upsertRow('faq', f); };
-window.deleteFaq = async function(id) { await window.deleteRow('faq', id); };
+window.saveFaq = async function(f) { 
+  return await window.upsertRow('faq', f); 
+};
+window.deleteFaq = async function(id) { 
+  await window.deleteRow('faq', id); 
+};
 
 // Features
 window.getFeatures = async function() {
   return await window.getTable('features', '*');
 };
-window.saveFeature = async function(f) { return await window.upsertRow('features', f); };
-window.deleteFeature = async function(id) { await window.deleteRow('features', id); };
+window.saveFeature = async function(f) { 
+  return await window.upsertRow('features', f); 
+};
+window.deleteFeature = async function(id) { 
+  await window.deleteRow('features', id); 
+};
 
 // About
 window.getAbout = async function() {
   var d = await window.getTable('about', '*');
   return d.length ? d[0] : { id: 1, title: '', content: '' };
 };
-window.saveAbout = async function(a) { return await window.upsertRow('about', a); };
+window.saveAbout = async function(a) { 
+  return await window.upsertRow('about', a); 
+};
 
 // Footer
 window.getFooter = async function() {
   var d = await window.getTable('footer', '*');
   return d.length ? d[0] : { id: 1, brand: '', description: '', copyright: '', social: {} };
 };
-window.saveFooter = async function(f) { return await window.upsertRow('footer', f); };
+window.saveFooter = async function(f) { 
+  return await window.upsertRow('footer', f); 
+};
 
 // Settings
 window.getSettings = async function() {
@@ -274,56 +311,10 @@ window.saveSettings = async function(settings) {
 };
 
 // ============================================================
-// EXPOSE KE WINDOW
-// ============================================================
-window.supabase = supabaseClient;  // <-- TAMBAHKAN INI!
-window.signUp = signUp;
-window.signIn = signIn;
-window.signOut = signOut;
-window.getCurrentUser = getCurrentUser;
-window.getSession = getSession;
-window.getUserProfile = getUserProfile;
-window.getUserByEmail = getUserByEmail;
-window.updateUserProfile = updateUserProfile;
-window.getProducts = getProducts;
-window.saveProduct = saveProduct;
-window.deleteProduct = deleteProduct;
-window.getOrders = getOrders;
-window.saveOrder = saveOrder;
-window.deleteOrder = deleteOrder;
-window.getTransactions = getTransactions;
-window.saveTransaction = saveTransaction;
-window.deleteTransaction = deleteTransaction;
-window.getBankInfo = getBankInfo;
-window.saveBankInfo = saveBankInfo;
-window.deleteBankInfo = deleteBankInfo;
-window.getSlides = getSlides;
-window.saveSlide = saveSlide;
-window.deleteSlide = deleteSlide;
-window.getFaqs = getFaqs;
-window.saveFaq = saveFaq;
-window.deleteFaq = deleteFaq;
-window.getFeatures = getFeatures;
-window.saveFeature = saveFeature;
-window.deleteFeature = deleteFeature;
-window.getAbout = getAbout;
-window.saveAbout = saveAbout;
-window.getFooter = getFooter;
-window.saveFooter = saveFooter;
-window.getSettings = getSettings;
-window.saveSettings = saveSettings;
-window.getTable = getTable;
-window.upsertRow = upsertRow;
-window.deleteRow = deleteRow;
-
-console.log('✅ supabase.js loaded!');
-console.log('✅ window.supabase:', typeof window.supabase);
-console.log('✅ window.getProducts:', typeof window.getProducts);
-console.log('✅ window.getSession:', typeof window.getSession);
-// ============================================================
-// LOG KONFIRMASI
+// LOG KONFIRMASI - PASTIKAN SEMUA FUNGSI TERSEDIA
 // ============================================================
 console.log('✅ supabase.js selesai dieksekusi!');
+console.log('✅ window.supabase:', typeof window.supabase);
 console.log('✅ window.getProducts:', typeof window.getProducts);
 console.log('✅ window.getSession:', typeof window.getSession);
 console.log('✅ window.getSettings:', typeof window.getSettings);
@@ -337,3 +328,6 @@ console.log('✅ window.signUp:', typeof window.signUp);
 console.log('✅ window.signOut:', typeof window.signOut);
 console.log('✅ window.getUserProfile:', typeof window.getUserProfile);
 console.log('✅ window.updateUserProfile:', typeof window.updateUserProfile);
+console.log('✅ window.getTable:', typeof window.getTable);
+console.log('✅ window.upsertRow:', typeof window.upsertRow);
+console.log('✅ window.deleteRow:', typeof window.deleteRow);
