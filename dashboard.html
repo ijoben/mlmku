@@ -105,21 +105,32 @@
     .btn-sm-danger { background:#e53e3e; color:#fff; }
     .btn-sm-info { background:#3182ce; color:#fff; } .btn-sm-info:hover { background:#2b6cb0; }
 
-    /* ===== WALLET CARD - MODEL BARU (HORIZONTAL COMPACT) ===== */
+    /* ===== DASHBOARD 3 KOLOM ===== */
+    .dash-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr 1fr;
+      gap: 14px;
+      margin-bottom: 16px;
+    }
+    @media (max-width: 992px) {
+      .dash-grid { grid-template-columns: 1fr 1fr; }
+    }
+    @media (max-width: 768px) {
+      .dash-grid { grid-template-columns: 1fr; gap: 10px; }
+    }
+
+    /* Kolom 1 - Wallet Card */
     .wallet-card {
       background: linear-gradient(135deg, #0f2237 0%, #1a324b 100%);
       border-radius: var(--radius);
-      padding: 14px 20px;
-      margin-bottom: 16px;
-      display: flex;
-      flex-wrap: wrap;
-      align-items: center;
-      justify-content: space-between;
-      gap: 12px;
+      padding: 16px 18px;
       border: 1px solid rgba(212,175,55,0.25);
       box-shadow: 0 8px 24px rgba(11,26,43,0.1);
       position: relative;
       overflow: hidden;
+      height: 100%;
+      display: flex;
+      flex-direction: column;
     }
     .wallet-card::before {
       content: '';
@@ -131,22 +142,16 @@
       background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, rgba(255,255,255,0) 70%);
       pointer-events: none;
     }
-    .wallet-card .wallet-left {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-      flex: 1;
-      min-width: 160px;
-      z-index: 1;
-    }
     .wallet-card .wallet-top {
       display: flex;
       align-items: center;
       gap: 12px;
+      margin-bottom: 8px;
+      z-index: 1;
     }
     .wallet-card .wallet-top .avatar-mini {
-      width: 38px;
-      height: 38px;
+      width: 40px;
+      height: 40px;
       border-radius: 50%;
       object-fit: cover;
       border: 2px solid var(--gold-accent);
@@ -174,12 +179,14 @@
       align-items: baseline;
       gap: 8px;
       flex-wrap: wrap;
+      margin-bottom: 6px;
+      z-index: 1;
     }
     .wallet-card .wallet-balance .label {
-      font-size: 0.65rem;
+      font-size: 0.6rem;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: rgba(255,255,255,0.5);
+      color: rgba(255,255,255,0.4);
       font-weight: 700;
     }
     .wallet-card .wallet-balance .amount {
@@ -189,18 +196,7 @@
       letter-spacing: -0.5px;
       text-shadow: 0 2px 8px rgba(0,0,0,0.15);
     }
-    .wallet-card .wallet-actions {
-      display: flex;
-      gap: 6px;
-      flex-wrap: wrap;
-      z-index: 1;
-    }
-    .wallet-card .wallet-actions .btn-sm {
-      padding: 5px 12px;
-      font-size: 0.7rem;
-    }
     .wallet-card .ref-box {
-      margin-top: 4px;
       background: rgba(0,0,0,0.15);
       padding: 4px 10px;
       border-radius: 6px;
@@ -209,7 +205,8 @@
       gap: 6px;
       font-size: 0.7rem;
       border: 1px solid rgba(255,255,255,0.06);
-      max-width: 100%;
+      z-index: 1;
+      margin-bottom: 8px;
     }
     .wallet-card .ref-box input {
       background: transparent;
@@ -219,7 +216,7 @@
       outline: none;
       font-size: 0.7rem;
       flex: 1;
-      min-width: 80px;
+      min-width: 60px;
     }
     .wallet-card .ref-box .copy-btn {
       background: var(--gold-gradient);
@@ -232,32 +229,35 @@
       font-weight: 800;
       white-space: nowrap;
     }
+    .wallet-card .wallet-actions {
+      display: flex;
+      gap: 6px;
+      flex-wrap: wrap;
+      margin-top: auto;
+      z-index: 1;
+    }
+    .wallet-card .wallet-actions .btn-sm {
+      padding: 5px 12px;
+      font-size: 0.7rem;
+    }
 
-    /* ===== STATS GRID - MODEL BARU (KOTAK KECIL) ===== */
-    .stats-grid {
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 12px;
-      margin-bottom: 16px;
-    }
-    @media (max-width: 768px) {
-      .stats-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
-    }
-    .stat-card {
+    /* Stat Card kecil untuk kolom 2 & 3 */
+    .stat-mini {
       background: var(--white);
       border-radius: var(--radius-sm);
-      padding: 12px 14px;
+      padding: 14px 16px;
       box-shadow: 0 4px 12px rgba(11,26,43,0.04);
       border: 1px solid rgba(212,175,55,0.06);
       transition: var(--transition);
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
+      height: 100%;
     }
-    .stat-card:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
-    .stat-card .icon-box {
-      width: 32px;
-      height: 32px;
+    .stat-mini:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+    .stat-mini .icon-box {
+      width: 36px;
+      height: 36px;
       border-radius: 8px;
       background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.02) 100%);
       color: var(--gold-accent);
@@ -265,12 +265,19 @@
       display: flex;
       align-items: center;
       justify-content: center;
-      font-size: 0.85rem;
+      font-size: 1rem;
       flex-shrink: 0;
     }
-    .stat-card .stat-info { display: flex; flex-direction: column; flex:1; min-width:0; }
-    .stat-card .stat-info .label { font-size:0.6rem; text-transform:uppercase; color:#718096; font-weight:700; letter-spacing:0.3px; }
-    .stat-card .stat-info .value { font-size:1.2rem; font-weight:800; color:var(--denim-dark); letter-spacing:-0.3px; line-height:1.2; }
+    .stat-mini .stat-info { display: flex; flex-direction: column; flex:1; min-width:0; }
+    .stat-mini .stat-info .label { font-size:0.6rem; text-transform:uppercase; color:#718096; font-weight:700; letter-spacing:0.3px; }
+    .stat-mini .stat-info .value { font-size:1.3rem; font-weight:800; color:var(--denim-dark); letter-spacing:-0.3px; line-height:1.2; }
+
+    .stat-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      height: 100%;
+    }
 
     /* ===== HISTORY TABLE ===== */
     .history-card {
@@ -514,13 +521,16 @@
 
     /* ===== RESPONSIVE HP ===== */
     @media (max-width: 768px) {
-      .wallet-card { flex-direction:column; align-items:stretch; padding:12px 16px; }
-      .wallet-card .wallet-top .avatar-mini { width:32px; height:32px; font-size:1rem; }
+      .dash-grid { grid-template-columns:1fr; gap:10px; }
+      .wallet-card { padding:14px 16px; }
+      .wallet-card .wallet-top .avatar-mini { width:36px; height:36px; font-size:1rem; }
       .wallet-card .wallet-balance .amount { font-size:1.4rem; }
-      .wallet-card .wallet-actions { justify-content:flex-start; }
       .product-grid { grid-template-columns:1fr 1fr; gap:8px; }
       .form-row { grid-template-columns:1fr; gap:0; }
       .ro-detail-grid .ro-options { grid-template-columns:1fr; }
+      .stat-stack { gap:8px; }
+      .stat-mini { padding:10px 12px; }
+      .stat-mini .stat-info .value { font-size:1.1rem; }
       /* Table HP */
       .table-container { background:transparent !important; border:none !important; box-shadow:none !important; padding:0 !important; overflow-x:hidden !important; }
       table { min-width:0 !important; width:100% !important; }
@@ -539,8 +549,8 @@
       .tree-wrapper { padding:8px 4px; border:none; box-shadow:none; }
     }
 
-    @media (min-width: 769px) {
-      .wallet-card { flex-direction:row; }
+    @media (min-width: 769px) and (max-width: 992px) {
+      .dash-grid { grid-template-columns:1fr 1fr; }
     }
   </style>
 </head>
@@ -570,7 +580,7 @@
           <div style="font-size:0.55rem; opacity:0.5; font-family:monospace;" id="sideProfileId">ID: -</div>
         </div>
       </div>
-      <div style="background:#15283c; border-radius:10px; padding:8px 12px; display:flex; justify-content:space-between; align-items:center;">
+      <div style="background:#15283c; border-radius:10px; padding:6px 10px; display:flex; justify-content:space-between; align-items:center;">
         <span style="font-size:0.6rem; color:rgba(255,255,255,0.5);"><i class="fas fa-wallet" style="color:var(--gold-accent);"></i> Dompet</span>
         <span id="sideUserStatusBadge" class="status-badge status-free" style="padding:1px 6px; font-size:0.5rem;">FREE</span>
       </div>
@@ -596,9 +606,10 @@
     <div class="section-content active" id="sec-dashboard">
       <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
 
-      <!-- WALLET CARD - MODEL BARU -->
-      <div class="wallet-card">
-        <div class="wallet-left">
+      <!-- 3 KOLOM -->
+      <div class="dash-grid">
+        <!-- Kolom 1: Wallet Card -->
+        <div class="wallet-card">
           <div class="wallet-top">
             <div class="avatar-mini" id="dashAvatar">
               <i class="fas fa-user" id="dashAvatarIcon"></i>
@@ -618,41 +629,45 @@
             <input type="text" id="refLink" readonly value="">
             <button class="copy-btn" onclick="copyRefLink()">Salin</button>
           </div>
+          <div class="wallet-actions">
+            <button class="btn-sm btn-sm-gold" onclick="window.showSection('deposit')"><i class="fas fa-plus-circle"></i> Deposit</button>
+            <button class="btn-sm btn-sm-primary" onclick="window.showSection('withdraw')"><i class="fas fa-minus-circle"></i> Withdraw</button>
+          </div>
         </div>
-        <div class="wallet-actions">
-          <button class="btn-sm btn-sm-gold" onclick="window.showSection('deposit')"><i class="fas fa-plus-circle"></i> Deposit</button>
-          <button class="btn-sm btn-sm-primary" onclick="window.showSection('withdraw')"><i class="fas fa-minus-circle"></i> Withdraw</button>
-        </div>
-      </div>
 
-      <!-- STATS - MODEL BARU -->
-      <div class="stats-grid">
-        <div class="stat-card">
-          <div class="icon-box"><i class="fas fa-hand-holding-usd"></i></div>
-          <div class="stat-info">
-            <span class="label">Sponsor</span>
-            <span class="value" id="sponsorBonus">0</span>
+        <!-- Kolom 2: Sponsor + Binary -->
+        <div class="stat-stack">
+          <div class="stat-mini">
+            <div class="icon-box"><i class="fas fa-hand-holding-usd"></i></div>
+            <div class="stat-info">
+              <span class="label">Sponsor Bonus</span>
+              <span class="value" id="sponsorBonus">0</span>
+            </div>
+          </div>
+          <div class="stat-mini">
+            <div class="icon-box"><i class="fas fa-network-wired"></i></div>
+            <div class="stat-info">
+              <span class="label">Binary Bonus</span>
+              <span class="value" id="binaryBonus">0</span>
+            </div>
           </div>
         </div>
-        <div class="stat-card">
-          <div class="icon-box"><i class="fas fa-network-wired"></i></div>
-          <div class="stat-info">
-            <span class="label">Binary</span>
-            <span class="value" id="binaryBonus">0</span>
+
+        <!-- Kolom 3: Reward + RO -->
+        <div class="stat-stack">
+          <div class="stat-mini">
+            <div class="icon-box"><i class="fas fa-trophy"></i></div>
+            <div class="stat-info">
+              <span class="label">Reward 5L</span>
+              <span class="value" id="rewardBonus">0</span>
+            </div>
           </div>
-        </div>
-        <div class="stat-card">
-          <div class="icon-box"><i class="fas fa-trophy"></i></div>
-          <div class="stat-info">
-            <span class="label">Reward 5L</span>
-            <span class="value" id="rewardBonus">0</span>
-          </div>
-        </div>
-        <div class="stat-card">
-          <div class="icon-box"><i class="fas fa-shopping-bag"></i></div>
-          <div class="stat-info">
-            <span class="label">RO Produk</span>
-            <span class="value" id="roBonus">0</span>
+          <div class="stat-mini">
+            <div class="icon-box"><i class="fas fa-shopping-bag"></i></div>
+            <div class="stat-info">
+              <span class="label">RO Produk</span>
+              <span class="value" id="roBonus">0</span>
+            </div>
           </div>
         </div>
       </div>
