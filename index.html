@@ -556,9 +556,9 @@
                         }
                     } else {
                         navAuth.textContent = 'Login';
-                        navAuth.href = 'login.html';
+                        navAuth.href = '/login';
                         navReg.textContent = 'Daftar';
-                        navReg.href = 'register.html';
+                        navReg.href = '/register';
                         navReg.onclick = null;
                     }
                 } catch (e) {
@@ -820,7 +820,7 @@
                         const product = allProducts.find(p => p.id === id);
                         if (product) {
                             window.getSession().then(session => {
-                                if (!session) { showToast('Silakan login terlebih dahulu.', 'error'); window.location.href='login.html'; return; }
+                                if (!session) { showToast('Silakan login terlebih dahulu.', 'error'); window.location.href='/login'; return; }
                                 openProductDetail(id);
                             });
                         }
@@ -853,7 +853,7 @@
 
                 document.getElementById('detailBuyBtn').onclick = function() {
                     window.getSession().then(session => {
-                        if (!session) { showToast('Login dulu.', 'error'); window.location.href='login.html'; return; }
+                        if (!session) { showToast('Login dulu.', 'error'); window.location.href='/login'; return; }
                         addToCart(product, sizeSel.value, colorSel.value);
                         document.getElementById('productDetailPopup').classList.remove('show');
                         document.body.style.overflow = '';
@@ -905,7 +905,7 @@
             document.getElementById('cartCheckoutBtn').addEventListener('click', async function() {
                 if (cartItems.length === 0) { showToast('Keranjang kosong!', 'error'); return; }
                 const session = await window.getSession();
-                if (!session) { showToast('Login dulu untuk checkout.', 'error'); window.location.href='login.html'; return; }
+                if (!session) { showToast('Login dulu untuk checkout.', 'error'); window.location.href='/login'; return; }
                 const profile = await window.getUserProfile();
                 if (!profile) { showToast('Profile tidak ditemukan.', 'error'); return; }
                 if (profile.status !== 'verified') { showToast('Akun belum terverifikasi.', 'error'); return; }
@@ -1064,11 +1064,11 @@
             // ========== INIT ==========
             (async function init() {
                 try {
-                    console.log('🔵 Initializing index.html...');
+                    console.log('🔵 Initializing /index...');
                     await applyBrandSettings();
                     await loadAllData();
                     await updateNavAuth();
-                    console.log('✅ Index.html initialized successfully!');
+                    console.log('✅ /Index initialized successfully!');
                 } catch (error) {
                     console.error('❌ Init error:', error);
                     showToast('Error: ' + error.message, 'error');
