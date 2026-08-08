@@ -6,10 +6,10 @@
     <title>Admin · HEDTRO JEANS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Inter:opsz,wght@14..32,400;14..32,500;14..32,600;14..32,700;14..32,800&display=swap" rel="stylesheet" />
+    <!-- SUPABASE -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
     <script src="supabase.js"></script>
     <style>
-        /* ===== STYLE SAMA SEPERTI SEBELUMNYA ===== */
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2;
@@ -331,6 +331,7 @@
                         <p>Kelola performa penjualan, pesanan member, jaringan komisi, dan sistem HEDTRO JEANS di sini.</p>
                     </div>
                     <div>
+                        <span class="btn-sm btn-sm-gold" id="calculateBonusBtn"><i class="fas fa-calculator"></i> Hitung Bonus</span>
                         <span class="btn-sm btn-sm-gold" id="quickSyncBtn"><i class="fas fa-sync-alt"></i> Refresh Statistik</span>
                     </div>
                 </div>
@@ -877,7 +878,6 @@
                 try {
                     console.log('🔄 Refreshing data...');
                     
-                    // Gunakan fungsi dari window
                     allUsers = await window.getTable('users') || [];
                     allProducts = await window.getProducts() || [];
                     allOrders = await window.getOrders() || [];
@@ -886,14 +886,8 @@
                     allSlides = await window.getSlides() || [];
                     allFaqs = await window.getFaqs() || [];
                     allFeatures = await window.getFeatures() || [];
-                    
-                    // About
                     allAbout = await window.getAbout() || {};
-                    
-                    // Footer
                     allFooter = await window.getFooter() || {};
-                    
-                    // Settings
                     allSettings = await window.getSettings() || {};
                     
                     console.log('✅ Data refreshed:');
@@ -970,14 +964,11 @@
             // ========== TRANSACTION PROCESSOR ==========
             async function processTransaction(id, newStatus, type) {
                 try {
-                    // Update transaksi
                     const tx = allTransactions.find(t => t.id === id);
                     if (!tx) { showToast('Transaksi tidak ditemukan.', 'error'); return; }
                     
-                    // Update status di database
                     await window.upsertRow('transactions', { ...tx, status: newStatus });
                     
-                    // Cari user terkait
                     if (tx.user_id) {
                         const user = allUsers.find(u => u.id === tx.user_id);
                         if (user) {
@@ -1001,6 +992,56 @@
                     showToast('Gagal memproses transaksi: ' + e.message, 'error');
                 }
             }
+
+            // ========== HITUNG BONUS MANUAL ==========
+            document.getElementById('calculateBonusBtn').addEventListener('click', async function() {
+                try {
+                    showToast('⏳ Menghitung bonus...', 'info');
+                    
+                    // Ambil semua user
+                    const users = await window.getTable('users');
+                    const settings = await window.getSettings();
+                    
+                    let processed = 0;
+                    let totalBonus = 0;
+                    
+                    for (const user of users) {
+                        // Cek transaksi user yang sukses
+                        const transactions = await window.getTable('transactions', '*', { 
+                            user_id: user.id,
+                            status: 'success'
+                        });
+                        
+                        for (const tx of transactions) {
+                            if (tx.type === 'order' || tx.type === 'first_order' || tx.type === 'ro_purchase') {
+                                // Hitung semua bonus
+                                await window.calculateAllBonuses(
+                                    user.id,
+                                    user.sponsor_id,
+                                    tx.amount,
+                                    settings
+                                );
+                                
+                                // Jika RO, tambahkan RO bonus
+                                if (tx.type === 'ro_purchase') {
+                                    await window.calculateRoBonus(user.id, tx.amount, settings);
+                                }
+                                
+                                processed++;
+                            }
+                        }
+                    }
+                    
+                    // Refresh data
+                    await refreshAdminData();
+                    await renderDashboard();
+                    
+                    showToast(`✅ Bonus dihitung untuk ${processed} transaksi!`, 'success');
+                } catch (e) {
+                    console.error('Error calculating bonus:', e);
+                    showToast('❌ Gagal menghitung bonus: ' + e.message, 'error');
+                }
+            });
 
             // ========== MEMBERS CRUD ==========
             async function renderAdminMembers() {
@@ -1133,7 +1174,6 @@
                                 fullname: name,
                                 role
                             });
-                            // Tunggu trigger membuat user di tabel users
                             await new Promise(r => setTimeout(r, 1500));
                             const newUser = await window.getUserByEmail(email);
                             if (newUser) {
@@ -1204,6 +1244,10 @@
                             if (!confirm('Hapus produk ini?')) return;
                             const id = parseInt(this.dataset.id);
                             try {
+                                const product = allProducts.find(p => p.id === id);
+                                if (product?.image) {
+                                    await window.deleteFile(product.image);
+                                }
                                 await window.deleteRow('products', id);
                                 await refreshAdminData();
                                 await renderAdminProducts();
@@ -1238,10 +1282,13 @@
                     <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="pOriginal" value="${isEdit ? (product?.original || '') : ''}"></div>
                     <div class="form-group"><label>Stok</label><input type="number" id="pStock" value="${isEdit ? product?.stock : 0}"></div>
                     <div class="form-group"><label>Tag</label><input type="text" id="pTag" value="${isEdit ? product?.tag : ''}"></div>
-                    <div class="form-group"><label>Gambar</label>
+                    <div class="form-group">
+                        <label>Gambar</label>
                         <input type="file" id="pImageFile" accept="image/*" />
-                        <input type="hidden" id="pImageUrl" value="${isEdit ? (product?.image || '') : ''}" />
-                        <img id="pImagePreview" src="${isEdit ? product?.image : ''}" style="max-height:80px; ${isEdit && product?.image ? '' : 'display:none;'}" />
+                        <small class="text-muted">Maksimal 2MB, format JPG/PNG</small>
+                        <div style="margin-top:8px;">
+                            <img id="pImagePreview" src="${isEdit ? product?.image : ''}" style="max-height:100px; border-radius:8px; border:1px solid #ddd; padding:4px; ${isEdit && product?.image ? '' : 'display:none;'}" />
+                        </div>
                     </div>
                     <div class="form-group"><label>Favorite</label><select id="pFavorite">
                         <option value="false" ${isEdit && !product?.favorite ? 'selected' : ''}>Tidak</option>
@@ -1253,11 +1300,15 @@
                 document.getElementById('pImageFile').addEventListener('change', function() {
                     const file = this.files[0];
                     if (file) {
+                        if (file.size > 2 * 1024 * 1024) {
+                            showToast('Ukuran gambar terlalu besar! Maksimal 2MB.', 'error');
+                            this.value = '';
+                            return;
+                        }
                         const reader = new FileReader();
                         reader.onload = function(e) {
                             document.getElementById('pImagePreview').src = e.target.result;
                             document.getElementById('pImagePreview').style.display = 'block';
-                            document.getElementById('pImageUrl').value = e.target.result;
                         };
                         reader.readAsDataURL(file);
                     }
@@ -1269,8 +1320,8 @@
                     const original = parseFloat(document.getElementById('pOriginal').value) || 0;
                     const stock = parseInt(document.getElementById('pStock').value) || 0;
                     const tag = document.getElementById('pTag').value.trim() || 'PRODUK';
-                    const image = document.getElementById('pImageUrl').value;
                     const favorite = document.getElementById('pFavorite').value === 'true';
+                    const fileInput = document.getElementById('pImageFile');
                     
                     if (!name || isNaN(price) || price <= 0) {
                         showToast('Nama dan Harga wajib.', 'error');
@@ -1278,6 +1329,13 @@
                     }
                     
                     try {
+                        let imageUrl = isEdit ? product?.image : '';
+                        
+                        if (fileInput.files && fileInput.files[0]) {
+                            const file = fileInput.files[0];
+                            imageUrl = await window.uploadImage(file, 'products', 2 * 1024 * 1024);
+                        }
+                        
                         const productData = {
                             id: isEdit ? product.id : Date.now(),
                             name,
@@ -1285,14 +1343,13 @@
                             original,
                             stock,
                             tag,
-                            image: image || null,
+                            image: imageUrl || null,
                             favorite,
                             sizes: ['28','29','30','31','32','34','36','38','40'],
                             colors: ['Indigo Blue', 'Black Stretch', 'Raw Denim', 'Dark Navy', 'Grey Stone']
                         };
                         
                         await window.upsertRow('products', productData);
-                        
                         await refreshAdminData();
                         await renderAdminProducts();
                         await renderDashboard();
@@ -1644,8 +1701,11 @@
                             btn.onclick = async function() {
                                 if (!confirm('Hapus slide ini?')) return;
                                 try {
-                                    const id = parseInt(this.dataset.id);
-                                    await window.deleteRow('slides', id);
+                                    const slide = allSlides.find(s => s.id === parseInt(this.dataset.id));
+                                    if (slide?.image) {
+                                        await window.deleteFile(slide.image);
+                                    }
+                                    await window.deleteRow('slides', parseInt(this.dataset.id));
                                     await refreshAdminData();
                                     await renderPageSettings();
                                     showToast('Slide dihapus.', 'info');
@@ -1683,8 +1743,7 @@
                             btn.onclick = async function() {
                                 if (!confirm('Hapus FAQ ini?')) return;
                                 try {
-                                    const id = parseInt(this.dataset.id);
-                                    await window.deleteRow('faq', id);
+                                    await window.deleteRow('faq', parseInt(this.dataset.id));
                                     await refreshAdminData();
                                     await renderPageSettings();
                                     showToast('FAQ dihapus.', 'info');
@@ -1718,8 +1777,7 @@
                             btn.onclick = async function() {
                                 if (!confirm('Hapus keunggulan ini?')) return;
                                 try {
-                                    const id = parseInt(this.dataset.id);
-                                    await window.deleteRow('features', id);
+                                    await window.deleteRow('features', parseInt(this.dataset.id));
                                     await refreshAdminData();
                                     await renderPageSettings();
                                     showToast('Keunggulan dihapus.', 'info');
@@ -1761,8 +1819,10 @@
                     <div class="form-group"><label>Tombol Teks</label><input type="text" id="slideBtnText" value="${isEdit ? slide?.btn_text : 'Lihat'}" placeholder="Lihat"></div>
                     <div class="form-group"><label>Tombol Link</label><input type="text" id="slideBtnLink" value="${isEdit ? slide?.btn_link : '#products'}" placeholder="#products"></div>
                     <div class="form-group"><label>Background (CSS gradient/color)</label><input type="text" id="slideBg" value="${isEdit ? slide?.bg : 'linear-gradient(135deg, #0b1a2b, #2a4b6e)'}"></div>
-                    <div class="form-group"><label>Gambar (opsional)</label>
+                    <div class="form-group">
+                        <label>Gambar</label>
                         <input type="file" id="slideImageFile" accept="image/*" />
+                        <small class="text-muted">Maksimal 2MB, format JPG/PNG</small>
                         <div id="slidePreviewContainer" style="${isEdit && slide?.image ? 'display:block' : 'display:none'}; margin-top:8px;">
                             <img id="slideImagePreview" src="${isEdit ? slide?.image : ''}" style="max-height:100px; border-radius:8px; border:1px solid #ddd; padding:4px;" />
                         </div>
@@ -1773,8 +1833,13 @@
                 document.getElementById('slideImageFile').addEventListener('change', function() {
                     const file = this.files[0];
                     if (file) {
-                        if (file.size > 1024 * 1024) {
-                            showToast('Ukuran gambar terlalu besar! Maksimal 1MB.', 'error');
+                        if (file.size > 2 * 1024 * 1024) {
+                            showToast('Ukuran gambar terlalu besar! Maksimal 2MB.', 'error');
+                            this.value = '';
+                            return;
+                        }
+                        if (!file.type.startsWith('image/')) {
+                            showToast('Hanya file gambar yang diperbolehkan.', 'error');
                             this.value = '';
                             return;
                         }
@@ -1807,56 +1872,29 @@
                         
                         if (fileInput.files && fileInput.files[0]) {
                             const file = fileInput.files[0];
-                            if (file.size > 1024 * 1024) {
-                                showToast('Ukuran gambar terlalu besar! Maksimal 1MB.', 'error');
-                                return;
-                            }
-                            if (!file.type.startsWith('image/')) {
-                                showToast('Hanya file gambar yang diperbolehkan.', 'error');
-                                return;
-                            }
-                            const reader = new FileReader();
-                            reader.onload = async function(e) {
-                                let finalImage = e.target.result;
-                                if (finalImage.length > 500000) {
-                                    finalImage = await compressImage(finalImage);
-                                }
-                                await saveSlideData(title, subtitle, btnText, btnLink, bg, finalImage);
-                            };
-                            reader.readAsDataURL(file);
-                        } else {
-                            await saveSlideData(title, subtitle, btnText, btnLink, bg, image);
+                            image = await window.uploadImage(file, 'slides', 2 * 1024 * 1024);
                         }
+                        
+                        const slideData = {
+                            id: isEdit ? slide.id : Date.now(),
+                            title,
+                            subtitle,
+                            btn_text: btnText,
+                            btn_link: btnLink,
+                            bg,
+                            image: image || null
+                        };
+                        
+                        await window.upsertRow('slides', slideData);
+                        await refreshAdminData();
+                        await renderPageSettings();
+                        closeModal();
+                        showToast('Slide tersimpan!', 'success');
                     } catch (e) {
                         console.error('Save slide error:', e);
                         showToast('Gagal menyimpan slide: ' + e.message, 'error');
                     }
                 });
-            }
-
-            async function saveSlideData(title, subtitle, btnText, btnLink, bg, image) {
-                try {
-                    const slideData = {
-                        id: isEdit ? slide.id : Date.now(),
-                        title,
-                        subtitle,
-                        btn_text: btnText,
-                        btn_link: btnLink,
-                        bg,
-                        image: image || null
-                    };
-                    
-                    await window.upsertRow('slides', slideData);
-                    
-                    await refreshAdminData();
-                    await renderPageSettings();
-                    closeModal();
-                    showToast('Slide tersimpan!', 'success');
-                } catch (e) {
-                    console.error('Save slide error:', e);
-                    showToast('Gagal menyimpan slide: ' + e.message, 'error');
-                    throw e;
-                }
             }
 
             document.getElementById('addSlideBtn').addEventListener('click', function() { openSlideModal(); });
@@ -2046,8 +2084,7 @@
                         btn.onclick = async function() {
                             if (!confirm('Hapus metode pembayaran ini?')) return;
                             try {
-                                const id = parseInt(this.dataset.id);
-                                await window.deleteRow('bank_info', id);
+                                await window.deleteRow('bank_info', parseInt(this.dataset.id));
                                 await refreshAdminData();
                                 await renderBankSettings();
                                 showToast('Metode pembayaran dihapus.', 'info');
