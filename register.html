@@ -276,9 +276,9 @@
                     document.getElementById('sponsorIdDisplay').textContent = sponsorId;
                     document.getElementById('sponsorPositionDisplay').textContent = position === 'left' ? 'Kiri' : 'Kanan';
                     
-                    window.getTable('users', 'fullname,username', { username: sponsorId }).then(users => {
-                        if (users && users.length > 0) {
-                            document.getElementById('sponsorNameDisplay').textContent = users[0].fullname || users[0].username;
+                    window.getUserByUsername(sponsorId).then(user => {
+                        if (user) {
+                            document.getElementById('sponsorNameDisplay').textContent = user.fullname || user.username;
                         }
                     }).catch(() => {});
                 }
@@ -459,7 +459,39 @@
                     });
                     console.log('✅ Profile updated with full data');
 
+                    // ============================================================
+                    // ===== UPDATE LEFT_ID / RIGHT_ID DI SPONSOR (BINARY TREE) =====
+                    // ============================================================
+                    if (sponsorId) {
+                        try {
+                            // Cari sponsor berdasarkan username
+                            const sponsor = await window.getUserByUsername(sponsorId);
+                            if (sponsor) {
+                                const updateData = {};
+                                if (position === 'left') {
+                                    updateData.left_id = profile.id;
+                                } else {
+                                    updateData.right_id = profile.id;
+                                }
+                                await window.upsertRow('users', { ...sponsor, ...updateData });
+                                console.log(`✅ ${position} position updated for sponsor ${sponsorId}`);
+                                
+                                // ===== HITUNG BONUS SPONSOR =====
+                                const settings = await window.getSettings();
+                                const memberPrice = parseFloat(settings.memberPrice) || 550000;
+                                await window.calculateSponsorBonus(profile.id, sponsorId, memberPrice, settings);
+                                console.log('✅ Sponsor bonus calculated');
+                            } else {
+                                console.warn('⚠️ Sponsor not found:', sponsorId);
+                            }
+                        } catch (e) {
+                            console.warn('⚠️ Gagal update left/right id atau hitung bonus:', e);
+                        }
+                    }
+
+                    // ============================================================
                     // ===== BUAT FIRST ORDER =====
+                    // ============================================================
                     const products = await window.getProducts();
                     const product = products.find(p => p.id === parseInt(productId));
                     
@@ -491,10 +523,19 @@
                         try {
                             await window.saveOrder(newOrder);
                             console.log('✅ First order created:', orderNum);
+                            
+                            // ============================================================
+                            // ===== HITUNG BINARY & REWARD BONUS DARI FIRST ORDER =====
+                            // ============================================================
+                            const settings = await window.getSettings();
+                            await window.calculateBinaryBonus(profile.id, product.price, settings);
+                            await window.calculateRewardBonus(profile.id, product.price, settings);
+                            console.log('✅ Binary & Reward bonus calculated for first order');
+                            
                         } catch (orderError) {
-                            console.error('❌ Gagal membuat order:', orderError);
+                            console.error('❌ Gagal membuat order atau hitung bonus:', orderError);
                             // Jangan gagalkan registrasi, tapi tampilkan warning
-                            showToast('Registrasi berhasil tapi order gagal: ' + orderError.message, 'warning');
+                            showToast('Registrasi berhasil tapi order/bonus gagal: ' + orderError.message, 'warning');
                         }
                     }
 
