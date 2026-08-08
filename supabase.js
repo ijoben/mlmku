@@ -51,6 +51,16 @@ async function getUserProfile() {
   return data;
 }
 
+async function getUserByEmail(email) {
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('email', email)
+    .single();
+  if (error && error.code !== 'PGRST116') throw error;
+  return data;
+}
+
 async function updateUserProfile(data) {
   const session = await getSession();
   if (!session) throw new Error('Unauthorized');
@@ -125,7 +135,7 @@ async function saveSettings(settings) {
   await Promise.all(promises);
 }
 
-// EXPOSE ke GLOBAL
+// ========== EXPOSE KE GLOBAL ==========
 window.supabase = supabase;
 window.signUp = signUp;
 window.signIn = signIn;
@@ -133,6 +143,7 @@ window.signOut = signOut;
 window.getCurrentUser = getCurrentUser;
 window.getSession = getSession;
 window.getUserProfile = getUserProfile;
+window.getUserByEmail = getUserByEmail;
 window.updateUserProfile = updateUserProfile;
 window.getProducts = getProducts;
 window.saveProduct = saveProduct;
