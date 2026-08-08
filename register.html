@@ -17,7 +17,7 @@
             --shadow-lg: 0 20px 60px rgba(0,0,0,0.15); --radius: 24px; --radius-sm: 12px; --transition: 0.3s ease;
         }
         body { font-family: 'Inter', -apple-system, sans-serif; background: var(--cream); color: var(--denim-dark); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-wrapper { max-width: 440px; width: 100%; }
+        .login-wrapper { max-width: 550px; width: 100%; }
         .login-card { background: var(--white); border-radius: var(--radius); padding: 36px 34px 40px; box-shadow: var(--shadow-lg); border: 1px solid var(--denim-light); }
         .login-card .logo { text-align: center; margin-bottom: 24px; }
         .login-card .logo h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 800; color: var(--denim-dark); }
@@ -25,8 +25,10 @@
         .login-card .logo p { color: var(--denim-navy); font-size: 0.85rem; opacity: 0.7; margin-top: 2px; }
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-weight: 600; color: var(--denim-navy); font-size: 0.8rem; margin-bottom: 4px; }
-        .form-group input { width: 100%; padding: 12px 18px; border: 1.5px solid var(--denim-light); border-radius: 60px; font-size: 0.95rem; background: var(--cream); color: var(--denim-dark); outline: none; transition: var(--transition); }
-        .form-group input:focus { border-color: var(--gold-accent); }
+        .form-group label .required { color: #e53e3e; }
+        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 18px; border: 1.5px solid var(--denim-light); border-radius: 60px; font-size: 0.95rem; background: var(--cream); color: var(--denim-dark); outline: none; transition: var(--transition); font-family: inherit; }
+        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold-accent); }
+        .form-group textarea { border-radius: var(--radius-sm); resize: vertical; min-height: 60px; }
         .btn-login { width: 100%; padding: 14px; border: none; border-radius: 60px; background: var(--gold-accent); color: var(--denim-dark); font-weight: 700; font-size: 1rem; cursor: pointer; transition: var(--transition); margin-top: 4px; }
         .btn-login:hover { background: #b8963a; transform: scale(0.98); }
         .login-footer { text-align: center; margin-top: 24px; font-size: 0.85rem; color: var(--denim-navy); }
@@ -40,6 +42,12 @@
         .password-requirements { font-size: 0.7rem; color: #718096; margin-top: 4px; }
         .password-requirements .valid { color: #2e7d32; }
         .password-requirements .invalid { color: #c53030; }
+        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+        .section-title { margin: 12px 0 8px; border-bottom: 2px solid var(--gold-accent); padding-bottom: 6px; }
+        .section-title small { font-weight: 700; color: var(--denim-blue); }
+        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; gap: 0; } .form-row-3 { grid-template-columns: 1fr; gap: 0; } }
+        .info-box { background: #fff8e7; border-left: 4px solid var(--gold-accent); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 0.85rem; color: var(--denim-navy); }
     </style>
 </head>
 <body>
@@ -47,31 +55,153 @@
         <div class="login-card">
             <div class="logo">
                 <h1><i class="fas fa-tshirt"></i> HEDTRO JEANS</h1>
-                <p>Buat akun baru Anda</p>
+                <p>Daftar menjadi member & mulai bisnis</p>
             </div>
 
             <div id="registerForm">
+                <!-- INFO SPONSOR -->
+                <div class="info-box" id="sponsorInfo" style="display:none;">
+                    <i class="fas fa-user-plus" style="color:var(--gold-accent);"></i> 
+                    Anda didaftarkan oleh: <strong id="sponsorNameDisplay">-</strong> (ID: <span id="sponsorIdDisplay">-</span>)
+                    <br><small>Posisi: <span id="sponsorPositionDisplay">-</span></small>
+                </div>
+
+                <!-- ===== AKUN ===== -->
+                <div class="section-title"><small><i class="fas fa-user"></i> Data Akun</small></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Username <span class="required">*</span></label>
+                        <input type="text" id="regUsername" placeholder="username" autocomplete="username" />
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Lengkap <span class="required">*</span></label>
+                        <input type="text" id="regFullname" placeholder="Nama Lengkap" autocomplete="name" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email <span class="required">*</span></label>
+                        <input type="email" id="regEmail" placeholder="email@domain.com" autocomplete="email" />
+                    </div>
+                    <div class="form-group">
+                        <label>No. HP <span class="required">*</span></label>
+                        <input type="text" id="regPhone" placeholder="0812-3456-7890" />
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>WhatsApp</label>
+                        <input type="text" id="regWhatsapp" placeholder="0812-3456-7890" />
+                    </div>
+                    <div class="form-group">
+                        <label>NIK <span class="required">*</span></label>
+                        <input type="text" id="regNik" placeholder="16 digit NIK" maxlength="16" />
+                    </div>
+                </div>
+
+                <!-- ===== PASSWORD ===== -->
+                <div class="section-title"><small><i class="fas fa-lock"></i> Keamanan</small></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Kata Sandi <span class="required">*</span></label>
+                        <input type="password" id="regPassword" placeholder="Minimal 6 karakter" autocomplete="new-password" />
+                        <div class="password-requirements" id="passwordHint">Minimal 6 karakter</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Konfirmasi Sandi <span class="required">*</span></label>
+                        <input type="password" id="regConfirmPassword" placeholder="Ulangi kata sandi" autocomplete="new-password" />
+                    </div>
+                </div>
+
+                <!-- ===== ALAMAT ===== -->
+                <div class="section-title"><small><i class="fas fa-map-pin"></i> Alamat</small></div>
                 <div class="form-group">
-                    <label>Username</label>
-                    <input type="text" id="regUsername" placeholder="username" autocomplete="username" />
+                    <label>Alamat Lengkap <span class="required">*</span></label>
+                    <textarea id="regAddress" rows="2" placeholder="Jl. Contoh No. 123, RT/RW, Kelurahan, Kecamatan"></textarea>
                 </div>
                 <div class="form-group">
-                    <label>Nama Lengkap</label>
-                    <input type="text" id="regFullname" placeholder="Nama Lengkap" autocomplete="name" />
+                    <label>Kota / Provinsi <span class="required">*</span></label>
+                    <input type="text" id="regCity" placeholder="Contoh: Jakarta Selatan, DKI Jakarta" />
+                </div>
+
+                <!-- ===== REKENING BANK ===== -->
+                <div class="section-title"><small><i class="fas fa-university"></i> Rekening Bank (untuk Withdraw)</small></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nama Bank <span class="required">*</span></label>
+                        <input type="text" id="regBankName" placeholder="BCA / Mandiri / BNI" />
+                    </div>
+                    <div class="form-group">
+                        <label>No. Rekening <span class="required">*</span></label>
+                        <input type="text" id="regBankAccount" placeholder="1234567890" />
+                    </div>
                 </div>
                 <div class="form-group">
-                    <label>Email</label>
-                    <input type="email" id="regEmail" placeholder="email@domain.com" autocomplete="email" />
+                    <label>Atas Nama Rekening <span class="required">*</span></label>
+                    <input type="text" id="regBankHolder" placeholder="Nama pemilik rekening" />
                 </div>
-                <div class="form-group">
-                    <label>Kata Sandi</label>
-                    <input type="password" id="regPassword" placeholder="Minimal 6 karakter" autocomplete="new-password" />
-                    <div class="password-requirements" id="passwordHint">Minimal 6 karakter</div>
+
+                <!-- ===== SPONSOR & POSISI ===== -->
+                <div class="section-title"><small><i class="fas fa-sitemap"></i> Sponsor & Posisi Binary</small></div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>ID Sponsor</label>
+                        <input type="text" id="regSponsor" placeholder="ID Sponsor (opsional)" />
+                        <small style="font-size:0.65rem; color:#718096;">Kosongkan jika tidak ada sponsor</small>
+                    </div>
+                    <div class="form-group">
+                        <label>Posisi <span class="required">*</span></label>
+                        <select id="regPosition">
+                            <option value="left">Kiri</option>
+                            <option value="right">Kanan</option>
+                        </select>
+                        <small style="font-size:0.65rem; color:#718096;">Pilih posisi di jaringan binary</small>
+                    </div>
                 </div>
-                <div class="form-group">
-                    <label>Konfirmasi Kata Sandi</label>
-                    <input type="password" id="regConfirmPassword" placeholder="Ulangi kata sandi" autocomplete="new-password" />
+
+                <!-- ===== PRODUK PERTAMA ===== -->
+                <div class="section-title"><small><i class="fas fa-tshirt"></i> Produk Pertama (First Order)</small></div>
+                <p style="font-size:0.75rem; color:#718096; margin-bottom:12px;">Pilih produk untuk pembelian pertama Anda</p>
+                
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Produk <span class="required">*</span></label>
+                        <select id="regProduct"></select>
+                    </div>
                 </div>
+                <div class="form-row-3">
+                    <div class="form-group">
+                        <label>Ukuran <span class="required">*</span></label>
+                        <select id="regSize">
+                            <option value="28">28</option>
+                            <option value="29">29</option>
+                            <option value="30" selected>30</option>
+                            <option value="31">31</option>
+                            <option value="32">32</option>
+                            <option value="33">33</option>
+                            <option value="34">34</option>
+                            <option value="36">36</option>
+                            <option value="38">38</option>
+                            <option value="40">40</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Warna <span class="required">*</span></label>
+                        <select id="regColor">
+                            <option value="Indigo Blue">Indigo Blue</option>
+                            <option value="Black Stretch">Black Stretch</option>
+                            <option value="Raw Denim">Raw Denim</option>
+                            <option value="Dark Navy">Dark Navy</option>
+                            <option value="Grey Stone">Grey Stone</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Nomor Seri</label>
+                        <input type="text" id="regSerial" placeholder="HDT-XXXX (opsional)" />
+                    </div>
+                </div>
+
+                <!-- ===== SUBMIT ===== -->
                 <button type="button" class="btn-login" id="regBtn"><i class="fas fa-user-plus"></i> Daftar</button>
                 <div class="msg" id="regMsg"></div>
             </div>
@@ -105,13 +235,79 @@
             }
             checkSession();
 
+            // ========== LOAD PRODUCTS ==========
+            async function loadProducts() {
+                try {
+                    const products = await window.getProducts();
+                    const select = document.getElementById('regProduct');
+                    if (!select) return;
+                    
+                    if (products.length === 0) {
+                        // Fallback produk default
+                        const defaults = [
+                            { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000 },
+                            { id: 2, name: 'Classic Straight Cut Raw', price: 280000 },
+                            { id: 3, name: 'Jet Black Stretch Comfort', price: 240000 }
+                        ];
+                        select.innerHTML = defaults.map(p => 
+                            `<option value="${p.id}">${p.name} - Rp ${p.price.toLocaleString()}</option>`
+                        ).join('');
+                    } else {
+                        select.innerHTML = products.map(p => 
+                            `<option value="${p.id}">${p.name} - Rp ${(p.price||0).toLocaleString()}</option>`
+                        ).join('');
+                    }
+                } catch (e) {
+                    console.warn('Load products error:', e);
+                }
+            }
+
+            // ========== CEK SPONSOR DARI URL ==========
+            function checkSponsorFromURL() {
+                const params = new URLSearchParams(window.location.search);
+                const sponsorId = params.get('ref') || params.get('sponsor');
+                const position = params.get('pos') || 'left';
+                
+                if (sponsorId) {
+                    document.getElementById('regSponsor').value = sponsorId;
+                    document.getElementById('regPosition').value = position;
+                    
+                    // Tampilkan info sponsor
+                    document.getElementById('sponsorInfo').style.display = 'block';
+                    document.getElementById('sponsorNameDisplay').textContent = 'Loading...';
+                    document.getElementById('sponsorIdDisplay').textContent = sponsorId;
+                    document.getElementById('sponsorPositionDisplay').textContent = position === 'left' ? 'Kiri' : 'Kanan';
+                    
+                    // Coba ambil nama sponsor
+                    window.getTable('users', 'fullname,username', { username: sponsorId }).then(users => {
+                        if (users && users.length > 0) {
+                            document.getElementById('sponsorNameDisplay').textContent = users[0].fullname || users[0].username;
+                        }
+                    }).catch(() => {});
+                }
+            }
+
             // ========== REGISTER ==========
             const regBtn = document.getElementById('regBtn');
             const usernameInput = document.getElementById('regUsername');
             const fullnameInput = document.getElementById('regFullname');
             const emailInput = document.getElementById('regEmail');
+            const phoneInput = document.getElementById('regPhone');
+            const whatsappInput = document.getElementById('regWhatsapp');
+            const nikInput = document.getElementById('regNik');
             const passwordInput = document.getElementById('regPassword');
             const confirmInput = document.getElementById('regConfirmPassword');
+            const addressInput = document.getElementById('regAddress');
+            const cityInput = document.getElementById('regCity');
+            const bankNameInput = document.getElementById('regBankName');
+            const bankAccountInput = document.getElementById('regBankAccount');
+            const bankHolderInput = document.getElementById('regBankHolder');
+            const sponsorInput = document.getElementById('regSponsor');
+            const positionInput = document.getElementById('regPosition');
+            const productSelect = document.getElementById('regProduct');
+            const sizeSelect = document.getElementById('regSize');
+            const colorSelect = document.getElementById('regColor');
+            const serialInput = document.getElementById('regSerial');
             const msgEl = document.getElementById('regMsg');
             const passwordHint = document.getElementById('passwordHint');
 
@@ -131,23 +327,40 @@
             });
 
             async function doRegister() {
+                // Ambil semua data
                 const username = usernameInput.value.trim();
                 const fullname = fullnameInput.value.trim();
                 const email = emailInput.value.trim();
+                const phone = phoneInput.value.trim();
+                const whatsapp = whatsappInput.value.trim();
+                const nik = nikInput.value.trim();
                 const password = passwordInput.value.trim();
                 const confirm = confirmInput.value.trim();
+                const address = addressInput.value.trim();
+                const city = cityInput.value.trim();
+                const bankName = bankNameInput.value.trim();
+                const bankAccount = bankAccountInput.value.trim();
+                const bankHolder = bankHolderInput.value.trim();
+                const sponsorId = sponsorInput.value.trim();
+                const position = positionInput.value;
+                const productId = productSelect.value;
+                const size = sizeSelect.value;
+                const color = colorSelect.value;
+                const serial = serialInput.value.trim();
 
                 // Reset message
                 msgEl.className = 'msg';
                 msgEl.innerText = '';
 
-                // Validasi
-                if (!username || !fullname || !email || !password || !confirm) {
+                // ===== VALIDASI =====
+                // Field wajib
+                if (!username || !fullname || !email || !phone || !nik || !password || !confirm || !address || !city || !bankName || !bankAccount || !bankHolder) {
                     msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Semua field wajib diisi.';
+                    msgEl.innerText = '⚠️ Semua field wajib diisi (kecuali WhatsApp, Sponsor, Serial).';
                     return;
                 }
 
+                // Password
                 if (password.length < 6) {
                     msgEl.className = 'msg error';
                     msgEl.innerText = '⚠️ Password minimal 6 karakter.';
@@ -160,10 +373,32 @@
                     return;
                 }
 
-                // Email validasi sederhana
+                // Email validasi
                 if (!email.includes('@') || !email.includes('.')) {
                     msgEl.className = 'msg error';
                     msgEl.innerText = '⚠️ Email tidak valid.';
+                    return;
+                }
+
+                // NIK validasi (16 digit)
+                if (nik.length !== 16 || !/^\d+$/.test(nik)) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ NIK harus 16 digit angka.';
+                    return;
+                }
+
+                // Phone validasi (minimal 10 digit)
+                const phoneClean = phone.replace(/[^0-9]/g, '');
+                if (phoneClean.length < 10 || phoneClean.length > 15) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ No. HP tidak valid (10-15 digit).';
+                    return;
+                }
+
+                // Product harus dipilih
+                if (!productId) {
+                    msgEl.className = 'msg error';
+                    msgEl.innerText = '⚠️ Pilih produk untuk first order.';
                     return;
                 }
 
@@ -175,15 +410,84 @@
                 try {
                     console.log('🔵 Mencoba register:', email);
                     
-                    // Registrasi via Supabase Auth dengan redirect ke confirm-email.html
+                    // ===== REGISTRASI VIA SUPABASE AUTH =====
                     const { user, session } = await window.signUp(email, password, {
                         username: username,
                         fullname: fullname,
-                        role: 'user'
+                        role: 'user',
+                        phone: phone,
+                        whatsapp: whatsapp || phone,
+                        nik: nik,
+                        address: address,
+                        city: city,
+                        bank_name: bankName,
+                        bank_account: bankAccount,
+                        bank_holder: bankHolder,
+                        sponsor_id: sponsorId || null,
+                        position: position,
+                        product_id: productId,
+                        size: size,
+                        color: color,
+                        serial: serial || null
                     });
                     
                     console.log('✅ Register berhasil:', user.email);
+
+                    // ===== UPDATE PROFILE DI TABEL USERS =====
+                    await new Promise(r => setTimeout(r, 1500));
                     
+                    const profile = await window.getUserProfile();
+                    if (profile) {
+                        await window.updateUserProfile({
+                            username: username,
+                            fullname: fullname,
+                            phone: phone,
+                            whatsapp: whatsapp || phone,
+                            nik: nik,
+                            address: address,
+                            city: city,
+                            bank_name: bankName,
+                            bank_account: bankAccount,
+                            bank_holder: bankHolder,
+                            sponsor_id: sponsorId || null,
+                            position: position,
+                            status: 'pending'
+                        });
+                        console.log('✅ Profile updated with full data');
+                    }
+
+                    // ===== BUAT FIRST ORDER =====
+                    // Ambil produk
+                    const products = await window.getProducts();
+                    const product = products.find(p => p.id === parseInt(productId));
+                    
+                    if (product) {
+                        const orderId = Date.now();
+                        const orderNum = 'ORD-' + Date.now().toString().slice(-6);
+                        const newOrder = {
+                            id: orderId,
+                            order_number: orderNum,
+                            user_id: profile?.id || user.id,
+                            user_name: fullname || username,
+                            type: 'first_order',
+                            items: [{
+                                product_id: product.id,
+                                name: product.name,
+                                price: product.price,
+                                qty: 1,
+                                size: size,
+                                color: color,
+                                serial: serial || null
+                            }],
+                            total: product.price || 0,
+                            status: 'pending',
+                            created_at: new Date().toISOString()
+                        };
+                        await window.saveOrder(newOrder);
+                        console.log('✅ First order created:', orderNum);
+                    }
+
+                    // ===== SUKSES =====
                     msgEl.className = 'msg success';
                     msgEl.innerHTML = '✅ Pendaftaran berhasil!<br><small>📧 Email verifikasi telah dikirim ke <strong>' + email + '</strong><br>Silakan cek inbox atau spam Anda.</small>';
                     
@@ -191,8 +495,18 @@
                     usernameInput.value = '';
                     fullnameInput.value = '';
                     emailInput.value = '';
+                    phoneInput.value = '';
+                    whatsappInput.value = '';
+                    nikInput.value = '';
                     passwordInput.value = '';
                     confirmInput.value = '';
+                    addressInput.value = '';
+                    cityInput.value = '';
+                    bankNameInput.value = '';
+                    bankAccountInput.value = '';
+                    bankHolderInput.value = '';
+                    sponsorInput.value = '';
+                    serialInput.value = '';
                     passwordHint.textContent = 'Minimal 6 karakter';
                     passwordHint.className = 'password-requirements';
                     
@@ -209,7 +523,6 @@
                     console.error('❌ Register error:', error);
                     
                     let errorMsg = error.message || 'Terjadi kesalahan.';
-                    // Pesan error yang lebih user-friendly
                     if (errorMsg.includes('User already registered')) {
                         errorMsg = 'Email sudah terdaftar. Silakan login.';
                     } else if (errorMsg.includes('Password should be at least 6 characters')) {
@@ -217,7 +530,7 @@
                     } else if (errorMsg.includes('Invalid email')) {
                         errorMsg = 'Format email tidak valid.';
                     } else if (errorMsg.includes('rate limit')) {
-                        errorMsg = 'Terlalu banyak percobaan. Tunggu beberapa saat.';
+                        errorMsg = 'Terlalu banyak percobaan. Tunggu 10-15 menit.';
                     }
                     
                     msgEl.className = 'msg error';
@@ -243,6 +556,10 @@
                     confirmInput.focus();
                 }
             });
+
+            // ========== INIT ==========
+            loadProducts();
+            checkSponsorFromURL();
 
         })();
     </script>
