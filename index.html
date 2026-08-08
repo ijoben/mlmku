@@ -306,8 +306,8 @@
                 <span class="badge">0</span>
             </span>
 
-            <a href="login.html" class="btn-nav btn-nav-outline" id="navAuthBtn">Login</a>
-            <a href="register.html" class="btn-nav btn-nav-gold" id="navRegBtn">Daftar</a>
+            <a href="/login" class="btn-nav btn-nav-outline" id="navAuthBtn">Login</a>
+            <a href="/register" class="btn-nav btn-nav-gold" id="navRegBtn">Daftar</a>
 
             <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
                 <span></span><span></span><span></span>
@@ -328,8 +328,8 @@
         <div class="menu-item" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</div>
         <div class="menu-item" id="sideTrackBtn"><i class="fas fa-truck"></i> Lacak Pesanan</div>
         <div class="menu-divider"></div>
-        <a href="login.html" class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
-        <a href="register.html" class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</a>
+        <a href="/login" class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
+        <a href="/register" class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</a>
     </nav>
 
     <!-- ===== POPUPS ===== -->
@@ -546,7 +546,7 @@
                         if (profile) {
                             currentUserProfile = profile;
                             navAuth.textContent = profile.role === 'admin' ? 'Admin Panel' : 'Dashboard';
-                            navAuth.href = profile.role === 'admin' ? 'admin.html' : 'dashboard.html';
+                            navAuth.href = profile.role === 'admin' ? 'a/dmin' : '/dashboard';
                             navReg.textContent = 'Keluar';
                             navReg.onclick = async function(e) {
                                 e.preventDefault();
