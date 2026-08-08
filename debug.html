@@ -1,0 +1,590 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Debug Panel · HEDTRO JEANS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: #0b1a2b;
+            color: #e8edf2;
+            padding: 20px;
+            min-height: 100vh;
+        }
+        .debug-container { max-width: 1200px; margin: 0 auto; }
+        .debug-header {
+            background: linear-gradient(135deg, #1a2e44, #2a4b6e);
+            padding: 24px 30px;
+            border-radius: 16px;
+            border-left: 5px solid #c9a84c;
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+        }
+        .debug-header h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        .debug-header h1 i { color: #c9a84c; }
+        .debug-header .status-badge {
+            padding: 6px 16px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.8rem;
+        }
+        .status-ok { background: #1f7a4b; color: #fff; }
+        .status-error { background: #b13e3e; color: #fff; }
+        .status-warning { background: #d4a02b; color: #fff; }
+
+        .debug-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+            margin-bottom: 20px;
+        }
+        @media (max-width: 768px) { .debug-grid { grid-template-columns: 1fr; } }
+
+        .debug-card {
+            background: #15283c;
+            border-radius: 12px;
+            padding: 18px 20px;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .debug-card h3 {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: #c9a84c;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            border-bottom: 1px solid rgba(255,255,255,0.06);
+            padding-bottom: 8px;
+        }
+        .debug-card h3 i { font-size: 0.9rem; }
+        .debug-card .item {
+            display: flex;
+            justify-content: space-between;
+            padding: 4px 0;
+            font-size: 0.8rem;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .debug-card .item .label { color: rgba(255,255,255,0.5); }
+        .debug-card .item .value { font-weight: 600; font-family: monospace; }
+        .debug-card .item .value.ok { color: #4ade80; }
+        .debug-card .item .value.error { color: #f87171; }
+        .debug-card .item .value.warning { color: #fbbf24; }
+
+        .btn-debug {
+            padding: 8px 18px;
+            border-radius: 60px;
+            font-weight: 600;
+            font-size: 0.75rem;
+            font-family: inherit;
+            cursor: pointer;
+            transition: 0.3s;
+            border: none;
+            background: #2a4b6e;
+            color: #fff;
+        }
+        .btn-debug:hover { background: #3a5f7e; transform: scale(0.97); }
+        .btn-debug.gold { background: #c9a84c; color: #0b1a2b; }
+        .btn-debug.gold:hover { background: #b8963a; }
+        .btn-debug.danger { background: #b13e3e; color: #fff; }
+        .btn-debug.danger:hover { background: #8f2f2f; }
+        .btn-debug.success { background: #1f7a4b; color: #fff; }
+        .btn-debug.success:hover { background: #155d38; }
+
+        .debug-log {
+            background: #0b1a2b;
+            border-radius: 12px;
+            padding: 16px 20px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-family: monospace;
+            font-size: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.06);
+        }
+        .debug-log .log-entry {
+            padding: 3px 0;
+            border-bottom: 1px solid rgba(255,255,255,0.03);
+        }
+        .debug-log .log-entry .time { color: rgba(255,255,255,0.3); margin-right: 10px; }
+        .debug-log .log-entry .ok { color: #4ade80; }
+        .debug-log .log-entry .error { color: #f87171; }
+        .debug-log .log-entry .warning { color: #fbbf24; }
+        .debug-log .log-entry .info { color: #60a5fa; }
+
+        .flex-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
+        .text-muted { color: rgba(255,255,255,0.3); font-size: 0.75rem; }
+        .mt-8 { margin-top: 8px; }
+        .mb-8 { margin-bottom: 8px; }
+
+        .table-debug { width: 100%; font-size: 0.75rem; border-collapse: collapse; }
+        .table-debug th { text-align: left; color: rgba(255,255,255,0.3); font-weight: 600; padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+        .table-debug td { padding: 4px 8px; border-bottom: 1px solid rgba(255,255,255,0.03); font-family: monospace; }
+        .table-debug .id-col { color: rgba(255,255,255,0.3); font-size: 0.65rem; }
+        .table-debug .status-col { font-weight: 700; }
+        .table-wrap { overflow-x: auto; max-height: 200px; overflow-y: auto; }
+    </style>
+</head>
+<body>
+
+<div class="debug-container">
+
+    <!-- HEADER -->
+    <div class="debug-header">
+        <h1><i class="fas fa-bug"></i> Debug Panel</h1>
+        <div>
+            <span class="status-badge" id="connectionStatus">⏳ Memeriksa...</span>
+            <button class="btn-debug gold" id="refreshBtn"><i class="fas fa-sync-alt"></i> Refresh All</button>
+        </div>
+    </div>
+
+    <!-- GRID 2 KOLOM -->
+    <div class="debug-grid">
+
+        <!-- KOLOM 1: KONEKSI & AUTH -->
+        <div class="debug-card">
+            <h3><i class="fas fa-plug"></i> Koneksi & Auth</h3>
+            <div class="item"><span class="label">Supabase URL</span><span class="value" id="dbUrl">-</span></div>
+            <div class="item"><span class="label">Session</span><span class="value" id="sessionStatus">-</span></div>
+            <div class="item"><span class="label">User Login</span><span class="value" id="userLogin">-</span></div>
+            <div class="item"><span class="label">User Role</span><span class="value" id="userRole">-</span></div>
+            <div class="item"><span class="label">User Status</span><span class="value" id="userStatus">-</span></div>
+            <div class="item"><span class="label">User Wallet</span><span class="value" id="userWallet">-</span></div>
+            <div class="flex-row">
+                <button class="btn-debug" id="checkAuthBtn"><i class="fas fa-user-check"></i> Cek Auth</button>
+                <button class="btn-debug danger" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</button>
+            </div>
+        </div>
+
+        <!-- KOLOM 2: DATABASE -->
+        <div class="debug-card">
+            <h3><i class="fas fa-database"></i> Database</h3>
+            <div class="item"><span class="label">Total Users</span><span class="value" id="totalUsers">-</span></div>
+            <div class="item"><span class="label">Total Products</span><span class="value" id="totalProducts">-</span></div>
+            <div class="item"><span class="label">Total Orders</span><span class="value" id="totalOrders">-</span></div>
+            <div class="item"><span class="label">Total Transactions</span><span class="value" id="totalTransactions">-</span></div>
+            <div class="item"><span class="label">Total Slides</span><span class="value" id="totalSlides">-</span></div>
+            <div class="item"><span class="label">Total FAQ</span><span class="value" id="totalFaqs">-</span></div>
+            <div class="flex-row">
+                <button class="btn-debug gold" id="checkDbBtn"><i class="fas fa-database"></i> Cek Database</button>
+            </div>
+        </div>
+
+        <!-- KOLOM 3: BONUS -->
+        <div class="debug-card">
+            <h3><i class="fas fa-coins"></i> Bonus & Wallet</h3>
+            <div class="item"><span class="label">Sponsor Bonus</span><span class="value" id="debugSponsorBonus">-</span></div>
+            <div class="item"><span class="label">Binary Bonus</span><span class="value" id="debugBinaryBonus">-</span></div>
+            <div class="item"><span class="label">Reward Bonus</span><span class="value" id="debugRewardBonus">-</span></div>
+            <div class="item"><span class="label">RO Bonus</span><span class="value" id="debugRoBonus">-</span></div>
+            <div class="item"><span class="label">Total Wallet</span><span class="value" id="debugWallet">-</span></div>
+            <div class="flex-row">
+                <button class="btn-debug gold" id="calcBonusBtn"><i class="fas fa-calculator"></i> Hitung Bonus</button>
+            </div>
+        </div>
+
+        <!-- KOLOM 4: BINARY TREE -->
+        <div class="debug-card">
+            <h3><i class="fas fa-sitemap"></i> Binary Tree</h3>
+            <div class="item"><span class="label">User ID</span><span class="value" id="debugUserId">-</span></div>
+            <div class="item"><span class="label">Sponsor ID</span><span class="value" id="debugSponsorId">-</span></div>
+            <div class="item"><span class="label">Left ID</span><span class="value" id="debugLeftId">-</span></div>
+            <div class="item"><span class="label">Right ID</span><span class="value" id="debugRightId">-</span></div>
+            <div class="item"><span class="label">Position</span><span class="value" id="debugPosition">-</span></div>
+            <div class="flex-row">
+                <button class="btn-debug" id="checkTreeBtn"><i class="fas fa-sitemap"></i> Cek Tree</button>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- LOGS -->
+    <div class="debug-card" style="margin-bottom:16px;">
+        <h3><i class="fas fa-list-ul"></i> Log Aktivitas <span class="text-muted" style="font-weight:400; font-size:0.7rem;">(real-time)</span></h3>
+        <div class="debug-log" id="debugLog">
+            <div class="log-entry"><span class="time">[System]</span> <span class="info">Debug panel siap digunakan...</span></div>
+        </div>
+        <div class="flex-row">
+            <button class="btn-debug" id="clearLogBtn"><i class="fas fa-eraser"></i> Clear Log</button>
+        </div>
+    </div>
+
+    <!-- TABEL DATA -->
+    <div class="debug-card">
+        <h3><i class="fas fa-table"></i> Data Users (10 Terakhir)</h3>
+        <div class="table-wrap">
+            <table class="table-debug" id="userTable">
+                <thead>
+                    <tr><th>ID</th><th>Username</th><th>Email</th><th>Role</th><th>Status</th><th>Wallet</th></tr>
+                </thead>
+                <tbody id="userTableBody">
+                    <tr><td colspan="6" class="text-muted">Belum ada data.</td></tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<script>
+    (function() {
+        'use strict';
+
+        const logContainer = document.getElementById('debugLog');
+
+        // ========== LOG FUNCTION ==========
+        function addLog(message, type = 'info') {
+            const entry = document.createElement('div');
+            entry.className = 'log-entry';
+            const time = new Date().toLocaleTimeString();
+            const icons = { ok: '✅', error: '❌', warning: '⚠️', info: 'ℹ️' };
+            entry.innerHTML = `<span class="time">[${time}]</span> <span class="${type}">${icons[type] || ''} ${message}</span>`;
+            logContainer.appendChild(entry);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        document.getElementById('clearLogBtn').addEventListener('click', function() {
+            logContainer.innerHTML = '';
+            addLog('Log dibersihkan.', 'info');
+        });
+
+        // ========== UPDATE STATUS ==========
+        function updateStatus(type, message) {
+            const badge = document.getElementById('connectionStatus');
+            if (type === 'ok') {
+                badge.className = 'status-badge status-ok';
+                badge.textContent = '✅ ' + message;
+            } else if (type === 'error') {
+                badge.className = 'status-badge status-error';
+                badge.textContent = '❌ ' + message;
+            } else {
+                badge.className = 'status-badge status-warning';
+                badge.textContent = '⚠️ ' + message;
+            }
+        }
+
+        // ========== UPDATE UI ==========
+        function updateUI(data) {
+            if (data.session) {
+                document.getElementById('sessionStatus').textContent = '✅ Active';
+                document.getElementById('sessionStatus').className = 'value ok';
+            } else {
+                document.getElementById('sessionStatus').textContent = '❌ No Session';
+                document.getElementById('sessionStatus').className = 'value error';
+            }
+
+            if (data.user) {
+                document.getElementById('userLogin').textContent = data.user.email || '-';
+                document.getElementById('userLogin').className = 'value ok';
+                document.getElementById('userRole').textContent = data.user.role || 'user';
+                document.getElementById('userRole').className = 'value ' + (data.user.role === 'admin' ? 'ok' : 'warning');
+                document.getElementById('userStatus').textContent = data.user.status || 'free';
+                document.getElementById('userStatus').className = 'value ' + (data.user.status === 'verified' ? 'ok' : 'warning');
+                document.getElementById('userWallet').textContent = 'Rp ' + (parseFloat(data.user.wallet) || 0).toLocaleString();
+                document.getElementById('userWallet').className = 'value ok';
+
+                document.getElementById('debugUserId').textContent = data.user.id || '-';
+                document.getElementById('debugSponsorId').textContent = data.user.sponsor_id || '-';
+                document.getElementById('debugLeftId').textContent = data.user.left_id || '-';
+                document.getElementById('debugRightId').textContent = data.user.right_id || '-';
+                document.getElementById('debugPosition').textContent = data.user.position || '-';
+
+                document.getElementById('debugSponsorBonus').textContent = 'Rp ' + (parseFloat(data.user.bonus_sponsor) || 0).toLocaleString();
+                document.getElementById('debugBinaryBonus').textContent = 'Rp ' + (parseFloat(data.user.bonus_binary) || 0).toLocaleString();
+                document.getElementById('debugRewardBonus').textContent = 'Rp ' + (parseFloat(data.user.bonus_reward) || 0).toLocaleString();
+                document.getElementById('debugRoBonus').textContent = 'Rp ' + (parseFloat(data.user.bonus_ro) || 0).toLocaleString();
+                document.getElementById('debugWallet').textContent = 'Rp ' + (parseFloat(data.user.wallet) || 0).toLocaleString();
+
+            } else {
+                document.getElementById('userLogin').textContent = '❌ Tidak Login';
+                document.getElementById('userLogin').className = 'value error';
+                document.getElementById('userRole').textContent = '-';
+                document.getElementById('userStatus').textContent = '-';
+                document.getElementById('userWallet').textContent = '-';
+                document.getElementById('debugUserId').textContent = '-';
+                document.getElementById('debugSponsorId').textContent = '-';
+                document.getElementById('debugLeftId').textContent = '-';
+                document.getElementById('debugRightId').textContent = '-';
+                document.getElementById('debugPosition').textContent = '-';
+                document.getElementById('debugSponsorBonus').textContent = 'Rp 0';
+                document.getElementById('debugBinaryBonus').textContent = 'Rp 0';
+                document.getElementById('debugRewardBonus').textContent = 'Rp 0';
+                document.getElementById('debugRoBonus').textContent = 'Rp 0';
+                document.getElementById('debugWallet').textContent = 'Rp 0';
+            }
+
+            // Database stats
+            document.getElementById('totalUsers').textContent = data.totalUsers || 0;
+            document.getElementById('totalProducts').textContent = data.totalProducts || 0;
+            document.getElementById('totalOrders').textContent = data.totalOrders || 0;
+            document.getElementById('totalTransactions').textContent = data.totalTransactions || 0;
+            document.getElementById('totalSlides').textContent = data.totalSlides || 0;
+            document.getElementById('totalFaqs').textContent = data.totalFaqs || 0;
+            document.getElementById('dbUrl').textContent = data.dbUrl || '-';
+
+            // User table
+            const tbody = document.getElementById('userTableBody');
+            if (data.users && data.users.length > 0) {
+                const users = data.users.slice(0, 10);
+                tbody.innerHTML = users.map(u => `
+                    <tr>
+                        <td class="id-col">${u.id ? u.id.substring(0, 8) + '...' : '-'}</td>
+                        <td>${u.username || '-'}</td>
+                        <td>${u.email || '-'}</td>
+                        <td><span class="status-col ${u.role === 'admin' ? 'ok' : ''}">${u.role || 'user'}</span></td>
+                        <td><span class="status-col ${u.status === 'verified' ? 'ok' : 'warning'}">${u.status || 'free'}</span></td>
+                        <td>Rp ${(parseFloat(u.wallet) || 0).toLocaleString()}</td>
+                    </tr>
+                `).join('');
+            } else {
+                tbody.innerHTML = '<tr><td colspan="6" class="text-muted">Belum ada user terdaftar.</td></tr>';
+            }
+        }
+
+        // ========== MAIN DEBUG FUNCTION ==========
+        async function runDebug() {
+            try {
+                addLog('🔍 Memulai debug...', 'info');
+
+                // Cek session
+                const session = await window.getSession();
+                addLog('Session: ' + (session ? '✅ Aktif' : '❌ Tidak ada'), session ? 'ok' : 'warning');
+
+                let user = null;
+                let users = [];
+                let totalUsers = 0;
+                let totalProducts = 0;
+                let totalOrders = 0;
+                let totalTransactions = 0;
+                let totalSlides = 0;
+                let totalFaqs = 0;
+
+                if (session) {
+                    user = await window.getUserProfile();
+                    if (user) {
+                        addLog('User: ' + user.email + ' (' + user.role + ')', 'ok');
+                    } else {
+                        addLog('User profile tidak ditemukan.', 'error');
+                    }
+                }
+
+                // Cek database
+                try {
+                    users = await window.getTable('users');
+                    totalUsers = users.length;
+                    addLog('Total Users: ' + totalUsers, 'ok');
+
+                    const products = await window.getProducts();
+                    totalProducts = products.length;
+                    addLog('Total Products: ' + totalProducts, 'ok');
+
+                    const orders = await window.getOrders();
+                    totalOrders = orders.length;
+                    addLog('Total Orders: ' + totalOrders, 'ok');
+
+                    const transactions = await window.getTransactions();
+                    totalTransactions = transactions.length;
+                    addLog('Total Transactions: ' + totalTransactions, 'ok');
+
+                    const slides = await window.getSlides();
+                    totalSlides = slides.length;
+                    addLog('Total Slides: ' + totalSlides, 'ok');
+
+                    const faqs = await window.getFaqs();
+                    totalFaqs = faqs.length;
+                    addLog('Total FAQ: ' + totalFaqs, 'ok');
+
+                } catch (dbError) {
+                    addLog('❌ Error membaca database: ' + dbError.message, 'error');
+                }
+
+                // Update UI
+                const data = {
+                    session: session,
+                    user: user,
+                    users: users,
+                    totalUsers: totalUsers,
+                    totalProducts: totalProducts,
+                    totalOrders: totalOrders,
+                    totalTransactions: totalTransactions,
+                    totalSlides: totalSlides,
+                    totalFaqs: totalFaqs,
+                    dbUrl: window.SUPABASE_URL || 'https://dbfwcsuptitytlposubo.supabase.co'
+                };
+                updateUI(data);
+
+                // Update status
+                if (session && user) {
+                    updateStatus('ok', 'Sistem berjalan normal');
+                } else if (session) {
+                    updateStatus('warning', 'Login tapi profile tidak ditemukan');
+                } else {
+                    updateStatus('warning', 'Belum login');
+                }
+
+                addLog('✅ Debug selesai.', 'ok');
+
+            } catch (error) {
+                addLog('❌ Error debug: ' + error.message, 'error');
+                updateStatus('error', 'Error: ' + error.message);
+                console.error('Debug error:', error);
+            }
+        }
+
+        // ========== HITUNG BONUS ==========
+        document.getElementById('calcBonusBtn').addEventListener('click', async function() {
+            try {
+                addLog('🔄 Menghitung bonus...', 'info');
+                const session = await window.getSession();
+                if (!session) {
+                    addLog('❌ Login dulu untuk hitung bonus.', 'error');
+                    return;
+                }
+                const user = await window.getUserProfile();
+                if (!user) {
+                    addLog('❌ Profile tidak ditemukan.', 'error');
+                    return;
+                }
+
+                const settings = await window.getSettings();
+                const memberPrice = parseFloat(settings.memberPrice) || 550000;
+
+                addLog('📊 Bonus Settings:', 'info');
+                addLog('  Sponsor: ' + settings.sponsorBonus + '%', 'info');
+                addLog('  Binary: ' + (settings.binaryBonusLevels || [10,8,6,5,4,3,2,1.5,1,0.5]).join(', '), 'info');
+                addLog('  Reward: ' + (settings.rewardBonusLevels || [5,4,3,2,1]).join(', '), 'info');
+                addLog('  RO: ' + settings.roBonus + '%', 'info');
+
+                // Hitung semua bonus
+                await window.calculateAllBonuses(user.id, user.sponsor_id, memberPrice, settings);
+                addLog('✅ Bonus dihitung untuk user ' + user.username, 'ok');
+
+                // Refresh user data
+                const updatedUser = await window.getUserProfile();
+                addLog('💼 Wallet baru: Rp ' + (parseFloat(updatedUser.wallet) || 0).toLocaleString(), 'ok');
+                addLog('  Sponsor Bonus: Rp ' + (parseFloat(updatedUser.bonus_sponsor) || 0).toLocaleString(), 'ok');
+                addLog('  Binary Bonus: Rp ' + (parseFloat(updatedUser.bonus_binary) || 0).toLocaleString(), 'ok');
+                addLog('  Reward Bonus: Rp ' + (parseFloat(updatedUser.bonus_reward) || 0).toLocaleString(), 'ok');
+                addLog('  RO Bonus: Rp ' + (parseFloat(updatedUser.bonus_ro) || 0).toLocaleString(), 'ok');
+
+                await runDebug();
+            } catch (e) {
+                addLog('❌ Error hitung bonus: ' + e.message, 'error');
+            }
+        });
+
+        // ========== CEK AUTH ==========
+        document.getElementById('checkAuthBtn').addEventListener('click', async function() {
+            try {
+                addLog('🔍 Cek Auth...', 'info');
+                const session = await window.getSession();
+                if (session) {
+                    const user = await window.getUserProfile();
+                    addLog('✅ Login: ' + (user ? user.email : 'Profile tidak ditemukan'), user ? 'ok' : 'warning');
+                    if (user) {
+                        addLog('  Role: ' + user.role, 'info');
+                        addLog('  Status: ' + user.status, 'info');
+                        addLog('  Wallet: Rp ' + (parseFloat(user.wallet) || 0).toLocaleString(), 'info');
+                    }
+                } else {
+                    addLog('❌ Tidak ada session. Silakan login.', 'error');
+                }
+                await runDebug();
+            } catch (e) {
+                addLog('❌ Error cek auth: ' + e.message, 'error');
+            }
+        });
+
+        // ========== CEK DATABASE ==========
+        document.getElementById('checkDbBtn').addEventListener('click', async function() {
+            try {
+                addLog('🔍 Cek Database...', 'info');
+                await runDebug();
+            } catch (e) {
+                addLog('❌ Error cek database: ' + e.message, 'error');
+            }
+        });
+
+        // ========== CEK TREE ==========
+        document.getElementById('checkTreeBtn').addEventListener('click', async function() {
+            try {
+                addLog('🔍 Cek Binary Tree...', 'info');
+                const session = await window.getSession();
+                if (!session) {
+                    addLog('❌ Login dulu.', 'error');
+                    return;
+                }
+                const user = await window.getUserProfile();
+                if (!user) {
+                    addLog('❌ Profile tidak ditemukan.', 'error');
+                    return;
+                }
+
+                addLog('👤 User: ' + user.username + ' (ID: ' + user.id + ')', 'info');
+                addLog('  Sponsor: ' + (user.sponsor_id || 'Tidak ada'), 'info');
+                addLog('  Left: ' + (user.left_id || 'Kosong'), 'info');
+                addLog('  Right: ' + (user.right_id || 'Kosong'), 'info');
+                addLog('  Position: ' + (user.position || 'Tidak ada'), 'info');
+
+                // Cek downline
+                const downlines = await window.getTable('users', '*', { sponsor_id: user.id });
+                addLog('📊 Total Downline: ' + downlines.length, 'ok');
+                downlines.slice(0, 5).forEach(d => {
+                    addLog('  - ' + d.username + ' (' + d.position + ')', 'info');
+                });
+
+                await runDebug();
+            } catch (e) {
+                addLog('❌ Error cek tree: ' + e.message, 'error');
+            }
+        });
+
+        // ========== LOGOUT ==========
+        document.getElementById('logoutBtn').addEventListener('click', async function() {
+            try {
+                addLog('🔴 Logout...', 'warning');
+                await window.signOut();
+                addLog('✅ Logout berhasil.', 'ok');
+                await runDebug();
+            } catch (e) {
+                addLog('❌ Error logout: ' + e.message, 'error');
+            }
+        });
+
+        // ========== REFRESH ==========
+        document.getElementById('refreshBtn').addEventListener('click', async function() {
+            addLog('🔄 Refresh...', 'info');
+            await runDebug();
+        });
+
+        // ========== INIT ==========
+        (async function init() {
+            addLog('🚀 Debug panel starting...', 'info');
+            await runDebug();
+
+            // Auto refresh setiap 30 detik
+            setInterval(async function() {
+                await runDebug();
+            }, 30000);
+        })();
+
+    })();
+</script>
+
+</body>
+</html>
