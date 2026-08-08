@@ -1,20 +1,15 @@
 // supabase.js
 const SUPABASE_URL = 'https://YOUR_PROJECT_ID.supabase.co';
 const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+
 const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
-// ---------- AUTH ----------
+// ========== AUTH ==========
 async function signUp(email, password, metadata = {}) {
   const { data, error } = await supabase.auth.signUp({
     email,
     password,
-    options: {
-      data: {
-        username: metadata.username || email.split('@')[0],
-        fullname: metadata.fullname || '',
-        role: 'user'
-      }
-    }
+    options: { data: metadata }
   });
   if (error) throw error;
   return data;
@@ -43,12 +38,31 @@ async function getSession() {
   return session;
 }
 
-// ---------- CRUD DENGAN RLS ----------
-async function getTable(table, select = '*', filter = null) {
+// ========== USER PROFILE ==========
+async function getUserProfile() {
+  const session = await getSession();
+  if (!session) return null;
+  const { data, error } = await supabase
+    .from('users')
+    .select('*')
+    .eq('id', session.user.id)
+    .single();
+  if (error && error.code !== 'PGRST116') throw error;
+  return data;
+}
+
+async function updateUserProfile(data) {
+  const session = await getSession();
+  if (!session) throw new Error('Unauthorized');
+  const { error } = await supabase.from('users').update(data).eq('id', session.user.id);
+  if (error) throw error;
+}
+
+// ========== CRUD GENERIC ==========
+async function getTable(table, select = '*', filter = null, order = null) {
   let query = supabase.from(table).select(select);
-  if (filter) {
-    Object.keys(filter).forEach(key => query = query.eq(key, filter[key]));
-  }
+  if (filter) Object.keys(filter).forEach(k => query = query.eq(k, filter[k]));
+  if (order) query = query.order(order.by, { ascending: order.ascending });
   const { data, error } = await query;
   if (error) throw error;
   return data;
@@ -65,34 +79,53 @@ async function deleteRow(table, id) {
   if (error) throw error;
 }
 
-// ---------- FUNGSI KHUSUS USER (dengan RLS) ----------
-async function getUserProfile() {
-  const session = await getSession();
-  if (!session) return null;
-  const { data, error } = await supabase
-    .from('users')
-    .select('*')
-    .eq('id', session.user.id)
-    .single();
-  if (error && error.code !== 'PGRST116') throw error;
-  return data;
+// ========== FUNGSI KHUSUS ==========
+async function getProducts() { return await getTable('products', '*', null, { by: 'id', ascending: true }); }
+async function saveProduct(p) { return await upsertRow('products', p); }
+async function deleteProduct(id) { await deleteRow('products', id); }
+
+async function getOrders() { return await getTable('orders', '*', null, { by: 'created_at', ascending: false }); }
+async function saveOrder(o) { return await upsertRow('orders', o); }
+async function deleteOrder(id) { await deleteRow('orders', id); }
+
+async function getTransactions() { return await getTable('transactions', '*', null, { by: 'date', ascending: false }); }
+async function saveTransaction(t) { return await upsertRow('transactions', t); }
+async function deleteTransaction(id) { await deleteRow('transactions', id); }
+
+async function getBankInfo() { return await getTable('bank_info', '*'); }
+async function saveBankInfo(b) { return await upsertRow('bank_info', b); }
+async function deleteBankInfo(id) { await deleteRow('bank_info', id); }
+
+async function getSlides() { return await getTable('slides', '*'); }
+async function saveSlide(s) { return await upsertRow('slides', s); }
+async function deleteSlide(id) { await deleteRow('slides', id); }
+
+async function getFaqs() { return await getTable('faq', '*'); }
+async function saveFaq(f) { return await upsertRow('faq', f); }
+async function deleteFaq(id) { await deleteRow('faq', id); }
+
+async function getFeatures() { return await getTable('features', '*'); }
+async function saveFeature(f) { return await upsertRow('features', f); }
+async function deleteFeature(id) { await deleteRow('features', id); }
+
+async function getAbout() { const d = await getTable('about', '*'); return d.length ? d[0] : { id: 1, title: '', content: '' }; }
+async function saveAbout(a) { return await upsertRow('about', a); }
+
+async function getFooter() { const d = await getTable('footer', '*'); return d.length ? d[0] : { id: 1, brand: '', description: '', copyright: '', social: {} }; }
+async function saveFooter(f) { return await upsertRow('footer', f); }
+
+async function getSettings() {
+  const rows = await getTable('settings');
+  const settings = {};
+  rows.forEach(r => settings[r.key] = r.value);
+  return settings;
+}
+async function saveSettings(settings) {
+  const promises = Object.keys(settings).map(key => upsertRow('settings', { key, value: settings[key] }));
+  await Promise.all(promises);
 }
 
-async function updateUserProfile(data) {
-  const session = await getSession();
-  if (!session) throw new Error('Not authenticated');
-  const { error } = await supabase.from('users').update(data).eq('id', session.user.id);
-  if (error) throw error;
-}
-
-// ---------- FUNGSI UNTUK PRODUK, ORDER, DLL ----------
-async function getProducts() { return await getTable('products'); }
-async function getOrders() { return await getTable('orders'); }
-async function getTransactions() { return await getTable('transactions'); }
-async function getBankInfo() { return await getTable('bank_info'); }
-// ... tambahkan fungsi lain sesuai kebutuhan
-
-// EXPOSE KE GLOBAL
+// EXPOSE ke GLOBAL
 window.supabase = supabase;
 window.signUp = signUp;
 window.signIn = signIn;
@@ -102,7 +135,32 @@ window.getSession = getSession;
 window.getUserProfile = getUserProfile;
 window.updateUserProfile = updateUserProfile;
 window.getProducts = getProducts;
+window.saveProduct = saveProduct;
+window.deleteProduct = deleteProduct;
 window.getOrders = getOrders;
+window.saveOrder = saveOrder;
+window.deleteOrder = deleteOrder;
 window.getTransactions = getTransactions;
+window.saveTransaction = saveTransaction;
+window.deleteTransaction = deleteTransaction;
 window.getBankInfo = getBankInfo;
-// ... export semua yang dibutuhkan
+window.saveBankInfo = saveBankInfo;
+window.deleteBankInfo = deleteBankInfo;
+window.getSlides = getSlides;
+window.saveSlide = saveSlide;
+window.deleteSlide = deleteSlide;
+window.getFaqs = getFaqs;
+window.saveFaq = saveFaq;
+window.deleteFaq = deleteFaq;
+window.getFeatures = getFeatures;
+window.saveFeature = saveFeature;
+window.deleteFeature = deleteFeature;
+window.getAbout = getAbout;
+window.saveAbout = saveAbout;
+window.getFooter = getFooter;
+window.saveFooter = saveFooter;
+window.getSettings = getSettings;
+window.saveSettings = saveSettings;
+window.getTable = getTable;
+window.upsertRow = upsertRow;
+window.deleteRow = deleteRow;
