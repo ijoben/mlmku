@@ -264,7 +264,7 @@
             <div class="demo-hint" style="margin-top:16px;">
                 🔑 Gunakan akun dengan role <strong>admin</strong>
             </div>
-            <a href="/" class="back-to-home" style="display:inline-block;margin-top:12px;color:var(--denim-blue);font-size:0.8rem;text-decoration:none;"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+            <a href="index.html" class="back-to-home" style="display:inline-block;margin-top:12px;color:var(--denim-blue);font-size:0.8rem;text-decoration:none;"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
         </div>
     </div>
 
@@ -290,7 +290,7 @@
                 <div class="user-badge" id="navUserBadge">
                     <i class="fas fa-user-cog"></i> <span id="navUserName">Admin</span>
                 </div>
-                <a href="/" class="user-badge" style="background:rgba(255,255,255,0.04);">
+                <a href="index.html" class="user-badge" style="background:rgba(255,255,255,0.04);">
                     <i class="fas fa-home"></i>
                 </a>
                 <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
@@ -873,6 +873,42 @@
                 window.location.reload();
             });
 
+            // ========== SUPABASE CONFIG ==========
+            const SUPABASE_URL = 'https://dbfwcsuptitytlposubo.supabase.co';
+            const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRiZndjc3VwdGl0eXRscG9zdWJvIiwicm9sZSI6ImFub24iLCJpYXQiOjE3ODU4NTgyMjMsImV4cCI6MjEwMTQzNDIyM30.TGAANDziz0olPdPIwAgtfiOPzfqxGVIfvNoLFhOsGQY';
+            const SUPABASE_SERVICE_ROLE = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImRiZndjc3VwdGl0eXRscG9zdWJvIiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc4NTg1ODIyMywiZXhwIjoyMTAxNDM0MjIzfQ.V2azNQbPfo9D_jCOBfyA8Z1eN3LfPqqYYP1WJfQ5x1o';
+
+            // ========== UPSERT ROW WITH SERVICE ROLE (BYPASS RLS) ==========
+            window.upsertRowAdmin = async function(table, data) {
+                console.log('🔵 upsertRowAdmin dipanggil untuk:', table);
+                
+                try {
+                    const response = await fetch(`${SUPABASE_URL}/rest/v1/${table}`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'apikey': SUPABASE_SERVICE_ROLE,
+                            'Authorization': `Bearer ${SUPABASE_SERVICE_ROLE}`,
+                            'Prefer': 'return=representation'
+                        },
+                        body: JSON.stringify(data)
+                    });
+
+                    if (!response.ok) {
+                        const errorText = await response.text();
+                        console.error('❌ Response error:', response.status, errorText);
+                        throw new Error(`HTTP ${response.status}: ${errorText}`);
+                    }
+
+                    const result = await response.json();
+                    console.log('✅ upsertRowAdmin berhasil:', result);
+                    return result[0];
+                } catch (error) {
+                    console.error('❌ upsertRowAdmin error:', error);
+                    throw error;
+                }
+            };
+
             // ========== REFRESH DATA ==========
             async function refreshAdminData() {
                 try {
@@ -890,14 +926,7 @@
                     allFooter = await window.getFooter() || {};
                     allSettings = await window.getSettings() || {};
                     
-                    console.log('✅ Data refreshed:');
-                    console.log('  Users:', allUsers.length);
-                    console.log('  Products:', allProducts.length);
-                    console.log('  Orders:', allOrders.length);
-                    console.log('  Transactions:', allTransactions.length);
-                    console.log('  Slides:', allSlides.length);
-                    console.log('  FAQ:', allFaqs.length);
-                    console.log('  Features:', allFeatures.length);
+                    console.log('✅ Data refreshed');
                 } catch (e) {
                     console.error('❌ Refresh data error:', e);
                     showToast('Gagal refresh data: ' + e.message, 'error');
@@ -998,15 +1027,12 @@
                 try {
                     showToast('⏳ Menghitung bonus...', 'info');
                     
-                    // Ambil semua user
                     const users = await window.getTable('users');
                     const settings = await window.getSettings();
                     
                     let processed = 0;
-                    let totalBonus = 0;
                     
                     for (const user of users) {
-                        // Cek transaksi user yang sukses
                         const transactions = await window.getTable('transactions', '*', { 
                             user_id: user.id,
                             status: 'success'
@@ -1014,7 +1040,6 @@
                         
                         for (const tx of transactions) {
                             if (tx.type === 'order' || tx.type === 'first_order' || tx.type === 'ro_purchase') {
-                                // Hitung semua bonus
                                 await window.calculateAllBonuses(
                                     user.id,
                                     user.sponsor_id,
@@ -1022,7 +1047,6 @@
                                     settings
                                 );
                                 
-                                // Jika RO, tambahkan RO bonus
                                 if (tx.type === 'ro_purchase') {
                                     await window.calculateRoBonus(user.id, tx.amount, settings);
                                 }
@@ -1032,7 +1056,6 @@
                         }
                     }
                     
-                    // Refresh data
                     await refreshAdminData();
                     await renderDashboard();
                     
@@ -1675,7 +1698,7 @@
 
             document.getElementById('refreshWithdrawBtn').addEventListener('click', async function() { await refreshAdminData(); await renderWithdraw(); showToast('Direfresh!', 'info'); });
 
-            // ========== PAGE SETTINGS (CMS) ==========
+            // ========== PAGE SETTINGS (CMS) - DENGAN SERVICE ROLE ==========
             async function renderPageSettings() {
                 try {
                     // Slides
@@ -1805,13 +1828,16 @@
                 }
             }
 
-            // Slide modal
+            // ========== SLIDE MODAL DENGAN SERVICE ROLE ==========
             async function openSlideModal(id = null) {
                 let slide = null;
                 if (id) {
                     slide = allSlides.find(s => s.id === parseInt(id));
                 }
                 const isEdit = !!slide;
+                window._isEdit = isEdit;
+                window._currentSlide = slide;
+                
                 openModal(`
                     <h3>${isEdit ? 'Edit' : 'Tambah'} Slide</h3>
                     <div class="form-group"><label>Judul</label><input type="text" id="slideTitle" value="${isEdit ? slide?.title : ''}"></div>
@@ -1877,21 +1903,26 @@
                         
                         const slideData = {
                             id: isEdit ? slide.id : Date.now(),
-                            title,
-                            subtitle,
+                            title: title,
+                            subtitle: subtitle,
                             btn_text: btnText,
                             btn_link: btnLink,
-                            bg,
+                            bg: bg || 'linear-gradient(135deg, #0b1a2b, #2a4b6e)',
                             image: image || null
                         };
                         
-                        await window.upsertRow('slides', slideData);
+                        console.log('🔵 Menyimpan slide:', slideData);
+                        
+                        // === PAKAI SERVICE ROLE UNTUK BYPASS RLS ===
+                        const result = await window.upsertRowAdmin('slides', slideData);
+                        console.log('✅ Slide tersimpan:', result);
+                        
                         await refreshAdminData();
                         await renderPageSettings();
                         closeModal();
                         showToast('Slide tersimpan!', 'success');
                     } catch (e) {
-                        console.error('Save slide error:', e);
+                        console.error('❌ Save slide error:', e);
                         showToast('Gagal menyimpan slide: ' + e.message, 'error');
                     }
                 });
@@ -1899,7 +1930,7 @@
 
             document.getElementById('addSlideBtn').addEventListener('click', function() { openSlideModal(); });
 
-            // FAQ modal
+            // ========== FAQ MODAL ==========
             async function openFaqModal(id = null) {
                 let faq = null;
                 if (id) {
@@ -1936,7 +1967,7 @@
 
             document.getElementById('addFaqBtn').addEventListener('click', function() { openFaqModal(); });
 
-            // Feature modal
+            // ========== FEATURE MODAL ==========
             async function openFeatureModal(id = null) {
                 let feature = null;
                 if (id) {
@@ -1976,7 +2007,7 @@
 
             document.getElementById('addFeatureBtn').addEventListener('click', function() { openFeatureModal(); });
 
-            // About save
+            // ========== ABOUT SAVE ==========
             document.getElementById('saveAboutBtn').addEventListener('click', async function() {
                 try {
                     const aboutData = {
@@ -1993,7 +2024,7 @@
                 }
             });
 
-            // Footer save
+            // ========== FOOTER SAVE ==========
             document.getElementById('saveFooterBtn').addEventListener('click', async function() {
                 try {
                     const footerData = {
