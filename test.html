@@ -1,1 +1,45 @@
 
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Test Supabase</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+</head>
+<body>
+  <h1>Test Supabase Connection</h1>
+  <div id="result">Loading...</div>
+  <script>
+    (async function() {
+      try {
+        console.log('1. Cek window.supabase:', typeof window.supabase);
+        console.log('2. Cek window.getProducts:', typeof window.getProducts);
+        console.log('3. Cek window.getSession:', typeof window.getSession);
+        console.log('4. Cek window.getSettings:', typeof window.getSettings);
+
+        // Coba ambil data products
+        const products = await window.getProducts();
+        document.getElementById('result').innerHTML = 
+          '✅ Berhasil! Products: ' + products.length + ' item';
+
+        // Coba ambil settings
+        const settings = await window.getSettings();
+        console.log('Settings:', settings);
+
+        // Coba ambil slides
+        const slides = await window.getSlides();
+        console.log('Slides:', slides);
+
+        document.getElementById('result').innerHTML += 
+          '<br>✅ Slides: ' + slides.length + ' item<br>' +
+          '✅ Settings: ' + Object.keys(settings).length + ' key';
+      } catch (error) {
+        console.error('Error detail:', error);
+        document.getElementById('result').innerHTML = 
+          '❌ Error: ' + error.message + 
+          '<br><br>Check console for full error.';
+      }
+    })();
+  </script>
+</body>
+</html>
