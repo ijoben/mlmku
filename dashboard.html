@@ -1004,7 +1004,7 @@
       // ========== LOGOUT ==========
       document.getElementById('sideLogoutBtn').addEventListener('click', async function() {
         await window.signOut();
-        window.location.href = 'index.html';
+        window.location.href = '/';
       });
 
       // ========== COPY REF ==========
@@ -1020,16 +1020,16 @@
         try {
           const session = await window.getSession();
           if (!session) {
-            window.location.href = 'login.html';
+            window.location.href = '/login';
             return;
           }
           const profile = await window.getUserProfile();
           if (!profile) {
-            window.location.href = 'login.html';
+            window.location.href = '/login';
             return;
           }
           if (profile.role === 'admin') {
-            window.location.href = 'admin.html';
+            window.location.href = '/admin';
             return;
           }
           currentUser = profile;
@@ -1047,7 +1047,7 @@
           window.showSection(savedTab);
         } catch (e) {
           console.error('Auth error:', e);
-          window.location.href = 'login.html';
+          window.location.href = '/login';
         }
       }
 
@@ -1442,7 +1442,7 @@
       function renderBinaryTreeHTML(node) {
         if (!node) return '';
         if (node.empty) {
-          const baseUrl = window.location.origin + window.location.pathname.replace('dashboard.html', '');
+          const baseUrl = window.location.origin + window.location.pathname.replace('/dashboard', '');
           const refUrl = `${baseUrl}/register.html?ref=${currentUser.username}&upline=${currentUser.username}`;
           return `<a href="${refUrl}" class="tree-node-card empty" style="display:block; text-decoration:none;"><div class="avatar"><i class="fas fa-plus"></i></div><div class="node-name">TAMBAH</div></a>`;
         }
