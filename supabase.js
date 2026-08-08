@@ -1,4 +1,4 @@
-// supabase.js - FULL LENGKAP DENGAN STORAGE
+// supabase.js - FULL LENGKAP DENGAN STORAGE & BONUS
 console.log('🔵 supabase.js mulai dieksekusi...');
 
 var SUPABASE_URL = 'https://dbfwcsuptitytlposubo.supabase.co';
@@ -9,7 +9,7 @@ var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KE
 console.log('🔵 Supabase client created:', !!supabaseClient);
 
 // ============================================================
-// EXPOSE SUPABASE CLIENT KE WINDOW (PENTING!)
+// EXPOSE SUPABASE CLIENT KE WINDOW
 // ============================================================
 window.supabase = supabaseClient;
 
@@ -110,6 +110,20 @@ window.getUserProfile = async function() {
   }
 };
 
+window.getUserById = async function(id) {
+  console.log('🔵 getUserById dipanggil untuk:', id);
+  var { data, error } = await supabaseClient
+    .from('users')
+    .select('*')
+    .eq('id', id)
+    .single();
+  if (error && error.code !== 'PGRST116') {
+    console.error('🔴 getUserById error:', error);
+    throw error;
+  }
+  return data;
+};
+
 window.getUserByEmail = async function(email) {
   console.log('🔵 getUserByEmail dipanggil untuk:', email);
   var { data, error } = await supabaseClient
@@ -122,6 +136,20 @@ window.getUserByEmail = async function(email) {
     throw error;
   }
   console.log('✅ getUserByEmail berhasil:', !!data);
+  return data;
+};
+
+window.getUserByUsername = async function(username) {
+  console.log('🔵 getUserByUsername dipanggil untuk:', username);
+  var { data, error } = await supabaseClient
+    .from('users')
+    .select('*')
+    .eq('username', username)
+    .single();
+  if (error && error.code !== 'PGRST116') {
+    console.error('🔴 getUserByUsername error:', error);
+    throw error;
+  }
   return data;
 };
 
@@ -201,17 +229,14 @@ window.deleteRow = async function(table, id) {
 // STORAGE FUNCTIONS (Upload & Delete Gambar)
 // ============================================================
 
-// Upload file ke Supabase Storage
 window.uploadFile = async function(file, folder = 'products') {
   console.log('🔵 uploadFile dipanggil:', file.name);
   
   try {
-    // Generate nama file unik
     var fileExt = file.name.split('.').pop();
     var fileName = Date.now() + '-' + Math.random().toString(36).substring(2, 7) + '.' + fileExt;
     var filePath = folder + '/' + fileName;
     
-    // Upload ke Supabase Storage
     var { data, error } = await supabaseClient
       .storage
       .from('hedtro-images')
@@ -225,7 +250,6 @@ window.uploadFile = async function(file, folder = 'products') {
       throw error;
     }
     
-    // Dapatkan URL publik
     var { data: publicUrlData } = supabaseClient
       .storage
       .from('hedtro-images')
@@ -240,12 +264,10 @@ window.uploadFile = async function(file, folder = 'products') {
   }
 };
 
-// Hapus file dari Storage
 window.deleteFile = async function(fileUrl) {
   console.log('🔵 deleteFile dipanggil:', fileUrl);
   
   try {
-    // Extract path dari URL
     var urlParts = fileUrl.split('/');
     var filePath = urlParts.slice(urlParts.indexOf('hedtro-images') + 1).join('/');
     
@@ -261,28 +283,23 @@ window.deleteFile = async function(fileUrl) {
     
     if (error) {
       console.error('🔴 Delete error:', error);
-      // Jangan throw, biarkan lanjut
     }
     console.log('✅ Delete berhasil:', filePath);
     
   } catch (error) {
     console.error('❌ Delete error:', error);
-    // Jangan throw, karena file mungkin sudah tidak ada
   }
 };
 
-// Upload gambar dengan kompresi otomatis
 window.uploadImage = async function(file, folder = 'products', maxSize = 2 * 1024 * 1024) {
   console.log('🔵 uploadImage dipanggil:', file.name);
   
   try {
-    // Cek ukuran file
     if (file.size > maxSize) {
       console.log('🔄 Kompres gambar...');
       var compressed = await window.compressImageFile(file, 800, 0.7);
       return await window.uploadFile(compressed, folder);
     }
-    
     return await window.uploadFile(file, folder);
   } catch (error) {
     console.error('❌ uploadImage error:', error);
@@ -290,7 +307,6 @@ window.uploadImage = async function(file, folder = 'products', maxSize = 2 * 102
   }
 };
 
-// Kompres file gambar sebelum upload
 window.compressImageFile = function(file, maxWidth, quality) {
   maxWidth = maxWidth || 800;
   quality = quality || 0.7;
@@ -332,6 +348,126 @@ window.compressImageFile = function(file, maxWidth, quality) {
     };
     reader.readAsDataURL(file);
   });
+};
+
+// ============================================================
+// BONUS CALCULATION FUNCTIONS (BARU!)
+// ============================================================
+
+// 1. Hitung Bonus Sponsor
+window.calculateSponsorBonus = async function(userId, sponsorId, amount, settings) {
+  var sponsorBonusPercent = parseFloat(settings.sponsorBonus) || 10;
+  var bonusAmount = (amount * sponsorBonusPercent) / 100;
+  
+  if (bonusAmount <= 0 || !sponsorId) return;
+  
+  try {
+    var sponsor = await window.getUserById(sponsorId);
+    if (sponsor) {
+      sponsor.bonus_sponsor = (parseFloat(sponsor.bonus_sponsor) || 0) + bonusAmount;
+      sponsor.wallet = (parseFloat(sponsor.wallet) || 0) + bonusAmount;
+      await window.upsertRow('users', sponsor);
+      console.log('✅ Sponsor bonus Rp' + bonusAmount + ' to ' + sponsor.username);
+    }
+  } catch (e) {
+    console.error('Error calculating sponsor bonus:', e);
+  }
+};
+
+// 2. Hitung Bonus Binary (10 Level)
+window.calculateBinaryBonus = async function(userId, amount, settings) {
+  var binaryLevels = settings.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
+  var currentUserId = userId;
+  var level = 0;
+  
+  while (currentUserId && level < 10) {
+    try {
+      var user = await window.getUserById(currentUserId);
+      if (!user) break;
+      
+      var bonusPercent = parseFloat(binaryLevels[level]) || 0;
+      var bonusAmount = (amount * bonusPercent) / 100;
+      
+      if (bonusAmount > 0) {
+        user.bonus_binary = (parseFloat(user.bonus_binary) || 0) + bonusAmount;
+        user.wallet = (parseFloat(user.wallet) || 0) + bonusAmount;
+        await window.upsertRow('users', user);
+        console.log('✅ Binary bonus Rp' + bonusAmount + ' (' + bonusPercent + '%) to ' + user.username + ' (level ' + (level+1) + ')');
+      }
+      
+      currentUserId = user.sponsor_id;
+      level++;
+    } catch (e) {
+      console.error('Error calculating binary bonus:', e);
+      break;
+    }
+  }
+};
+
+// 3. Hitung Bonus Reward (5 Level)
+window.calculateRewardBonus = async function(userId, amount, settings) {
+  var rewardLevels = settings.rewardBonusLevels || [5, 4, 3, 2, 1];
+  var currentUserId = userId;
+  var level = 0;
+  
+  while (currentUserId && level < 5) {
+    try {
+      var user = await window.getUserById(currentUserId);
+      if (!user) break;
+      
+      var bonusPercent = parseFloat(rewardLevels[level]) || 0;
+      var bonusAmount = (amount * bonusPercent) / 100;
+      
+      if (bonusAmount > 0) {
+        user.bonus_reward = (parseFloat(user.bonus_reward) || 0) + bonusAmount;
+        user.wallet = (parseFloat(user.wallet) || 0) + bonusAmount;
+        await window.upsertRow('users', user);
+        console.log('✅ Reward bonus Rp' + bonusAmount + ' (' + bonusPercent + '%) to ' + user.username + ' (level ' + (level+1) + ')');
+      }
+      
+      currentUserId = user.sponsor_id;
+      level++;
+    } catch (e) {
+      console.error('Error calculating reward bonus:', e);
+      break;
+    }
+  }
+};
+
+// 4. Hitung Bonus RO (Repeat Order)
+window.calculateRoBonus = async function(userId, amount, settings) {
+  var roBonusPercent = parseFloat(settings.roBonus) || 3;
+  var bonusAmount = (amount * roBonusPercent) / 100;
+  
+  if (bonusAmount <= 0) return;
+  
+  try {
+    var user = await window.getUserById(userId);
+    if (user) {
+      user.bonus_ro = (parseFloat(user.bonus_ro) || 0) + bonusAmount;
+      user.wallet = (parseFloat(user.wallet) || 0) + bonusAmount;
+      await window.upsertRow('users', user);
+      console.log('✅ RO bonus Rp' + bonusAmount + ' to ' + user.username);
+    }
+  } catch (e) {
+    console.error('Error calculating RO bonus:', e);
+  }
+};
+
+// 5. Fungsi wrapper untuk hitung semua bonus (kecuali RO)
+window.calculateAllBonuses = async function(userId, sponsorId, amount, settings) {
+  console.log('🔵 Calculating all bonuses...');
+  
+  // 1. Sponsor Bonus
+  await window.calculateSponsorBonus(userId, sponsorId, amount, settings);
+  
+  // 2. Binary Bonus (10 level)
+  await window.calculateBinaryBonus(userId, amount, settings);
+  
+  // 3. Reward Bonus (5 level)
+  await window.calculateRewardBonus(userId, amount, settings);
+  
+  console.log('✅ All bonuses calculated!');
 };
 
 // ============================================================
@@ -448,7 +584,7 @@ window.saveSettings = async function(settings) {
 };
 
 // ============================================================
-// LOG KONFIRMASI - PASTIKAN SEMUA FUNGSI TERSEDIA
+// LOG KONFIRMASI
 // ============================================================
 console.log('✅ supabase.js selesai dieksekusi!');
 console.log('✅ window.supabase:', typeof window.supabase);
@@ -464,6 +600,8 @@ console.log('✅ window.signIn:', typeof window.signIn);
 console.log('✅ window.signUp:', typeof window.signUp);
 console.log('✅ window.signOut:', typeof window.signOut);
 console.log('✅ window.getUserProfile:', typeof window.getUserProfile);
+console.log('✅ window.getUserById:', typeof window.getUserById);
+console.log('✅ window.getUserByUsername:', typeof window.getUserByUsername);
 console.log('✅ window.updateUserProfile:', typeof window.updateUserProfile);
 console.log('✅ window.getTable:', typeof window.getTable);
 console.log('✅ window.upsertRow:', typeof window.upsertRow);
@@ -472,3 +610,8 @@ console.log('✅ window.uploadFile:', typeof window.uploadFile);
 console.log('✅ window.deleteFile:', typeof window.deleteFile);
 console.log('✅ window.uploadImage:', typeof window.uploadImage);
 console.log('✅ window.compressImageFile:', typeof window.compressImageFile);
+console.log('✅ window.calculateAllBonuses:', typeof window.calculateAllBonuses);
+console.log('✅ window.calculateSponsorBonus:', typeof window.calculateSponsorBonus);
+console.log('✅ window.calculateBinaryBonus:', typeof window.calculateBinaryBonus);
+console.log('✅ window.calculateRewardBonus:', typeof window.calculateRewardBonus);
+console.log('✅ window.calculateRoBonus:', typeof window.calculateRoBonus);
