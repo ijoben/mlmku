@@ -308,6 +308,7 @@
             </div>
             <div class="menu-item active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
             <div class="menu-item" data-tab="members"><i class="fas fa-users"></i> Member</div>
+            <div class="menu-item" data-tab="bonus"><i class="fas fa-gift"></i> Bonus</div>
             <div class="menu-item" data-tab="products"><i class="fas fa-boxes"></i> Produk</div>
             <div class="menu-item" data-tab="verification"><i class="fas fa-check-double"></i> Verifikasi</div>
             <div class="menu-item" data-tab="orders"><i class="fas fa-shopping-cart"></i> Orders</div>
@@ -343,6 +344,11 @@
                     <div class="stat-card" style="border-left-color: #e67e22;"><i class="fas fa-clock icon-bg"></i><div class="label">Pesanan Pending</div><div class="value" id="statPendingOrders">0</div><div class="sub">Menunggu</div></div>
                     <div class="stat-card" style="border-left-color: #9b59b6;"><i class="fas fa-boxes icon-bg"></i><div class="label">Total Produk</div><div class="value" id="statTotalProducts">0</div><div class="sub">Di katalog</div></div>
                     <div class="stat-card" style="border-left-color: #16a085;"><i class="fas fa-wallet icon-bg"></i><div class="label">Total Transaksi</div><div class="value" id="statTotalTransactions">Rp 0</div><div class="sub">Volume uang</div></div>
+                    <!-- STATISTIK BONUS -->
+                    <div class="stat-card" style="border-left-color: #9b59b6;"><i class="fas fa-gift icon-bg"></i><div class="label">Total Bonus Dibayar</div><div class="value" id="statTotalBonus">Rp 0</div><div class="sub">Semua jenis bonus</div></div>
+                    <div class="stat-card" style="border-left-color: #f39c12;"><i class="fas fa-user-friends icon-bg"></i><div class="label">Bonus Sponsor</div><div class="value" id="statSponsorBonus">Rp 0</div><div class="sub">Dari sponsor</div></div>
+                    <div class="stat-card" style="border-left-color: #2ecc71;"><i class="fas fa-sitemap icon-bg"></i><div class="label">Bonus Binary</div><div class="value" id="statBinaryBonus">Rp 0</div><div class="sub">10 level</div></div>
+                    <div class="stat-card" style="border-left-color: #e74c3c;"><i class="fas fa-trophy icon-bg"></i><div class="label">Bonus Reward</div><div class="value" id="statRewardBonus">Rp 0</div><div class="sub">5 level</div></div>
                 </div>
 
                 <div class="history-card">
@@ -368,6 +374,63 @@
                 </div>
                 <div class="pagination" id="membersPagination"></div>
                 <div class="text-muted mt-16">Total member terdaftar: <span id="totalMembers">0</span></div>
+            </div>
+
+            <!-- BONUS MANAGEMENT -->
+            <div class="tab-content" id="tabBonus">
+                <h1 class="page-title"><i class="fas fa-gift"></i> Manajemen Bonus</h1>
+                
+                <!-- Ringkasan Bonus -->
+                <div class="stats-grid" style="grid-template-columns: repeat(4, 1fr); margin-bottom: 20px;">
+                    <div class="stat-card" style="border-left-color: #3498db;">
+                        <div class="label">Total Bonus Dibayar</div>
+                        <div class="value" id="bonusTotalPaid">Rp 0</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: #f39c12;">
+                        <div class="label">Bonus Sponsor</div>
+                        <div class="value" id="bonusSponsorTotal">Rp 0</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: #2ecc71;">
+                        <div class="label">Bonus Binary</div>
+                        <div class="value" id="bonusBinaryTotal">Rp 0</div>
+                    </div>
+                    <div class="stat-card" style="border-left-color: #e74c3c;">
+                        <div class="label">Bonus Reward</div>
+                        <div class="value" id="bonusRewardTotal">Rp 0</div>
+                    </div>
+                </div>
+
+                <!-- Filter Bonus -->
+                <div class="flex-row" style="margin-bottom: 16px;">
+                    <select id="bonusFilterType" style="padding: 8px 16px; border-radius: 60px; border: 1px solid #dde3ea; background: var(--white);">
+                        <option value="all">Semua Bonus</option>
+                        <option value="sponsor">Sponsor</option>
+                        <option value="binary">Binary</option>
+                        <option value="reward">Reward</option>
+                        <option value="ro">RO</option>
+                    </select>
+                    <button class="btn-sm btn-sm-primary" id="refreshBonusBtn"><i class="fas fa-sync"></i> Refresh</button>
+                    <button class="btn-sm btn-sm-danger" id="resetBonusBtn"><i class="fas fa-trash"></i> Reset Semua Bonus</button>
+                </div>
+
+                <!-- Tabel Bonus -->
+                <div class="table-wrap">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Tanggal</th>
+                                <th>Member</th>
+                                <th>Tipe Bonus</th>
+                                <th>Nominal</th>
+                                <th>Dari Transaksi</th>
+                                <th>Status</th>
+                                <th>Aksi</th>
+                            </tr>
+                        </thead>
+                        <tbody id="bonusTableBody"></tbody>
+                    </table>
+                </div>
+                <div class="pagination" id="bonusPagination"></div>
             </div>
 
             <!-- PRODUCTS -->
@@ -635,7 +698,7 @@
             let allSettings = {};
             let currentAdmin = null;
             let statePage = {
-                members: 1, products: 1, verif: 1, orders: 1, deposit: 1, withdraw: 1
+                members: 1, products: 1, verif: 1, orders: 1, deposit: 1, withdraw: 1, bonus: 1
             };
             const ITEMS_PER_PAGE = 10;
             let isEdit = false;
@@ -749,6 +812,7 @@
 
                 if (tabId === 'dashboard') await renderDashboard();
                 if (tabId === 'members') await renderAdminMembers();
+                if (tabId === 'bonus') await renderBonusManagement();
                 if (tabId === 'products') await renderAdminProducts();
                 if (tabId === 'verification') await renderVerification();
                 if (tabId === 'orders') await renderOrders();
@@ -933,6 +997,27 @@
                     const totalVol = allTransactions.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
                     document.getElementById('statTotalTransactions').textContent = 'Rp ' + totalVol.toLocaleString();
 
+                    // Hitung statistik bonus
+                    const bonusTxs = allTransactions.filter(t => 
+                        t.type === 'bonus' || 
+                        t.type === 'sponsor' || 
+                        t.type === 'binary' || 
+                        t.type === 'reward' || 
+                        t.type === 'ro_bonus'
+                    );
+                    let totalBonus = 0, totalSponsor = 0, totalBinary = 0, totalReward = 0;
+                    bonusTxs.forEach(t => {
+                        const amount = parseFloat(t.amount) || 0;
+                        totalBonus += amount;
+                        if (t.type === 'sponsor' || t.type === 'bonus_sponsor') totalSponsor += amount;
+                        else if (t.type === 'binary' || t.type === 'bonus_binary') totalBinary += amount;
+                        else if (t.type === 'reward' || t.type === 'bonus_reward') totalReward += amount;
+                    });
+                    document.getElementById('statTotalBonus').textContent = 'Rp ' + totalBonus.toLocaleString();
+                    document.getElementById('statSponsorBonus').textContent = 'Rp ' + totalSponsor.toLocaleString();
+                    document.getElementById('statBinaryBonus').textContent = 'Rp ' + totalBinary.toLocaleString();
+                    document.getElementById('statRewardBonus').textContent = 'Rp ' + totalReward.toLocaleString();
+
                     const container = document.getElementById('adminTransactionHistory');
                     const sorted = [...allTransactions].reverse().slice(0, 15);
                     if (sorted.length === 0) {
@@ -943,9 +1028,9 @@
                     sorted.forEach(t => {
                         const user = allUsers.find(u => u.id === t.user_id);
                         const userName = user ? (user.fullname || user.username || 'Pelanggan') : 'Pelanggan';
-                        const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'withdraw' ? 'Withdraw' : (t.type === 'order' ? 'Order' : 'RO'));
-                        const amountClass = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase') ? 'plus' : 'minus';
-                        const sign = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase') ? '+' : '-';
+                        const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'withdraw' ? 'Withdraw' : (t.type === 'order' ? 'Order' : (t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' ? '🎁 Bonus' : 'RO')));
+                        const amountClass = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase' || t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward') ? 'plus' : 'minus';
+                        const sign = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase' || t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward') ? '+' : '-';
                         const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' || t.status === 'processing' ? '✅ Selesai' : '❌ Gagal');
                         const date = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID');
                         let actionBtn = '';
@@ -980,14 +1065,12 @@
             // ========== TRANSACTION PROCESSOR ==========
             async function processTransaction(id, newStatus, type) {
                 try {
-                    // Update transaksi
                     const { error: txError } = await supabase
                         .from('transactions')
                         .update({ status: newStatus })
                         .eq('id', id);
                     if (txError) throw txError;
                     
-                    // Cari user terkait
                     const tx = allTransactions.find(t => t.id === id);
                     if (tx && tx.user_id) {
                         const { data: user, error: userError } = await supabase
@@ -1022,6 +1105,269 @@
                     showToast('Gagal memproses transaksi: ' + e.message, 'error');
                 }
             }
+
+            // ========== BONUS MANAGEMENT ==========
+            async function renderBonusManagement() {
+                try {
+                    const tbody = document.getElementById('bonusTableBody');
+                    if (!tbody) return;
+
+                    // Kumpulkan semua transaksi bonus
+                    const bonusTransactions = allTransactions.filter(t => 
+                        t.type === 'bonus' || 
+                        t.type === 'sponsor' || 
+                        t.type === 'binary' || 
+                        t.type === 'reward' || 
+                        t.type === 'ro_bonus' ||
+                        t.type === 'bonus_sponsor' ||
+                        t.type === 'bonus_binary' ||
+                        t.type === 'bonus_reward'
+                    );
+
+                    // Hitung total per jenis
+                    let totalSponsor = 0, totalBinary = 0, totalReward = 0;
+                    let totalAll = 0;
+
+                    bonusTransactions.forEach(t => {
+                        const amount = parseFloat(t.amount) || 0;
+                        totalAll += amount;
+                        if (t.type === 'sponsor' || t.type === 'bonus_sponsor') totalSponsor += amount;
+                        else if (t.type === 'binary' || t.type === 'bonus_binary') totalBinary += amount;
+                        else if (t.type === 'reward' || t.type === 'bonus_reward') totalReward += amount;
+                    });
+
+                    document.getElementById('bonusTotalPaid').textContent = 'Rp ' + totalAll.toLocaleString();
+                    document.getElementById('bonusSponsorTotal').textContent = 'Rp ' + totalSponsor.toLocaleString();
+                    document.getElementById('bonusBinaryTotal').textContent = 'Rp ' + totalBinary.toLocaleString();
+                    document.getElementById('bonusRewardTotal').textContent = 'Rp ' + totalReward.toLocaleString();
+
+                    // Filter
+                    const filter = document.getElementById('bonusFilterType').value;
+                    let filtered = bonusTransactions;
+                    if (filter !== 'all') {
+                        filtered = filtered.filter(t => t.type.includes(filter) || t.type === filter);
+                    }
+
+                    // Sorting terbaru
+                    filtered.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
+
+                    if (filtered.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Belum ada data bonus.</td></tr>';
+                        document.getElementById('bonusPagination').innerHTML = '';
+                        return;
+                    }
+
+                    // Pagination
+                    const page = statePage.bonus || 1;
+                    const totalItems = filtered.length;
+                    const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
+                    statePage.bonus = Math.max(1, Math.min(page, totalPages));
+                    const startIdx = (statePage.bonus - 1) * ITEMS_PER_PAGE;
+                    const paginatedData = filtered.slice(startIdx, startIdx + ITEMS_PER_PAGE);
+
+                    let html = '';
+                    paginatedData.forEach(t => {
+                        const user = allUsers.find(u => u.id === t.user_id);
+                        const userName = user ? (user.fullname || user.username) : 'Unknown';
+                        const typeLabel = {
+                            'sponsor': '👤 Sponsor',
+                            'bonus_sponsor': '👤 Sponsor',
+                            'binary': '🌳 Binary',
+                            'bonus_binary': '🌳 Binary',
+                            'reward': '🏆 Reward',
+                            'bonus_reward': '🏆 Reward',
+                            'ro_bonus': '🔄 RO Bonus',
+                            'ro': '🔄 RO Bonus',
+                            'bonus': '🎁 Bonus'
+                        }[t.type] || t.type;
+
+                        const statusClass = t.status === 'pending' ? 'badge-pending' : 
+                                           (t.status === 'success' ? 'badge-success' : 'badge-failed');
+                        
+                        const date = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID');
+                        
+                        html += `<tr>
+                            <td data-label="Tanggal">${date}</td>
+                            <td data-label="Member"><strong>${userName}</strong></td>
+                            <td data-label="Tipe Bonus">${typeLabel}</td>
+                            <td data-label="Nominal" style="color:#2e7d32; font-weight:700;">Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</td>
+                            <td data-label="Dari Transaksi">${t.source_id || t.note || '-'}</td>
+                            <td data-label="Status"><span class="badge-status ${statusClass}">${(t.status || 'success').toUpperCase()}</span></td>
+                            <td data-label="Aksi">
+                                <div>
+                                    ${t.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-bonus" data-id="${t.id}">Approve</button>
+                                    <button class="btn-sm btn-sm-danger reject-bonus" data-id="${t.id}">Reject</button>` : ''}
+                                    <button class="btn-sm btn-sm-danger delete-bonus" data-id="${t.id}">Hapus</button>
+                                </div>
+                            </td>
+                        </tr>`;
+                    });
+
+                    tbody.innerHTML = html;
+                    buildPagination(totalItems, statePage.bonus, 'bonusPagination', 'bonus', renderBonusManagement);
+
+                    // Event listeners untuk tombol
+                    tbody.querySelectorAll('.approve-bonus').forEach(btn => {
+                        btn.onclick = function() { approveBonus(parseInt(this.dataset.id)); };
+                    });
+
+                    tbody.querySelectorAll('.reject-bonus').forEach(btn => {
+                        btn.onclick = function() { rejectBonus(parseInt(this.dataset.id)); };
+                    });
+
+                    tbody.querySelectorAll('.delete-bonus').forEach(btn => {
+                        btn.onclick = function() { deleteBonus(parseInt(this.dataset.id)); };
+                    });
+
+                } catch (e) {
+                    console.error('Bonus management error:', e);
+                    showToast('Gagal memuat bonus.', 'error');
+                }
+            }
+
+            // ========== APPROVE BONUS ==========
+            async function approveBonus(id) {
+                try {
+                    const { error } = await supabase
+                        .from('transactions')
+                        .update({ status: 'success' })
+                        .eq('id', id);
+                    
+                    if (error) throw error;
+                    await refreshAdminData();
+                    await renderBonusManagement();
+                    await renderDashboard();
+                    showToast('✅ Bonus disetujui dan masuk ke wallet member.', 'success');
+                } catch (e) {
+                    console.error('Approve bonus error:', e);
+                    showToast('Gagal approve bonus.', 'error');
+                }
+            }
+
+            // ========== REJECT BONUS ==========
+            async function rejectBonus(id) {
+                try {
+                    // Ambil transaksi bonus
+                    const tx = allTransactions.find(t => t.id === id);
+                    if (tx && tx.user_id) {
+                        // Kembalikan saldo jika sudah masuk
+                        const user = allUsers.find(u => u.id === tx.user_id);
+                        if (user) {
+                            // Kurangi wallet
+                            const newWallet = Math.max(0, (parseFloat(user.wallet) || 0) - (parseFloat(tx.amount) || 0));
+                            await supabase
+                                .from('users')
+                                .update({ wallet: newWallet })
+                                .eq('id', user.id);
+                        }
+                    }
+
+                    const { error } = await supabase
+                        .from('transactions')
+                        .update({ status: 'failed' })
+                        .eq('id', id);
+                    
+                    if (error) throw error;
+                    await refreshAdminData();
+                    await renderBonusManagement();
+                    await renderDashboard();
+                    showToast('❌ Bonus ditolak dan saldo dikembalikan.', 'warning');
+                } catch (e) {
+                    console.error('Reject bonus error:', e);
+                    showToast('Gagal reject bonus.', 'error');
+                }
+            }
+
+            // ========== DELETE BONUS ==========
+            async function deleteBonus(id) {
+                if (!confirm('Hapus transaksi bonus ini? Ini akan mengurangi saldo member jika sudah dibayarkan.')) return;
+                
+                try {
+                    const tx = allTransactions.find(t => t.id === id);
+                    if (tx && tx.user_id && tx.status === 'success') {
+                        // Kurangi saldo member
+                        const user = allUsers.find(u => u.id === tx.user_id);
+                        if (user) {
+                            const newWallet = Math.max(0, (parseFloat(user.wallet) || 0) - (parseFloat(tx.amount) || 0));
+                            await supabase
+                                .from('users')
+                                .update({ wallet: newWallet })
+                                .eq('id', user.id);
+                        }
+                    }
+
+                    const { error } = await supabase
+                        .from('transactions')
+                        .delete()
+                        .eq('id', id);
+                    
+                    if (error) throw error;
+                    await refreshAdminData();
+                    await renderBonusManagement();
+                    await renderDashboard();
+                    showToast('Bonus dihapus.', 'info');
+                } catch (e) {
+                    console.error('Delete bonus error:', e);
+                    showToast('Gagal hapus bonus.', 'error');
+                }
+            }
+
+            // ========== RESET ALL BONUS ==========
+            document.getElementById('resetBonusBtn')?.addEventListener('click', async function() {
+                if (!confirm('⚠️ RESET SEMUA BONUS? Ini akan menghapus semua data bonus dan mengurangi saldo member.')) return;
+                if (!confirm('⚠️ PERINGATAN KEDUA: Yakin ingin melanjutkan?')) return;
+
+                try {
+                    // Ambil semua transaksi bonus
+                    const bonusTxs = allTransactions.filter(t => 
+                        t.type === 'bonus' || 
+                        t.type === 'sponsor' || 
+                        t.type === 'binary' || 
+                        t.type === 'reward' || 
+                        t.type === 'ro_bonus' ||
+                        t.type === 'bonus_sponsor' ||
+                        t.type === 'bonus_binary' ||
+                        t.type === 'bonus_reward'
+                    );
+
+                    // Kurangi saldo semua member yang menerima bonus
+                    for (const tx of bonusTxs) {
+                        if (tx.user_id && tx.status === 'success') {
+                            const user = allUsers.find(u => u.id === tx.user_id);
+                            if (user) {
+                                const newWallet = Math.max(0, (parseFloat(user.wallet) || 0) - (parseFloat(tx.amount) || 0));
+                                await supabase
+                                    .from('users')
+                                    .update({ wallet: newWallet })
+                                    .eq('id', user.id);
+                            }
+                        }
+                    }
+
+                    // Hapus semua transaksi bonus
+                    for (const tx of bonusTxs) {
+                        await supabase
+                            .from('transactions')
+                            .delete()
+                            .eq('id', tx.id);
+                    }
+
+                    await refreshAdminData();
+                    await renderBonusManagement();
+                    await renderDashboard();
+                    showToast('✅ Semua bonus telah direset.', 'success');
+                } catch (e) {
+                    console.error('Reset bonus error:', e);
+                    showToast('Gagal reset bonus.', 'error');
+                }
+            });
+
+            // ========== REFRESH BONUS ==========
+            document.getElementById('refreshBonusBtn')?.addEventListener('click', async function() {
+                await refreshAdminData();
+                await renderBonusManagement();
+                showToast('Direfresh!', 'info');
+            });
 
             // ========== MEMBERS CRUD ==========
             async function renderAdminMembers() {
@@ -2241,6 +2587,13 @@
                     console.error('Save admin account error:', e);
                     showToast('Gagal menyimpan kredensial admin.', 'error');
                 }
+            });
+
+            // ========== QUICK SYNC ==========
+            document.getElementById('quickSyncBtn')?.addEventListener('click', async function() {
+                await refreshAdminData();
+                await renderDashboard();
+                showToast('✅ Statistik diperbarui!', 'success');
             });
 
             // ========== INIT ==========
