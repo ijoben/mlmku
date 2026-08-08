@@ -243,7 +243,6 @@
                     if (!select) return;
                     
                     if (products.length === 0) {
-                        // Fallback produk default
                         const defaults = [
                             { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000 },
                             { id: 2, name: 'Classic Straight Cut Raw', price: 280000 },
@@ -272,13 +271,11 @@
                     document.getElementById('regSponsor').value = sponsorId;
                     document.getElementById('regPosition').value = position;
                     
-                    // Tampilkan info sponsor
                     document.getElementById('sponsorInfo').style.display = 'block';
                     document.getElementById('sponsorNameDisplay').textContent = 'Loading...';
                     document.getElementById('sponsorIdDisplay').textContent = sponsorId;
                     document.getElementById('sponsorPositionDisplay').textContent = position === 'left' ? 'Kiri' : 'Kanan';
                     
-                    // Coba ambil nama sponsor
                     window.getTable('users', 'fullname,username', { username: sponsorId }).then(users => {
                         if (users && users.length > 0) {
                             document.getElementById('sponsorNameDisplay').textContent = users[0].fullname || users[0].username;
@@ -353,14 +350,12 @@
                 msgEl.innerText = '';
 
                 // ===== VALIDASI =====
-                // Field wajib
                 if (!username || !fullname || !email || !phone || !nik || !password || !confirm || !address || !city || !bankName || !bankAccount || !bankHolder) {
                     msgEl.className = 'msg error';
                     msgEl.innerText = '⚠️ Semua field wajib diisi (kecuali WhatsApp, Sponsor, Serial).';
                     return;
                 }
 
-                // Password
                 if (password.length < 6) {
                     msgEl.className = 'msg error';
                     msgEl.innerText = '⚠️ Password minimal 6 karakter.';
@@ -373,21 +368,18 @@
                     return;
                 }
 
-                // Email validasi
                 if (!email.includes('@') || !email.includes('.')) {
                     msgEl.className = 'msg error';
                     msgEl.innerText = '⚠️ Email tidak valid.';
                     return;
                 }
 
-                // NIK validasi (16 digit)
                 if (nik.length !== 16 || !/^\d+$/.test(nik)) {
                     msgEl.className = 'msg error';
                     msgEl.innerText = '⚠️ NIK harus 16 digit angka.';
                     return;
                 }
 
-                // Phone validasi (minimal 10 digit)
                 const phoneClean = phone.replace(/[^0-9]/g, '');
                 if (phoneClean.length < 10 || phoneClean.length > 15) {
                     msgEl.className = 'msg error';
@@ -395,7 +387,6 @@
                     return;
                 }
 
-                // Product harus dipilih
                 if (!productId) {
                     msgEl.className = 'msg error';
                     msgEl.innerText = '⚠️ Pilih produk untuk first order.';
@@ -433,31 +424,42 @@
                     
                     console.log('✅ Register berhasil:', user.email);
 
-                    // ===== UPDATE PROFILE DI TABEL USERS =====
-                    await new Promise(r => setTimeout(r, 1500));
-                    
+                    // ===== TUNGGU TRIGGER MEMBUAT USER DI TABEL USERS =====
+                    await new Promise(r => setTimeout(r, 2000));
+
+                    // ===== AMBIL PROFILE USER =====
                     const profile = await window.getUserProfile();
-                    if (profile) {
-                        await window.updateUserProfile({
-                            username: username,
-                            fullname: fullname,
-                            phone: phone,
-                            whatsapp: whatsapp || phone,
-                            nik: nik,
-                            address: address,
-                            city: city,
-                            bank_name: bankName,
-                            bank_account: bankAccount,
-                            bank_holder: bankHolder,
-                            sponsor_id: sponsorId || null,
-                            position: position,
-                            status: 'pending'
-                        });
-                        console.log('✅ Profile updated with full data');
+                    if (!profile) {
+                        console.error('❌ Profile tidak ditemukan');
+                        msgEl.className = 'msg error';
+                        msgEl.innerText = '❌ Gagal mengambil profile. Silakan coba login.';
+                        regBtn.disabled = false;
+                        regBtn.innerHTML = '<i class="fas fa-user-plus"></i> Daftar';
+                        regBtn.classList.remove('loading');
+                        return;
                     }
 
+                    console.log('✅ Profile ditemukan:', profile);
+
+                    // ===== UPDATE PROFILE DENGAN DATA LENGKAP =====
+                    await window.updateUserProfile({
+                        username: username,
+                        fullname: fullname,
+                        phone: phone,
+                        whatsapp: whatsapp || phone,
+                        nik: nik,
+                        address: address,
+                        city: city,
+                        bank_name: bankName,
+                        bank_account: bankAccount,
+                        bank_holder: bankHolder,
+                        sponsor_id: sponsorId || null,
+                        position: position,
+                        status: 'pending'
+                    });
+                    console.log('✅ Profile updated with full data');
+
                     // ===== BUAT FIRST ORDER =====
-                    // Ambil produk
                     const products = await window.getProducts();
                     const product = products.find(p => p.id === parseInt(productId));
                     
@@ -467,7 +469,7 @@
                         const newOrder = {
                             id: orderId,
                             order_number: orderNum,
-                            user_id: profile?.id || user.id,
+                            user_id: profile.id,
                             user_name: fullname || username,
                             type: 'first_order',
                             items: [{
@@ -483,8 +485,17 @@
                             status: 'pending',
                             created_at: new Date().toISOString()
                         };
-                        await window.saveOrder(newOrder);
-                        console.log('✅ First order created:', orderNum);
+                        
+                        console.log('🔵 Menyimpan order:', newOrder);
+                        
+                        try {
+                            await window.saveOrder(newOrder);
+                            console.log('✅ First order created:', orderNum);
+                        } catch (orderError) {
+                            console.error('❌ Gagal membuat order:', orderError);
+                            // Jangan gagalkan registrasi, tapi tampilkan warning
+                            showToast('Registrasi berhasil tapi order gagal: ' + orderError.message, 'warning');
+                        }
                     }
 
                     // ===== SUKSES =====
