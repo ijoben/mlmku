@@ -129,7 +129,7 @@
         /* ===== CAROUSEL ===== */
         .carousel-section { position: relative; width: 100%; height: 70vh; min-height: 400px; max-height: 600px; overflow: hidden; background: var(--denim-dark); border-radius: var(--radius); margin-bottom: 20px; margin-top: 8px; touch-action: pan-y; user-select: none; }
         @media (max-width: 768px) { 
-            .carousel-section { border-radius: 0 !important; margin-top: 0; height: 55vh; min-height: 280px; max-height: 400px; } 
+            .carousel-section { border-radius: 0 !important; margin-top: 0; height: 50vh; min-height: 300px; max-height: 420px; width: 100vw; left: 50%; transform: translateX(-50%); } 
         }
         .carousel-track { display: flex; height: 100%; width: 100%; transition: transform 0.6s cubic-bezier(0.25, 0.46, 0.45, 0.94); will-change: transform; }
         .carousel-slide { min-width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; padding: 40px 60px; background-size: cover; background-position: center; position: relative; flex-shrink: 0; }
@@ -137,17 +137,17 @@
         .carousel-slide .overlay-dark { position: absolute; inset: 0; background: linear-gradient(135deg, rgba(11, 26, 43, 0.6) 0%, rgba(11, 26, 43, 0.2) 100%); z-index: 1; }
         .carousel-slide .slide-content { text-align: center; color: var(--white); z-index: 2; max-width: 700px; position: relative; padding: 20px; }
         .carousel-slide .slide-content h2 { font-family: 'Playfair Display', serif; font-size: 3.5rem; font-weight: 800; letter-spacing: -1px; margin-bottom: 12px; text-shadow: 0 4px 30px rgba(0, 0, 0, 0.3); }
-        @media (max-width: 768px) { .carousel-slide .slide-content h2 { font-size: 1.8rem; letter-spacing: 0; } }
+        @media (max-width: 768px) { .carousel-slide .slide-content h2 { font-size: 2rem; letter-spacing: 0; } }
         .carousel-slide .slide-content p { font-size: 1.2rem; opacity: 0.9; color: var(--gold-light); text-shadow: 0 2px 20px rgba(0, 0, 0, 0.2); }
-        @media (max-width: 768px) { .carousel-slide .slide-content p { font-size: 0.85rem; } }
+        @media (max-width: 768px) { .carousel-slide .slide-content p { font-size: 0.9rem; } }
         .carousel-slide .slide-content .btn-slide { display: inline-block; margin-top: 16px; background: var(--gold-accent); color: var(--denim-dark); padding: 12px 36px; border-radius: 60px; font-weight: 700; font-size: 1rem; transition: var(--transition); }
         @media (max-width: 768px) { .carousel-slide .slide-content .btn-slide { padding: 10px 24px; font-size: 0.85rem; } }
         .carousel-slide .slide-content .btn-slide:hover { transform: scale(1.05); background: #b8963a; }
 
-        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.1); backdrop-filter: blur(8px); color: #fff; border: 1px solid rgba(255, 255, 255, 0.15); width: 48px; height: 48px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 10; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
+        .carousel-btn { position: absolute; top: 50%; transform: translateY(-50%); background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(8px); color: #fff; border: 1px solid rgba(255, 255, 255, 0.2); width: 48px; height: 48px; border-radius: 50%; font-size: 1.2rem; cursor: pointer; z-index: 10; transition: var(--transition); display: flex; align-items: center; justify-content: center; }
         .carousel-btn:hover { background: var(--gold-accent); border-color: var(--gold-accent); color: var(--denim-dark); }
         .carousel-btn.prev { left: 16px; } .carousel-btn.next { right: 16px; }
-        @media (max-width: 768px) { .carousel-btn { width: 32px; height: 32px; font-size: 0.8rem; } .carousel-btn.prev { left: 6px; } .carousel-btn.next { right: 6px; } }
+        @media (max-width: 768px) { .carousel-btn { width: 36px; height: 36px; font-size: 0.9rem; } .carousel-btn.prev { left: 8px; } .carousel-btn.next { right: 8px; } }
 
         .carousel-dots { position: absolute; bottom: 16px; left: 50%; transform: translateX(-50%); display: flex; gap: 8px; z-index: 10; }
         .carousel-dots .dot { width: 10px; height: 10px; border-radius: 50%; background: rgba(255, 255, 255, 0.25); cursor: pointer; transition: var(--transition); border: 2px solid transparent; }
@@ -259,6 +259,7 @@
             .product-detail-popup .popup-info .popup-desc { font-size: 0.8rem; }
             .popup-overlay .popup-box { padding: 20px 16px; }
             .popup-overlay .popup-box h3 { font-size: 1.1rem; }
+            .app-container { padding: 0 10px; }
         }
         @media (max-width: 480px) {
             .product-grid { grid-template-columns: 1fr 1fr; gap: 8px; }
@@ -646,7 +647,8 @@
             function goToSlide(i) {
                 const slides = track.querySelectorAll('.carousel-slide');
                 if (!slides.length) return;
-                currentSlide = (i + slides.length) % slides.length;
+                const totalSlides = slides.length;
+                currentSlide = ((i % totalSlides) + totalSlides) % totalSlides;
                 track.style.transform = `translateX(-${currentSlide * 100}%)`;
                 dots.querySelectorAll('.dot').forEach((d, idx) => d.classList.toggle('active', idx === currentSlide));
             }
@@ -654,16 +656,29 @@
             // ========== CAROUSEL TOUCH SWIPE ==========
             let touchStartX = 0;
             let touchEndX = 0;
+            let touchStartTime = 0;
             const carouselSection = document.getElementById('carouselSection');
 
             carouselSection.addEventListener('touchstart', function(e) {
                 touchStartX = e.changedTouches[0].screenX;
+                touchStartTime = Date.now();
             }, { passive: true });
+
+            carouselSection.addEventListener('touchmove', function(e) {
+                // Prevent default hanya jika swipe horizontal
+                const diff = touchStartX - e.changedTouches[0].screenX;
+                if (Math.abs(diff) > 10) {
+                    e.preventDefault();
+                }
+            }, { passive: false });
 
             carouselSection.addEventListener('touchend', function(e) {
                 touchEndX = e.changedTouches[0].screenX;
                 const diff = touchStartX - touchEndX;
-                if (Math.abs(diff) > 40) {
+                const elapsed = Date.now() - touchStartTime;
+                
+                // Swipe jika jarak > 40px atau kecepatan tinggi
+                if (Math.abs(diff) > 40 || (Math.abs(diff) > 20 && elapsed < 200)) {
                     if (diff > 0) {
                         goToSlide(currentSlide + 1);
                     } else {
