@@ -1326,6 +1326,26 @@
         };
         await window.upsertRow('orders', orderObj);
 
+        // ============================================================
+        // ===== HITUNG BONUS UNTUK TRANSAKSI RO =====
+        // ============================================================
+        try {
+          const settings = await window.getSettings();
+          
+          // 1. Binary Bonus (10 level)
+          await window.calculateBinaryBonus(currentUser.id, roPrice, settings);
+          
+          // 2. Reward Bonus (5 level)
+          await window.calculateRewardBonus(currentUser.id, roPrice, settings);
+          
+          // 3. RO Bonus (khusus repeat order)
+          await window.calculateRoBonus(currentUser.id, roPrice, settings);
+          
+          console.log('✅ RO bonuses calculated!');
+        } catch (bonusError) {
+          console.error('❌ Error calculating RO bonuses:', bonusError);
+        }
+
         // Refresh data
         currentUser = await window.getUserProfile();
         allProducts = await window.getProducts();
