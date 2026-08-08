@@ -61,10 +61,10 @@
             </div>
 
             <div class="login-footer">
-                Belum punya akun? <a href="register.html">Daftar di sini</a>
+                Belum punya akun? <a href="/register">Daftar di sini</a>
             </div>
             <div style="text-align:center; margin-top:12px;">
-                <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+                <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
             </div>
         </div>
     </div>
@@ -80,7 +80,7 @@
                     if (session) {
                         const profile = await window.getUserProfile();
                         if (profile) {
-                            window.location.href = profile.role === 'admin' ? 'admin.html' : 'dashboard.html';
+                            window.location.href = profile.role === 'admin' ? '/admin' : '/dashboard';
                         }
                     }
                 } catch (e) {
@@ -129,9 +129,9 @@
 
                     setTimeout(() => {
                         if (profile?.role === 'admin') {
-                            window.location.href = 'admin.html';
+                            window.location.href = '/admin';
                         } else {
-                            window.location.href = 'dashboard.html';
+                            window.location.href = '/dashboard';
                         }
                     }, 1000);
 
