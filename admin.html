@@ -1710,12 +1710,19 @@
 
                     let html = '';
                     paginated.forEach(u => {
+                        const userOrder = allOrders.find(o => String(o.user_id) === String(u.id) && o.proof_image);
+                        const txProof = (u.transactions || []).find(t => t.proof_image)?.proof_image;
+                        const purchaseProof = (u.purchase_history || []).find(p => p.proof_image)?.proof_image;
+
+                        const proofUrl = u.proof_image || u.first_order?.proof_image || userOrder?.proof_image || txProof || purchaseProof || null;
+                        const hasProof = !!proofUrl;
+
                         html += `<tr>
                             <td data-label="ID">${u.id}</td>
                             <td data-label="Nama">${u.fullname || u.username}</td>
                             <td data-label="Email">${u.email}</td>
                             <td data-label="Status"><span class="badge-status badge-${u.status}">${u.status.toUpperCase()}</span></td>
-                            <td data-label="Bukti">${u.proof_image ? `<button class="btn-sm btn-sm-gold view-user-proof" data-proof="${u.proof_image}">Lihat</button>` : 'Belum'}</td>
+                            <td data-label="Bukti">${hasProof ? `<button class="btn-sm btn-sm-gold view-user-proof" data-proof="${proofUrl}">Lihat</button>` : '<span style="color:#a0aec0;">Belum upload</span>'}</td>
                             <td data-label="Aksi"><div><button class="btn-sm btn-sm-success verify-user" data-id="${u.id}">Verifikasi</button></div></td>
                         </tr>`;
                     });
@@ -1724,7 +1731,12 @@
 
                     tbody.querySelectorAll('.view-user-proof').forEach(btn => {
                         btn.onclick = function() {
-                            openModal(`<h3>Bukti Verifikasi</h3><div class="proof-image"><img src="${this.dataset.proof}" style="max-width:100%;" /></div><button class="btn-submit" onclick="closeModal()">Tutup</button>`);
+                            const proofUrl = this.dataset.proof;
+                            if (proofUrl) {
+                                openModal(`<h3><i class="fas fa-image" style="color:var(--gold-accent);"></i> Bukti Transfer Member</h3><div class="proof-image" style="margin-top:10px; text-align:center;"><img src="${proofUrl}" style="max-width:100%; max-height:75vh; border-radius:10px; border:2px solid var(--gold-accent);" /></div><button class="btn-submit" onclick="closeModal()" style="margin-top:12px;">Tutup</button>`);
+                            } else {
+                                showToast('Member belum mengunggah foto bukti transfer.', 'warning');
+                            }
                         };
                     });
 
