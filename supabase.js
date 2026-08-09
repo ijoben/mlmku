@@ -238,6 +238,19 @@ window.deleteRow = async function(table, id) {
   console.log('✅ deleteRow berhasil');
 };
 
+window.getTransactions = async function(userId) {
+  try {
+    var query = supabaseClient.from('transactions').select('*');
+    if (userId) query = query.eq('user_id', userId);
+    var { data, error } = await query;
+    if (error) throw error;
+    return data || [];
+  } catch (e) {
+    console.warn('⚠️ getTransactions error:', e);
+    return [];
+  }
+};
+
 // ============================================================
 // STORAGE FUNCTIONS (Upload & Delete Gambar)
 // ============================================================
