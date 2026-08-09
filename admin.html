@@ -695,6 +695,8 @@
             let allSlides = [];
             let allFaqs = [];
             let allFeatures = [];
+            let allAbout = { title: 'Tentang Kami', content: '' };
+            let allFooter = { brand: 'HEDTRO JEANS', description: '', copyright: '© 2026 HEDTRO JEANS', social: {} };
             let allSettings = {};
             let currentAdmin = null;
             let statePage = {
@@ -957,23 +959,25 @@
                     allTransactions = transactions || [];
 
                     const { data: bankInfo, error: bErr } = await supabase.from('bank_info').select('*');
-                    if (bErr) throw bErr;
+                    if (bErr) console.warn('Bank info table warning:', bErr);
                     allBankInfo = bankInfo || [];
 
-                    const { data: slides, error: sErr } = await supabase.from('slides').select('*');
-                    if (sErr) throw sErr;
-                    allSlides = slides || [];
+                    try {
+                        const { data: slides } = await supabase.from('slides').select('*');
+                        allSlides = slides || [];
+                    } catch (e) { allSlides = []; }
 
-                    const { data: faqs, error: fErr } = await supabase.from('faq').select('*');
-                    if (fErr) throw fErr;
-                    allFaqs = faqs || [];
+                    try {
+                        const { data: faqs } = await supabase.from('faq').select('*');
+                        allFaqs = faqs || [];
+                    } catch (e) { allFaqs = []; }
 
-                    const { data: features, error: feErr } = await supabase.from('features').select('*');
-                    if (feErr) throw feErr;
-                    allFeatures = features || [];
+                    try {
+                        const { data: features } = await supabase.from('features').select('*');
+                        allFeatures = features || [];
+                    } catch (e) { allFeatures = []; }
 
-                    const { data: settings, error: seErr } = await supabase.from('settings').select('*');
-                    if (seErr) throw seErr;
+                    const { data: settings } = await supabase.from('settings').select('*');
                     allSettings = {};
                     (settings || []).forEach(r => allSettings[r.key] = r.value);
 
@@ -2016,133 +2020,146 @@
             async function renderPageSettings() {
                 try {
                     // Slides
-                    const slides = allSlides;
+                    const slides = allSlides || [];
                     const slidesContainer = document.getElementById('slideList');
-                    if (slides.length === 0) {
-                        slidesContainer.innerHTML = '<p class="text-muted">Kosong.</p>';
-                    } else {
-                        slidesContainer.innerHTML = slides.map(s =>
-                            `<div class="slide-item">
-                                <div class="slide-img">${s.image ? `<img src="${s.image}" />` : `<i class="fas fa-image"></i>`}</div>
-                                <div class="slide-body"><h4>${s.title}</h4><p>${s.subtitle}</p></div>
-                                <div class="slide-actions">
-                                    <button class="btn-sm btn-sm-warning edit-slide" data-id="${s.id}">Edit</button>
-                                    <button class="btn-sm btn-sm-danger delete-slide" data-id="${s.id}">Hapus</button>
-                                </div>
-                            </div>`
-                        ).join('');
-                        slidesContainer.querySelectorAll('.edit-slide').forEach(btn => {
-                            btn.onclick = function() { openSlideModal(this.dataset.id); };
-                        });
-                        slidesContainer.querySelectorAll('.delete-slide').forEach(btn => {
-                            btn.onclick = async function() {
-                                if (!confirm('Hapus slide ini?')) return;
-                                try {
-                                    const id = parseInt(this.dataset.id);
-                                    const { error } = await supabase.from('slides').delete().eq('id', id);
-                                    if (error) throw error;
-                                    await refreshAdminData();
-                                    await renderPageSettings();
-                                    showToast('Slide dihapus.', 'info');
-                                } catch (e) {
-                                    console.error('Delete slide error:', e);
-                                    showToast('Gagal menghapus slide.', 'error');
-                                }
-                            };
-                        });
+                    if (slidesContainer) {
+                        if (slides.length === 0) {
+                            slidesContainer.innerHTML = '<p class="text-muted" style="padding:10px;">Belum ada slide.</p>';
+                        } else {
+                            slidesContainer.innerHTML = slides.map(s =>
+                                `<div class="slide-item">
+                                    <div class="slide-img">${s.image ? `<img src="${s.image}" />` : `<i class="fas fa-image"></i>`}</div>
+                                    <div class="slide-body"><h4>${s.title || ''}</h4><p>${s.subtitle || ''}</p></div>
+                                    <div class="slide-actions">
+                                        <button class="btn-sm btn-sm-warning edit-slide" data-id="${s.id}">Edit</button>
+                                        <button class="btn-sm btn-sm-danger delete-slide" data-id="${s.id}">Hapus</button>
+                                    </div>
+                                </div>`
+                            ).join('');
+                            slidesContainer.querySelectorAll('.edit-slide').forEach(btn => {
+                                btn.onclick = function() { openSlideModal(this.dataset.id); };
+                            });
+                            slidesContainer.querySelectorAll('.delete-slide').forEach(btn => {
+                                btn.onclick = async function() {
+                                    if (!confirm('Hapus slide ini?')) return;
+                                    try {
+                                        const id = parseInt(this.dataset.id);
+                                        const { error } = await supabase.from('slides').delete().eq('id', id);
+                                        if (error) throw error;
+                                        await refreshAdminData();
+                                        await renderPageSettings();
+                                        showToast('Slide dihapus.', 'info');
+                                    } catch (e) {
+                                        console.error('Delete slide error:', e);
+                                        showToast('Gagal menghapus slide.', 'error');
+                                    }
+                                };
+                            });
+                        }
                     }
 
                     // About
-                    const about = allAbout || { title: '', content: '' };
-                    document.getElementById('aboutTitle').value = about.title || '';
-                    document.getElementById('aboutContent').value = about.content || '';
+                    const about = (typeof allAbout !== 'undefined' && allAbout) ? allAbout : { title: 'Tentang Kami', content: '' };
+                    const aboutTitleEl = document.getElementById('aboutTitle');
+                    const aboutContentEl = document.getElementById('aboutContent');
+                    if (aboutTitleEl) aboutTitleEl.value = (allSettings && allSettings['about_title']) || about.title || '';
+                    if (aboutContentEl) aboutContentEl.value = (allSettings && allSettings['about_content']) || about.content || '';
 
                     // FAQ
-                    const faqs = allFaqs;
+                    const faqs = allFaqs || [];
                     const faqContainer = document.getElementById('faqList');
-                    if (faqs.length === 0) {
-                        faqContainer.innerHTML = '<p class="text-muted">Kosong.</p>';
-                    } else {
-                        faqContainer.innerHTML = faqs.map(f =>
-                            `<div class="faq-item-admin">
-                                <div><strong>${f.question}</strong><br><span class="text-muted">${f.answer}</span></div>
-                                <div class="faq-actions">
-                                    <button class="btn-sm btn-sm-warning edit-faq" data-id="${f.id}">Edit</button>
-                                    <button class="btn-sm btn-sm-danger delete-faq" data-id="${f.id}">Hapus</button>
-                                </div>
-                            </div>`
-                        ).join('');
-                        faqContainer.querySelectorAll('.edit-faq').forEach(btn => {
-                            btn.onclick = function() { openFaqModal(this.dataset.id); };
-                        });
-                        faqContainer.querySelectorAll('.delete-faq').forEach(btn => {
-                            btn.onclick = async function() {
-                                if (!confirm('Hapus FAQ ini?')) return;
-                                try {
-                                    const id = parseInt(this.dataset.id);
-                                    const { error } = await supabase.from('faq').delete().eq('id', id);
-                                    if (error) throw error;
-                                    await refreshAdminData();
-                                    await renderPageSettings();
-                                    showToast('FAQ dihapus.', 'info');
-                                } catch (e) {
-                                    console.error('Delete faq error:', e);
-                                    showToast('Gagal menghapus FAQ.', 'error');
-                                }
-                            };
-                        });
+                    if (faqContainer) {
+                        if (faqs.length === 0) {
+                            faqContainer.innerHTML = '<p class="text-muted" style="padding:10px;">Belum ada FAQ.</p>';
+                        } else {
+                            faqContainer.innerHTML = faqs.map(f =>
+                                `<div class="faq-item-admin">
+                                    <div><strong>${f.question || ''}</strong><br><span class="text-muted">${f.answer || ''}</span></div>
+                                    <div class="faq-actions">
+                                        <button class="btn-sm btn-sm-warning edit-faq" data-id="${f.id}">Edit</button>
+                                        <button class="btn-sm btn-sm-danger delete-faq" data-id="${f.id}">Hapus</button>
+                                    </div>
+                                </div>`
+                            ).join('');
+                            faqContainer.querySelectorAll('.edit-faq').forEach(btn => {
+                                btn.onclick = function() { openFaqModal(this.dataset.id); };
+                            });
+                            faqContainer.querySelectorAll('.delete-faq').forEach(btn => {
+                                btn.onclick = async function() {
+                                    if (!confirm('Hapus FAQ ini?')) return;
+                                    try {
+                                        const id = parseInt(this.dataset.id);
+                                        const { error } = await supabase.from('faq').delete().eq('id', id);
+                                        if (error) throw error;
+                                        await refreshAdminData();
+                                        await renderPageSettings();
+                                        showToast('FAQ dihapus.', 'info');
+                                    } catch (e) {
+                                        console.error('Delete faq error:', e);
+                                        showToast('Gagal menghapus FAQ.', 'error');
+                                    }
+                                };
+                            });
+                        }
                     }
 
                     // Features
-                    const features = allFeatures;
+                    const features = allFeatures || [];
                     const featureContainer = document.getElementById('featureList');
-                    if (features.length === 0) {
-                        featureContainer.innerHTML = '<p class="text-muted">Kosong.</p>';
-                    } else {
-                        featureContainer.innerHTML = features.map(f =>
-                            `<div class="feature-item-admin">
-                                <div><strong>${f.title}</strong><br><span class="text-muted">${f.description}</span></div>
-                                <div class="feature-actions">
-                                    <button class="btn-sm btn-sm-warning edit-feature" data-id="${f.id}">Edit</button>
-                                    <button class="btn-sm btn-sm-danger delete-feature" data-id="${f.id}">Hapus</button>
-                                </div>
-                            </div>`
-                        ).join('');
-                        featureContainer.querySelectorAll('.edit-feature').forEach(btn => {
-                            btn.onclick = function() { openFeatureModal(this.dataset.id); };
-                        });
-                        featureContainer.querySelectorAll('.delete-feature').forEach(btn => {
-                            btn.onclick = async function() {
-                                if (!confirm('Hapus keunggulan ini?')) return;
-                                try {
-                                    const id = parseInt(this.dataset.id);
-                                    const { error } = await supabase.from('features').delete().eq('id', id);
-                                    if (error) throw error;
-                                    await refreshAdminData();
-                                    await renderPageSettings();
-                                    showToast('Keunggulan dihapus.', 'info');
-                                } catch (e) {
-                                    console.error('Delete feature error:', e);
-                                    showToast('Gagal menghapus keunggulan.', 'error');
-                                }
-                            };
-                        });
+                    if (featureContainer) {
+                        if (features.length === 0) {
+                            featureContainer.innerHTML = '<p class="text-muted" style="padding:10px;">Belum ada keunggulan.</p>';
+                        } else {
+                            featureContainer.innerHTML = features.map(f =>
+                                `<div class="feature-item-admin">
+                                    <div><strong>${f.title || ''}</strong><br><span class="text-muted">${f.description || ''}</span></div>
+                                    <div class="feature-actions">
+                                        <button class="btn-sm btn-sm-warning edit-feature" data-id="${f.id}">Edit</button>
+                                        <button class="btn-sm btn-sm-danger delete-feature" data-id="${f.id}">Hapus</button>
+                                    </div>
+                                </div>`
+                            ).join('');
+                            featureContainer.querySelectorAll('.edit-feature').forEach(btn => {
+                                btn.onclick = function() { openFeatureModal(this.dataset.id); };
+                            });
+                            featureContainer.querySelectorAll('.delete-feature').forEach(btn => {
+                                btn.onclick = async function() {
+                                    if (!confirm('Hapus keunggulan ini?')) return;
+                                    try {
+                                        const id = parseInt(this.dataset.id);
+                                        const { error } = await supabase.from('features').delete().eq('id', id);
+                                        if (error) throw error;
+                                        await refreshAdminData();
+                                        await renderPageSettings();
+                                        showToast('Keunggulan dihapus.', 'info');
+                                    } catch (e) {
+                                        console.error('Delete feature error:', e);
+                                        showToast('Gagal menghapus keunggulan.', 'error');
+                                    }
+                                };
+                            });
+                        }
                     }
 
                     // Footer
-                    const footer = allFooter || { brand: '', description: '', copyright: '', social: {} };
-                    document.getElementById('footerBrand').value = footer.brand || '';
-                    document.getElementById('footerDesc').value = footer.description || '';
-                    document.getElementById('footerCopyright').value = footer.copyright || '';
-                    if (footer.social) {
-                        document.getElementById('sosmedInstagram').value = footer.social.instagram || '';
-                        document.getElementById('sosmedFacebook').value = footer.social.facebook || '';
-                        document.getElementById('sosmedYoutube').value = footer.social.youtube || '';
-                        document.getElementById('sosmedTiktok').value = footer.social.tiktok || '';
-                    }
+                    const footer = (typeof allFooter !== 'undefined' && allFooter) ? allFooter : { brand: 'HEDTRO JEANS', description: '', copyright: '© 2026 HEDTRO JEANS', social: {} };
+                    const fBrand = document.getElementById('footerBrand');
+                    const fDesc = document.getElementById('footerDesc');
+                    const fCopy = document.getElementById('footerCopyright');
+                    const sInsta = document.getElementById('sosmedInstagram');
+                    const sFb = document.getElementById('sosmedFacebook');
+                    const sYt = document.getElementById('sosmedYoutube');
+                    const sTk = document.getElementById('sosmedTiktok');
+
+                    if (fBrand) fBrand.value = (allSettings && allSettings['footer_brand']) || footer.brand || '';
+                    if (fDesc) fDesc.value = (allSettings && allSettings['footer_desc']) || footer.description || '';
+                    if (fCopy) fCopy.value = (allSettings && allSettings['footer_copyright']) || footer.copyright || '';
+                    if (sInsta) sInsta.value = (allSettings && allSettings['sosmed_instagram']) || (footer.social ? footer.social.instagram : '') || '';
+                    if (sFb) sFb.value = (allSettings && allSettings['sosmed_facebook']) || (footer.social ? footer.social.facebook : '') || '';
+                    if (sYt) sYt.value = (allSettings && allSettings['sosmed_youtube']) || (footer.social ? footer.social.youtube : '') || '';
+                    if (sTk) sTk.value = (allSettings && allSettings['sosmed_tiktok']) || (footer.social ? footer.social.tiktok : '') || '';
                 } catch (e) {
-                    console.error('Page settings error:', e);
-                    showToast('Gagal memuat halaman utama.', 'error');
+                    console.warn('Page settings warning:', e);
                 }
             }
 
