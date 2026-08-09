@@ -2180,31 +2180,86 @@
 
             // ========== RENDER FUNCTIONS ==========
             function renderAbout(about) {
-                document.getElementById('aboutContainer').innerHTML = about.content || '<p>Brand denim premium HEDTRO JEANS.</p>';
+                const defaultAboutHtml = `
+                    <div style="line-height:1.8; color:var(--denim-navy); font-size:0.95rem;">
+                        <p style="margin-bottom:12px; font-size:1.05rem; font-weight:600; color:var(--denim-dark);">
+                            <strong style="color:var(--gold-accent);">HEDTRO JEANS</strong> adalah brand denim lokal Indonesia yang menghadirkan celana dan jaket berkualitas ekspor dari bahan <strong>14oz Raw Selvedge Denim</strong> premium.
+                        </p>
+                        <p style="margin-bottom:12px;">
+                            Kami menggabungkan seni ketahanan kain denim otentik dengan potongan modern (*slim fit*, *straight fit*) yang nyaman digunakan sehari-hari. Setiap produk dijahit dengan presisi tinggi menggunakan benang rantai (*chainstitch*) dan ornamen kuningan eksklusif.
+                        </p>
+                        <p>
+                            Selain sebagai toko online fashion denim pilihan, HEDTRO JEANS juga membuka peluang kemitraan bisnis affiliate dan networking berpotensi tinggi dengan sistem bonus transparan (Bonus Sponsor, Pasangan Binary, Reward, & Repeat Order).
+                        </p>
+                    </div>
+                `;
+                document.getElementById('aboutContainer').innerHTML = (about && about.content && about.content.trim().length > 20) ? about.content : defaultAboutHtml;
             }
 
             function renderFaq(faqs) {
                 const container = document.getElementById('faqContainer');
-                if (faqs.length === 0) {
-                    container.innerHTML = `<div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>Bagaimana cara mendaftar?</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">Klik tombol Daftar di navbar.</div></div>`;
-                    return;
-                }
+                const defaultFaqs = [
+                    {
+                        question: 'Bagaimana cara mendaftar akun member HEDTRO JEANS?',
+                        answer: 'Anda dapat mendaftar dengan mengklik tombol "Daftar" di navigasi atas atau menggunakan Link Referal dari Sponsor Anda. Lengkapi formulir pendaftaran dan selesaikan transaksi First Order untuk mengaktifkan akun VERIFIED Anda.'
+                    },
+                    {
+                        question: 'Apa itu Pembelian RO (Repeat Order) dan apa keuntungannya?',
+                        answer: 'RO (Repeat Order) adalah fitur belanja ulang produk denim favorit untuk member. Setiap pembelian RO memberikan harga khusus member serta memicu pembagian Bonus RO, Bonus Binary, dan Poin Reward sesuai ketentuan.'
+                    },
+                    {
+                        question: 'Bagaimana alur pembayaran pesanan via Transfer Bank?',
+                        answer: 'Setelah melakukan pemesanan, Anda akan menerima rincian nominal transfer yang disertai <strong>Kode Unik 3 Angka</strong> (contoh: Rp 250.147). Transfer sesuai nominal tepat ke Rekening Resmi Perusahaan, lalu upload foto bukti transfer pada menu Riwayat Pesanan.'
+                    },
+                    {
+                        question: 'Berapa lama proses pengiriman produk dan bagaimana cara cek resinya?',
+                        answer: 'Pesanan diproses 1x24 jam setelah pembayaran terverifikasi. Nomor resi expedisi (JNE, J&T, POS) dapat dicek langsung melalui tombol "Lacak Pesanan" di website atau di halaman Dashboard member.'
+                    },
+                    {
+                        question: 'Bagaimana cara melakukan Penarikan Saldo (Withdrawal) bonus?',
+                        answer: 'Penarikan saldo dompet bonus dapat dilakukan kapan saja melalui menu Withdraw di Dashboard Member. Cukup masukkan nominal dan rekening bank terdaftar Anda, kemudian Admin akan memproses pencairan secara cepat.'
+                    }
+                ];
+
+                const displayFaqs = (faqs && faqs.length > 0) ? faqs : defaultFaqs;
                 let html = '';
-                faqs.forEach(f => {
-                    html += `<div class="faq-item"><div class="faq-question" onclick="toggleFaq(this)"><span>${f.question}</span><i class="fas fa-chevron-down"></i></div><div class="faq-answer">${f.answer}</div></div>`;
+                displayFaqs.forEach(f => {
+                    html += `
+                        <div class="faq-item" style="border-bottom:1px solid #e2e8f0; padding:14px 0;">
+                            <div class="faq-question" onclick="toggleFaq(this)" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:700; color:var(--denim-dark); font-size:0.95rem;">
+                                <span><i class="fas fa-question-circle" style="color:var(--gold-accent); margin-right:8px;"></i> ${f.question}</span>
+                                <i class="fas fa-chevron-down" style="color:var(--gold-accent); transition:0.3s;"></i>
+                            </div>
+                            <div class="faq-answer" style="display:none; padding-top:10px; color:#475569; line-height:1.6; font-size:0.88rem; padding-left:26px;">
+                                ${f.answer}
+                            </div>
+                        </div>
+                    `;
                 });
                 container.innerHTML = html;
             }
 
             function renderFeatures(features) {
                 const container = document.getElementById('featuresContainer');
-                if (features.length === 0) {
-                    container.innerHTML = `<div class="feature-item"><i class="fas fa-check-circle"></i><h4>100% OTENTIK</h4><p>Raw Denim 14oz</p></div><div class="feature-item"><i class="fas fa-shipping-fast"></i><h4>GRATIS ONGKIR</h4><p>Seluruh Indonesia</p></div>`;
-                    return;
-                }
+                const defaultFeatures = [
+                    { icon: 'fa-shield-alt', title: '100% OTENTIK', description: 'Raw Denim 14oz berkualitas ekspor dengan ketahanan jahitan ekstra.' },
+                    { icon: 'fa-shipping-fast', title: 'PENGIRIMAN CEPAT', description: 'Kerjasama dengan expedisi terpercaya dilengkapi fitur pelacakan resi.' },
+                    { icon: 'fa-coins', title: 'BONUS AFFILIATE', description: 'Raih Bonus Sponsor, Pasangan Binary, & Reward melimpah untuk mitra.' },
+                    { icon: 'fa-lock', title: 'TRANSAKSI AMAN', description: 'Sistem pembayaran aman dengan verifikasi kode unik & proteksi saldo.' }
+                ];
+
+                const displayFeatures = (features && features.length > 0) ? features : defaultFeatures;
                 let html = '';
-                features.forEach(f => {
-                    html += `<div class="feature-item"><i class="fas ${f.icon || 'fa-check-circle'}"></i><h4>${f.title}</h4><p>${f.description}</p></div>`;
+                displayFeatures.forEach(f => {
+                    html += `
+                        <div class="feature-item" style="background:#fff; border-radius:14px; padding:20px; text-align:center; box-shadow:0 4px 15px rgba(0,0,0,0.04); border:1px solid #e2e8f0; transition:0.3s;">
+                            <div style="width:50px; height:50px; border-radius:50%; background:rgba(201,168,76,0.12); color:var(--gold-accent); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:1.4rem;">
+                                <i class="fas ${f.icon || 'fa-check-circle'}"></i>
+                            </div>
+                            <h4 style="font-weight:800; font-size:0.9rem; color:var(--denim-dark); margin-bottom:6px;">${f.title}</h4>
+                            <p style="font-size:0.78rem; color:#64748b; line-height:1.4;">${f.description}</p>
+                        </div>
+                    `;
                 });
                 container.innerHTML = html;
             }
