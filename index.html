@@ -349,11 +349,11 @@
     <div class="popup-overlay" id="trackPopup">
         <div class="popup-box">
             <button class="close-popup" id="closeTrackPopup">&times;</button>
-            <h3><i class="fas fa-truck" style="color:var(--gold-accent);"></i> Lacak Pesanan</h3>
-            <p class="sub">Masukkan nomor pesanan Anda</p>
+            <h3><i class="fas fa-shipping-fast" style="color:var(--gold-accent);"></i> Lacak Nomor Resi</h3>
+            <p class="sub">Masukkan Nomor Resi Pengiriman dari Admin</p>
             <div class="popup-form">
-                <input type="text" id="trackInputPopup" placeholder="Contoh: ORD-123456" />
-                <button id="trackBtnPopup"><i class="fas fa-search"></i> Lacak</button>
+                <input type="text" id="trackInputPopup" placeholder="Contoh: JNE-99882211" />
+                <button id="trackBtnPopup"><i class="fas fa-search"></i> Cek Resi</button>
             </div>
             <div class="popup-result" id="trackResultPopup"></div>
         </div>
@@ -990,34 +990,129 @@
                 }
             });
 
-            // ========== TRACKING ==========
-            document.getElementById('trackBtnPopup').addEventListener('click', async function() {
-                const input = document.getElementById('trackInputPopup').value.trim().toUpperCase();
-                const resultEl = document.getElementById('trackResultPopup');
-                if (!input) { resultEl.innerHTML = '⚠️ Masukkan nomor pesanan.'; resultEl.style.color = '#b13e3e'; return; }
-                try {
-                    const orders = await window.getOrders();
-                    const order = orders.find(o => (o.order_number && o.order_number.toUpperCase() === input) || ('ORD-' + o.id) === input);
-                    if (order) {
-                        const statusText = order.status === 'pending' ? '⏳ Menunggu Konfirmasi / Pembayaran' : (order.status === 'processing' ? '📦 Pesanan Diproses' : (order.status === 'shipped' ? '🚚 Pesanan Dikirim' : '✅ Selesai'));
-                        resultEl.innerHTML = `✅ <strong>${order.order_number || ('ORD-' + order.id)}</strong><br>Pemesan: ${order.user_name}<br>Status: ${statusText}<br>Total: Rp ${(order.total||0).toLocaleString()}`;
-                        resultEl.style.color = '#1f7a4b';
-                    } else {
-                        resultEl.innerHTML = '❌ Nomor pesanan tidak ditemukan.';
-                        resultEl.style.color = '#b13e3e';
-                    }
-                } catch (error) {
-                    resultEl.innerHTML = '❌ Gagal mencari pesanan.';
-                    resultEl.style.color = '#b13e3e';
+            // ========== TRACKING POPUP HANDLERS ==========
+            window.openTrackModal = function() {
+                const trackPopup = document.getElementById('trackPopup');
+                if (trackPopup) {
+                    document.getElementById('trackResultPopup').innerHTML = '';
+                    document.getElementById('trackInputPopup').value = '';
+                    trackPopup.classList.add('show');
+                    document.body.style.overflow = 'hidden';
                 }
+                const sidebar = document.getElementById('sidebar');
+                const sidebarOverlay = document.getElementById('sidebarOverlay');
+                const burgerBtn = document.getElementById('burgerBtn');
+                if (sidebar) sidebar.classList.remove('open');
+                if (sidebarOverlay) sidebarOverlay.classList.remove('active');
+                if (burgerBtn) burgerBtn.classList.remove('active');
+            };
+
+            document.getElementById('navTrackBtn')?.addEventListener('click', (e) => { e.preventDefault(); window.openTrackModal(); });
+            document.getElementById('sideTrackBtn')?.addEventListener('click', (e) => { e.preventDefault(); window.openTrackModal(); });
+            document.getElementById('closeTrackPopup')?.addEventListener('click', () => { document.getElementById('trackPopup').classList.remove('show'); document.body.style.overflow = ''; });
+
+            // ========== TRACK ORDER BY RESI NUMBER ==========
+            document.getElementById('trackBtnPopup')?.addEventListener('click', async function() {
+                const resiInput = document.getElementById('trackInputPopup').value.trim();
+                const resultEl = document.getElementById('trackResultPopup');
+                
+                if (!resiInput) {
+                    resultEl.innerHTML = '<p style="color:#e53e3e; font-weight:600; margin-top:8px;">⚠️ Harap masukkan Nomor Resi Pengiriman Anda.</p>';
+                    return;
+                }
+
+                resultEl.innerHTML = '<p style="color:var(--denim-navy); font-weight:600; margin-top:8px;"><i class="fas fa-spinner fa-spin"></i> Mencari status resi...</p>';
+
+                try {
+                    const qResi = resiInput.toLowerCase();
+                    const allUsersData = await window.getTable('users');
+                    const ordersData = await window.getOrders();
+
+                    // 1. Search in orders table strictly by resi
+                    let matchedOrder = (ordersData || []).find(o => 
+                        o.resi && o.resi.toLowerCase().trim() === qResi
+                    );
+
+                    // 2. If not found in orders table, search in user objects
+                    let matchedUser = null;
+                    let matchedItemFromUser = null;
+
+                    if (matchedOrder) {
+                        matchedUser = (allUsersData || []).find(u => String(u.id) === String(matchedOrder.user_id));
+                    } else {
+                        for (const u of (allUsersData || [])) {
+                            if (u.first_order && u.first_order.resi && u.first_order.resi.toLowerCase().trim() === qResi) {
+                                matchedUser = u;
+                                matchedItemFromUser = u.first_order;
+                                break;
+                            }
+                            if (u.purchase_history && Array.isArray(u.purchase_history)) {
+                                const foundP = u.purchase_history.find(p => p.resi && p.resi.toLowerCase().trim() === qResi);
+                                if (foundP) {
+                                    matchedUser = u;
+                                    matchedItemFromUser = foundP;
+                                    break;
+                                }
+                            }
+                            if (u.transactions && Array.isArray(u.transactions)) {
+                                const foundT = u.transactions.find(t => t.resi && t.resi.toLowerCase().trim() === qResi);
+                                if (foundT) {
+                                    matchedUser = u;
+                                    matchedItemFromUser = foundT;
+                                    break;
+                                }
+                            }
+                        }
+                    }
+
+                    if (!matchedOrder && !matchedItemFromUser) {
+                        resultEl.innerHTML = `
+                            <div style="margin-top:12px; padding:14px; background:#fff5f5; border:1px solid #feb2b2; border-radius:10px; text-align:center; color:#c53030;">
+                                <i class="fas fa-exclamation-triangle" style="font-size:1.5rem; margin-bottom:6px;"></i><br>
+                                <strong>Nomor Resi "${resiInput}" Tidak Ditemukan</strong>
+                                <p style="font-size:0.8rem; margin-top:4px; color:#742a2a;">Pastikan nomor resi diketik dengan benar atau hubungi Admin jika resi belum diterbitkan.</p>
+                            </div>`;
+                        return;
+                    }
+
+                    const status = matchedOrder?.status || matchedItemFromUser?.status || 'shipped';
+                    const userName = matchedUser ? (matchedUser.fullname || matchedUser.username) : (matchedOrder?.user_name || 'Pelanggan');
+                    const resiVal = matchedOrder?.resi || matchedItemFromUser?.resi || resiInput;
+                    const itemsName = matchedOrder?.items ? matchedOrder.items.map(i => i.name).join(', ') : (matchedItemFromUser?.items ? matchedItemFromUser.items.map(i => i.name).join(', ') : 'Produk Denim');
+
+                    let statusBadge = '<span style="background:#2b6cb0; color:#fff; padding:4px 10px; border-radius:6px; font-weight:bold; font-size:0.8rem;">🚚 DIKIRIM (Dalam Pengiriman Expedisi)</span>';
+                    if (status === 'completed' || status === 'success') {
+                        statusBadge = '<span style="background:#2e7d32; color:#fff; padding:4px 10px; border-radius:6px; font-weight:bold; font-size:0.8rem;">✅ SELESAI / DITERIMA</span>';
+                    } else if (status === 'pending') {
+                        statusBadge = '<span style="background:#dd6b20; color:#fff; padding:4px 10px; border-radius:6px; font-weight:bold; font-size:0.8rem;">⏳ MENUNGGU PROSES EXPEDISI</span>';
+                    }
+
+                    resultEl.innerHTML = `
+                        <div style="margin-top:14px; padding:16px; background:#f7fafc; border:2px solid var(--gold-accent); border-radius:12px; text-align:left; font-size:0.85rem; line-height:1.7;">
+                            <div style="text-align:center; padding-bottom:10px; margin-bottom:10px; border-bottom:1px solid #e2e8f0;">
+                                <span style="font-size:0.75rem; color:#718096; text-transform:uppercase; letter-spacing:0.5px;">Nomor Resi Pengiriman</span>
+                                <div style="font-size:1.2rem; font-weight:800; color:var(--denim-dark); margin-top:2px;">
+                                    <i class="fas fa-truck" style="color:var(--gold-accent);"></i> ${resiVal}
+                                </div>
+                            </div>
+                            <p><strong>Nama Penerima:</strong> ${userName}</p>
+                            <p><strong>Produk:</strong> ${itemsName}</p>
+                            <p style="margin-top:8px;"><strong>Status Paket:</strong> ${statusBadge}</p>
+                        </div>`;
+                } catch (err) {
+                    console.error('Track error:', err);
+                    resultEl.innerHTML = '<p style="color:#e53e3e; margin-top:8px;">❌ Gagal melacak resi. Silakan coba lagi.</p>';
+                }
+            });
+
+            document.getElementById('trackInputPopup')?.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') document.getElementById('trackBtnPopup').click();
             });
 
             // ========== POPUP EVENTS ==========
             document.getElementById('cartBtnDesktop').onclick = () => { updateCartUI(); document.getElementById('cartPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
             document.getElementById('cartHp').onclick = () => { updateCartUI(); document.getElementById('cartPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
             document.getElementById('closeCartPopup').onclick = () => { document.getElementById('cartPopup').classList.remove('show'); document.body.style.overflow = ''; };
-            document.getElementById('navTrackBtn').onclick = (e) => { e.preventDefault(); document.getElementById('trackPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
-            document.getElementById('closeTrackPopup').onclick = () => { document.getElementById('trackPopup').classList.remove('show'); document.body.style.overflow = ''; };
             document.getElementById('searchIconHp').onclick = () => { document.getElementById('searchPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
             document.getElementById('closeSearchPopup').onclick = () => { document.getElementById('searchPopup').classList.remove('show'); document.body.style.overflow = ''; };
 
@@ -1104,72 +1199,6 @@
                 document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
                 if (!isOpen) answer.classList.add('open');
             };
-
-            // ========== LACAK PESANAN ==========
-            window.openTrackModal = function() {
-                const query = prompt('Masukkan Email, Username, atau Nomor Resi / Pesanan Anda untuk melacak:');
-                if (!query || !query.trim()) return;
-                doTrackOrder(query.trim());
-            };
-
-            async function doTrackOrder(query) {
-                try {
-                    showToast('🔍 Mencari data pesanan...', 'info');
-                    const qLower = query.toLowerCase();
-                    const allUsersData = await window.getTable('users');
-                    const ordersData = await window.getOrders();
-
-                    let matchedUser = (allUsersData || []).find(u => 
-                        String(u.id) === query || 
-                        (u.email && u.email.toLowerCase().includes(qLower)) || 
-                        (u.username && u.username.toLowerCase().includes(qLower)) ||
-                        (u.fullname && u.fullname.toLowerCase().includes(qLower)) ||
-                        (u.resi && u.resi.toLowerCase().includes(qLower))
-                    );
-
-                    let matchedOrder = (ordersData || []).find(o => 
-                        String(o.id) === query || 
-                        (o.order_number && o.order_number.toLowerCase().includes(qLower)) ||
-                        (o.resi && o.resi.toLowerCase().includes(qLower))
-                    );
-
-                    if (!matchedUser && matchedOrder) {
-                        matchedUser = (allUsersData || []).find(u => String(u.id) === String(matchedOrder.user_id));
-                    }
-
-                    const resi = (matchedOrder?.resi) || (matchedUser?.resi) || (matchedUser?.first_order?.resi) || null;
-                    const status = (matchedOrder?.status) || (matchedUser?.first_order?.status) || (matchedUser?.status) || 'pending';
-                    const userName = matchedUser ? (matchedUser.fullname || matchedUser.username) : (matchedOrder?.user_name || 'Pelanggan');
-
-                    let statusText = 'PENDING (Menunggu Verifikasi Admin)';
-                    let badgeColor = '#dd6b20';
-                    if (status === 'completed' || status === 'success') {
-                        statusText = '✅ SELESAI / DITERIMA';
-                        badgeColor = '#2e7d32';
-                    } else if (status === 'shipped') {
-                        statusText = '🚚 DIKIRIM (Dalam Pengiriman Expedisi)';
-                        badgeColor = '#2b6cb0';
-                    } else if (status === 'verified' || status === 'processing' || status === 'paid') {
-                        statusText = '📦 TERVERIFIKASI / DIPROSES';
-                        badgeColor = '#2e7d32';
-                    }
-
-                    const resiDisplay = resi ? `<div style="margin-top:10px; padding:12px; background:#fff8e7; border:2px solid var(--gold-accent); border-radius:10px; text-align:center;"><strong style="font-size:1.1rem; color:#000;"><i class="fas fa-truck"></i> RESI: ${resi}</strong></div>` : '<div style="margin-top:10px; color:#718096;">Resi pengiriman belum diinput oleh Admin.</div>';
-
-                    openModal(`
-                        <h3><i class="fas fa-search-location" style="color:var(--gold-accent);"></i> Hasil Lacak Pesanan</h3>
-                        <div style="margin-top:14px; text-align:left; font-size:0.9rem; line-height:1.6;">
-                            <p><strong>Nama Pelanggan:</strong> ${userName}</p>
-                            <p><strong>Status Pesanan:</strong> <span style="background:${badgeColor}; color:#fff; padding:2px 8px; border-radius:6px; font-weight:bold; font-size:0.8rem;">${statusText}</span></p>
-                            ${resiDisplay}
-                        </div>
-                        <button class="btn-submit" onclick="closeModal()" style="margin-top:16px;">Tutup</button>
-                    `);
-                } catch (e) {
-                    console.error('Track error:', e);
-                    showToast('Gagal melacak pesanan.', 'error');
-                }
-            }
 
             // ========== INIT ==========
             (async function init() {
