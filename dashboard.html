@@ -616,8 +616,8 @@
 
     /* ===== RESPONSIVE HP ===== */
     @media (max-width: 768px) {
-      .dash-grid { grid-template-columns:1fr; gap:10px; }
-      .wallet-card { padding:14px 16px; }
+      .dash-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
+      .wallet-card { grid-column: 1 / -1; padding: 14px 16px; }
       .wallet-card .wallet-top .avatar-mini { width:36px; height:36px; font-size:1rem; }
       .wallet-card .wallet-balance .amount { font-size:1.4rem; }
       .product-grid { grid-template-columns:1fr 1fr; gap:8px; }
@@ -994,6 +994,15 @@
       <div class="custom-modal-body">
         <div id="uploadBankInfo" style="background:#f8fafc; padding:12px; border-radius:6px; border:1px solid #e2e8f0; margin-bottom:10px; font-size:0.8rem; line-height:1.5;"></div>
         <div class="form-group"><label>Upload Bukti</label><input type="file" id="uploadProofFile" accept="image/*" style="padding:6px;" /></div>
+        <div id="uploadProgressBox" style="display:none; margin-top:12px;">
+          <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; margin-bottom:4px;">
+            <span style="color:var(--denim-navy);"><i class="fas fa-spinner fa-spin"></i> Mengunggah Bukti Transfer...</span>
+            <span id="uploadPercentText" style="color:var(--gold-accent);">0%</span>
+          </div>
+          <div style="background:#e2e8f0; border-radius:10px; height:10px; overflow:hidden; border:1px solid #cbd5e0;">
+            <div id="uploadProgressBar" style="width:0%; height:100%; background:linear-gradient(90deg, #bf953f, #15283c); border-radius:10px; transition:width 0.2s ease;"></div>
+          </div>
+        </div>
       </div>
       <div class="custom-modal-footer">
         <button class="btn-sm btn-sm-danger" id="uploadCancelBtn">Batal</button>
@@ -1287,15 +1296,27 @@
           const isPlus = (t.type === 'deposit' || t.type === 'bonus' || t.type === 'ro_purchase');
           const colorClass = isPlus ? 'plus' : 'minus';
           const sign = isPlus ? '+' : '-';
-          let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' || t.status === 'verified' ? 'status-success' : 'status-failed');
+
+          const orderMatch = (allOrders || []).find(o => String(o.id) === String(t.id));
+          const purchaseMatch = (currentUser.purchase_history || []).find(p => String(p.id) === String(t.id));
+
+          let realStatus = (orderMatch ? orderMatch.status : (purchaseMatch ? purchaseMatch.status : t.status)) || 'pending';
+          if (realStatus === 'processing' || realStatus === 'verified') realStatus = 'VERIFIED';
+          else if (realStatus === 'shipped') realStatus = 'DIKIRIM';
+          else if (realStatus === 'success') realStatus = 'SUCCESS';
+          else if (realStatus === 'pending') realStatus = 'PENDING';
+
+          let badge = (realStatus === 'PENDING') ? 'status-pending' : 'status-success';
+          const resiVal = (orderMatch ? orderMatch.resi : (purchaseMatch ? purchaseMatch.resi : t.resi)) || null;
+          let resiHtml = resiVal ? `<br><span class="resi" style="font-size:0.7rem; color:var(--gold-accent); font-weight:700;"><i class="fas fa-truck"></i> Resi: ${resiVal}</span>` : '';
           const date = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID');
-          let resiHtml = t.resi ? `<span class="resi"><i class="fas fa-truck"></i> ${t.resi}</span>` : '';
+
           html += `<tr>
             <td data-label="Tanggal">${date}</td>
             <td data-label="Jenis"><strong>${(t.type||'').toUpperCase()}</strong></td>
-            <td data-label="Detail">${t.note || t.method || '-'} ${resiHtml}</td>
-            <td data-label="Nominal" class="amount ${colorClass}">${sign} Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</td>
-            <td data-label="Status"><span class="status-badge ${badge}">${t.status||'pending'}</span></td>
+            <td data-label="Detail">${t.note || t.productName || t.method || 'Transaksi'}${resiHtml}</td>
+            <td data-label="Nominal" class="amount ${colorClass}">${sign} Rp ${(parseFloat(t.amount || t.price) || 0).toLocaleString()}</td>
+            <td data-label="Status"><span class="status-badge ${badge}">${realStatus}</span></td>
           </tr>`;
         });
         tbody.innerHTML = html;
@@ -1550,15 +1571,37 @@
 
         const file = fileInput.files[0];
         const submitBtn = this;
+        const cancelBtn = document.getElementById('uploadCancelBtn');
+        const progressBox = document.getElementById('uploadProgressBox');
+        const progressBar = document.getElementById('uploadProgressBar');
+        const percentText = document.getElementById('uploadPercentText');
 
         try {
           submitBtn.disabled = true;
+          if (cancelBtn) cancelBtn.disabled = true;
           submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+
+          if (progressBox) progressBox.style.display = 'block';
+          if (progressBar) progressBar.style.width = '10%';
+          if (percentText) percentText.textContent = '10%';
+
+          let progress = 10;
+          const progressInterval = setInterval(() => {
+            if (progress < 85) {
+              progress += Math.floor(Math.random() * 15) + 5;
+              if (progress > 85) progress = 85;
+              if (progressBar) progressBar.style.width = progress + '%';
+              if (percentText) percentText.textContent = progress + '%';
+            }
+          }, 150);
 
           const reader = new FileReader();
           reader.onload = async function(e) {
             const proofUrl = e.target.result;
             
+            if (progressBar) progressBar.style.width = '95%';
+            if (percentText) percentText.textContent = '95%';
+
             // 1. Update orders table di Supabase
             if (currentUploadTxId) {
               const { error: orderErr } = await supabase.from('orders').update({ proof_image: proofUrl }).eq('id', currentUploadTxId);
@@ -1594,28 +1637,45 @@
                 }
               });
             }
+            if (currentUser.first_order) {
+              currentUser.first_order.proof_image = proofUrl;
+            }
             currentUser.proof_image = proofUrl;
             await window.upsertRow('users', currentUser);
 
-            window.closeUploadModal();
-            showModalAlert('Berhasil', '✅ Bukti transfer berhasil dikirim! Menunggu verifikasi Admin.');
+            clearInterval(progressInterval);
+            if (progressBar) progressBar.style.width = '100%';
+            if (percentText) percentText.textContent = '100%';
 
-            // Refresh UI
-            allOrders = await window.getOrders();
-            await renderDashboard();
-            if (currentUploadType === 'deposit') {
-              renderDepositHistory();
-            } else {
-              renderRoHistory();
-            }
+            setTimeout(async () => {
+              submitBtn.disabled = false;
+              if (cancelBtn) cancelBtn.disabled = false;
+              submitBtn.innerHTML = 'Kirim';
+              if (progressBox) progressBox.style.display = 'none';
+              if (progressBar) progressBar.style.width = '0%';
+
+              window.closeUploadModal();
+              showModalAlert('Berhasil', '✅ Bukti transfer berhasil dikirim! Menunggu verifikasi Admin.');
+
+              // Refresh UI
+              allOrders = await window.getOrders();
+              await renderDashboard();
+              if (currentUploadType === 'deposit') {
+                renderDepositHistory();
+              } else {
+                renderRoHistory();
+              }
+              renderHistoryTable();
+            }, 400);
           };
           reader.readAsDataURL(file);
         } catch (err) {
           console.error('Upload proof error:', err);
-          showModalAlert('Gagal', 'Gagal mengunggah bukti: ' + err.message);
-        } finally {
           submitBtn.disabled = false;
+          if (cancelBtn) cancelBtn.disabled = false;
           submitBtn.innerHTML = 'Kirim';
+          if (progressBox) progressBox.style.display = 'none';
+          showModalAlert('Gagal', 'Gagal mengunggah bukti: ' + err.message);
         }
       });
 
@@ -2006,7 +2066,7 @@
         const tbody = document.getElementById('historyTableBody');
         const txs = (currentUser.transactions || []).slice().reverse();
         if (txs.length === 0) {
-          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center;">Kosong</td></tr>';
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:16px; color:#718096;">Belum ada riwayat transaksi.</td></tr>';
           document.getElementById('historyPageInfo').textContent = '1/1';
           return;
         }
@@ -2014,15 +2074,27 @@
         const paginated = txs.slice((historyCurrentPage - 1) * 10, historyCurrentPage * 10);
         let html = '';
         paginated.forEach(t => {
-          const date = new Date(t.date || Date.now()).toLocaleDateString('id-ID');
+          const date = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID');
           let sign = (t.type === 'deposit' || t.type === 'bonus' || t.type === 'ro_purchase') ? '+' : '-';
-          let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' || t.status === 'verified' ? 'status-success' : 'status-failed');
+
+          const orderMatch = (allOrders || []).find(o => String(o.id) === String(t.id));
+          const purchaseMatch = (currentUser.purchase_history || []).find(p => String(p.id) === String(t.id));
+
+          let realStatus = (orderMatch ? orderMatch.status : (purchaseMatch ? purchaseMatch.status : t.status)) || 'pending';
+          if (realStatus === 'processing' || realStatus === 'verified') realStatus = 'terverifikasi';
+          else if (realStatus === 'shipped') realStatus = 'dikirim';
+
+          let badge = (realStatus === 'pending') ? 'status-pending' : ((realStatus === 'success' || realStatus === 'terverifikasi' || realStatus === 'dikirim') ? 'status-success' : 'status-failed');
+
+          const resiVal = (orderMatch ? orderMatch.resi : (purchaseMatch ? purchaseMatch.resi : t.resi)) || null;
+          let resiHtml = resiVal ? `<br><span class="resi" style="font-size:0.7rem; color:var(--gold-accent); font-weight:700;"><i class="fas fa-truck"></i> No. Resi: ${resiVal}</span>` : '';
+
           html += `<tr>
             <td data-label="Tanggal">${date}</td>
             <td data-label="Jenis"><strong>${(t.type||'').toUpperCase()}</strong></td>
-            <td data-label="Detail">${t.note || t.method || '-'}</td>
-            <td data-label="Nominal" style="font-weight:700;">${sign} Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</td>
-            <td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td>
+            <td data-label="Detail">${t.note || t.productName || t.method || '-'}${resiHtml}</td>
+            <td data-label="Nominal" style="font-weight:700;">${sign} Rp ${(parseFloat(t.amount || t.price) || 0).toLocaleString()}</td>
+            <td data-label="Status"><span class="status-badge ${badge}">${realStatus.toUpperCase()}</span></td>
           </tr>`;
         });
         tbody.innerHTML = html;
