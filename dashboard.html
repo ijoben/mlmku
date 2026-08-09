@@ -1475,7 +1475,7 @@
           proof_image: null,
           resi: null
         };
-        await window.upsertRow('orders', orderObj);
+        await window.saveOrder(orderObj);
 
         // BONUS HANYA DICETAK SEKETIKA JIKA DIBAYAR DENGAN WALLET BALENCE
         // UNTUK TRANSFER BANK, BONUS BARU CAIR SAAT ADMIN APPRAVE DI ADMIN
