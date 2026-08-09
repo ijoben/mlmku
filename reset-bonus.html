@@ -217,7 +217,7 @@
           target.bonus_reward = 0;
           target.bonus_ro = 0;
           target.wallet = 0;
-          target.bonuses_distributed = false;
+          delete target.bonuses_distributed;
           await window.upsertRow('users', target);
           log(`✅ Member [${target.username}] berhasil direset total bonusnya ke Rp 0.`);
           await loadMembers();
@@ -244,7 +244,7 @@
             u.bonus_reward = 0;
             u.bonus_ro = 0;
             u.wallet = 0;
-            u.bonuses_distributed = false;
+            delete u.bonuses_distributed;
             await window.upsertRow('users', u);
           }
 
@@ -273,7 +273,7 @@
             if (ord.type === 'ro') {
               await window.calculateRoBonus(buyer.id, amt, settings);
             }
-            buyer.bonuses_distributed = true;
+            delete buyer.bonuses_distributed;
             await window.upsertRow('users', buyer);
           }
 
