@@ -1200,27 +1200,9 @@
       // ========== BRAND SETTINGS ==========
       async function applyBrandSettings() {
         try {
-          const settings = await window.getSettings();
-          const brandName = settings.brandName || 'HEDTRO JEANS';
-          const brandLogo = settings.brandLogo || 'fa-tshirt';
-          const isImage = brandLogo && brandLogo.startsWith('data:image');
-          document.querySelectorAll('#navbarLogo, #sidebarLogo').forEach(el => {
-            if (el) {
-              if (isImage) {
-                el.innerHTML = `<img src="${brandLogo}" alt="${brandName}" style="height:32px;width:auto;object-fit:contain;" />`;
-              } else {
-                const icon = el.querySelector('i');
-                if (icon) icon.className = 'fas ' + brandLogo;
-                const textSpan = el.querySelector('span');
-                if (textSpan && textSpan.tagName === 'SPAN') {
-                  textSpan.innerText = brandName.replace('HEDTRO', '').trim();
-                }
-                if (!el.querySelector('span')) {
-                  el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
-                }
-              }
-            }
-          });
+          if (typeof window.applyBrandSettings === 'function') {
+            await window.applyBrandSettings();
+          }
         } catch (e) { console.warn('Brand settings not applied:', e); }
       }
 
