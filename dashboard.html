@@ -1169,18 +1169,22 @@
           }
           currentUser = profile;
           // Load data in parallel for maximum performance
-          const [usersData, prodsData, ordersData, txsData, banksData] = await Promise.all([
-            window.getTable('users').catch(() => []),
-            window.getProducts().catch(() => []),
-            window.getOrders().catch(() => []),
-            window.getTable('transactions').catch(() => []),
-            window.getBankInfo().catch(() => [])
-          ]);
-          allUsers = usersData || [];
-          allProducts = prodsData || [];
-          allOrders = ordersData || [];
-          allTransactions = txsData || [];
-          allBankInfo = banksData || [];
+          try {
+            const [usersData, prodsData, ordersData, txsData, banksData] = await Promise.all([
+              window.getTable('users'),
+              window.getProducts(),
+              window.getOrders(),
+              window.getTable('transactions'),
+              window.getBankInfo()
+            ]);
+            allUsers = usersData || [];
+            allProducts = prodsData || [];
+            allOrders = ordersData || [];
+            allTransactions = txsData || [];
+            allBankInfo = banksData || [];
+          } catch (loadErr) {
+            console.warn('⚠️ Data loading warning:', loadErr);
+          }
           // Apply UI
           document.body.style.display = 'block';
           applyBrandSettings();
