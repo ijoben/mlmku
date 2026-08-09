@@ -1721,16 +1721,35 @@
                         btn.onclick = async function() {
                             const id = this.dataset.id;
                             try {
-                                const { error } = await supabase
-                                    .from('users')
-                                    .update({ status: 'verified' })
-                                    .eq('id', id);
-                                if (error) throw error;
+                                const userOrders = allOrders.filter(o => String(o.user_id) === String(id) && o.status === 'pending');
+                                if (userOrders.length > 0) {
+                                    for (const o of userOrders) {
+                                        await window.approveOrderAndDistributeBonuses(o.id);
+                                    }
+                                } else {
+                                    const { error } = await supabase.from('users').update({ status: 'verified' }).eq('id', id);
+                                    if (error) throw error;
+                                    const user = allUsers.find(u => String(u.id) === String(id));
+                                    if (user && !user.bonuses_distributed) {
+                                        const { data: settingsData } = await supabase.from('settings').select('*');
+                                        const settings = {};
+                                        (settingsData || []).forEach(r => settings[r.key] = r.value);
+                                        const pkgPrice = 100000;
+                                        if (user.sponsor_id) {
+                                            await window.calculateSponsorBonus(user.id, user.sponsor_id, pkgPrice, settings);
+                                        }
+                                        await window.calculateBinaryBonus(user.id, pkgPrice, settings);
+                                        await window.calculateRewardBonus(user.id, pkgPrice, settings);
+                                        user.bonuses_distributed = true;
+                                        await window.upsertRow('users', user);
+                                    }
+                                }
                                 await refreshAdminData();
                                 await renderVerification();
                                 await renderAdminMembers();
+                                await renderOrders();
                                 await renderDashboard();
-                                showToast('User diverifikasi!', 'success');
+                                showToast('✅ Member diverifikasi & Bonus Upline telah dicairkan!', 'success');
                             } catch (e) {
                                 console.error('Verify user error:', e);
                                 showToast('Gagal verifikasi user.', 'error');
@@ -1800,18 +1819,16 @@
                         btn.onclick = async function() {
                             const id = parseInt(this.dataset.id);
                             try {
-                                const { error } = await supabase
-                                    .from('orders')
-                                    .update({ status: 'processing' })
-                                    .eq('id', id);
-                                if (error) throw error;
+                                await window.approveOrderAndDistributeBonuses(id);
                                 await refreshAdminData();
                                 await renderOrders();
+                                await renderVerification();
+                                await renderAdminMembers();
                                 await renderDashboard();
-                                showToast('✅ Order disetujui.', 'success');
+                                showToast('✅ Order disetujui, Member terverifikasi, dan Bonus upline berhasil dicairkan!', 'success');
                             } catch (e) {
                                 console.error('Approve order error:', e);
-                                showToast('Gagal approve order.', 'error');
+                                showToast('Gagal approve order: ' + e.message, 'error');
                             }
                         };
                     });
