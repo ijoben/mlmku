@@ -78,6 +78,89 @@
     .sidebar .sidebar-header .logo-side img { height:26px; width:auto; object-fit:contain; }
     .sidebar .sidebar-header .close-side { display:none; color:var(--cream); font-size:1.4rem; cursor:pointer; opacity:0.7; }
     @media (max-width: 768px) { .sidebar .sidebar-header .close-side { display:block; } }
+
+    /* ===== SIDEBAR USER CARD ===== */
+    .sidebar-user-card {
+      background: linear-gradient(145deg, #15283c 0%, #0d1e30 100%);
+      border: 1px solid rgba(212,175,55,0.22);
+      border-radius: 12px;
+      padding: 12px;
+      margin: 8px 0 12px;
+      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+    }
+    .sidebar-user-top {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      margin-bottom: 8px;
+    }
+    .sidebar-user-avatar {
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      border: 2px solid var(--gold-accent);
+      overflow: hidden;
+      flex-shrink: 0;
+      background: var(--denim-blue);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .sidebar-user-avatar img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .sidebar-user-avatar #sideProfilePlaceholder {
+      color: var(--gold-light);
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 100%; height: 100%;
+    }
+    .sidebar-user-meta {
+      flex: 1;
+      min-width: 0;
+    }
+    .sidebar-user-name {
+      color: var(--white);
+      font-weight: 700;
+      font-size: 0.82rem;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+    }
+    .sidebar-user-id {
+      color: var(--gold-light);
+      font-size: 0.6rem;
+      font-family: monospace;
+      opacity: 0.85;
+    }
+    .sidebar-wallet-box {
+      background: rgba(0,0,0,0.25);
+      border-radius: 8px;
+      padding: 8px 10px;
+      border: 1px solid rgba(255,255,255,0.06);
+    }
+    .sidebar-wallet-label {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      font-size: 0.62rem;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 2px;
+    }
+    .sidebar-wallet-label i {
+      color: var(--gold-accent);
+      margin-right: 3px;
+    }
+    .sidebar-wallet-val {
+      color: var(--white);
+      font-weight: 800;
+      font-size: 1.05rem;
+      letter-spacing: -0.3px;
+    }
     .sidebar .menu-item {
       display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;
       color:rgba(255,255,255,0.65); font-weight:600; font-size:0.8rem; transition:var(--transition); cursor:pointer;
@@ -426,7 +509,8 @@
     th { background:#f8fafc; color:#718096; font-weight:700; font-size:0.65rem; text-transform:uppercase; }
     td { font-size:0.8rem; color:var(--denim-dark); }
 
-    /* ===== TREE ===== */"    .tree-wrapper { overflow-x:auto; padding:20px 12px; background:var(--white); border-radius:var(--radius); box-shadow:0 8px 30px rgba(11,26,43,0.05); border:1px solid rgba(212,175,55,0.12); margin-bottom:14px; }
+    /* ===== TREE ===== */
+    .tree-wrapper { overflow-x:auto; padding:20px 12px; background:var(--white); border-radius:var(--radius); box-shadow:0 8px 30px rgba(11,26,43,0.05); border:1px solid rgba(212,175,55,0.12); margin-bottom:14px; }
     .binary-tree { display:flex; flex-direction:column; align-items:center; min-width:640px; transition:transform 0.3s ease; transform-origin:top center; }
     .node-wrapper { display:flex; flex-direction:column; align-items:center; position:relative; }
     .tree-node-card {
@@ -456,7 +540,7 @@
     .binary-child { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; padding:0 8px; }
     .binary-children::before { content:''; position:absolute; top:0; left:25%; right:25%; height:2px; background:rgba(212,175,55,0.45); }
     .binary-child::before { content:''; position:absolute; top:0; height:18px; width:2px; background:rgba(212,175,55,0.45); }
-    .binary-children::after { content:''; position:absolute; top:-18px; left:50%; width:2px; height:18px; background:rgba(212,175,55,0.45); transform:translateX(-50%); }"}
+    .binary-children::after { content:''; position:absolute; top:-18px; left:50%; width:2px; height:18px; background:rgba(212,175,55,0.45); transform:translateX(-50%); }
 
     /* ===== PRODUCT GRID ===== */
     .product-grid {
@@ -598,20 +682,24 @@
       <span class="close-side" id="closeSidebar">&times;</span>
     </div>
 
-    <div style="padding:4px 0 6px;">
-      <div style="display:flex; align-items:center; gap:8px; margin-bottom:6px;">
-        <img id="sideProfileImg" src="" alt="Foto" style="display:none; width:30px; height:30px; border-radius:50%; object-fit:cover; border:2px solid var(--gold-accent);">
-        <div id="sideProfilePlaceholder" style="width:30px; height:30px; border-radius:50%; background:var(--denim-light); display:flex; align-items:center; justify-content:center; color:var(--denim-blue); font-size:1rem;"><i class="fas fa-user"></i></div>
-        <div style="color:var(--cream);">
-          <div style="font-weight:700; font-size:0.75rem;" id="sideProfileName">Member</div>
-          <div style="font-size:0.55rem; opacity:0.5; font-family:monospace;" id="sideProfileId">ID: -</div>
+    <div class="sidebar-user-card">
+      <div class="sidebar-user-top">
+        <div class="sidebar-user-avatar">
+          <img id="sideProfileImg" src="" alt="Foto" style="display:none;">
+          <div id="sideProfilePlaceholder"><i class="fas fa-user"></i></div>
+        </div>
+        <div class="sidebar-user-meta">
+          <div class="sidebar-user-name" id="sideProfileName">Member</div>
+          <div class="sidebar-user-id" id="sideProfileId">ID: -</div>
         </div>
       </div>
-      <div style="background:#15283c; border-radius:10px; padding:6px 10px; display:flex; justify-content:space-between; align-items:center;">
-        <span style="font-size:0.6rem; color:rgba(255,255,255,0.5);"><i class="fas fa-wallet" style="color:var(--gold-accent);"></i> Dompet</span>
-        <span id="sideUserStatusBadge" class="status-badge status-free" style="padding:1px 6px; font-size:0.5rem;">FREE</span>
+      <div class="sidebar-wallet-box">
+        <div class="sidebar-wallet-label">
+          <span><i class="fas fa-wallet"></i> Dompet</span>
+          <span id="sideUserStatusBadge" class="status-badge status-free">FREE</span>
+        </div>
+        <div class="sidebar-wallet-val" id="sideWalletAmount">Rp 0</div>
       </div>
-      <div style="color:var(--cream); font-weight:800; font-size:1.1rem; padding:2px 12px 4px;" id="sideWalletAmount">Rp 0</div>
     </div>
 
     <div class="menu-item active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
@@ -1464,12 +1552,19 @@
         };
       }
 
+      window.openRegisterDownline = function(sponsor, upline, pos) {
+        const regPath = window.location.pathname.includes('dashboard') ? window.location.pathname.replace('dashboard.html', 'register.html') : 'register.html';
+        const targetUrl = `${regPath}?ref=${encodeURIComponent(sponsor)}&upline=${encodeURIComponent(upline)}&pos=${pos}&new=1`;
+        window.location.href = targetUrl;
+      };
+
       function renderBinaryTreeHTML(node) {
         if (!node) return '';
         if (node.empty) {
-          const regPath = window.location.pathname.includes('dashboard') ? window.location.pathname.replace('dashboard.html', 'register.html') : 'register.html';
-          const refUrl = `${regPath}?ref=${currentUser.username}&upline=${node.parentUsername || currentUser.username}&pos=${node.pos || 'left'}&new=1`;
-          return `<a href="${refUrl}" class="tree-node-card empty" style="display:block; text-decoration:none;"><div class="avatar"><i class="fas fa-plus"></i></div><div class="node-name">TAMBAH</div></a>`;
+          const sponsor = currentUser.username || currentUser.id;
+          const upline = node.parentUsername || currentUser.username || currentUser.id;
+          const pos = node.pos || 'left';
+          return `<div class="tree-node-card empty" onclick="window.openRegisterDownline('${sponsor}', '${upline}', '${pos}')"><div class="avatar"><i class="fas fa-plus"></i></div><div class="node-name">TAMBAH</div></div>`;
         }
         const isVerified = node.status === 'verified';
         const badgeClass = isVerified ? 'status-success' : 'status-free';
