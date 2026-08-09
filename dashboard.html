@@ -1906,37 +1906,39 @@
             console.warn('Storage upload warning:', stErr);
           }
 
-          // Jika storage bucket belum aktif / error, gunakan kompresi gambar Canvas Data URL
+          // Jika storage bucket belum aktif / error, gunakan kompresi gambar Canvas Data URL (ringan <100KB)
           if (!proofUrl) {
-            proofUrl = await compressImage(file, 1000, 1000, 0.75);
+            proofUrl = await compressImage(file, 600, 600, 0.65);
           }
 
           if (progressBar) progressBar.style.width = '95%';
           if (percentText) percentText.textContent = '95%';
 
+          const client = window.supabaseClient || window.supabase;
+
           // 2. Update orders table di Supabase
-          if (currentUploadTxId) {
+          if (currentUploadTxId && client) {
             try {
-              await supabase.from('orders').update({ proof_image: proofUrl }).eq('id', currentUploadTxId);
+              await client.from('orders').update({ proof_image: proofUrl }).eq('id', currentUploadTxId);
             } catch (e) { console.warn('Update order proof warning:', e); }
           }
-          try {
-            await supabase.from('orders').update({ proof_image: proofUrl }).eq('user_id', currentUser.id);
-          } catch (e) { console.warn('Update orders by user_id warning:', e); }
+          if (client) {
+            try {
+              await client.from('orders').update({ proof_image: proofUrl }).eq('user_id', currentUser.id);
+            } catch (e) { console.warn('Update orders by user_id warning:', e); }
+          }
 
           // 3. Update users table status
-          try {
-            await supabase.from('users').update({ status: 'pending' }).eq('id', currentUser.id);
-          } catch (e) { console.warn('Update user status warning:', e); }
-
-          try {
-            await supabase.from('users').update({ proof_image: proofUrl }).eq('id', currentUser.id);
-          } catch (e) { console.warn('Update user proof_image warning:', e); }
+          if (client) {
+            try {
+              await client.from('users').update({ status: 'pending', proof_image: proofUrl }).eq('id', currentUser.id);
+            } catch (e) { console.warn('Update user status warning:', e); }
+          }
 
           // 4. Update transactions table di Supabase
-          if (currentUploadTxId) {
+          if (currentUploadTxId && client) {
             try {
-              await supabase.from('transactions').update({ proof_uploaded: true, proof_image: proofUrl }).eq('id', currentUploadTxId);
+              await client.from('transactions').update({ proof_uploaded: true, proof_image: proofUrl }).eq('id', currentUploadTxId);
             } catch (e) { console.warn('Update transaction proof warning:', e); }
           }
 
@@ -1962,7 +1964,7 @@
           }
           currentUser.proof_image = proofUrl;
 
-          // Simpan data user (upsertRow otomatis menghapus kolom yang tidak ada di schema jika ada error)
+          // Simpan data user
           try {
             await window.upsertRow('users', currentUser);
           } catch (uErr) {
@@ -2000,7 +2002,8 @@
           if (cancelBtn) cancelBtn.disabled = false;
           submitBtn.innerHTML = 'Kirim';
           if (progressBox) progressBox.style.display = 'none';
-          showModalAlert('Gagal', 'Gagal mengunggah bukti: ' + err.message);
+          const errStr = (err && (err.message || err.error_description || (typeof err === 'string' ? err : null))) || 'Terjadi kendala saat memproses gambar bukti transfer.';
+          showModalAlert('Gagal', 'Gagal mengunggah bukti: ' + errStr);
         }
       });
 
