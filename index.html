@@ -566,35 +566,79 @@
                 }
             }
 
-            // ========== LOAD DATA ==========
+            const INDEX_CACHE_KEY = 'hedtro_index_cache_v1';
+
+            // Helper render dari data cache
+            function applyCachedData(cache) {
+                if (!cache) return false;
+                try {
+                    if (cache.products && cache.products.length > 0) {
+                        allProducts = cache.products;
+                    }
+                    if (cache.slides) renderCarousel(cache.slides);
+                    if (cache.about) renderAbout(cache.about);
+                    if (cache.faqs) renderFaq(cache.faqs);
+                    if (cache.features) renderFeatures(cache.features);
+                    if (cache.footer) renderFooter(cache.footer);
+                    renderFavoriteCarousel();
+                    renderProductGrid(currentPage);
+                    updateCartUI();
+                    return true;
+                } catch (e) {
+                    console.warn('Cache render warning:', e);
+                    return false;
+                }
+            }
+
+            // ========== LOAD DATA WITH SMART CACHING & PARALLEL FETCH ==========
             async function loadAllData() {
                 try {
                     console.log('🔵 Starting loadAllData...');
                     
-                    const products = await window.getProducts();
-                    console.log('Products loaded:', products.length);
-                    if (products.length === 0) {
-                        console.log('⚠️ Products kosong, menggunakan data default.');
-                        allProducts = [
-                            { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', favorite: true, stock: 45, sizes: ['28','29','30','31','32'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'], description: 'Celana jeans premium dengan potongan slim-fit modern.' },
-                            { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', favorite: true, stock: 30, sizes: ['30','32','34'], colors: ['Raw Denim', 'Dark Navy'], description: 'Model straight cut klasik legendaris.' },
-                            { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', favorite: true, stock: 25, sizes: ['29','30','31','32'], colors: ['Black Stretch', 'Grey Stone'], description: 'Warna hitam legam pekat yang elegan.' }
-                        ];
-                    } else {
-                        allProducts = products;
+                    // 1. Tampilkan instan dari LocalStorage Cache jika ada (0ms load)
+                    let hasCached = false;
+                    const cachedStr = localStorage.getItem(INDEX_CACHE_KEY);
+                    if (cachedStr) {
+                        try {
+                            const cacheData = JSON.parse(cachedStr);
+                            hasCached = applyCachedData(cacheData);
+                            if (hasCached) {
+                                console.log('⚡ Homepage rendered instantly from LocalStorage Cache!');
+                            }
+                        } catch (e) { console.warn('Cache parse error:', e); }
                     }
 
-                    const slides = await window.getSlides();
-                    console.log('Slides loaded:', slides.length);
-                    const about = await window.getAbout();
-                    console.log('About loaded:', about.title);
-                    const faqs = await window.getFaqs();
-                    console.log('Faqs loaded:', faqs.length);
-                    const features = await window.getFeatures();
-                    console.log('Features loaded:', features.length);
-                    const footer = await window.getFooter();
-                    console.log('Footer loaded:', footer.brand);
+                    // 2. Ambil data terbaru dari Supabase secara PARALEL (Promise.all)
+                    const [productsRes, slidesRes, aboutRes, faqsRes, featuresRes, footerRes] = await Promise.all([
+                        window.getProducts().catch(() => []),
+                        window.getSlides().catch(() => []),
+                        window.getAbout().catch(() => ({ title: 'Tentang Kami', content: '' })),
+                        window.getFaqs().catch(() => []),
+                        window.getFeatures().catch(() => []),
+                        window.getFooter().catch(() => ({ brand: 'HEDTRO JEANS', description: '' }))
+                    ]);
 
+                    const products = (productsRes && productsRes.length > 0) ? productsRes : [
+                        { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000, original: 350000, tag: 'BEST SELLER', icon: 'fa-tshirt', favorite: true, stock: 45, sizes: ['28','29','30','31','32'], colors: ['Indigo Blue Raw Denim', 'Black Stretch'], description: 'Celana jeans premium dengan potongan slim-fit modern.' },
+                        { id: 2, name: 'Classic Straight Cut Raw', price: 280000, original: 390000, tag: 'NEW ARRIVAL', icon: 'fa-tshirt', favorite: true, stock: 30, sizes: ['30','32','34'], colors: ['Raw Denim', 'Dark Navy'], description: 'Model straight cut klasik legendaris.' },
+                        { id: 3, name: 'Jet Black Stretch Comfort', price: 240000, original: 330000, tag: 'HOT ITEM', icon: 'fa-tshirt', favorite: true, stock: 25, sizes: ['29','30','31','32'], colors: ['Black Stretch', 'Grey Stone'], description: 'Warna hitam legam pekat yang elegan.' }
+                    ];
+                    allProducts = products;
+
+                    const slides = slidesRes || [];
+                    const about = aboutRes || { title: 'Tentang Kami', content: '' };
+                    const faqs = faqsRes || [];
+                    const features = featuresRes || [];
+                    const footer = footerRes || { brand: 'HEDTRO JEANS', description: '' };
+
+                    // 3. Simpan data terbaru ke LocalStorage Cache untuk kunjungan berikutnya
+                    try {
+                        localStorage.setItem(INDEX_CACHE_KEY, JSON.stringify({
+                            products, slides, about, faqs, features, footer, timestamp: Date.now()
+                        }));
+                    } catch (e) { console.warn('Cache save warning:', e); }
+
+                    // 4. Update UI dengan data terbaru
                     renderCarousel(slides.length > 0 ? slides : [
                         { id: 1, title: '501® ORIGINAL DENIM', subtitle: 'Ikonik sejak 1873', btnText: 'Lihat Koleksi', btnLink: '#sectionTrending', bg: 'linear-gradient(135deg, #0b1a2b, #2a4b6e)' },
                         { id: 2, title: 'TRUCKER JACKET', subtitle: 'Gaya ikonik denim modern', btnText: 'Lihat Koleksi', btnLink: '#sectionTrending', bg: 'linear-gradient(135deg, #1a2e44, #3a5f7e)' }
@@ -608,11 +652,9 @@
                     updateCartUI();
                     await updateNavAuth();
 
-                    console.log('✅ loadAllData selesai!');
+                    console.log('✅ loadAllData selesai & cache diperbarui!');
                 } catch (error) {
                     console.error('❌ loadAllData error:', error);
-                    showToast('Error: ' + error.message, 'error');
-                    throw error;
                 }
             }
 
