@@ -542,30 +542,69 @@
     .binary-child::before { content:''; position:absolute; top:0; height:18px; width:2px; background:rgba(212,175,55,0.45); }
     .binary-children::after { content:''; position:absolute; top:-18px; left:50%; width:2px; height:18px; background:rgba(212,175,55,0.45); transform:translateX(-50%); }
 
-    /* ===== PRODUCT GRID ===== */
+    /* ===== ENHANCED PRODUCT GRID & CARD ===== */
     .product-grid {
-      display:grid;
-      grid-template-columns:repeat(auto-fill, minmax(160px,1fr));
-      gap:12px;
-      margin:10px 0;
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(210px, 1fr));
+      gap: 16px;
+      margin: 14px 0;
     }
     .product-card {
-      background:var(--white);
-      border-radius:var(--radius-sm);
-      overflow:hidden;
-      box-shadow:0 4px 12px rgba(11,26,43,0.04);
-      border:1px solid rgba(0,0,0,0.04);
-      transition:var(--transition);
-      display:flex;
-      flex-direction:column;
+      background: var(--white);
+      border-radius: 16px;
+      overflow: hidden;
+      box-shadow: 0 6px 18px rgba(11,26,43,0.06);
+      border: 1.5px solid #e2e8f0;
+      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      display: flex;
+      flex-direction: column;
+      position: relative;
     }
-    .product-card .img-placeholder { height:120px; background:var(--denim-light); display:flex; align-items:center; justify-content:center; color:var(--denim-blue); font-size:2rem; overflow:hidden; }
-    .product-card .img-placeholder img { width:100%; height:100%; object-fit:cover; }
-    .product-card .body { padding:10px 12px; display:flex; flex-direction:column; flex:1; }
-    .product-card .body .tag { align-self:flex-start; background:var(--gold-light); color:#744210; font-size:0.5rem; font-weight:800; padding:1px 8px; border-radius:20px; text-transform:uppercase; margin-bottom:3px; }
-    .product-card .body h4 { font-size:0.8rem; font-weight:700; margin-bottom:2px; color:var(--denim-dark); }
-    .product-card .body .price { font-weight:800; color:var(--denim-blue); font-size:0.85rem; }
-    .product-card .body .btn-sm { margin-top:auto; width:100%; justify-content:center; padding:4px 10px; font-size:0.65rem; }
+    .product-card:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 12px 28px rgba(11,26,43,0.14);
+      border-color: var(--gold-accent);
+    }
+    .product-badge-stock {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      z-index: 2;
+      padding: 3px 10px;
+      border-radius: 20px;
+      font-size: 0.68rem;
+      font-weight: 800;
+      backdrop-filter: blur(6px);
+      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+    }
+    .product-badge-stock.instock { background: rgba(46,125,50,0.9); color: #fff; }
+    .product-badge-stock.outstock { background: rgba(229,62,62,0.9); color: #fff; }
+    
+    .product-img-wrap {
+      height: 160px;
+      background: linear-gradient(135deg, #e8edf2 0%, #dbe3ec 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      overflow: hidden;
+      position: relative;
+    }
+    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
+    .product-card:hover .product-img-wrap img { transform: scale(1.08); }
+    .product-icon-fallback { font-size: 3.2rem; color: var(--denim-blue); }
+    
+    .product-card-body { padding: 14px 16px; display: flex; flex-direction: column; flex: 1; gap: 6px; }
+    .product-serial { font-size: 0.7rem; color: var(--gold-accent); font-weight: 800; letter-spacing: 0.3px; }
+    .product-title { font-size: 0.95rem; font-weight: 800; color: var(--denim-dark); line-height: 1.3; margin: 0; }
+    .product-price-box { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; margin-bottom: 6px; }
+    .price-val { font-size: 1.1rem; font-weight: 800; color: var(--denim-navy); }
+    .price-del { font-size: 0.75rem; color: #a0aec0; text-decoration: line-through; }
+
+    /* Quantity Selector */
+    .qty-selector { display: inline-flex; align-items: center; border: 1.5px solid #cbd5e1; border-radius: 8px; overflow: hidden; background: #fff; }
+    .qty-btn { width: 34px; height: 34px; background: #f1f5f9; border: none; font-weight: 800; font-size: 1rem; cursor: pointer; color: var(--denim-dark); transition: 0.2s; }
+    .qty-btn:hover { background: var(--gold-accent); color: var(--denim-dark); }
+    .qty-val { width: 44px; text-align: center; font-weight: 800; font-size: 0.95rem; border: none; outline: none; background: transparent; color: var(--denim-dark); }
 
     /* ===== MODAL ===== */
     .custom-modal-overlay {
@@ -1013,13 +1052,74 @@
 
   <!-- MODAL RO -->
   <div class="custom-modal-overlay" id="roModalOverlay">
-    <div class="custom-modal" style="max-width:480px;">
-      <div class="custom-modal-header"><h3><i class="fas fa-shopping-cart"></i> Pembelian RO</h3></div>
+    <div class="custom-modal" style="max-width:540px;">
+      <div class="custom-modal-header"><h3><i class="fas fa-shopping-bag"></i> Detail & Pembelian Produk</h3></div>
       <div class="custom-modal-body" id="roModalBody"></div>
       <div class="custom-modal-footer" id="roModalFooter">
         <button class="btn-sm btn-sm-danger" id="roModalCancelBtn">Batal</button>
-        <button class="btn-sm btn-sm-gold" id="roModalNextBtn">Lanjut Bayar</button>
-        <button class="btn-sm btn-sm-primary" id="roModalConfirmBankBtn" style="display:none;">Konfirmasi</button>
+        <button class="btn-sm btn-sm-gold" id="roModalNextBtn"><i class="fas fa-arrow-right"></i> Lanjut Pilih Pembayaran</button>
+        <button class="btn-sm btn-sm-primary" id="roModalConfirmBankBtn" style="display:none;"><i class="fas fa-check"></i> Konfirmasi Pesanan Bank</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL LANGKAH SELANJUTNYA PEMBAYARAN (NEXT STEPS) -->
+  <div class="custom-modal-overlay" id="orderNextStepsModal">
+    <div class="custom-modal" style="max-width:520px; border-top: 5px solid var(--gold-accent);">
+      <div class="custom-modal-header" style="background:#fff8e7; padding:16px 20px; border-bottom:1px solid #ffe8a1;">
+        <h3 style="color:#744210; display:flex; align-items:center; gap:8px; font-size:1.05rem;">
+          <i class="fas fa-check-circle" style="color:#2e7d32; font-size:1.5rem;"></i> Pesanan Berhasil Dibuat!
+        </h3>
+      </div>
+      <div class="custom-modal-body" style="padding:20px;">
+        <div style="text-align:center; margin-bottom:16px;">
+          <div style="font-size:0.78rem; color:#718096; text-transform:uppercase; font-weight:700;">Nomor Pesanan Anda:</div>
+          <div id="nextStepOrderNum" style="font-size:1.2rem; font-weight:800; color:var(--denim-dark); letter-spacing:0.5px;">RO-123456</div>
+        </div>
+
+        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:16px; margin-bottom:16px;">
+          <div style="font-size:0.85rem; font-weight:800; color:var(--denim-navy); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+            <i class="fas fa-list-ol" style="color:var(--gold-accent);"></i> Langkah Selanjutnya Pembayaran:
+          </div>
+
+          <div style="display:flex; flex-direction:column; gap:14px;">
+            <!-- STEP 1 -->
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div style="width:26px; height:26px; border-radius:50%; background:var(--gold-accent); color:var(--denim-dark); font-weight:800; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">1</div>
+              <div style="font-size:0.85rem; line-height:1.5; flex:1;">
+                <div>Transfer <strong>TEPAT</strong> sebesar:</div>
+                <div style="display:flex; align-items:center; gap:8px; margin:6px 0;">
+                  <span id="nextStepTotalAmount" style="font-size:1.25rem; font-weight:800; color:#2e7d32; background:#e8f5e9; padding:4px 12px; border-radius:8px; border:1px solid #c8e6c9;">Rp 0</span>
+                  <button class="btn-sm btn-sm-gold" id="btnCopyNextStepAmount" style="padding:4px 10px; font-size:0.75rem;"><i class="fas fa-copy"></i> Salin Nominal</button>
+                </div>
+                <div style="font-size:0.75rem; color:#d97706; font-weight:700; background:#fff8e7; padding:6px 10px; border-radius:6px; border-left:3px solid #f59e0b; margin-top:4px;">
+                  ⚠️ Wajib menyertakan <strong>Kode Unik 3 Angka (<span id="nextStepUniqueCode">000</span>)</strong> agar pembayaran otomatis terverifikasi Admin.
+                </div>
+              </div>
+            </div>
+
+            <!-- STEP 2 -->
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div style="width:26px; height:26px; border-radius:50%; background:var(--denim-navy); color:#fff; font-weight:800; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">2</div>
+              <div style="font-size:0.85rem; line-height:1.5; flex:1;">
+                <div>Transfer ke Rekening Resmi Perusahaan:</div>
+                <div id="nextStepBankList" style="margin-top:6px; background:#fff; padding:10px 12px; border-radius:10px; border:1px solid #cbd5e0; font-size:0.8rem;"></div>
+              </div>
+            </div>
+
+            <!-- STEP 3 -->
+            <div style="display:flex; gap:12px; align-items:flex-start;">
+              <div style="width:26px; height:26px; border-radius:50%; background:var(--denim-blue); color:#fff; font-weight:800; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">3</div>
+              <div style="font-size:0.85rem; line-height:1.5; flex:1;">
+                <div>Simpan foto / screenshot bukti transfer Anda, kemudian klik tombol <strong>"Upload Bukti Sekarang"</strong> di bawah.</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="custom-modal-footer" style="gap:10px; flex-wrap:wrap; padding:14px 20px;">
+        <button class="btn-sm btn-sm-success" id="nextStepUploadBtn" style="flex:1; padding:12px; justify-content:center; font-size:0.9rem; font-weight:700;"><i class="fas fa-upload"></i> Upload Bukti Sekarang</button>
+        <button class="btn-sm btn-sm-primary" id="nextStepCloseBtn" style="padding:12px 18px; font-size:0.85rem;"><i class="fas fa-box"></i> Ke Riwayat RO</button>
       </div>
     </div>
   </div>
@@ -1153,6 +1253,7 @@
       // ========== AUTH GUARD ==========
       async function checkAuth() {
         try {
+          if (typeof window.showLoadingBar === 'function') window.showLoadingBar();
           const session = await window.getSession();
           if (!session) {
             window.location.href = 'login.html';
@@ -1194,6 +1295,8 @@
         } catch (e) {
           console.error('Auth error:', e);
           window.location.href = 'login.html';
+        } finally {
+          if (typeof window.hideLoadingBar === 'function') window.hideLoadingBar();
         }
       }
 
@@ -1220,7 +1323,8 @@
           sidePlaceholder.style.display = 'flex';
         }
         document.getElementById('sideProfileName').textContent = currentUser.fullname || currentUser.username;
-        document.getElementById('sideProfileId').textContent = 'ID: ' + currentUser.id;
+        const formattedId = window.formatMemberId ? window.formatMemberId(currentUser) : ('HDT-' + String(currentUser.id).padStart(3, '0'));
+        document.getElementById('sideProfileId').innerHTML = '<i class="fas fa-id-card"></i> ' + formattedId;
         document.getElementById('navUserName').textContent = currentUser.fullname || currentUser.username;
         const isVerified = currentUser.status === 'verified';
         const badge = document.getElementById('sideUserStatusBadge');
@@ -1228,7 +1332,7 @@
           badge.textContent = isVerified ? 'VERIFIED' : 'FREE';
           badge.className = isVerified ? 'status-badge status-verified' : 'status-badge status-free';
         }
-        document.getElementById('sideWalletAmount').textContent = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString();
+        document.getElementById('sideWalletAmount').textContent = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString('id-ID');
 
         const dashImg = document.getElementById('dashAvatarImg');
         const dashIcon = document.getElementById('dashAvatarIcon');
@@ -1241,15 +1345,17 @@
           dashIcon.style.display = 'flex';
         }
         document.getElementById('dashProfileName').textContent = currentUser.fullname || currentUser.username;
-        document.getElementById('dashProfileId').textContent = 'ID: ' + currentUser.id;
+        document.getElementById('dashProfileId').innerHTML = '<span style="font-weight:800; color:var(--gold-accent); font-size:0.75rem; background:rgba(201,168,76,0.15); padding:2px 10px; border-radius:20px; display:inline-flex; align-items:center; gap:4px; margin-top:2px;"><i class="fas fa-id-card"></i> ' + formattedId + '</span>';
         document.getElementById('walletAmount').textContent = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString('id-ID');
         document.getElementById('sponsorBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_sponsor) || 0).toLocaleString('id-ID');
         document.getElementById('binaryBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_binary) || 0).toLocaleString('id-ID');
         document.getElementById('rewardBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_reward) || 0).toLocaleString('id-ID');
         document.getElementById('roBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_ro) || 0).toLocaleString('id-ID');
-        const regPath = window.location.pathname.includes('dashboard') ? window.location.pathname.replace('dashboard.html', 'register.html') : '/register.html';
-        document.getElementById('refLink').value = window.location.origin + regPath + '?ref=' + currentUser.username + '&upline=' + currentUser.username;
-        // Update status badge & wallet di withdraw
+        
+        // Referral link format domain/reff/username
+        const refUrl = `${window.location.origin}/reff/${currentUser.username}`;
+        document.getElementById('refLink').value = refUrl;
+
         const wdBal = document.getElementById('wdAvailableBal');
         if (wdBal) wdBal.value = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString('id-ID');
         const pendingBox = document.getElementById('pendingAlertBox');
@@ -1266,7 +1372,6 @@
 
       // ========== DASHBOARD ==========
       async function renderDashboard() {
-        // Refresh user
         currentUser = await window.getUserProfile();
         updateProfileUI();
         renderDashboardHistory();
@@ -1308,7 +1413,7 @@
             <td data-label="Tanggal">${date}</td>
             <td data-label="Jenis"><strong>${(t.type||'').toUpperCase()}</strong></td>
             <td data-label="Detail">${t.note || t.productName || t.method || 'Transaksi'}${resiHtml}</td>
-            <td data-label="Nominal" class="amount ${colorClass}">${sign} Rp ${(parseFloat(t.amount || t.price) || 0).toLocaleString()}</td>
+            <td data-label="Nominal" class="amount ${colorClass}">${sign} Rp ${(parseFloat(t.amount || t.price) || 0).toLocaleString('id-ID')}</td>
             <td data-label="Status"><span class="status-badge ${badge}">${realStatus}</span></td>
           </tr>`;
         });
@@ -1336,26 +1441,35 @@
         prods.forEach(p => {
           const card = document.createElement('div');
           card.className = 'product-card';
-          let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
+          let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<div class="product-icon-fallback"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>`;
           const prodSerial = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
+          
           card.innerHTML = `
-            <div class="img-placeholder" style="cursor:pointer;" onclick="openROModal('${p.id}', ${p.price})">${imgHtml}</div>
-            <div class="body">
-              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
-                <span class="tag">${p.tag || 'PRODUK'}</span>
-                <span style="font-size:0.65rem;color:var(--gold-accent);font-weight:700;"><i class="fas fa-barcode"></i> ${prodSerial}</span>
+            <div class="product-badge-stock ${p.stock > 0 ? 'instock' : 'outstock'}">
+              <i class="fas ${p.stock > 0 ? 'fa-check-circle' : 'fa-times-circle'}"></i> ${p.stock > 0 ? 'Stok: ' + p.stock + ' pcs' : 'Stok Habis'}
+            </div>
+            <div class="product-img-wrap" style="cursor:pointer;" onclick="openROModal('${p.id}', ${p.price})">
+              ${imgHtml}
+            </div>
+            <div class="product-card-body">
+              <div class="product-serial"><i class="fas fa-barcode"></i> ${prodSerial}</div>
+              <h3 class="product-title" style="cursor:pointer;" onclick="openROModal('${p.id}', ${p.price})">${p.name}</h3>
+              <div class="product-price-box">
+                <span class="price-val">Rp ${(parseFloat(p.price)||0).toLocaleString('id-ID')}</span>
+                ${p.original ? `<del class="price-del">Rp ${(parseFloat(p.original)||0).toLocaleString('id-ID')}</del>` : ''}
               </div>
-              <h4 style="cursor:pointer;" onclick="openROModal('${p.id}', ${p.price})">${p.name}</h4>
-              <div class="price">Rp ${(parseFloat(p.price) || 0).toLocaleString()}</div>
-              <div style="font-size:0.65rem; color:#718096; margin-bottom:6px;">Stok: ${p.stock||0} pcs</div>
-              <button class="btn-sm btn-sm-gold buy-ro-btn" data-id="${p.id}" data-price="${p.price}" style="width:100%;"><i class="fas fa-shopping-bag"></i> Detail & Beli RO</button>
+              <div class="product-actions-row">
+                <button class="btn-sm btn-sm-gold buy-ro-btn" data-id="${p.id}" data-price="${p.price}" style="width:100%; justify-content:center;">
+                  <i class="fas fa-shopping-cart"></i> Detail & Beli Produk
+                </button>
+              </div>
             </div>`;
           grid.appendChild(card);
         });
         document.querySelectorAll('.buy-ro-btn').forEach(btn => {
           btn.addEventListener('click', function() {
             if (currentUser.status !== 'verified') {
-              showModalAlert('Ditolak', 'Akun Anda belum VERIFIED.');
+              showModalAlert('Akun Belum Verifikasi', 'Untuk melakukan Repeat Order (RO), status akun Anda harus VERIFIED terlebih dahulu.');
               return;
             }
             openROModal(this.dataset.id, parseFloat(this.dataset.price));
@@ -1363,7 +1477,7 @@
         });
       }
 
-      // ========== RO MODAL ==========
+      // ========== RO MODAL & PAYMENT ==========
       const roModalOverlay = document.getElementById('roModalOverlay');
       const roModalBody = document.getElementById('roModalBody');
       let roPid = null, roPrice = 0;
@@ -1371,95 +1485,180 @@
 
       function openROModal(productId, price) {
         if (currentUser.status !== 'verified') {
-          showModalAlert('Ditolak', 'Status akun Anda harus VERIFIED.');
+          showModalAlert('Akun Belum Verifikasi', 'Status akun Anda harus VERIFIED untuk membeli produk RO.');
           return;
         }
         roPid = productId;
         roPrice = price;
+        let currentQty = 1;
+        const uniqueCode = window.getUniqueCode ? window.getUniqueCode(currentUser.id) : 123;
         const prod = allProducts.find(p => String(p.id) === String(productId));
         if (!prod) return;
         const prodSerial = prod.serial || ('HDT-' + String(prod.id).padStart(4, '0'));
 
         let imgHtml = prod.image ? `<img src="${prod.image}" alt="${prod.name}" />` : `<div class="ro-icon"><i class="fas ${prod.icon || 'fa-tshirt'}"></i></div>`;
+
+        function updateModalTotals() {
+          const baseSub = roPrice * currentQty;
+          const bankSub = baseSub + uniqueCode;
+          
+          const qtyInput = document.getElementById('roQtyInput');
+          if (qtyInput) qtyInput.value = currentQty;
+          
+          const baseSubEl = document.getElementById('roBaseSubtotal');
+          if (baseSubEl) baseSubEl.textContent = 'Rp ' + baseSub.toLocaleString('id-ID');
+          
+          const bankTotalEl = document.getElementById('roBankTotalVal');
+          if (bankTotalEl) bankTotalEl.textContent = 'Rp ' + bankSub.toLocaleString('id-ID');
+        }
+
         roModalBody.innerHTML = `
           <div class="ro-detail-grid">
-            <div class="ro-image" id="roImageContainer">
-              ${imgHtml}
-              <span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>
+            <div style="display:flex; justify-content:space-between; align-items:center; background:#fff8e7; padding:8px 14px; border-radius:10px; border:1px solid #ffe8a1;">
+              <span style="font-size:0.75rem; color:#744210; font-weight:800;"><i class="fas fa-barcode"></i> Seri: <strong>${prodSerial}</strong></span>
+              <span style="font-size:0.75rem; color:#2e7d32; font-weight:800;"><i class="fas fa-box"></i> Stok Tersedia: ${prod.stock||0} pcs</span>
             </div>
-            <div class="ro-info">
-              <div style="font-size:0.75rem; color:var(--gold-accent); font-weight:700; margin-bottom:4px;"><i class="fas fa-barcode"></i> Nomor Seri: <strong>${prodSerial}</strong></div>
-              <h4>${prod.name}</h4>
-              <div class="ro-price">Rp ${price.toLocaleString()}${prod.original ? ` <del style="font-size:0.8rem; opacity:0.6; text-decoration:line-through; color:#718096;">Rp ${prod.original.toLocaleString()}</del>` : ''}</div>
-              <div class="ro-desc">${prod.description || 'Produk denim kualitas premium.'}</div>
-              <div style="font-size:0.75rem; color:#718096; margin-top:4px;">Tersedia Stok: <strong>${prod.stock||0} pcs</strong></div>
+            
+            <div style="display:grid; grid-template-columns:${window.innerWidth > 600 ? '160px 1fr' : '1fr'}; gap:14px; margin-top:8px;">
+              <div class="ro-image" id="roImageContainer" style="height:160px; border-radius:12px; overflow:hidden;">
+                ${imgHtml}
+                <span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik Zoom</span>
+              </div>
+              <div class="ro-info" style="display:flex; flex-direction:column; gap:6px;">
+                <h4 style="font-size:1.1rem; font-weight:800; color:var(--denim-dark); margin:0;">${prod.name}</h4>
+                <div class="ro-price" style="font-size:1.2rem; font-weight:800; color:var(--denim-navy);">
+                  Rp ${price.toLocaleString('id-ID')}
+                  ${prod.original ? `<del style="font-size:0.8rem; color:#a0aec0; text-decoration:line-through; font-weight:normal; margin-left:6px;">Rp ${prod.original.toLocaleString('id-ID')}</del>` : ''}
+                </div>
+                <div class="ro-desc" style="font-size:0.8rem; color:#64748b; line-height:1.4;">${prod.description || 'Produk denim kualitas premium dengan bahan kokoh & jahitan presisi.'}</div>
+              </div>
             </div>
-            <div class="ro-options">
-              <div class="form-group"><label>Ukuran</label><select id="roSizeSelect">${(prod.sizes || ['30','32']).map(s => `<option value="${s}">Size ${s}</option>`).join('')}</select></div>
-              <div class="form-group"><label>Warna</label><select id="roColorSelect">${(prod.colors || ['Indigo Blue']).map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
+
+            <!-- QTY & OPTIONS -->
+            <div style="background:#f8fafc; padding:12px 14px; border-radius:12px; border:1px solid #e2e8f0; margin-top:8px;">
+              <div class="ro-options" style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px; align-items:center;">
+                <div class="form-group" style="margin:0;"><label style="font-size:0.75rem; font-weight:700;">Ukuran</label><select id="roSizeSelect" style="width:100%; padding:6px; border-radius:6px;">${(prod.sizes || ['30','32','34']).map(s => `<option value="${s}">Size ${s}</option>`).join('')}</select></div>
+                <div class="form-group" style="margin:0;"><label style="font-size:0.75rem; font-weight:700;">Warna</label><select id="roColorSelect" style="width:100%; padding:6px; border-radius:6px;">${(prod.colors || ['Indigo Blue','Dark Blue']).map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
+                <div class="form-group" style="margin:0;">
+                  <label style="font-size:0.75rem; font-weight:700;">Jumlah</label>
+                  <div class="qty-selector">
+                    <button type="button" class="qty-btn" id="roQtyMinus">-</button>
+                    <input type="text" class="qty-val" id="roQtyInput" value="1" readonly />
+                    <button type="button" class="qty-btn" id="roQtyPlus">+</button>
+                  </div>
+                </div>
+              </div>
+              <div style="display:flex; justify-content:space-between; align-items:center; margin-top:10px; padding-top:8px; border-top:1px dashed #cbd5e0;">
+                <span style="font-weight:700; font-size:0.85rem;">Subtotal Harga Produk:</span>
+                <span id="roBaseSubtotal" style="font-weight:800; font-size:1.15rem; color:var(--denim-navy);">Rp ${price.toLocaleString('id-ID')}</span>
+              </div>
             </div>
-            <div id="roPaymentSelection" style="display:none; margin-top:8px; border-top:2px dashed #edf2f7; padding-top:10px;">
-              <p style="font-weight:700; margin-bottom:6px; font-size:0.85rem;">Pilih Metode:</p>
-              <div style="display:flex; gap:6px; flex-direction:column;">
-                <button class="btn-sm" id="btnPayWallet" style="background:#2e7d32; color:#fff; justify-content:space-between; padding:8px 14px;"><span><i class="fas fa-wallet"></i> Saldo Dompet</span><span id="roWalletBal" style="font-weight:600;">(Rp ${(currentUser.wallet||0).toLocaleString()})</span></button>
-                <button class="btn-sm" id="btnPayBank" style="background:var(--denim-blue); color:#fff; justify-content:space-between; padding:8px 14px;"><span><i class="fas fa-university"></i> Transfer Bank</span></button>
+
+            <!-- PAYMENT CHOICE -->
+            <div id="roPaymentSelection" style="display:none; margin-top:8px; border-top:2px dashed #cbd5e0; padding-top:12px;">
+              <p style="font-weight:800; margin-bottom:8px; font-size:0.9rem; color:var(--denim-dark);"><i class="fas fa-credit-card" style="color:var(--gold-accent);"></i> Pilih Metode Pembayaran:</p>
+              <div style="display:flex; gap:8px; flex-direction:column;">
+                <button class="btn-sm" id="btnPayWallet" style="background:#2e7d32; color:#fff; justify-content:space-between; padding:10px 14px; border-radius:10px; font-size:0.85rem;">
+                  <span><i class="fas fa-wallet"></i> Saldo Dompet</span>
+                  <span id="roWalletBal" style="font-weight:700;">(Rp ${(currentUser.wallet||0).toLocaleString('id-ID')})</span>
+                </button>
+                <button class="btn-sm" id="btnPayBank" style="background:var(--denim-blue); color:#fff; justify-content:space-between; padding:10px 14px; border-radius:10px; font-size:0.85rem;">
+                  <span><i class="fas fa-university"></i> Transfer Bank (Termasuk Kode Unik)</span>
+                  <span id="roBankTotalVal" style="font-weight:800; color:var(--gold-light);">Rp ${(price + uniqueCode).toLocaleString('id-ID')}</span>
+                </button>
+                <div style="font-size:0.72rem; color:#d97706; font-weight:700; text-align:center; margin-top:2px;">
+                  *Transfer Bank disertai Kode Unik 3 Angka (${uniqueCode}) untuk mempermudah verifikasi Admin.
+                </div>
               </div>
             </div>
           </div>
         `;
-        document.getElementById('roModalNextBtn').style.display = 'block';
+
+        document.getElementById('roModalNextBtn').style.display = 'inline-flex';
         document.getElementById('roModalConfirmBankBtn').style.display = 'none';
 
-        // Zoom
+        // Qty handlers
+        document.getElementById('roQtyMinus').onclick = function() {
+          if (currentQty > 1) { currentQty--; updateModalTotals(); }
+        };
+        document.getElementById('roQtyPlus').onclick = function() {
+          const maxStock = prod.stock || 99;
+          if (currentQty < maxStock) { currentQty++; updateModalTotals(); }
+          else { showToast('Jumlah melebihi stok tersedia.', 'warning'); }
+        };
+
+        // Zoom image
         const roImage = document.getElementById('roImageContainer');
         if (roImage) {
-          roImage.addEventListener('click', function() {
+          roImage.onclick = function() {
             roZoomed = !roZoomed;
-            if (roZoomed) { this.style.transform = 'scale(1.8)'; this.style.transition = 'transform 0.3s ease'; this.style.zIndex = '10'; this.style.position = 'relative'; }
-            else { this.style.transform = 'scale(1)'; this.style.zIndex = '1'; }
-          });
+            this.style.transform = roZoomed ? 'scale(1.8)' : 'scale(1)';
+            this.style.transition = 'transform 0.3s ease';
+            this.style.zIndex = roZoomed ? '20' : '1';
+          };
         }
 
         roModalOverlay.classList.add('active');
 
         document.getElementById('roModalNextBtn').onclick = function() {
-          document.getElementById('roModalNextBtn').style.display = 'none';
+          this.style.display = 'none';
           document.getElementById('roPaymentSelection').style.display = 'block';
         };
+
         document.getElementById('btnPayWallet').onclick = function() {
-          if ((currentUser.wallet || 0) < roPrice) { showModalAlert('Kurang', 'Saldo tidak cukup.'); return; }
-          showModalConfirm('Konfirmasi', 'Bayar dengan saldo?', () => { roModalOverlay.classList.remove('active'); prosesRO('wallet'); });
+          const baseSub = roPrice * currentQty;
+          if ((currentUser.wallet || 0) < baseSub) { showModalAlert('Saldo Tidak Cukup', 'Saldo dompet Anda tidak mencukupi untuk transaksi ini.'); return; }
+          showModalConfirm('Konfirmasi Dompet', `Bayar sebesar Rp ${baseSub.toLocaleString('id-ID')} menggunakan saldo dompet?`, () => {
+            roModalOverlay.classList.remove('active');
+            prosesRO('wallet', currentQty);
+          });
         };
+
         document.getElementById('btnPayBank').onclick = function() {
           document.getElementById('btnPayWallet').style.opacity = '0.5';
-          document.getElementById('roModalConfirmBankBtn').style.display = 'block';
+          document.getElementById('roModalConfirmBankBtn').style.display = 'inline-flex';
         };
+
         document.getElementById('roModalConfirmBankBtn').onclick = function() {
           roModalOverlay.classList.remove('active');
-          prosesRO('bank');
+          prosesRO('bank', currentQty);
         };
-        document.getElementById('roModalCancelBtn').onclick = function() { roModalOverlay.classList.remove('active'); };
+
+        document.getElementById('roModalCancelBtn').onclick = function() {
+          roModalOverlay.classList.remove('active');
+        };
       }
 
-      async function prosesRO(method) {
+      async function prosesRO(method, qty = 1) {
         const prod = allProducts.find(p => String(p.id) === String(roPid));
         if (!prod) return;
         const size = document.getElementById('roSizeSelect')?.value || '30';
         const color = document.getElementById('roColorSelect')?.value || 'Indigo Blue';
-        prod.stock = Math.max(0, (prod.stock || 1) - 1);
+        const uniqueCode = window.getUniqueCode ? window.getUniqueCode(currentUser.id) : 123;
+        
+        const baseTotal = roPrice * qty;
+        const bankTotal = baseTotal + uniqueCode;
+        const finalAmount = method === 'wallet' ? baseTotal : bankTotal;
+
+        prod.stock = Math.max(0, (prod.stock || qty) - qty);
         await window.upsertRow('products', prod);
+
         const txId = Date.now();
         if (method === 'wallet') {
-          currentUser.wallet = (parseFloat(currentUser.wallet) || 0) - roPrice;
+          currentUser.wallet = (parseFloat(currentUser.wallet) || 0) - baseTotal;
         }
+
         const txObj = {
           id: txId,
           user_id: currentUser.id,
           type: 'ro_purchase',
           productId: roPid,
-          productName: `${prod.name} (${size} - ${color})`,
-          amount: roPrice,
-          price: roPrice,
+          productName: `${prod.name} (${qty}x - Size ${size} - ${color})`,
+          amount: finalAmount,
+          base_price: baseTotal,
+          unique_code: uniqueCode,
+          price: finalAmount,
+          qty: qty,
           date: new Date().toISOString(),
           status: method === 'wallet' ? 'success' : 'pending',
           paymentMethod: method,
@@ -1468,6 +1667,7 @@
           size,
           color
         };
+
         if (!currentUser.transactions) currentUser.transactions = [];
         currentUser.transactions.push(txObj);
         if (!currentUser.purchase_history) currentUser.purchase_history = [];
@@ -1482,8 +1682,9 @@
           user_id: currentUser.id,
           user_name: currentUser.fullname || currentUser.username,
           type: 'ro',
-          items: [{ product_id: prod.id, name: `${prod.name} (${size} - ${color})`, price: roPrice, qty: 1, size, color }],
-          total: roPrice,
+          items: [{ product_id: prod.id, name: `${prod.name} (${size} - ${color})`, price: roPrice, qty: qty, size, color }],
+          total: finalAmount,
+          unique_code: uniqueCode,
           status: method === 'wallet' ? 'processing' : 'pending',
           created_at: new Date().toISOString(),
           proof_image: null,
@@ -1491,15 +1692,12 @@
         };
         await window.saveOrder(orderObj);
 
-        // BONUS HANYA DICETAK SEKETIKA JIKA DIBAYAR DENGAN WALLET BALENCE
-        // UNTUK TRANSFER BANK, BONUS BARU CAIR SAAT ADMIN APPRAVE DI ADMIN
         if (method === 'wallet') {
           try {
             const settings = await window.getSettings();
-            await window.calculateBinaryBonus(currentUser.id, roPrice, settings);
-            await window.calculateRewardBonus(currentUser.id, roPrice, settings);
-            await window.calculateRoBonus(currentUser.id, roPrice, settings);
-            console.log('✅ RO bonuses calculated for wallet payment!');
+            await window.calculateBinaryBonus(currentUser.id, baseTotal, settings);
+            await window.calculateRewardBonus(currentUser.id, baseTotal, settings);
+            await window.calculateRoBonus(currentUser.id, baseTotal, settings);
           } catch (bonusError) {
             console.error('❌ Error calculating RO bonuses:', bonusError);
           }
@@ -1512,11 +1710,63 @@
         allOrders = await window.getOrders();
 
         if (method === 'wallet') {
-          showModalAlert('Sukses', 'RO lunas dari saldo dompet. Pesanan sedang diproses Admin.', () => { renderDashboard(); window.showSection('ro-history'); });
+          showModalAlert('Pembelian Berhasil (LUNAS)', 'RO lunas dari saldo dompet. Pesanan sedang diproses Admin.', () => {
+            renderDashboard();
+            window.showSection('ro-history');
+          });
         } else {
-          showModalAlert('Pesanan Dibuat', 'Silakan upload bukti transfer pada menu <b>Riwayat RO</b> agar Admin dapat memverifikasi dan memproses pengiriman.', () => { renderDashboard(); window.showSection('ro-history'); });
+          // Show Next Steps Modal!
+          showOrderNextStepsModal(orderObj, bankTotal, uniqueCode);
         }
       }
+
+      window.showOrderNextStepsModal = async function(orderObj, totalAmount, uniqueCode) {
+        const modal = document.getElementById('orderNextStepsModal');
+        if (!modal) return;
+
+        document.getElementById('nextStepOrderNum').textContent = orderObj.order_number || ('RO-' + orderObj.id);
+        document.getElementById('nextStepTotalAmount').textContent = 'Rp ' + totalAmount.toLocaleString('id-ID');
+        document.getElementById('nextStepUniqueCode').textContent = uniqueCode;
+
+        const bankListEl = document.getElementById('nextStepBankList');
+        if (bankListEl) {
+          try {
+            const banks = await window.getBankInfo();
+            if (banks && banks.length > 0) {
+              bankListEl.innerHTML = banks.map(b => `
+                <div style="display:flex; justify-content:space-between; align-items:center; padding:6px 0; border-bottom:1px dashed #e2e8f0;">
+                  <div><strong>${b.bank}</strong>: <span style="font-family:monospace; font-weight:700; color:var(--denim-navy);">${b.account}</span> (a.n ${b.name})</div>
+                  <button class="btn-sm btn-sm-gold" onclick="navigator.clipboard.writeText('${b.account}'); showToast('Rekening ${b.bank} disalin!', 'success');" style="padding:2px 8px; font-size:0.7rem;"><i class="fas fa-copy"></i> Salin</button>
+                </div>
+              `).join('');
+            } else {
+              bankListEl.innerHTML = 'Transfer ke Rekening Resmi Perusahaan.';
+            }
+          } catch (e) {
+            bankListEl.innerHTML = 'Transfer ke Rekening Resmi Perusahaan.';
+          }
+        }
+
+        document.getElementById('btnCopyNextStepAmount').onclick = function() {
+          navigator.clipboard.writeText(totalAmount.toString());
+          showToast('Nominal Rp ' + totalAmount.toLocaleString('id-ID') + ' disalin!', 'success');
+        };
+
+        document.getElementById('nextStepUploadBtn').onclick = function() {
+          modal.classList.remove('active');
+          renderDashboard();
+          window.showSection('ro-history');
+          window.bukaModalUpload(orderObj.id, 'ro');
+        };
+
+        document.getElementById('nextStepCloseBtn').onclick = function() {
+          modal.classList.remove('active');
+          renderDashboard();
+          window.showSection('ro-history');
+        };
+
+        modal.classList.add('active');
+      };
 
       // ========== UPLOAD BUKTI TRANSFER MODAL (KONFIRMASI TRANSFER) ==========
       let currentUploadTxId = null;
