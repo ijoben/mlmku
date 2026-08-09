@@ -1269,29 +1269,40 @@
             return;
           }
           currentUser = profile;
-          // Load data in parallel for maximum performance
-          try {
-            const [usersData, prodsData, ordersData, txsData, banksData] = await Promise.all([
-              window.getTable('users'),
-              window.getProducts(),
-              window.getOrders(),
-              window.getTable('transactions'),
-              window.getBankInfo()
-            ]);
-            allUsers = usersData || [];
-            allProducts = prodsData || [];
-            allOrders = ordersData || [];
-            allTransactions = txsData || [];
-            allBankInfo = banksData || [];
-          } catch (loadErr) {
-            console.warn('⚠️ Data loading warning:', loadErr);
-          }
-          // Apply UI
+
+          // Tampilkan UI Dashboard secara instan!
           document.body.style.display = 'block';
+          if (typeof window.hideLoadingBar === 'function') window.hideLoadingBar();
           applyBrandSettings();
           updateProfileUI();
+
           const savedTab = sessionStorage.getItem('memberActiveTab') || 'dashboard';
           window.showSection(savedTab);
+
+          // Load data pendukung secara paralel di background tanpa memblokir layar
+          Promise.all([
+            window.getProducts().catch(() => []),
+            window.getBankInfo().catch(() => []),
+            window.getTransactions(currentUser.id).catch(() => []),
+            window.getOrders().catch(() => [])
+          ]).then(([prodsData, banksData, myTxs, myOrders]) => {
+            allProducts = prodsData || [];
+            allBankInfo = banksData || [];
+            if (myTxs && myTxs.length > 0 && currentUser) {
+              currentUser.transactions = myTxs;
+            }
+            if (myOrders && myOrders.length > 0) {
+              allOrders = myOrders;
+            }
+            // Update section yang sedang aktif
+            const activeSection = sessionStorage.getItem('memberActiveTab') || 'dashboard';
+            if (activeSection === 'dashboard') renderDashboard();
+            else if (activeSection === 'products') renderProductsDashboard();
+            else if (activeSection === 'deposit') renderDepositHistory();
+            else if (activeSection === 'withdraw') renderWithdrawHistory();
+            else if (activeSection === 'ro-history') renderRoHistory();
+          }).catch(e => console.warn('Background data sync warning:', e));
+
         } catch (e) {
           console.error('Auth error:', e);
           window.location.href = 'login.html';
@@ -2359,7 +2370,32 @@
 
       async function renderWithdrawHistory() {
         const tbody = document.getElementById('withdrawHistoryBody');
-        const wdTxs = (currentUser.transactions || []).filter(t => t.type === 'withdraw').slice().reverse();
+
+        let liveTxs = [];
+        try {
+          if (window.getTransactions) {
+            liveTxs = await window.getTransactions(currentUser.id);
+          }
+        } catch (e) { console.warn('Fetch live txs withdraw warning:', e); }
+
+        let wdMap = new Map();
+        (currentUser.transactions || []).filter(t => t.type === 'withdraw').forEach(t => {
+          wdMap.set(String(t.id), { ...t });
+        });
+
+        (liveTxs || []).filter(t => t.type === 'withdraw').forEach(t => {
+          const key = String(t.id);
+          if (wdMap.has(key)) {
+            const existing = wdMap.get(key);
+            existing.status = t.status || existing.status;
+            wdMap.set(key, existing);
+          } else {
+            wdMap.set(key, { ...t });
+          }
+        });
+
+        const wdTxs = Array.from(wdMap.values()).reverse();
+
         if (wdTxs.length === 0) {
           tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Kosong</td></tr>';
           document.getElementById('wdHistoryPageInfo').textContent = '1/1';
@@ -2369,13 +2405,15 @@
         const paginated = wdTxs.slice((wdPage - 1) * 10, wdPage * 10);
         let html = '';
         paginated.forEach(t => {
-          const date = new Date(t.date).toLocaleDateString('id-ID');
-          let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' ? 'status-success' : 'status-failed');
+          const date = new Date(t.date || Date.now()).toLocaleDateString('id-ID');
+          const st = (t.status || 'pending').toLowerCase();
+          let badge = st === 'pending' ? 'status-pending' : (st === 'success' || st === 'approved' || st === 'completed' ? 'status-success' : 'status-failed');
+          let displayStatus = st === 'pending' ? 'PENDING' : (st === 'success' || st === 'approved' || st === 'completed' ? 'DISETUJUI' : 'DIBATALKAN');
           html += `<tr>
             <td data-label="Tanggal">${date}</td>
-            <td data-label="Rekening">${t.account}</td>
+            <td data-label="Rekening">${t.account || '-'}</td>
             <td data-label="Nominal" style="color:#e53e3e; font-weight:bold;">Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</td>
-            <td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td>
+            <td data-label="Status"><span class="status-badge ${badge}">${displayStatus}</span></td>
           </tr>`;
         });
         tbody.innerHTML = html;
