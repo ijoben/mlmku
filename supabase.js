@@ -89,16 +89,33 @@ window.getUserProfile = async function() {
   console.log('🔵 getUserProfile dipanggil');
   try {
     var session = await window.getSession();
-    if (!session) return null;
+    if (!session || !session.user) return null;
     var { data, error } = await supabaseClient
       .from('users')
       .select('*')
       .eq('id', session.user.id);
-    if (error) {
-      console.error('🔴 getUserProfile error:', error);
-      return null;
+
+    var profile = (data && data.length > 0) ? { ...data[0] } : { id: session.user.id, email: session.user.email };
+    var meta = session.user.user_metadata || {};
+    var updated = false;
+
+    var fields = ['username', 'fullname', 'phone', 'whatsapp', 'nik', 'address', 'city', 'bank_name', 'bank_account', 'bank_holder'];
+    fields.forEach(function(k) {
+      if (!profile[k] && meta[k]) {
+        profile[k] = meta[k];
+        updated = true;
+      }
+    });
+
+    if (updated) {
+      try {
+        await window.upsertRow('users', profile);
+      } catch (e) {
+        console.warn('Sync profile metadata warning:', e);
+      }
     }
-    return (data && data.length > 0) ? data[0] : null;
+
+    return profile;
   } catch (e) {
     console.error('🔴 getUserProfile exception:', e);
     return null;
