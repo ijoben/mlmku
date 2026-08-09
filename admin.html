@@ -1961,19 +1961,18 @@
                                         console.warn('Update orders table warning:', err1);
                                     }
 
-                                    // 2. Update buyer user object
+                                    // 2. Update buyer user object (Hanya untuk Order ID ini saja!)
                                     const buyerId = order ? order.user_id : null;
                                     if (buyerId) {
                                         const buyer = allUsers.find(u => String(u.id) === String(buyerId));
                                         if (buyer) {
-                                            buyer.resi = resi;
-                                            if (buyer.first_order) {
+                                            if (buyer.first_order && String(buyer.first_order.id || ('FO-' + buyer.id)) === String(id)) {
                                                 buyer.first_order.status = 'shipped';
                                                 buyer.first_order.resi = resi;
                                             }
                                             if (buyer.purchase_history) {
                                                 buyer.purchase_history.forEach(p => {
-                                                    if (String(p.id) === String(id) || p.status === 'pending' || p.status === 'processing' || p.status === 'verified') {
+                                                    if (String(p.id) === String(id)) {
                                                         p.status = 'shipped';
                                                         p.resi = resi;
                                                     }
@@ -1981,7 +1980,7 @@
                                             }
                                             if (buyer.transactions) {
                                                 buyer.transactions.forEach(t => {
-                                                    if (String(t.id) === String(id) || t.status === 'pending' || t.status === 'processing' || t.status === 'verified') {
+                                                    if (String(t.id) === String(id)) {
                                                         t.status = 'shipped';
                                                         t.resi = resi;
                                                     }
