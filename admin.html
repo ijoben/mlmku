@@ -939,52 +939,45 @@
                 window.location.reload();
             });
 
-            // ========== REFRESH DATA ==========
+            // ========== REFRESH DATA (PARALLEL FAST LOAD) ==========
             async function refreshAdminData() {
                 try {
-                    const { data: users, error: uErr } = await supabase.from('users').select('*');
-                    if (uErr) throw uErr;
-                    allUsers = users || [];
+                    const [
+                        resUsers,
+                        resProducts,
+                        resOrders,
+                        resTransactions,
+                        resBankInfo,
+                        resSlides,
+                        resFaqs,
+                        resFeatures,
+                        resSettings
+                    ] = await Promise.all([
+                        supabase.from('users').select('*'),
+                        supabase.from('products').select('*'),
+                        supabase.from('orders').select('*'),
+                        supabase.from('transactions').select('*'),
+                        supabase.from('bank_info').select('*'),
+                        supabase.from('slides').select('*').catch(() => ({ data: [] })),
+                        supabase.from('faq').select('*').catch(() => ({ data: [] })),
+                        supabase.from('features').select('*').catch(() => ({ data: [] })),
+                        supabase.from('settings').select('*').catch(() => ({ data: [] }))
+                    ]);
 
-                    const { data: products, error: pErr } = await supabase.from('products').select('*');
-                    if (pErr) throw pErr;
-                    allProducts = products || [];
-
-                    const { data: orders, error: oErr } = await supabase.from('orders').select('*');
-                    if (oErr) throw oErr;
-                    allOrders = orders || [];
-
-                    const { data: transactions, error: tErr } = await supabase.from('transactions').select('*');
-                    if (tErr) throw tErr;
-                    allTransactions = transactions || [];
-
-                    const { data: bankInfo, error: bErr } = await supabase.from('bank_info').select('*');
-                    if (bErr) console.warn('Bank info table warning:', bErr);
-                    allBankInfo = bankInfo || [];
-
-                    try {
-                        const { data: slides } = await supabase.from('slides').select('*');
-                        allSlides = slides || [];
-                    } catch (e) { allSlides = []; }
-
-                    try {
-                        const { data: faqs } = await supabase.from('faq').select('*');
-                        allFaqs = faqs || [];
-                    } catch (e) { allFaqs = []; }
-
-                    try {
-                        const { data: features } = await supabase.from('features').select('*');
-                        allFeatures = features || [];
-                    } catch (e) { allFeatures = []; }
-
-                    const { data: settings } = await supabase.from('settings').select('*');
+                    allUsers = resUsers?.data || [];
+                    allProducts = resProducts?.data || [];
+                    allOrders = resOrders?.data || [];
+                    allTransactions = resTransactions?.data || [];
+                    allBankInfo = resBankInfo?.data || [];
+                    allSlides = resSlides?.data || [];
+                    allFaqs = resFaqs?.data || [];
+                    allFeatures = resFeatures?.data || [];
                     allSettings = {};
-                    (settings || []).forEach(r => allSettings[r.key] = r.value);
+                    (resSettings?.data || []).forEach(r => allSettings[r.key] = r.value);
 
-                    console.log('✅ Data refreshed');
+                    console.log('⚡ Admin Data refreshed in parallel');
                 } catch (e) {
-                    console.error('❌ Refresh data error:', e);
-                    showToast('Gagal refresh data: ' + e.message, 'error');
+                    console.error('refreshAdminData error:', e);
                 }
             }
 
