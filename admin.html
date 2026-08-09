@@ -939,45 +939,60 @@
                 window.location.reload();
             });
 
-            // ========== REFRESH DATA (PARALLEL FAST LOAD) ==========
+            // Helper query yang selalu aman & tidak pernah menggagalkan Promise.all
+            async function getTableSafely(tableName) {
+                try {
+                    const { data, error } = await supabase.from(tableName).select('*');
+                    if (error) {
+                        console.warn(`Table ${tableName} warning:`, error.message);
+                        return [];
+                    }
+                    return data || [];
+                } catch (e) {
+                    console.warn(`Table ${tableName} exception:`, e);
+                    return [];
+                }
+            }
+
+            // ========== REFRESH DATA (PARALLEL SAFE LOAD) ==========
             async function refreshAdminData() {
                 try {
                     const [
-                        resUsers,
-                        resProducts,
-                        resOrders,
-                        resTransactions,
-                        resBankInfo,
-                        resSlides,
-                        resFaqs,
-                        resFeatures,
-                        resSettings
+                        usersData,
+                        productsData,
+                        ordersData,
+                        transactionsData,
+                        bankInfoData,
+                        slidesData,
+                        faqsData,
+                        featuresData,
+                        settingsData
                     ] = await Promise.all([
-                        supabase.from('users').select('*'),
-                        supabase.from('products').select('*'),
-                        supabase.from('orders').select('*'),
-                        supabase.from('transactions').select('*'),
-                        supabase.from('bank_info').select('*'),
-                        supabase.from('slides').select('*'),
-                        supabase.from('faq').select('*'),
-                        supabase.from('features').select('*'),
-                        supabase.from('settings').select('*')
+                        getTableSafely('users'),
+                        getTableSafely('products'),
+                        getTableSafely('orders'),
+                        getTableSafely('transactions'),
+                        getTableSafely('bank_info'),
+                        getTableSafely('slides'),
+                        getTableSafely('faq'),
+                        getTableSafely('features'),
+                        getTableSafely('settings')
                     ]);
 
-                    allUsers = resUsers?.data || [];
-                    allProducts = resProducts?.data || [];
-                    allOrders = resOrders?.data || [];
-                    allTransactions = resTransactions?.data || [];
-                    allBankInfo = resBankInfo?.data || [];
-                    allSlides = resSlides?.data || [];
-                    allFaqs = resFaqs?.data || [];
-                    allFeatures = resFeatures?.data || [];
+                    allUsers = usersData || [];
+                    allProducts = productsData || [];
+                    allOrders = ordersData || [];
+                    allTransactions = transactionsData || [];
+                    allBankInfo = bankInfoData || [];
+                    allSlides = slidesData || [];
+                    allFaqs = faqsData || [];
+                    allFeatures = featuresData || [];
                     allSettings = {};
-                    (resSettings?.data || []).forEach(r => allSettings[r.key] = r.value);
+                    (settingsData || []).forEach(r => allSettings[r.key] = r.value);
 
                     try { localStorage.removeItem('hedtro_index_cache_v1'); } catch (e) {}
 
-                    console.log('⚡ Admin Data refreshed in parallel:', allUsers.length, 'users,', allOrders.length, 'orders');
+                    console.log('⚡ Admin Data refreshed safely:', allUsers.length, 'users,', allOrders.length, 'orders');
                 } catch (e) {
                     console.error('refreshAdminData error:', e);
                 }
