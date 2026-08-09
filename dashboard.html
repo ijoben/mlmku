@@ -1504,101 +1504,120 @@
         }
       }
 
-      // ========== UPLOAD BUKTI TRANSFER MODAL ==========
-      window.bukaModalUpload = function(txId, type) {
-        let modal = document.getElementById('uploadProofModal');
-        if (!modal) {
-          modal = document.createElement('div');
-          modal.id = 'uploadProofModal';
-          modal.className = 'popup-overlay';
-          modal.innerHTML = `
-            <div class="popup-box" style="max-width:450px;">
-              <span class="close-popup" onclick="closeUploadProofModal()">&times;</span>
-              <h3><i class="fas fa-upload" style="color:var(--gold-accent);"></i> Upload Bukti Transfer</h3>
-              <p class="sub">Unggah foto / screenshot struk bukti transfer pembayaran Anda.</p>
-              <div class="popup-form">
-                <input type="file" id="proofFileInputModal" accept="image/*" />
-                <img id="proofPreviewModal" style="max-height:160px; object-fit:contain; border-radius:12px; display:none; margin-top:8px; border:1px dashed var(--denim-blue);" />
-                <button id="btnSubmitProofModal" style="margin-top:12px;"><i class="fas fa-paper-plane"></i> Kirim Bukti Pembayaran</button>
-              </div>
-            </div>
-          `;
-          document.body.appendChild(modal);
-        }
+      // ========== UPLOAD BUKTI TRANSFER MODAL (KONFIRMASI TRANSFER) ==========
+      let currentUploadTxId = null;
+      let currentUploadType = 'ro';
+
+      window.bukaModalUpload = async function(txId, type = 'ro') {
+        currentUploadTxId = txId;
+        currentUploadType = type;
         
-        const fileInput = document.getElementById('proofFileInputModal');
-        const previewImg = document.getElementById('proofPreviewModal');
-        const submitBtn = document.getElementById('btnSubmitProofModal');
-        fileInput.value = '';
-        previewImg.style.display = 'none';
-        previewImg.src = '';
+        const modal = document.getElementById('uploadModalOverlay');
+        const bankInfoDiv = document.getElementById('uploadBankInfo');
+        const fileInput = document.getElementById('uploadProofFile');
+        
+        if (fileInput) fileInput.value = '';
 
-        fileInput.onchange = function() {
-          const file = this.files[0];
-          if (file) {
-            const reader = new FileReader();
-            reader.onload = function(e) {
-              previewImg.src = e.target.result;
-              previewImg.style.display = 'block';
-            };
-            reader.readAsDataURL(file);
-          }
-        };
-
-        submitBtn.onclick = async function() {
-          if (!previewImg.src) {
-            showModalAlert('Peringatan', 'Silakan pilih foto bukti transfer terlebih dahulu.');
-            return;
-          }
-          const proofUrl = previewImg.src;
+        if (bankInfoDiv) {
           try {
-            submitBtn.disabled = true;
-            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            const banks = await window.getBankInfo();
+            if (banks && banks.length > 0) {
+              bankInfoDiv.innerHTML = '<strong>Transfer Ke Rekening Perusahaan:</strong><br>' + banks.map(b => `${b.bank}: <strong>${b.account}</strong> a.n ${b.name}`).join('<br>');
+            } else {
+              bankInfoDiv.innerHTML = 'Silakan transfer ke Rekening Resmi Perusahaan.';
+            }
+          } catch (e) {
+            bankInfoDiv.innerHTML = 'Transfer ke Rekening Resmi Perusahaan.';
+          }
+        }
+
+        if (modal) modal.classList.add('active');
+      };
+
+      window.closeUploadModal = function() {
+        const modal = document.getElementById('uploadModalOverlay');
+        if (modal) modal.classList.remove('active');
+      };
+
+      document.getElementById('uploadCancelBtn')?.addEventListener('click', window.closeUploadModal);
+
+      document.getElementById('uploadSubmitBtn')?.addEventListener('click', async function() {
+        const fileInput = document.getElementById('uploadProofFile');
+        if (!fileInput || !fileInput.files || !fileInput.files[0]) {
+          showModalAlert('Peringatan', 'Silakan pilih foto / gambar bukti transfer Anda.');
+          return;
+        }
+
+        const file = fileInput.files[0];
+        const submitBtn = this;
+
+        try {
+          submitBtn.disabled = true;
+          submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+
+          const reader = new FileReader();
+          reader.onload = async function(e) {
+            const proofUrl = e.target.result;
             
-            // Update orders table
-            const { error: orderErr } = await supabase.from('orders').update({ proof_image: proofUrl }).eq('id', txId);
-            if (orderErr) {
+            // 1. Update orders table di Supabase
+            if (currentUploadTxId) {
+              const { error: orderErr } = await supabase.from('orders').update({ proof_image: proofUrl }).eq('id', currentUploadTxId);
+              if (orderErr) {
+                await supabase.from('orders').update({ proof_image: proofUrl }).eq('user_id', currentUser.id);
+              }
+            } else {
               await supabase.from('orders').update({ proof_image: proofUrl }).eq('user_id', currentUser.id);
             }
-            
-            // Update users table
+
+            // 2. Update users table di Supabase
             await supabase.from('users').update({ proof_image: proofUrl }).eq('id', currentUser.id);
 
-            // Update transactions & purchase_history local
+            // 3. Update transactions table di Supabase (jika ada txId)
+            if (currentUploadTxId) {
+              await supabase.from('transactions').update({ proof_uploaded: true, proof_image: proofUrl }).eq('id', currentUploadTxId);
+            }
+
+            // 4. Update transaksi & purchase_history di objek currentUser lokal
             if (currentUser.transactions) {
               currentUser.transactions.forEach(t => {
-                if (String(t.id) === String(txId) || t.status === 'pending') { t.proof_uploaded = true; t.proof_image = proofUrl; }
+                if (String(t.id) === String(currentUploadTxId) || t.status === 'pending') {
+                  t.proof_uploaded = true;
+                  t.proof_image = proofUrl;
+                }
               });
             }
             if (currentUser.purchase_history) {
               currentUser.purchase_history.forEach(p => {
-                if (String(p.id) === String(txId) || p.status === 'pending') { p.proof_uploaded = true; p.proof_image = proofUrl; }
+                if (String(p.id) === String(currentUploadTxId) || p.status === 'pending') {
+                  p.proof_uploaded = true;
+                  p.proof_image = proofUrl;
+                }
               });
             }
             currentUser.proof_image = proofUrl;
             await window.upsertRow('users', currentUser);
 
-            closeUploadProofModal();
-            showModalAlert('Berhasil', 'Bukti transfer berhasil dikirim. Menunggu verifikasi Admin.');
+            window.closeUploadModal();
+            showModalAlert('Berhasil', '✅ Bukti transfer berhasil dikirim! Menunggu verifikasi Admin.');
+
+            // Refresh UI
             allOrders = await window.getOrders();
             await renderDashboard();
-            renderRoHistory();
-          } catch (e) {
-            console.error('Upload proof error:', e);
-            showModalAlert('Gagal', 'Gagal mengunggah bukti: ' + e.message);
-          } finally {
-            submitBtn.disabled = false;
-            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Bukti Pembayaran';
-          }
-        };
-
-        modal.classList.add('active', 'show');
-      };
-
-      window.closeUploadProofModal = function() {
-        const modal = document.getElementById('uploadProofModal');
-        if (modal) modal.classList.remove('active', 'show');
-      };
+            if (currentUploadType === 'deposit') {
+              renderDepositHistory();
+            } else {
+              renderRoHistory();
+            }
+          };
+          reader.readAsDataURL(file);
+        } catch (err) {
+          console.error('Upload proof error:', err);
+          showModalAlert('Gagal', 'Gagal mengunggah bukti: ' + err.message);
+        } finally {
+          submitBtn.disabled = false;
+          submitBtn.innerHTML = 'Kirim';
+        }
+      });
 
       // ========== RO HISTORY ==========
       async function renderRoHistory() {
