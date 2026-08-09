@@ -876,3 +876,46 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 // LOG KONFIRMASI
 console.log('✅ supabase.js selesai dieksekusi!');
 console.log('✅ window.applyBrandSettings:', typeof window.applyBrandSettings);
+
+// ============================================================
+// GLOBAL TOP LOADING BAR & UTILITIES
+// ============================================================
+window.showLoadingBar = function() {
+  var bar = document.getElementById('globalLoadingBar');
+  if (!bar) {
+    bar = document.createElement('div');
+    bar.id = 'globalLoadingBar';
+    bar.style.cssText = 'position:fixed; top:0; left:0; height:3.5px; background:linear-gradient(90deg, #c9a84c, #e8d5a3, #2a4b6e, #c9a84c); z-index:999999; width:0%; transition:width 0.3s ease, opacity 0.4s ease; box-shadow:0 0 12px rgba(201,168,76,0.9); pointer-events:none; opacity:1;';
+    document.body.appendChild(bar);
+  }
+  bar.style.opacity = '1';
+  bar.style.width = '35%';
+  if (window._loadingBarTimer) clearTimeout(window._loadingBarTimer);
+  window._loadingBarTimer = setTimeout(function() {
+    if (bar.style.width === '35%') bar.style.width = '75%';
+  }, 250);
+};
+
+window.hideLoadingBar = function() {
+  var bar = document.getElementById('globalLoadingBar');
+  if (bar) {
+    bar.style.width = '100%';
+    setTimeout(function() {
+      bar.style.opacity = '0';
+      setTimeout(function() { bar.style.width = '0%'; }, 400);
+    }, 250);
+  }
+};
+
+window.getUniqueCode = function(seed) {
+  var val = Math.abs(parseInt(seed) || Math.floor(Math.random() * 899) + 100);
+  return (val % 899) + 100; // Returns consistent 3-digit code (100 - 998)
+};
+
+window.formatMemberId = function(user) {
+  if (!user) return 'HDT-001';
+  if (user.member_id) return user.member_id;
+  var num = user.id ? parseInt(user.id) : 1;
+  if (isNaN(num)) return 'HDT-' + String(user.username || '001').toUpperCase();
+  return 'HDT-' + String(num).padStart(3, '0');
+};
