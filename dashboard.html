@@ -1168,12 +1168,19 @@
             return;
           }
           currentUser = profile;
-          // Load data
-          allUsers = await window.getTable('users');
-          allProducts = await window.getProducts();
-          allOrders = await window.getOrders();
-          allTransactions = await window.getTransactions();
-          allBankInfo = await window.getBankInfo();
+          // Load data in parallel for maximum performance
+          const [usersData, prodsData, ordersData, txsData, banksData] = await Promise.all([
+            window.getTable('users').catch(() => []),
+            window.getProducts().catch(() => []),
+            window.getOrders().catch(() => []),
+            window.getTable('transactions').catch(() => []),
+            window.getBankInfo().catch(() => [])
+          ]);
+          allUsers = usersData || [];
+          allProducts = prodsData || [];
+          allOrders = ordersData || [];
+          allTransactions = txsData || [];
+          allBankInfo = banksData || [];
           // Apply UI
           document.body.style.display = 'block';
           applyBrandSettings();
@@ -1718,6 +1725,14 @@
           }
         });
 
+        combined.forEach(t => {
+          const orderMatch = (allOrders || []).find(o => String(o.id) === String(t.id));
+          if (orderMatch) {
+            if (orderMatch.resi) t.resi = orderMatch.resi;
+            if (orderMatch.status) t.status = orderMatch.status;
+          }
+        });
+
         combined.reverse();
 
         if (combined.length === 0) {
@@ -1748,7 +1763,7 @@
           } else {
             actionHtml = `<span style="font-size:0.7rem; color:#2e7d32; font-weight:700;"><i class="fas fa-check-circle"></i> Terverifikasi</span>`;
           }
-          let resiHtml = t.resi ? `<span class="resi"><i class="fas fa-truck"></i> ${t.resi}</span>` : '-';
+          let resiHtml = t.resi ? `<span class="resi" style="background:#fff8e7; color:#b38728; border:1px solid #ffe8a1; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px;"><i class="fas fa-truck"></i> ${t.resi}</span>` : '<span style="color:#a0aec0; font-size:0.75rem;">Belum ada</span>';
           const typeBadge = t.type === 'first_order' ? ' <small style="color:var(--gold-accent); font-weight:bold;">(First Order)</small>' : '';
           html += `<tr>
             <td data-label="Tanggal">${date}</td>
