@@ -1323,7 +1323,7 @@
           sidePlaceholder.style.display = 'flex';
         }
         document.getElementById('sideProfileName').textContent = currentUser.fullname || currentUser.username;
-        const formattedId = window.formatMemberId ? window.formatMemberId(currentUser) : ('HDT-' + String(currentUser.id).padStart(3, '0'));
+        const formattedId = window.formatMemberId ? window.formatMemberId(currentUser, allUsers) : ('HDT-' + String(currentUser.id).padStart(3, '0'));
         document.getElementById('sideProfileId').innerHTML = '<i class="fas fa-id-card"></i> ' + formattedId;
         document.getElementById('navUserName').textContent = currentUser.fullname || currentUser.username;
         const isVerified = currentUser.status === 'verified';
@@ -1615,8 +1615,11 @@
         };
 
         document.getElementById('btnPayBank').onclick = function() {
-          document.getElementById('btnPayWallet').style.opacity = '0.5';
-          document.getElementById('roModalConfirmBankBtn').style.display = 'inline-flex';
+          const bankSub = (roPrice * currentQty) + uniqueCode;
+          showModalConfirm('Konfirmasi Pembayaran Bank', `Buat pesanan sebesar Rp ${bankSub.toLocaleString('id-ID')} (Termasuk Kode Unik ${uniqueCode}) via Transfer Bank?`, () => {
+            roModalOverlay.classList.remove('active');
+            prosesRO('bank', currentQty);
+          });
         };
 
         document.getElementById('roModalConfirmBankBtn').onclick = function() {
@@ -1630,93 +1633,101 @@
       }
 
       async function prosesRO(method, qty = 1) {
-        const prod = allProducts.find(p => String(p.id) === String(roPid));
-        if (!prod) return;
-        const size = document.getElementById('roSizeSelect')?.value || '30';
-        const color = document.getElementById('roColorSelect')?.value || 'Indigo Blue';
-        const uniqueCode = window.getUniqueCode ? window.getUniqueCode(currentUser.id) : 123;
-        
-        const baseTotal = roPrice * qty;
-        const bankTotal = baseTotal + uniqueCode;
-        const finalAmount = method === 'wallet' ? baseTotal : bankTotal;
+        if (typeof window.showLoadingBar === 'function') window.showLoadingBar();
+        try {
+          const prod = allProducts.find(p => String(p.id) === String(roPid));
+          if (!prod) return;
+          const size = document.getElementById('roSizeSelect')?.value || '30';
+          const color = document.getElementById('roColorSelect')?.value || 'Indigo Blue';
+          const uniqueCode = window.getUniqueCode ? window.getUniqueCode(currentUser.id) : 123;
+          
+          const baseTotal = roPrice * qty;
+          const bankTotal = baseTotal + uniqueCode;
+          const finalAmount = method === 'wallet' ? baseTotal : bankTotal;
 
-        prod.stock = Math.max(0, (prod.stock || qty) - qty);
-        await window.upsertRow('products', prod);
+          prod.stock = Math.max(0, (prod.stock || qty) - qty);
+          await window.upsertRow('products', prod);
 
-        const txId = Date.now();
-        if (method === 'wallet') {
-          currentUser.wallet = (parseFloat(currentUser.wallet) || 0) - baseTotal;
-        }
-
-        const txObj = {
-          id: txId,
-          user_id: currentUser.id,
-          type: 'ro_purchase',
-          productId: roPid,
-          productName: `${prod.name} (${qty}x - Size ${size} - ${color})`,
-          amount: finalAmount,
-          base_price: baseTotal,
-          unique_code: uniqueCode,
-          price: finalAmount,
-          qty: qty,
-          date: new Date().toISOString(),
-          status: method === 'wallet' ? 'success' : 'pending',
-          paymentMethod: method,
-          proof_uploaded: method === 'wallet' ? true : false,
-          resi: null,
-          size,
-          color
-        };
-
-        if (!currentUser.transactions) currentUser.transactions = [];
-        currentUser.transactions.push(txObj);
-        if (!currentUser.purchase_history) currentUser.purchase_history = [];
-        currentUser.purchase_history.push(txObj);
-        await window.upsertRow('users', currentUser);
-        await window.upsertRow('transactions', txObj);
-
-        // Simpan ke orders
-        const orderObj = {
-          id: txId,
-          order_number: 'RO-' + txId.toString().slice(-6),
-          user_id: currentUser.id,
-          user_name: currentUser.fullname || currentUser.username,
-          type: 'ro',
-          items: [{ product_id: prod.id, name: `${prod.name} (${size} - ${color})`, price: roPrice, qty: qty, size, color }],
-          total: finalAmount,
-          unique_code: uniqueCode,
-          status: method === 'wallet' ? 'processing' : 'pending',
-          created_at: new Date().toISOString(),
-          proof_image: null,
-          resi: null
-        };
-        await window.saveOrder(orderObj);
-
-        if (method === 'wallet') {
-          try {
-            const settings = await window.getSettings();
-            await window.calculateBinaryBonus(currentUser.id, baseTotal, settings);
-            await window.calculateRewardBonus(currentUser.id, baseTotal, settings);
-            await window.calculateRoBonus(currentUser.id, baseTotal, settings);
-          } catch (bonusError) {
-            console.error('❌ Error calculating RO bonuses:', bonusError);
+          const txId = Date.now();
+          if (method === 'wallet') {
+            currentUser.wallet = (parseFloat(currentUser.wallet) || 0) - baseTotal;
           }
-        }
 
-        // Refresh data
-        currentUser = await window.getUserProfile();
-        allProducts = await window.getProducts();
-        allTransactions = await window.getTransactions();
-        allOrders = await window.getOrders();
+          const txObj = {
+            id: txId,
+            user_id: currentUser.id,
+            type: 'ro_purchase',
+            productId: roPid,
+            productName: `${prod.name} (${qty}x - Size ${size} - ${color})`,
+            amount: finalAmount,
+            base_price: baseTotal,
+            unique_code: uniqueCode,
+            price: finalAmount,
+            qty: qty,
+            date: new Date().toISOString(),
+            status: method === 'wallet' ? 'success' : 'pending',
+            paymentMethod: method,
+            proof_uploaded: method === 'wallet' ? true : false,
+            resi: null,
+            size,
+            color
+          };
 
-        if (method === 'wallet') {
-          showModalAlert('Pembelian Berhasil (LUNAS)', 'RO lunas dari saldo dompet. Pesanan sedang diproses Admin.', () => {
-            renderDashboard();
-            window.showSection('ro-history');
-          });
-        } else {
-          // Show Next Steps Modal!
-          showOrderNextStepsModal(orderObj, bankTotal, uniqueCode);
+          if (!currentUser.transactions) currentUser.transactions = [];
+          currentUser.transactions.push(txObj);
+          if (!currentUser.purchase_history) currentUser.purchase_history = [];
+          currentUser.purchase_history.push(txObj);
+          await window.upsertRow('users', currentUser);
+          await window.upsertRow('transactions', txObj);
+
+          // Simpan ke orders
+          const orderObj = {
+            id: txId,
+            order_number: 'RO-' + txId.toString().slice(-6),
+            user_id: currentUser.id,
+            user_name: currentUser.fullname || currentUser.username,
+            type: 'ro',
+            items: [{ product_id: prod.id, name: `${prod.name} (${size} - ${color})`, price: roPrice, qty: qty, size, color }],
+            total: finalAmount,
+            unique_code: uniqueCode,
+            status: method === 'wallet' ? 'processing' : 'pending',
+            created_at: new Date().toISOString(),
+            proof_image: null,
+            resi: null
+          };
+          await window.saveOrder(orderObj);
+
+          if (method === 'wallet') {
+            try {
+              const settings = await window.getSettings();
+              await window.calculateBinaryBonus(currentUser.id, baseTotal, settings);
+              await window.calculateRewardBonus(currentUser.id, baseTotal, settings);
+              await window.calculateRoBonus(currentUser.id, baseTotal, settings);
+            } catch (bonusError) {
+              console.error('❌ Error calculating RO bonuses:', bonusError);
+            }
+          }
+
+          // Refresh data
+          currentUser = await window.getUserProfile();
+          allProducts = await window.getProducts();
+          allTransactions = await window.getTransactions();
+          allOrders = await window.getOrders();
+
+          if (method === 'wallet') {
+            showModalAlert('Pembelian Berhasil (LUNAS)', 'RO lunas dari saldo dompet. Pesanan sedang diproses Admin.', () => {
+              renderDashboard();
+              window.showSection('ro-history');
+            });
+          } else {
+            showToast('✅ Pesanan Berhasil Dibuat! Silakan selesaikan pembayaran.', 'success', 5000);
+            showOrderNextStepsModal(orderObj, bankTotal, uniqueCode);
+          }
+        } catch (err) {
+          console.error('❌ Error prosesRO:', err);
+          showModalAlert('Gagal', 'Terjadi kesalahan saat memproses pesanan: ' + err.message);
+        } finally {
+          if (typeof window.hideLoadingBar === 'function') window.hideLoadingBar();
         }
       }
 
