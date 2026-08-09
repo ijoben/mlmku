@@ -197,26 +197,27 @@ window.getTable = async function(table, select, filter, order) {
 window.upsertRow = async function(table, data) {
   console.log('🔵 upsertRow dipanggil untuk:', table);
   var payload = { ...data };
-  var { data: result, error } = await supabaseClient
-    .from(table)
-    .upsert(payload)
-    .select();
-  if (error) {
+  
+  for (var attempt = 0; attempt < 10; attempt++) {
+    var { data: result, error } = await supabaseClient
+      .from(table)
+      .upsert(payload)
+      .select();
+
+    if (!error) {
+      console.log('✅ upsertRow berhasil untuk:', table);
+      return result ? result[0] : payload;
+    }
+
     if (error.message && error.message.includes('Could not find the') && error.message.includes('column')) {
-      console.warn('⚠️ Column missing in schema, stripping unknown column and retrying upsert:', error.message);
       var match = error.message.match(/Could not find the '([^']+)' column/);
       if (match && match[1]) {
+        console.warn('⚠️ Stripping missing schema column:', match[1], 'from table:', table);
         delete payload[match[1]];
-        var retry = await supabaseClient
-          .from(table)
-          .upsert(payload)
-          .select();
-        if (!retry.error) {
-          console.log('✅ upsertRow retry berhasil');
-          return retry.data ? retry.data[0] : payload;
-        }
+        continue; // Retry loop with stripped payload!
       }
     }
+
     console.error('🔴 upsertRow error:', error);
     throw error;
   }
