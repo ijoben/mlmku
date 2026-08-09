@@ -793,11 +793,17 @@ window.approveOrderAndDistributeBonuses = async function(orderId) {
 // ============================================================
 window.applyBrandSettings = async function() {
   try {
-    var settingsData = await window.getTable('settings', '*');
     var settings = {};
-    (settingsData || []).forEach(function(r) { settings[r.key] = r.value; });
+    if (typeof window.getTable === 'function') {
+      try {
+        var settingsData = await window.getTable('settings', '*');
+        (settingsData || []).forEach(function(r) { settings[r.key] = r.value; });
+      } catch (err) {
+        console.warn('Unable to fetch settings table, fallback to localStorage', err);
+      }
+    }
 
-    var brandName = settings.brandName || settings.footer_brand || 'HEDTRO JEANS';
+    var brandName = settings.brandName || settings.site_name || localStorage.getItem('hedtro_brand_name') || 'HEDTRO JEANS';
     var brandLogo = settings.brandLogo || settings.site_logo || localStorage.getItem('hedtro_brand_logo') || '';
     var brandIcon = settings.brandIcon || settings.site_icon || localStorage.getItem('hedtro_brand_icon') || '';
 
@@ -805,35 +811,49 @@ window.applyBrandSettings = async function() {
     if (brandLogo) localStorage.setItem('hedtro_brand_logo', brandLogo);
     if (brandIcon) localStorage.setItem('hedtro_brand_icon', brandIcon);
 
-    // 1. Update Logo Text & Images across DOM
-    var logoElements = document.querySelectorAll('.logo, .logo-side, .navbar .logo, #headerLogo, #navbarLogo, #sidebarLogo, #brandLogo, #sideBrandLogo');
+    var isImageLogo = brandLogo && (
+      brandLogo.startsWith('data:image') ||
+      brandLogo.startsWith('http://') ||
+      brandLogo.startsWith('https://') ||
+      brandLogo.startsWith('/') ||
+      brandLogo.startsWith('./')
+    );
+
+    // Target all key brand logo containers across all pages
+    var selectors = '#headerLogo, #navbarLogo, #brandLogo, #sidebarLogo, #sideBrandLogo, .login-card .logo h1, #loginLogoHeading, #registerLogoHeading, .logo-icon';
+    var logoElements = document.querySelectorAll(selectors);
+
     logoElements.forEach(function(el) {
       if (!el) return;
-      var icon = el.querySelector('i');
-      var img = el.querySelector('img.brand-logo-img');
 
-      if (brandLogo && (brandLogo.startsWith('data:image') || brandLogo.startsWith('http'))) {
-        if (icon) icon.style.display = 'none';
-        if (!img) {
-          img = document.createElement('img');
-          img.className = 'brand-logo-img';
-          img.style.cssText = 'max-height:36px; margin-right:8px; vertical-align:middle; object-fit:contain; border-radius:6px;';
-          el.insertBefore(img, el.firstChild);
-        }
-        img.src = brandLogo;
-        img.alt = brandName;
-        img.style.display = 'inline-block';
-      } else if (brandLogo && brandLogo.startsWith('fa-')) {
-        if (img) img.style.display = 'none';
-        if (icon) {
-          icon.className = 'fas ' + brandLogo;
-          icon.style.display = 'inline-block';
+      if (isImageLogo) {
+        // Hide text logo completely when image logo is uploaded ("klw upload logo textnya hiden saja")
+        var isCardHeading = (el.tagName === 'H1');
+        var maxH = isCardHeading ? '48px' : '36px';
+        
+        el.innerHTML = '<img class="brand-logo-img" src="' + brandLogo + '" alt="' + brandName + '" style="max-height:' + maxH + '; width:auto; object-fit:contain; vertical-align:middle; display:inline-block;" />';
+      } else {
+        // Show icon + text if logo is a fontawesome icon string or default
+        var iconClass = (brandLogo && brandLogo.startsWith('fa-')) ? brandLogo : 'fa-tshirt';
+        
+        if (el.classList.contains('logo-icon')) {
+          el.innerHTML = '<i class="fas ' + iconClass + '"></i>';
+        } else if (el.id === 'sidebarLogo' || el.id === 'sideBrandLogo' || el.classList.contains('logo-side')) {
+          el.innerHTML = '<i class="fas ' + iconClass + '"></i> ' + (brandName.split(' ')[0] || 'HEDTRO');
+        } else if (el.id === 'headerLogo' || el.id === 'navbarLogo' || el.id === 'brandLogo') {
+          if (brandName === 'HEDTRO JEANS' || brandName === 'HEDTRO') {
+            el.innerHTML = '<i class="fas ' + iconClass + '"></i> HEDTRO<span>JEANS</span>';
+          } else {
+            el.innerHTML = '<i class="fas ' + iconClass + '"></i> ' + brandName;
+          }
+        } else {
+          el.innerHTML = '<i class="fas ' + iconClass + '"></i> ' + brandName;
         }
       }
     });
 
-    // 2. Update Favicon Link
-    if (brandIcon && (brandIcon.startsWith('data:image') || brandIcon.startsWith('http'))) {
+    // Update Favicon Link
+    if (brandIcon && (brandIcon.startsWith('data:image') || brandIcon.startsWith('http://') || brandIcon.startsWith('https://') || brandIcon.startsWith('/'))) {
       var favicon = document.querySelector("link[rel*='icon']");
       if (!favicon) {
         favicon = document.createElement('link');
@@ -848,11 +868,11 @@ window.applyBrandSettings = async function() {
 };
 
 if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  setTimeout(window.applyBrandSettings, 100);
+  setTimeout(window.applyBrandSettings, 50);
 } else {
   document.addEventListener('DOMContentLoaded', window.applyBrandSettings);
 }
 
 // LOG KONFIRMASI
 console.log('✅ supabase.js selesai dieksekusi!');
-console.log('✅ window.applyBrandSettings:', typeof window.applyBrandSettings); 
+console.log('✅ window.applyBrandSettings:', typeof window.applyBrandSettings);
