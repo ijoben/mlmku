@@ -223,10 +223,10 @@
             </div>
 
             <div class="login-footer">
-                Sudah punya akun? <a href="/login">Login di sini</a>
+                Sudah punya akun? <a href="login.html">Login di sini</a>
             </div>
             <div style="text-align:center; margin-top:12px;">
-                <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+                <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
             </div>
         </div>
     </div>
@@ -258,11 +258,16 @@
             // ========== CEK SESSION ==========
             async function checkSession() {
                 try {
+                    const params = new URLSearchParams(window.location.search);
+                    // Jika ada parameter ref / sponsor / upline / pos / new, ijinkan registrasi member baru tanpa redirect
+                    if (params.has('ref') || params.has('sponsor') || params.has('upline') || params.has('pos') || params.has('new')) {
+                        return;
+                    }
                     const session = await window.getSession();
                     if (session) {
                         const profile = await window.getUserProfile();
                         if (profile) {
-                            window.location.href = profile.role === 'admin' ? '/admin' : '/dashboard';
+                            window.location.href = profile.role === 'admin' ? 'admin.html' : 'dashboard.html';
                         }
                     }
                 } catch (e) {
