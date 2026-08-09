@@ -362,7 +362,7 @@ window.calculateSponsorBonus = async function(userId, sponsorId, amount, setting
   var sponsorBonusPercent = parseFloat(settings.sponsorBonus) || 10;
   var bonusAmount = (amount * sponsorBonusPercent) / 100;
   
-  if (bonusAmount <= 0 || !sponsorId) return;
+  if (bonusAmount <= 0 || !sponsorId || String(sponsorId) === String(userId)) return;
   
   try {
     var sponsor = await window.getUserById(sponsorId);
@@ -370,74 +370,80 @@ window.calculateSponsorBonus = async function(userId, sponsorId, amount, setting
       sponsor.bonus_sponsor = (parseFloat(sponsor.bonus_sponsor) || 0) + bonusAmount;
       sponsor.wallet = (parseFloat(sponsor.wallet) || 0) + bonusAmount;
       await window.upsertRow('users', sponsor);
-      console.log('✅ Sponsor bonus Rp' + bonusAmount + ' to ' + sponsor.username);
+      console.log('✅ Bonus Sponsor Rp' + bonusAmount + ' -> Sponsor: ' + sponsor.username);
     }
   } catch (e) {
     console.error('Error calculating sponsor bonus:', e);
   }
 };
 
-// 2. Hitung Bonus Binary (10 Level)
+// 2. Hitung Bonus Binary (10 Level Upline)
 window.calculateBinaryBonus = async function(userId, amount, settings) {
   var binaryLevels = settings.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
-  var currentUserId = userId;
-  var level = 0;
-  
-  while (currentUserId && level < 10) {
-    try {
-      var user = await window.getUserById(currentUserId);
-      if (!user) break;
+  try {
+    var buyer = await window.getUserById(userId);
+    if (!buyer) return;
+    
+    // PENTING: Bonus Binary diberikan ke UPLINE DI ATAS buyer, BUKAN ke buyer itu sendiri!
+    var currentUserId = buyer.sponsor_id || buyer.upline_id;
+    var level = 0;
+    
+    while (currentUserId && level < 10) {
+      var upline = await window.getUserById(currentUserId);
+      if (!upline || String(upline.id) === String(userId)) break;
       
       var bonusPercent = parseFloat(binaryLevels[level]) || 0;
       var bonusAmount = (amount * bonusPercent) / 100;
       
       if (bonusAmount > 0) {
-        user.bonus_binary = (parseFloat(user.bonus_binary) || 0) + bonusAmount;
-        user.wallet = (parseFloat(user.wallet) || 0) + bonusAmount;
-        await window.upsertRow('users', user);
-        console.log('✅ Binary bonus Rp' + bonusAmount + ' (' + bonusPercent + '%) to ' + user.username + ' (level ' + (level+1) + ')');
+        upline.bonus_binary = (parseFloat(upline.bonus_binary) || 0) + bonusAmount;
+        upline.wallet = (parseFloat(upline.wallet) || 0) + bonusAmount;
+        await window.upsertRow('users', upline);
+        console.log('✅ Bonus Binary Rp' + bonusAmount + ' (' + bonusPercent + '%) -> Upline L' + (level+1) + ': ' + upline.username);
       }
       
-      currentUserId = user.sponsor_id;
+      currentUserId = upline.sponsor_id || upline.upline_id;
       level++;
-    } catch (e) {
-      console.error('Error calculating binary bonus:', e);
-      break;
     }
+  } catch (e) {
+    console.error('Error calculating binary bonus:', e);
   }
 };
 
-// 3. Hitung Bonus Reward (5 Level)
+// 3. Hitung Bonus Reward (5 Level Upline)
 window.calculateRewardBonus = async function(userId, amount, settings) {
   var rewardLevels = settings.rewardBonusLevels || [5, 4, 3, 2, 1];
-  var currentUserId = userId;
-  var level = 0;
-  
-  while (currentUserId && level < 5) {
-    try {
-      var user = await window.getUserById(currentUserId);
-      if (!user) break;
+  try {
+    var buyer = await window.getUserById(userId);
+    if (!buyer) return;
+    
+    // PENTING: Bonus Reward diberikan ke UPLINE DI ATAS buyer, BUKAN ke buyer itu sendiri!
+    var currentUserId = buyer.sponsor_id || buyer.upline_id;
+    var level = 0;
+    
+    while (currentUserId && level < 5) {
+      var upline = await window.getUserById(currentUserId);
+      if (!upline || String(upline.id) === String(userId)) break;
       
       var bonusPercent = parseFloat(rewardLevels[level]) || 0;
       var bonusAmount = (amount * bonusPercent) / 100;
       
       if (bonusAmount > 0) {
-        user.bonus_reward = (parseFloat(user.bonus_reward) || 0) + bonusAmount;
-        user.wallet = (parseFloat(user.wallet) || 0) + bonusAmount;
-        await window.upsertRow('users', user);
-        console.log('✅ Reward bonus Rp' + bonusAmount + ' (' + bonusPercent + '%) to ' + user.username + ' (level ' + (level+1) + ')');
+        upline.bonus_reward = (parseFloat(upline.bonus_reward) || 0) + bonusAmount;
+        upline.wallet = (parseFloat(upline.wallet) || 0) + bonusAmount;
+        await window.upsertRow('users', upline);
+        console.log('✅ Bonus Reward Rp' + bonusAmount + ' (' + bonusPercent + '%) -> Upline L' + (level+1) + ': ' + upline.username);
       }
       
-      currentUserId = user.sponsor_id;
+      currentUserId = upline.sponsor_id || upline.upline_id;
       level++;
-    } catch (e) {
-      console.error('Error calculating reward bonus:', e);
-      break;
     }
+  } catch (e) {
+    console.error('Error calculating reward bonus:', e);
   }
 };
 
-// 4. Hitung Bonus RO (Repeat Order)
+// 4. Hitung Bonus RO (Repeat Order ke Sponsor)
 window.calculateRoBonus = async function(userId, amount, settings) {
   var roBonusPercent = parseFloat(settings.roBonus) || 3;
   var bonusAmount = (amount * roBonusPercent) / 100;
@@ -445,12 +451,16 @@ window.calculateRoBonus = async function(userId, amount, settings) {
   if (bonusAmount <= 0) return;
   
   try {
-    var user = await window.getUserById(userId);
-    if (user) {
-      user.bonus_ro = (parseFloat(user.bonus_ro) || 0) + bonusAmount;
-      user.wallet = (parseFloat(user.wallet) || 0) + bonusAmount;
-      await window.upsertRow('users', user);
-      console.log('✅ RO bonus Rp' + bonusAmount + ' to ' + user.username);
+    var buyer = await window.getUserById(userId);
+    if (!buyer || !buyer.sponsor_id) return;
+    
+    // Bonus RO diberikan kepada SPONSOR dari pembeli
+    var sponsor = await window.getUserById(buyer.sponsor_id);
+    if (sponsor && String(sponsor.id) !== String(userId)) {
+      sponsor.bonus_ro = (parseFloat(sponsor.bonus_ro) || 0) + bonusAmount;
+      sponsor.wallet = (parseFloat(sponsor.wallet) || 0) + bonusAmount;
+      await window.upsertRow('users', sponsor);
+      console.log('✅ Bonus RO Rp' + bonusAmount + ' -> Sponsor: ' + sponsor.username);
     }
   } catch (e) {
     console.error('Error calculating RO bonus:', e);
