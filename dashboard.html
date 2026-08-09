@@ -1793,6 +1793,13 @@
             if (orderMatch.resi) t.resi = orderMatch.resi;
             if (orderMatch.status) t.status = orderMatch.status;
           }
+          if (currentUser.first_order && (t.type === 'first_order' || String(t.id) === String(currentUser.first_order.id))) {
+            if (currentUser.first_order.resi) t.resi = currentUser.first_order.resi;
+            if (currentUser.first_order.status) t.status = currentUser.first_order.status;
+          }
+          if (currentUser.resi && !t.resi) {
+            t.resi = currentUser.resi;
+          }
         });
 
         combined.reverse();
@@ -1809,14 +1816,21 @@
           const date = new Date(t.date).toLocaleDateString('id-ID');
           let statusText = 'Diproses (Pending)';
           let badgeClass = 'status-pending';
-          if (t.status === 'processing' || t.status === 'success' || t.status === 'verified' || t.status === 'paid') { 
-            statusText = 'Verified / Selesai'; badgeClass = 'status-success'; 
+          if (t.status === 'shipped') { 
+            statusText = '🚚 Dikirim'; 
+            badgeClass = 'status-success'; 
+          } else if (t.status === 'processing' || t.status === 'success' || t.status === 'verified' || t.status === 'paid') { 
+            statusText = 'Terverifikasi / Diproses'; 
+            badgeClass = 'status-success'; 
+          } else if (t.status === 'failed') { 
+            statusText = 'Dibatalkan'; 
+            badgeClass = 'status-failed'; 
           }
-          else if (t.status === 'failed') { statusText = 'Dibatalkan'; badgeClass = 'status-failed'; }
-          else if (t.status === 'shipped') { statusText = 'Dikirim'; badgeClass = 'status-shipped'; }
           
           let actionHtml = '-';
-          if (t.status === 'pending') {
+          if (t.status === 'shipped') {
+            actionHtml = `<span style="font-size:0.75rem; color:#b38728; font-weight:800;"><i class="fas fa-shipping-fast"></i> Dikirim</span>`;
+          } else if (t.status === 'pending') {
             if (!t.proof_uploaded) {
               actionHtml = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload('${t.id}', 'ro')" style="padding:4px 10px; font-size:0.7rem;"><i class="fas fa-upload"></i> Upload Bukti</button>`;
             } else {
@@ -1825,7 +1839,7 @@
           } else {
             actionHtml = `<span style="font-size:0.7rem; color:#2e7d32; font-weight:700;"><i class="fas fa-check-circle"></i> Terverifikasi</span>`;
           }
-          let resiHtml = t.resi ? `<span class="resi" style="background:#fff8e7; color:#b38728; border:1px solid #ffe8a1; padding:3px 8px; border-radius:6px; font-weight:800; font-size:0.75rem; display:inline-flex; align-items:center; gap:4px;"><i class="fas fa-truck"></i> ${t.resi}</span>` : '<span style="color:#a0aec0; font-size:0.75rem;">Belum ada</span>';
+          let resiHtml = t.resi ? `<span class="resi" style="background:#fff8e7; color:#b38728; border:1px solid #ffe8a1; padding:4px 10px; border-radius:8px; font-weight:800; font-size:0.8rem; display:inline-flex; align-items:center; gap:6px;"><i class="fas fa-truck"></i> ${t.resi}</span>` : '<span style="color:#a0aec0; font-size:0.75rem;">Belum ada</span>';
           const typeBadge = t.type === 'first_order' ? ' <small style="color:var(--gold-accent); font-weight:bold;">(First Order)</small>' : '';
           html += `<tr>
             <td data-label="Tanggal">${date}</td>
