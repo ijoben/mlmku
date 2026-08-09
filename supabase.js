@@ -597,6 +597,77 @@ window.saveSettings = async function(settings) {
 };
 
 // ============================================================
+// ORDERS HELPERS
+// ============================================================
+window.getOrders = async function() {
+  try {
+    var rows = await window.getTable('orders', '*');
+    return rows || [];
+  } catch (e) {
+    console.warn('⚠️ getOrders warning:', e);
+    return [];
+  }
+};
+
+window.saveOrder = async function(order) {
+  console.log('🔵 saveOrder dipanggil:', order);
+  if (!order) return null;
+
+  // 1. Try upsert to Supabase 'orders' table
+  try {
+    var { data, error } = await supabaseClient
+      .from('orders')
+      .upsert(order)
+      .select();
+    
+    if (error) {
+      console.warn('⚠️ Supabase orders table upsert error:', error.message);
+    } else {
+      console.log('✅ saveOrder ke Supabase orders table berhasil');
+    }
+  } catch (e) {
+    console.warn('⚠️ saveOrder catch:', e);
+  }
+
+  // 2. Sync order into user profile in 'users' table to guarantee data persistence
+  try {
+    if (order.user_id) {
+      var user = await window.getUserById(order.user_id);
+      if (user) {
+        if (order.type === 'first_order') {
+          user.first_order = order;
+        }
+        if (!user.purchase_history) user.purchase_history = [];
+        var idx = user.purchase_history.findIndex(p => String(p.id) === String(order.id));
+        var purchaseRecord = {
+          id: order.id,
+          date: order.created_at || new Date().toISOString(),
+          productName: (order.items && order.items[0]) ? order.items[0].name : (order.type === 'first_order' ? '🎯 Paket First Order' : 'Produk'),
+          price: order.total || 0,
+          status: order.status || 'pending',
+          paymentMethod: order.paymentMethod || 'bank',
+          proof_uploaded: !!order.proof_image,
+          proof_image: order.proof_image || null,
+          type: order.type || 'ro',
+          resi: order.resi || null
+        };
+        if (idx >= 0) {
+          user.purchase_history[idx] = purchaseRecord;
+        } else {
+          user.purchase_history.push(purchaseRecord);
+        }
+        await window.upsertRow('users', user);
+        console.log('✅ saveOrder sync ke user profile berhasil');
+      }
+    }
+  } catch (userErr) {
+    console.warn('⚠️ saveOrder user sync warning:', userErr);
+  }
+
+  return order;
+};
+
+// ============================================================
 // APPROVE ORDER & DISTRIBUTE BONUSES
 // ============================================================
 window.approveOrderAndDistributeBonuses = async function(orderId) {
@@ -660,34 +731,70 @@ window.approveOrderAndDistributeBonuses = async function(orderId) {
 };
 
 // ============================================================
-// LOG KONFIRMASI
+// BRAND LOGO & FAVICON DYNAMIC APPLICATION
 // ============================================================
+window.applyBrandSettings = async function() {
+  try {
+    var settingsData = await window.getTable('settings', '*');
+    var settings = {};
+    (settingsData || []).forEach(function(r) { settings[r.key] = r.value; });
+
+    var brandName = settings.brandName || settings.footer_brand || 'HEDTRO JEANS';
+    var brandLogo = settings.brandLogo || settings.site_logo || localStorage.getItem('hedtro_brand_logo') || '';
+    var brandIcon = settings.brandIcon || settings.site_icon || localStorage.getItem('hedtro_brand_icon') || '';
+
+    if (brandName) localStorage.setItem('hedtro_brand_name', brandName);
+    if (brandLogo) localStorage.setItem('hedtro_brand_logo', brandLogo);
+    if (brandIcon) localStorage.setItem('hedtro_brand_icon', brandIcon);
+
+    // 1. Update Logo Text & Images across DOM
+    var logoElements = document.querySelectorAll('.logo, .logo-side, .navbar .logo, #headerLogo, #navbarLogo, #sidebarLogo, #brandLogo, #sideBrandLogo');
+    logoElements.forEach(function(el) {
+      if (!el) return;
+      var icon = el.querySelector('i');
+      var img = el.querySelector('img.brand-logo-img');
+
+      if (brandLogo && (brandLogo.startsWith('data:image') || brandLogo.startsWith('http'))) {
+        if (icon) icon.style.display = 'none';
+        if (!img) {
+          img = document.createElement('img');
+          img.className = 'brand-logo-img';
+          img.style.cssText = 'max-height:36px; margin-right:8px; vertical-align:middle; object-fit:contain; border-radius:6px;';
+          el.insertBefore(img, el.firstChild);
+        }
+        img.src = brandLogo;
+        img.alt = brandName;
+        img.style.display = 'inline-block';
+      } else if (brandLogo && brandLogo.startsWith('fa-')) {
+        if (img) img.style.display = 'none';
+        if (icon) {
+          icon.className = 'fas ' + brandLogo;
+          icon.style.display = 'inline-block';
+        }
+      }
+    });
+
+    // 2. Update Favicon Link
+    if (brandIcon && (brandIcon.startsWith('data:image') || brandIcon.startsWith('http'))) {
+      var favicon = document.querySelector("link[rel*='icon']");
+      if (!favicon) {
+        favicon = document.createElement('link');
+        favicon.rel = 'shortcut icon';
+        document.getElementsByTagName('head')[0].appendChild(favicon);
+      }
+      favicon.href = brandIcon;
+    }
+  } catch (e) {
+    console.warn('applyBrandSettings warning:', e);
+  }
+};
+
+if (document.readyState === 'complete' || document.readyState === 'interactive') {
+  setTimeout(window.applyBrandSettings, 100);
+} else {
+  document.addEventListener('DOMContentLoaded', window.applyBrandSettings);
+}
+
+// LOG KONFIRMASI
 console.log('✅ supabase.js selesai dieksekusi!');
-console.log('✅ window.supabase:', typeof window.supabase);
-console.log('✅ window.getProducts:', typeof window.getProducts);
-console.log('✅ window.getSession:', typeof window.getSession);
-console.log('✅ window.getSettings:', typeof window.getSettings);
-console.log('✅ window.getSlides:', typeof window.getSlides);
-console.log('✅ window.getFaqs:', typeof window.getFaqs);
-console.log('✅ window.getFeatures:', typeof window.getFeatures);
-console.log('✅ window.getAbout:', typeof window.getAbout);
-console.log('✅ window.getFooter:', typeof window.getFooter);
-console.log('✅ window.signIn:', typeof window.signIn);
-console.log('✅ window.signUp:', typeof window.signUp);
-console.log('✅ window.signOut:', typeof window.signOut);
-console.log('✅ window.getUserProfile:', typeof window.getUserProfile);
-console.log('✅ window.getUserById:', typeof window.getUserById);
-console.log('✅ window.getUserByUsername:', typeof window.getUserByUsername);
-console.log('✅ window.updateUserProfile:', typeof window.updateUserProfile);
-console.log('✅ window.getTable:', typeof window.getTable);
-console.log('✅ window.upsertRow:', typeof window.upsertRow);
-console.log('✅ window.deleteRow:', typeof window.deleteRow);
-console.log('✅ window.uploadFile:', typeof window.uploadFile);
-console.log('✅ window.deleteFile:', typeof window.deleteFile);
-console.log('✅ window.uploadImage:', typeof window.uploadImage);
-console.log('✅ window.compressImageFile:', typeof window.compressImageFile);
-console.log('✅ window.calculateAllBonuses:', typeof window.calculateAllBonuses);
-console.log('✅ window.calculateSponsorBonus:', typeof window.calculateSponsorBonus);
-console.log('✅ window.calculateBinaryBonus:', typeof window.calculateBinaryBonus);
-console.log('✅ window.calculateRewardBonus:', typeof window.calculateRewardBonus);
-console.log('✅ window.calculateRoBonus:', typeof window.calculateRoBonus);
+console.log('✅ window.applyBrandSettings:', typeof window.applyBrandSettings);
