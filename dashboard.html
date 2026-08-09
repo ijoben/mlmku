@@ -2536,6 +2536,7 @@
       });
 
       document.getElementById('btnSaveProfile').addEventListener('click', async function() {
+        const btn = this;
         const password = document.getElementById('profPassword').value.trim();
         const confirmPassword = document.getElementById('profConfirmPassword').value.trim();
         const fullname = document.getElementById('profFullname').value.trim();
@@ -2547,27 +2548,69 @@
         const bankHolder = document.getElementById('profBankHolder').value.trim();
         const address = document.getElementById('profAddress').value.trim();
         const city = document.getElementById('profCity').value.trim();
-        if (!fullname || !nik || !phone || !whatsapp || !bankAccount || !bankHolder || !address || !city || !bankName) {
-          showModalAlert('Peringatan', 'Isi semua data.');
+
+        if (!fullname) {
+          showModalAlert('Peringatan', 'Silakan isi Nama Lengkap Anda.');
           return;
         }
-        if (password !== '' && password !== confirmPassword) {
-          showModalAlert('Peringatan', 'Sandi baru tidak cocok.');
-          return;
+
+        if (password !== '') {
+          if (password.length < 6) {
+            showModalAlert('Peringatan', 'Sandi baru minimal 6 karakter.');
+            return;
+          }
+          if (password !== confirmPassword) {
+            showModalAlert('Peringatan', 'Konfirmasi sandi baru tidak sesuai.');
+            return;
+          }
         }
-        if (password !== '') currentUser.password = password;
-        currentUser.fullname = fullname;
-        currentUser.nik = nik;
-        currentUser.phone = phone;
-        currentUser.whatsapp = whatsapp;
-        currentUser.bank_name = bankName;
-        currentUser.bank_account = bankAccount;
-        currentUser.bank_holder = bankHolder;
-        currentUser.address = address;
-        currentUser.city = city;
-        await window.upsertRow('users', currentUser);
-        await renderProfileForm();
-        showModalAlert('Berhasil', 'Profil diperbarui.');
+
+        try {
+          btn.disabled = true;
+          btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menyimpan...';
+
+          // Update password di Supabase Auth jika diisi
+          if (password !== '') {
+            const client = window.supabaseClient || window.supabase;
+            if (client && client.auth) {
+              const { error: passErr } = await client.auth.updateUser({ password: password });
+              if (passErr) console.warn('Auth password update warning:', passErr);
+            }
+          }
+
+          currentUser.fullname = fullname;
+          currentUser.nik = nik;
+          currentUser.phone = phone;
+          currentUser.whatsapp = whatsapp || phone;
+          currentUser.bank_name = bankName;
+          currentUser.bank_account = bankAccount;
+          currentUser.bank_holder = bankHolder;
+          currentUser.address = address;
+          currentUser.city = city;
+
+          // Simpan ke database users
+          await window.upsertRow('users', currentUser);
+
+          // Simpan ke Auth metadata jika ada
+          if (window.updateUserProfile) {
+            try {
+              await window.updateUserProfile({
+                fullname, nik, phone, whatsapp: whatsapp || phone,
+                bank_name: bankName, bank_account: bankAccount, bank_holder: bankHolder,
+                address, city
+              });
+            } catch (mErr) { console.warn('Update metadata warning:', mErr); }
+          }
+
+          await renderProfileForm();
+          showModalAlert('Berhasil', '✅ Profil Anda berhasil diperbarui!');
+        } catch (err) {
+          console.error('Save profile error:', err);
+          showModalAlert('Gagal', 'Gagal memperbarui profil: ' + (err.message || 'Terjadi kesalahan sistem.'));
+        } finally {
+          btn.disabled = false;
+          btn.innerHTML = '<i class="fas fa-save"></i> Simpan Profil';
+        }
       });
 
       // ========== INIT ==========
