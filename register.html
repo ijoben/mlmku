@@ -563,7 +563,10 @@
                     console.log('✅ Profile ditemukan:', profile);
 
                     // ===== UPDATE PROFILE DENGAN DATA LENGKAP =====
-                    await window.updateUserProfile({
+                    const fullUserData = {
+                        ...(profile || {}),
+                        id: user.id,
+                        email: email,
                         username: username,
                         fullname: fullname,
                         phone: phone,
@@ -578,8 +581,15 @@
                         sponsor_username: sponsorUsername || null,
                         position: position,
                         status: 'pending'
-                    });
-                    console.log('✅ Profile updated with full data');
+                    };
+
+                    try {
+                        await window.upsertRow('users', fullUserData);
+                        console.log('✅ Profile updated with full data via upsertRow');
+                    } catch (upErr) {
+                        console.warn('Upsert user profile warning:', upErr);
+                        await window.updateUserProfile(fullUserData);
+                    }
 
                     // ============================================================
                     // ===== BONUS CALCULATIONS =====
