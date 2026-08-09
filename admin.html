@@ -975,6 +975,8 @@
                     allSettings = {};
                     (resSettings?.data || []).forEach(r => allSettings[r.key] = r.value);
 
+                    try { localStorage.removeItem('hedtro_index_cache_v1'); } catch (e) {}
+
                     console.log('⚡ Admin Data refreshed in parallel:', allUsers.length, 'users,', allOrders.length, 'orders');
                 } catch (e) {
                     console.error('refreshAdminData error:', e);
