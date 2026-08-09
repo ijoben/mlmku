@@ -855,4 +855,4 @@ if (document.readyState === 'complete' || document.readyState === 'interactive')
 
 // LOG KONFIRMASI
 console.log('✅ supabase.js selesai dieksekusi!');
-console.log('✅ window.applyBrandSettings:', typeof window.applyBrandSettings);
+console.log('✅ window.applyBrandSettings:', typeof window.applyBrandSettings); 
