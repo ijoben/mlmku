@@ -2485,7 +2485,33 @@
       // ========== HISTORY ==========
       async function renderHistoryTable() {
         const tbody = document.getElementById('historyTableBody');
-        const txs = (currentUser.transactions || []).slice().reverse();
+
+        let liveTxs = [];
+        try {
+          if (window.getTransactions) {
+            liveTxs = await window.getTransactions(currentUser.id);
+          }
+        } catch (e) { console.warn('Fetch live txs history warning:', e); }
+
+        let txMap = new Map();
+        (currentUser.transactions || []).forEach(t => {
+          txMap.set(String(t.id), { ...t });
+        });
+
+        (liveTxs || []).forEach(t => {
+          const key = String(t.id);
+          if (txMap.has(key)) {
+            const existing = txMap.get(key);
+            existing.status = t.status || existing.status;
+            if (t.resi) existing.resi = t.resi;
+            txMap.set(key, existing);
+          } else {
+            txMap.set(key, { ...t });
+          }
+        });
+
+        const txs = Array.from(txMap.values()).reverse();
+
         if (txs.length === 0) {
           tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:16px; color:#718096;">Belum ada riwayat transaksi.</td></tr>';
           document.getElementById('historyPageInfo').textContent = '1/1';
@@ -2501,11 +2527,22 @@
           const orderMatch = (allOrders || []).find(o => String(o.id) === String(t.id));
           const purchaseMatch = (currentUser.purchase_history || []).find(p => String(p.id) === String(t.id));
 
-          let realStatus = (orderMatch ? orderMatch.status : (purchaseMatch ? purchaseMatch.status : t.status)) || 'pending';
-          if (realStatus === 'processing' || realStatus === 'verified') realStatus = 'terverifikasi';
-          else if (realStatus === 'shipped') realStatus = 'dikirim';
+          let rawSt = (orderMatch ? orderMatch.status : (purchaseMatch ? purchaseMatch.status : t.status)) || 'pending';
+          rawSt = String(rawSt).toLowerCase();
 
-          let badge = (realStatus === 'pending') ? 'status-pending' : ((realStatus === 'success' || realStatus === 'terverifikasi' || realStatus === 'dikirim') ? 'status-success' : 'status-failed');
+          let realStatus = 'PENDING';
+          let badge = 'status-pending';
+
+          if (rawSt === 'success' || rawSt === 'verified' || rawSt === 'approved' || rawSt === 'completed' || rawSt === 'paid') {
+            realStatus = 'TERVERIFIKASI';
+            badge = 'status-success';
+          } else if (rawSt === 'shipped') {
+            realStatus = 'DIKIRIM';
+            badge = 'status-success';
+          } else if (rawSt === 'failed' || rawSt === 'cancelled' || rawSt === 'rejected') {
+            realStatus = 'DIBATALKAN';
+            badge = 'status-failed';
+          }
 
           const resiVal = (orderMatch ? orderMatch.resi : (purchaseMatch ? purchaseMatch.resi : t.resi)) || null;
           let resiHtml = resiVal ? `<br><span class="resi" style="font-size:0.7rem; color:var(--gold-accent); font-weight:700;"><i class="fas fa-truck"></i> No. Resi: ${resiVal}</span>` : '';
@@ -2513,9 +2550,9 @@
           html += `<tr>
             <td data-label="Tanggal">${date}</td>
             <td data-label="Jenis"><strong>${(t.type||'').toUpperCase()}</strong></td>
-            <td data-label="Detail">${t.note || t.productName || t.method || '-'}${resiHtml}</td>
+            <td data-label="Detail">${t.note || t.productName || t.method || t.account || '-'}${resiHtml}</td>
             <td data-label="Nominal" style="font-weight:700;">${sign} Rp ${(parseFloat(t.amount || t.price) || 0).toLocaleString()}</td>
-            <td data-label="Status"><span class="status-badge ${badge}">${realStatus.toUpperCase()}</span></td>
+            <td data-label="Status"><span class="status-badge ${badge}">${realStatus}</span></td>
           </tr>`;
         });
         tbody.innerHTML = html;
