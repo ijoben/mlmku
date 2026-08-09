@@ -1407,7 +1407,7 @@
                         const statusClass = 'badge-' + (u.status || 'free');
                         let fotoHtml = '<i class="fas fa-user" style="font-size:1.2rem; color:var(--denim-blue);"></i>';
                         if (u.profile_image) fotoHtml = `<img src="${u.profile_image}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-accent);" />`;
-                        const memberIdFormatted = window.formatMemberId ? window.formatMemberId(u) : ('HDT-' + String(u.id).padStart(3, '0'));
+                        const memberIdFormatted = window.formatMemberId ? window.formatMemberId(u, allUsersData) : ('HDT-' + String(u.id).padStart(3, '0'));
                         html += `<tr>
                             <td data-label="Foto">${fotoHtml}</td>
                             <td data-label="ID Member"><strong style="color:var(--gold-accent); font-family:monospace;">${memberIdFormatted}</strong></td>
