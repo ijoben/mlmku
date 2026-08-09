@@ -1554,10 +1554,14 @@
                     paginatedData.forEach((p, idx) => {
                         let imgHtml = `<i class="fas fa-tshirt" style="font-size:1.5rem;color:var(--denim-blue);"></i>`;
                         if (p.image && (p.image.startsWith('data:image') || p.image.startsWith('http'))) imgHtml = `<img src="${p.image}" style="width:40px;height:40px;object-fit:cover;border-radius:8px;" />`;
+                        const prodSerial = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
                         html += `<tr>
                             <td data-label="#">${startIdx + idx + 1}</td>
                             <td data-label="Gambar">${imgHtml}</td>
-                            <td data-label="Nama Produk"><strong>${p.name}</strong></td>
+                            <td data-label="Nama Produk">
+                                <strong>${p.name}</strong><br>
+                                <small style="color:var(--gold-accent); font-weight:700; font-size:0.7rem;"><i class="fas fa-barcode"></i> Seri: ${prodSerial}</small>
+                            </td>
                             <td data-label="Harga Member">Rp ${parseFloat(p.price).toLocaleString()}</td>
                             <td data-label="Harga Normal">Rp ${parseFloat(p.original || 0).toLocaleString()}</td>
                             <td data-label="Tag"><span class="badge-status" style="background:${p.badgeColor || '#c9a84c'};color:#fff;">${p.tag || 'PRODUK'}</span></td>
@@ -1606,67 +1610,70 @@
                     product = allProducts.find(p => p.id === parseInt(id));
                 }
                 const isEdit = !!product;
-                openModal(`
-                    <h3>${isEdit ? 'Edit Produk' : 'Tambah Produk'}</h3>
-                    <div class="form-group"><label>Nama Produk</label><input type="text" id="pName" value="${isEdit ? product?.name : ''}"></div>
-                    <div class="form-group"><label>Harga Member (Rp)</label><input type="number" id="pPrice" value="${isEdit ? product?.price : ''}"></div>
-                    <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="pOriginal" value="${isEdit ? (product?.original || '') : ''}"></div>
-                    <div class="form-group"><label>Stok</label><input type="number" id="pStock" value="${isEdit ? product?.stock : 0}"></div>
-                    <div class="form-group"><label>Tag</label><input type="text" id="pTag" value="${isEdit ? product?.tag : ''}"></div>
-                    <div class="form-group"><label>Gambar</label>
-                        <input type="file" id="pImageFile" accept="image/*" />
-                        <input type="hidden" id="pImageUrl" value="${isEdit ? (product?.image || '') : ''}" />
-                        <img id="pImagePreview" src="${isEdit ? product?.image : ''}" style="max-height:80px; ${isEdit && product?.image ? '' : 'display:none;'}" />
-                    </div>
-                    <div class="form-group"><label>Favorite</label><select id="pFavorite">
-                        <option value="false" ${isEdit && !product?.favorite ? 'selected' : ''}>Tidak</option>
-                        <option value="true" ${isEdit && product?.favorite ? 'selected' : ''}>Ya</option>
-                    </select></div>
-                    <button class="btn-submit" id="saveProductBtn">Simpan</button>
-                `);
+                    openModal(`
+                        <h3>${isEdit ? 'Edit Produk' : 'Tambah Produk'}</h3>
+                        <div class="form-group"><label>Nama Produk <span style="color:red;">*</span></label><input type="text" id="pName" value="${isEdit ? product?.name : ''}"></div>
+                        <div class="form-group"><label>Nomor Seri Produk <span style="color:red;">*</span></label><input type="text" id="pSerial" value="${isEdit ? (product?.serial || ('HDT-' + product?.id)) : ('HDT-' + Date.now().toString().slice(-4))}" placeholder="Contoh: HDT-5011"></div>
+                        <div class="form-group"><label>Harga Member (Rp) <span style="color:red;">*</span></label><input type="number" id="pPrice" value="${isEdit ? product?.price : ''}"></div>
+                        <div class="form-group"><label>Harga Normal (Rp)</label><input type="number" id="pOriginal" value="${isEdit ? (product?.original || '') : ''}"></div>
+                        <div class="form-group"><label>Stok</label><input type="number" id="pStock" value="${isEdit ? product?.stock : 0}"></div>
+                        <div class="form-group"><label>Tag</label><input type="text" id="pTag" value="${isEdit ? product?.tag : ''}"></div>
+                        <div class="form-group"><label>Gambar Produk</label>
+                            <input type="file" id="pImageFile" accept="image/*" />
+                            <input type="hidden" id="pImageUrl" value="${isEdit ? (product?.image || '') : ''}" />
+                            <img id="pImagePreview" src="${isEdit ? product?.image : ''}" style="max-height:80px; margin-top:6px; border-radius:8px; ${isEdit && product?.image ? '' : 'display:none;'}" />
+                        </div>
+                        <div class="form-group"><label>Favorite</label><select id="pFavorite">
+                            <option value="false" ${isEdit && !product?.favorite ? 'selected' : ''}>Tidak</option>
+                            <option value="true" ${isEdit && product?.favorite ? 'selected' : ''}>Ya</option>
+                        </select></div>
+                        <button class="btn-submit" id="saveProductBtn">Simpan Produk</button>
+                    `);
 
-                document.getElementById('pImageFile').addEventListener('change', function() {
-                    const file = this.files[0];
-                    if (file) {
-                        const reader = new FileReader();
-                        reader.onload = function(e) {
-                            document.getElementById('pImagePreview').src = e.target.result;
-                            document.getElementById('pImagePreview').style.display = 'block';
-                            document.getElementById('pImageUrl').value = e.target.result;
-                        };
-                        reader.readAsDataURL(file);
-                    }
-                });
+                    document.getElementById('pImageFile').addEventListener('change', function() {
+                        const file = this.files[0];
+                        if (file) {
+                            const reader = new FileReader();
+                            reader.onload = function(e) {
+                                document.getElementById('pImagePreview').src = e.target.result;
+                                document.getElementById('pImagePreview').style.display = 'block';
+                                document.getElementById('pImageUrl').value = e.target.result;
+                            };
+                            reader.readAsDataURL(file);
+                        }
+                    });
 
-                document.getElementById('saveProductBtn').addEventListener('click', async function() {
-                    const name = document.getElementById('pName').value.trim();
-                    const price = parseFloat(document.getElementById('pPrice').value);
-                    const original = parseFloat(document.getElementById('pOriginal').value) || 0;
-                    const stock = parseInt(document.getElementById('pStock').value) || 0;
-                    const tag = document.getElementById('pTag').value.trim() || 'PRODUK';
-                    const image = document.getElementById('pImageUrl').value;
-                    const favorite = document.getElementById('pFavorite').value === 'true';
-                    
-                    if (!name || isNaN(price) || price <= 0) {
-                        showToast('Nama dan Harga wajib.', 'error');
-                        return;
-                    }
-                    
-                    try {
-                        const productData = {
-                            id: isEdit ? product.id : Date.now(),
-                            name,
-                            price,
-                            original,
-                            stock,
-                            tag,
-                            image: image || null,
-                            favorite,
-                            sizes: ['28','29','30','31','32','34','36','38','40'],
-                            colors: ['Indigo Blue', 'Black Stretch', 'Raw Denim', 'Dark Navy', 'Grey Stone']
-                        };
+                    document.getElementById('saveProductBtn').addEventListener('click', async function() {
+                        const name = document.getElementById('pName').value.trim();
+                        const serial = document.getElementById('pSerial').value.trim() || ('HDT-' + (isEdit ? product.id : Date.now()).toString().slice(-4));
+                        const price = parseFloat(document.getElementById('pPrice').value);
+                        const original = parseFloat(document.getElementById('pOriginal').value) || 0;
+                        const stock = parseInt(document.getElementById('pStock').value) || 0;
+                        const tag = document.getElementById('pTag').value.trim() || 'PRODUK';
+                        const image = document.getElementById('pImageUrl').value;
+                        const favorite = document.getElementById('pFavorite').value === 'true';
                         
-                        const { error } = await supabase.from('products').upsert(productData);
+                        if (!name || isNaN(price) || price <= 0) {
+                            showToast('Nama dan Harga wajib.', 'error');
+                            return;
+                        }
+                        
+                        try {
+                            const productData = {
+                                id: isEdit ? product.id : Date.now(),
+                                name,
+                                serial,
+                                price,
+                                original,
+                                stock,
+                                tag,
+                                image: image || null,
+                                favorite,
+                                sizes: ['28','29','30','31','32','34','36','38','40'],
+                                colors: ['Indigo Blue', 'Black Stretch', 'Raw Denim', 'Dark Navy', 'Grey Stone']
+                            };
+                            
+                            const { error } = await supabase.from('products').upsert(productData);
                         if (error) throw error;
                         
                         await refreshAdminData();
@@ -2582,6 +2589,33 @@
                 }
             });
 
+            // Brand logo & icon file input listeners
+            document.getElementById('setBrandLogoFile')?.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('setBrandLogo').value = e.target.result;
+                        const prev = document.getElementById('brandLogoPreview');
+                        if (prev) { prev.src = e.target.result; prev.style.display = 'block'; }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
+            document.getElementById('setBrandIconFile')?.addEventListener('change', function() {
+                const file = this.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        document.getElementById('setBrandIcon').value = e.target.result;
+                        const prev = document.getElementById('brandIconPreview');
+                        if (prev) { prev.src = e.target.result; prev.style.display = 'block'; }
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+
             document.getElementById('saveBrandSettings').addEventListener('click', async function() {
                 try {
                     const brandName = document.getElementById('setBrandName').value.trim() || 'HEDTRO JEANS';
@@ -2592,12 +2626,14 @@
                     await supabase.from('settings').upsert({ key: 'brandLogo', value: brandLogo });
                     await supabase.from('settings').upsert({ key: 'brandIcon', value: brandIcon });
                     await supabase.from('settings').upsert({ key: 'heroTitle', value: heroTitle });
+                    
+                    localStorage.setItem('hedtro_brand_name', brandName);
+                    localStorage.setItem('hedtro_brand_logo', brandLogo);
+                    localStorage.setItem('hedtro_brand_icon', brandIcon);
+
                     await refreshAdminData();
-                    document.querySelectorAll('#brandLogo, #sideBrandLogo').forEach(el => {
-                        el.innerHTML = `<i class="fas ${brandLogo}"></i> ${brandName}`;
-                    });
-                    document.getElementById('navUserName').textContent = currentAdmin?.fullname || 'Admin';
-                    showToast('Brand tersimpan.', 'success');
+                    if (window.applyBrandSettings) await window.applyBrandSettings();
+                    showToast('✅ Tampilan Brand & Logo berhasil disimpan!', 'success');
                 } catch (e) {
                     console.error('Save brand error:', e);
                     showToast('Gagal menyimpan brand.', 'error');
