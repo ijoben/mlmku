@@ -6,6 +6,9 @@
     { "source": "/register", "destination": "/register.html" },
     { "source": "/debug", "destination": "/debug.html" },
     { "source": "/confirm-email", "destination": "/confirm-email.html" },
-    { "source": "/ref/:username", "destination": "/register.html?ref=:username" }
+    { "source": "/reff/:username", "destination": "/register.html?ref=:username" },
+    { "source": "/ref/:username", "destination": "/register.html?ref=:username" },
+    { "source": "/reff", "destination": "/register.html" },
+    { "source": "/ref", "destination": "/register.html" }
   ]
 }
