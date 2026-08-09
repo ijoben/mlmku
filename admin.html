@@ -2634,8 +2634,13 @@
                         if (el) el.value = rLevels[i - 1] || 0;
                     }
                     document.getElementById('setMemberPrice').value = settings.memberPrice || 550000;
-                    document.getElementById('setBrandName').value = settings.brandName || 'HEDTRO JEANS';
-                    document.getElementById('setBrandLogo').value = settings.brandLogo || 'fa-tshirt';
+                    const logoVal = settings.brandLogo || 'fa-tshirt';
+                    document.getElementById('setBrandLogo').value = logoVal;
+                    const prevLogo = document.getElementById('brandLogoPreview');
+                    if (prevLogo && logoVal && (logoVal.startsWith('data:image') || logoVal.startsWith('http') || logoVal.startsWith('/'))) {
+                        prevLogo.src = logoVal;
+                        prevLogo.style.display = 'block';
+                    }
                     document.getElementById('setBrandIcon').value = settings.brandIcon || 'fa-tshirt';
                     document.getElementById('setHeroTitle').value = settings.heroTitle || 'HEDTRO JEANS · Premium Denim';
                     if (adminUser) {
