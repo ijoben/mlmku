@@ -1797,9 +1797,6 @@
             if (currentUser.first_order.resi) t.resi = currentUser.first_order.resi;
             if (currentUser.first_order.status) t.status = currentUser.first_order.status;
           }
-          if (currentUser.resi && !t.resi) {
-            t.resi = currentUser.resi;
-          }
         });
 
         combined.reverse();
