@@ -1813,10 +1813,13 @@
           const date = new Date(t.date).toLocaleDateString('id-ID');
           let statusText = 'Diproses (Pending)';
           let badgeClass = 'status-pending';
-          if (t.status === 'shipped') { 
-            statusText = '🚚 Dikirim'; 
+          if (t.status === 'completed' || t.status === 'success') {
+            statusText = '✅ SELESAI'; 
             badgeClass = 'status-success'; 
-          } else if (t.status === 'processing' || t.status === 'success' || t.status === 'verified' || t.status === 'paid') { 
+          } else if (t.status === 'shipped') { 
+            statusText = '🚚 DIKIRIM'; 
+            badgeClass = 'status-success'; 
+          } else if (t.status === 'processing' || t.status === 'verified' || t.status === 'paid') { 
             statusText = 'Terverifikasi / Diproses'; 
             badgeClass = 'status-success'; 
           } else if (t.status === 'failed') { 
@@ -1825,7 +1828,9 @@
           }
           
           let actionHtml = '-';
-          if (t.status === 'shipped') {
+          if (t.status === 'completed' || t.status === 'success') {
+            actionHtml = `<span style="font-size:0.75rem; color:#2e7d32; font-weight:800;"><i class="fas fa-check-circle"></i> Selesai</span>`;
+          } else if (t.status === 'shipped') {
             actionHtml = `<span style="font-size:0.75rem; color:#b38728; font-weight:800;"><i class="fas fa-shipping-fast"></i> Dikirim</span>`;
           } else if (t.status === 'pending') {
             if (!t.proof_uploaded) {
