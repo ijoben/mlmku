@@ -659,9 +659,26 @@
       .wallet-card { grid-column: 1 / -1; padding: 14px 16px; }
       .wallet-card .wallet-top .avatar-mini { width:36px; height:36px; font-size:1rem; }
       .wallet-card .wallet-balance .amount { font-size:1.4rem; }
-      .product-grid { grid-template-columns:1fr 1fr; gap:8px; }
+
+      /* Toko Online HP Optimization */
+      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 10px; }
+      .product-card { border-radius: 14px; border-width: 1px; }
+      .product-img-wrap { height: 135px; }
+      .product-badge-stock { top: 6px; right: 6px; font-size: 0.6rem; padding: 2px 7px; }
+      .product-card-body { padding: 10px 11px; gap: 3px; }
+      .product-serial { font-size: 0.62rem; }
+      .product-title {
+        font-size: 0.82rem; font-weight: 800; line-height: 1.3;
+        display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 2.2em;
+      }
+      .product-price-box { margin-top: 2px; margin-bottom: 4px; gap: 4px; flex-wrap: wrap; }
+      .price-val { font-size: 0.95rem; font-weight: 800; }
+      .price-del { font-size: 0.7rem; }
+      .buy-ro-btn { padding: 8px 6px; font-size: 0.72rem; border-radius: 8px; font-weight: 700; }
+
       .form-row { grid-template-columns:1fr; gap:0; }
-      .ro-detail-grid .ro-options { grid-template-columns:1fr; }
+      .ro-detail-grid .ro-options { grid-template-columns:1fr 1fr; gap:8px; }
+      .ro-detail-grid .ro-options .form-group:last-child { grid-column:1 / -1; }
       .stat-stack { gap:8px; }
       .stat-mini { padding:10px 12px; }
       .stat-mini .stat-info .value { font-size:1.1rem; }
@@ -1385,13 +1402,39 @@
       async function renderDashboard() {
         currentUser = await window.getUserProfile();
         updateProfileUI();
-        renderDashboardHistory();
+        await renderDashboardHistory();
       }
 
-      function renderDashboardHistory() {
+      async function renderDashboardHistory() {
         const tbody = document.getElementById('transactionHistoryBody');
-        const txs = (currentUser.transactions || []).slice().reverse();
+
+        let liveTxs = [];
+        try {
+          if (window.getTransactions) {
+            liveTxs = await window.getTransactions(currentUser.id);
+          }
+        } catch (e) { console.warn('Fetch live txs dash warning:', e); }
+
+        let txMap = new Map();
+        (currentUser.transactions || []).forEach(t => {
+          txMap.set(String(t.id), { ...t });
+        });
+
+        (liveTxs || []).forEach(t => {
+          const key = String(t.id);
+          if (txMap.has(key)) {
+            const existing = txMap.get(key);
+            existing.status = t.status || existing.status;
+            if (t.resi) existing.resi = t.resi;
+            txMap.set(key, existing);
+          } else {
+            txMap.set(key, { ...t });
+          }
+        });
+
+        const txs = Array.from(txMap.values()).reverse();
         document.getElementById('dashTotalTx').textContent = txs.length;
+
         if (txs.length === 0) {
           tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:12px; color:#718096;">Belum ada transaksi.</td></tr>';
           document.getElementById('dashHistoryPageInfo').textContent = '1/1';
@@ -1409,13 +1452,23 @@
           const orderMatch = (allOrders || []).find(o => String(o.id) === String(t.id));
           const purchaseMatch = (currentUser.purchase_history || []).find(p => String(p.id) === String(t.id));
 
-          let realStatus = (orderMatch ? orderMatch.status : (purchaseMatch ? purchaseMatch.status : t.status)) || 'pending';
-          if (realStatus === 'processing' || realStatus === 'verified') realStatus = 'VERIFIED';
-          else if (realStatus === 'shipped') realStatus = 'DIKIRIM';
-          else if (realStatus === 'success') realStatus = 'SUCCESS';
-          else if (realStatus === 'pending') realStatus = 'PENDING';
+          let rawSt = (orderMatch ? orderMatch.status : (purchaseMatch ? purchaseMatch.status : t.status)) || 'pending';
+          rawSt = String(rawSt).toLowerCase();
 
-          let badge = (realStatus === 'PENDING') ? 'status-pending' : 'status-success';
+          let realStatus = 'PENDING';
+          let badge = 'status-pending';
+
+          if (rawSt === 'success' || rawSt === 'verified' || rawSt === 'approved' || rawSt === 'completed' || rawSt === 'paid') {
+            realStatus = 'TERVERIFIKASI';
+            badge = 'status-success';
+          } else if (rawSt === 'shipped') {
+            realStatus = 'DIKIRIM';
+            badge = 'status-success';
+          } else if (rawSt === 'failed' || rawSt === 'cancelled' || rawSt === 'rejected') {
+            realStatus = 'DIBATALKAN';
+            badge = 'status-failed';
+          }
+
           const resiVal = (orderMatch ? orderMatch.resi : (purchaseMatch ? purchaseMatch.resi : t.resi)) || null;
           let resiHtml = resiVal ? `<br><span class="resi" style="font-size:0.7rem; color:var(--gold-accent); font-weight:700;"><i class="fas fa-truck"></i> Resi: ${resiVal}</span>` : '';
           const date = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID');
@@ -1423,7 +1476,7 @@
           html += `<tr>
             <td data-label="Tanggal">${date}</td>
             <td data-label="Jenis"><strong>${(t.type||'').toUpperCase()}</strong></td>
-            <td data-label="Detail">${t.note || t.productName || t.method || 'Transaksi'}${resiHtml}</td>
+            <td data-label="Detail">${t.note || t.productName || t.method || t.account || 'Transaksi'}${resiHtml}</td>
             <td data-label="Nominal" class="amount ${colorClass}">${sign} Rp ${(parseFloat(t.amount || t.price) || 0).toLocaleString('id-ID')}</td>
             <td data-label="Status"><span class="status-badge ${badge}">${realStatus}</span></td>
           </tr>`;
