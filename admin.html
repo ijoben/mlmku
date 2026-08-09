@@ -1778,25 +1778,75 @@
                 try {
                     const tbody = document.getElementById('ordersTableBody');
                     if (!tbody) return;
-                    const orders = allOrders;
-                    const totalItems = orders.length;
+
+                    // Selalu refresh data terbaru dari Supabase
+                    await refreshAdminData();
+
+                    // Gabungkan order dari tabel orders dan data transaksi/pembelian user
+                    let combinedOrders = [...allOrders];
+
+                    allUsers.forEach(u => {
+                      if (u.first_order && !combinedOrders.some(o => String(o.id) === String(u.first_order.id) || (String(o.user_id) === String(u.id) && o.type === 'first_order'))) {
+                        combinedOrders.push({
+                          id: u.first_order.id || (Date.now() + Math.floor(Math.random()*1000)),
+                          order_number: u.first_order.order_number || ('FO-' + u.id),
+                          user_id: u.id,
+                          user_name: u.fullname || u.username,
+                          type: 'first_order',
+                          items: u.first_order.items || [{ name: '🎯 Paket Member Pertama', price: u.first_order.total || 550000 }],
+                          total: u.first_order.total || 550000,
+                          status: u.first_order.status || u.status || 'pending',
+                          created_at: u.first_order.created_at || u.registered_at || new Date().toISOString(),
+                          proof_image: u.proof_image || null,
+                          resi: u.first_order.resi || null
+                        });
+                      }
+
+                      if (u.purchase_history && u.purchase_history.length > 0) {
+                        u.purchase_history.forEach(p => {
+                          if (!combinedOrders.some(o => String(o.id) === String(p.id))) {
+                            combinedOrders.push({
+                              id: p.id,
+                              order_number: 'RO-' + String(p.id).slice(-6),
+                              user_id: u.id,
+                              user_name: u.fullname || u.username,
+                              type: 'ro',
+                              items: [{ name: p.productName || 'Produk RO', price: p.price || p.amount || 0 }],
+                              total: p.price || p.amount || 0,
+                              status: p.status || 'pending',
+                              created_at: p.date || new Date().toISOString(),
+                              proof_image: p.proof_image || u.proof_image || null,
+                              resi: p.resi || null
+                            });
+                          }
+                        });
+                      }
+                    });
+
+                    // Urutkan pesanan dari yang paling baru
+                    combinedOrders.sort((a, b) => new Date(b.created_at || b.date || 0) - new Date(a.created_at || a.date || 0));
+
+                    const totalItems = combinedOrders.length;
                     if (totalItems === 0) {
-                        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center;">Belum ada pesanan.</td></tr>`;
+                        tbody.innerHTML = `<tr><td colspan="9" style="text-align:center; padding:20px;">Belum ada pesanan.</td></tr>`;
                         document.getElementById('ordersPagination').innerHTML = '';
                         return;
                     }
+
                     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
                     statePage.orders = Math.max(1, Math.min(statePage.orders, totalPages));
                     const startIdx = (statePage.orders - 1) * ITEMS_PER_PAGE;
-                    const paginatedData = [...orders].reverse().slice(startIdx, startIdx + ITEMS_PER_PAGE);
+                    const paginatedData = combinedOrders.slice(startIdx, startIdx + ITEMS_PER_PAGE);
 
                     let html = '';
                     paginatedData.forEach((o, idx) => {
-                        const user = allUsers.find(u => u.id === o.user_id);
+                        const user = allUsers.find(u => String(u.id) === String(o.user_id));
                         const userName = user ? (user.fullname || user.username) : o.user_name || 'Guest';
                         const typeLabel = o.type === 'first_order' ? '🎯 First Order' : (o.type === 'ro' ? '🔄 RO' : '📦 Regular');
                         const statusClass = 'badge-' + (o.status || 'pending');
-                        const hasProof = o.proof_image ? true : false;
+                        const proofImage = o.proof_image || user?.proof_image || null;
+                        const hasProof = !!proofImage;
+
                         html += `<tr>
                             <td data-label="#">${startIdx + idx + 1}</td>
                             <td data-label="Member"><strong>${userName}</strong></td>
@@ -1805,7 +1855,7 @@
                             <td data-label="Total">Rp ${(parseFloat(o.total) || 0).toLocaleString()}</td>
                             <td data-label="Status"><span class="badge-status ${statusClass}">${(o.status||'pending').toUpperCase()}</span></td>
                             <td data-label="Tanggal">${new Date(o.created_at || Date.now()).toLocaleDateString('id-ID')}</td>
-                            <td data-label="Bukti">${hasProof ? `<button class="btn-sm btn-sm-gold view-order-proof" data-id="${o.id}">Lihat</button>` : 'Belum upload'}</td>
+                            <td data-label="Bukti">${hasProof ? `<button class="btn-sm btn-sm-gold view-order-proof" data-proof="${proofImage}">Lihat</button>` : 'Belum upload'}</td>
                             <td data-label="Aksi">
                                 <div>
                                     ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
@@ -1819,8 +1869,8 @@
 
                     tbody.querySelectorAll('.view-order-proof').forEach(btn => {
                         btn.onclick = function() {
-                            const order = allOrders.find(o => o.id === parseInt(this.dataset.id));
-                            if (order) openModal(`<h3>Bukti Pembayaran</h3><div class="proof-image"><img src="${order.proof_image}" style="max-width:100%;" /></div><button class="btn-submit" onclick="closeModal()">Tutup</button>`);
+                            const proofUrl = this.dataset.proof;
+                            if (proofUrl) openModal(`<h3><i class="fas fa-image" style="color:var(--gold-accent);"></i> Bukti Pembayaran</h3><div class="proof-image"><img src="${proofUrl}" style="max-width:100%; border-radius:10px;" /></div><button class="btn-submit" onclick="closeModal()" style="margin-top:12px;">Tutup</button>`);
                         };
                     });
 
