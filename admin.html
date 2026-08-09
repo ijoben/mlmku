@@ -1843,22 +1843,48 @@
                     });
 
                     tbody.querySelectorAll('.ship-order').forEach(btn => {
-                        btn.onclick = async function() {
+                        btn.onclick = function() {
                             const id = parseInt(this.dataset.id);
-                            try {
-                                const { error } = await supabase
-                                    .from('orders')
-                                    .update({ status: 'shipped' })
-                                    .eq('id', id);
-                                if (error) throw error;
-                                await refreshAdminData();
-                                await renderOrders();
-                                await renderDashboard();
-                                showToast('🚚 Order dikirim.', 'success');
-                            } catch (e) {
-                                console.error('Ship order error:', e);
-                                showToast('Gagal kirim order.', 'error');
-                            }
+                            const order = allOrders.find(o => o.id === id);
+                            openModal(`
+                                <h3><i class="fas fa-truck" style="color:var(--gold-accent);"></i> Proses Pengiriman Barang</h3>
+                                <p style="font-size:0.85rem; color:var(--denim-navy); margin-bottom:12px;">Masukkan Nomor Resi Pengiriman untuk pesanan <strong>#${order ? order.order_number || id : id}</strong></p>
+                                <div class="form-group"><label>Nomor Resi Pengiriman <span style="color:red;">*</span></label><input type="text" id="shipResiInput" placeholder="Contoh: JNE-99882211" value="${order?.resi || ''}"></div>
+                                <button class="btn-submit" id="confirmShipBtn">Simpan & Status Dikirim</button>
+                            `);
+
+                            document.getElementById('confirmShipBtn').onclick = async function() {
+                                const resi = document.getElementById('shipResiInput').value.trim() || ('RESI-' + Date.now().toString().slice(-6));
+                                try {
+                                    const { error } = await supabase
+                                        .from('orders')
+                                        .update({ status: 'shipped', resi: resi })
+                                        .eq('id', id);
+                                    if (error) throw error;
+
+                                    if (order && order.user_id) {
+                                        const buyer = allUsers.find(u => u.id === order.user_id);
+                                        if (buyer) {
+                                            if (buyer.purchase_history) {
+                                                buyer.purchase_history.forEach(p => { if (String(p.id) === String(id)) { p.status = 'shipped'; p.resi = resi; } });
+                                            }
+                                            if (buyer.transactions) {
+                                                buyer.transactions.forEach(t => { if (String(t.id) === String(id)) { t.status = 'shipped'; t.resi = resi; } });
+                                            }
+                                            await window.upsertRow('users', buyer);
+                                        }
+                                    }
+
+                                    await refreshAdminData();
+                                    await renderOrders();
+                                    await renderDashboard();
+                                    closeModal();
+                                    showToast('🚚 Pesanan berhasil dikirim dengan Resi: ' + resi, 'success');
+                                } catch (e) {
+                                    console.error('Ship order error:', e);
+                                    showToast('Gagal kirim order: ' + e.message, 'error');
+                                }
+                            };
                         };
                     });
                 } catch (e) {
