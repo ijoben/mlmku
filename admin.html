@@ -1085,27 +1085,38 @@
                         .eq('id', id);
                     if (txError) throw txError;
                     
-                    const tx = allTransactions.find(t => t.id === id);
-                    if (tx && tx.user_id) {
+                    const tx = allTransactions.find(t => String(t.id) === String(id));
+                    const targetUserId = tx ? tx.user_id : null;
+
+                    if (targetUserId) {
                         const { data: user, error: userError } = await supabase
                             .from('users')
                             .select('*')
-                            .eq('id', tx.user_id)
+                            .eq('id', targetUserId)
                             .single();
-                        if (userError && userError.code !== 'PGRST116') throw userError;
                         
                         if (user) {
                             let newWallet = parseFloat(user.wallet) || 0;
-                            if (type === 'deposit' && newStatus === 'success' && tx.status === 'pending') {
-                                newWallet += parseFloat(tx.original_amount) || parseFloat(tx.amount) || 0;
+                            const txAmount = parseFloat(tx?.original_amount) || parseFloat(tx?.amount) || 0;
+
+                            if (type === 'deposit' && newStatus === 'success' && tx.status !== 'success') {
+                                newWallet += txAmount;
                             } else if (type === 'withdraw' && newStatus === 'failed' && tx.status === 'pending') {
-                                newWallet += parseFloat(tx.amount) || 0;
+                                newWallet += parseFloat(tx?.amount) || 0;
                             }
-                            const { error: updateError } = await supabase
-                                .from('users')
-                                .update({ wallet: newWallet })
-                                .eq('id', user.id);
-                            if (updateError) throw updateError;
+
+                            // Sync status di array user.transactions
+                            let userTxs = user.transactions || [];
+                            userTxs.forEach(t => {
+                                if (String(t.id) === String(id)) {
+                                    t.status = newStatus;
+                                }
+                            });
+
+                            user.wallet = newWallet;
+                            user.transactions = userTxs;
+
+                            await window.upsertRow('users', user);
                         }
                     }
                     
