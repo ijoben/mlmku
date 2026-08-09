@@ -750,7 +750,8 @@
                     const card = document.createElement('div');
                     card.className = 'product-card';
                     let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon||'fa-tshirt'}"></i>`;
-                    card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
+                    const prodSerial = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
+                    card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;"><span class="tag">${p.tag||'PRODUK'}</span><span style="font-size:0.65rem;color:var(--gold-accent);font-weight:700;"><i class="fas fa-barcode"></i> ${prodSerial}</span></div><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
                     container.appendChild(card);
                 });
                 bindProductButtons();
@@ -778,7 +779,8 @@
                         const card = document.createElement('div');
                         card.className = 'product-card';
                         let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon||'fa-tshirt'}"></i>`;
-                        card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag||'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
+                        const prodSerial = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
+                        card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;"><span class="tag">${p.tag||'PRODUK'}</span><span style="font-size:0.65rem;color:var(--gold-accent);font-weight:700;"><i class="fas fa-barcode"></i> ${prodSerial}</span></div><h4>${p.name}</h4><div class="price">Rp ${(p.price||0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
                         grid.appendChild(card);
                     });
                 }
