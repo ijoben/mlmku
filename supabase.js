@@ -638,13 +638,12 @@ window.approveOrderAndDistributeBonuses = async function(orderId) {
 
   // 5. Hitung & distribusikan bonus jika total order > 0
   if (orderAmount > 0) {
-    if (order.type === 'first_order' || !buyer.bonuses_distributed) {
+    if (order.type === 'first_order') {
       if (buyer.sponsor_id) {
         await window.calculateSponsorBonus(buyer.id, buyer.sponsor_id, orderAmount, settings);
       }
       await window.calculateBinaryBonus(buyer.id, orderAmount, settings);
       await window.calculateRewardBonus(buyer.id, orderAmount, settings);
-      buyer.bonuses_distributed = true;
     } else if (order.type === 'ro') {
       if (buyer.sponsor_id) {
         await window.calculateSponsorBonus(buyer.id, buyer.sponsor_id, orderAmount, settings);
