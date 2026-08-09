@@ -1883,8 +1883,15 @@
                             <td data-label="Resi">${resiHtml}</td>
                             <td data-label="Aksi">
                                 <div>
-                                    ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
-                                    ${(o.status === 'processing' || o.status === 'verified' || o.status === 'success') ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim</button>` : ''}
+                                    ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}"><i class="fas fa-check"></i> Approve</button>` : ''}
+                                    ${(o.status === 'pending' || o.status === 'processing' || o.status === 'verified' || o.status === 'paid') ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}"><i class="fas fa-truck"></i> Kirim</button>` : ''}
+                                    ${(o.status === 'shipped') ? `
+                                        <button class="btn-sm btn-sm-gold ship-order" data-id="${o.id}"><i class="fas fa-edit"></i> Edit Resi</button>
+                                        <button class="btn-sm btn-sm-success complete-order" data-id="${o.id}"><i class="fas fa-check-circle"></i> Selesai</button>
+                                    ` : ''}
+                                    ${(o.status === 'completed' || o.status === 'success') ? `
+                                        <button class="btn-sm btn-sm-gold ship-order" data-id="${o.id}"><i class="fas fa-edit"></i> Edit Resi</button>
+                                    ` : ''}
                                 </div>
                             </td>
                         </tr>`;
@@ -1952,15 +1959,58 @@
                         };
                     });
 
+                    tbody.querySelectorAll('.complete-order').forEach(btn => {
+                        btn.onclick = async function() {
+                            const id = this.dataset.id;
+                            const order = combinedOrders.find(o => String(o.id) === String(id));
+                            try {
+                                try {
+                                    await supabase.from('orders').update({ status: 'completed' }).eq('id', id);
+                                } catch (err1) {}
+
+                                const buyerId = order ? order.user_id : null;
+                                if (buyerId) {
+                                    const buyer = allUsers.find(u => String(u.id) === String(buyerId));
+                                    if (buyer) {
+                                        if (buyer.first_order && String(buyer.first_order.id || ('FO-' + buyer.id)) === String(id)) {
+                                            buyer.first_order.status = 'completed';
+                                        }
+                                        if (buyer.purchase_history) {
+                                            buyer.purchase_history.forEach(p => {
+                                                if (String(p.id) === String(id)) p.status = 'completed';
+                                            });
+                                        }
+                                        if (buyer.transactions) {
+                                            buyer.transactions.forEach(t => {
+                                                if (String(t.id) === String(id)) t.status = 'completed';
+                                            });
+                                        }
+                                        await window.upsertRow('users', buyer);
+                                    }
+                                }
+
+                                try { localStorage.removeItem('hedtro_index_cache_v1'); } catch (e) {}
+                                await refreshAdminData();
+                                await renderOrders();
+                                await renderDashboard();
+                                showToast('✅ Pesanan ditandai SELESAI / Selesai Pengiriman!', 'success');
+                            } catch (e) {
+                                console.error('Complete order error:', e);
+                                showToast('Gagal menyelesaikan pesanan: ' + e.message, 'error');
+                            }
+                        };
+                    });
+
                     tbody.querySelectorAll('.ship-order').forEach(btn => {
                         btn.onclick = function() {
                             const id = this.dataset.id;
                             const order = combinedOrders.find(o => String(o.id) === String(id));
+                            const isEditResi = o => o && o.resi;
                             openModal(`
-                                <h3><i class="fas fa-truck" style="color:var(--gold-accent);"></i> Proses Pengiriman Barang</h3>
-                                <p style="font-size:0.85rem; color:var(--denim-navy); margin-bottom:12px;">Masukkan Nomor Resi Pengiriman untuk pesanan <strong>#${order ? order.order_number || id : id}</strong></p>
+                                <h3><i class="fas fa-truck" style="color:var(--gold-accent);"></i> ${order?.resi ? 'Edit Resi Pengiriman' : 'Proses Pengiriman Barang'}</h3>
+                                <p style="font-size:0.85rem; color:var(--denim-navy); margin-bottom:12px;">Masukkan / Ubah Nomor Resi Pengiriman untuk pesanan <strong>#${order ? order.order_number || id : id}</strong></p>
                                 <div class="form-group"><label>Nomor Resi Pengiriman <span style="color:red;">*</span></label><input type="text" id="shipResiInput" placeholder="Contoh: JNE-99882211" value="${order?.resi || ''}"></div>
-                                <button class="btn-submit" id="confirmShipBtn">Simpan & Status Dikirim</button>
+                                <button class="btn-submit" id="confirmShipBtn">Simpan Resi & Status Dikirim</button>
                             `);
 
                             document.getElementById('confirmShipBtn').onclick = async function() {
@@ -2010,7 +2060,7 @@
                                     await renderOrders();
                                     await renderDashboard();
                                     closeModal();
-                                    showToast('🚚 Pesanan berhasil dikirim dengan Resi: ' + resi, 'success');
+                                    showToast('🚚 Nomor Resi berhasil diperbarui: ' + resi, 'success');
                                 } catch (e) {
                                     console.error('Ship order error:', e);
                                     showToast('Gagal kirim order: ' + e.message, 'error');
