@@ -555,9 +555,25 @@
     @media (min-width: 769px) and (max-width: 992px) {
       .dash-grid { grid-template-columns:1fr 1fr; }
     }
+    /* Toast Container */
+    #toastContainer {
+      position: fixed; top: 76px; right: 20px; z-index: 3000;
+      display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+    }
+    .toast-item {
+      background: var(--denim-dark); color: var(--white);
+      padding: 10px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
+      box-shadow: var(--shadow); border: 1px solid rgba(212,175,55,0.3);
+      display: flex; align-items: center; gap: 8px; pointer-events: all;
+      animation: fadeIn 0.3s ease;
+    }
+    .toast-item.success { border-color: #2e7d32; }
+    .toast-item.error { border-color: #e53e3e; }
+    .toast-item .toast-close { cursor: pointer; margin-left: auto; opacity: 0.7; font-size: 1rem; }
   </style>
 </head>
 <body>
+  <div id="toastContainer"></div>
 
   <header class="navbar">
     <div class="logo" id="navbarLogo"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></div>
@@ -1004,7 +1020,7 @@
       // ========== LOGOUT ==========
       document.getElementById('sideLogoutBtn').addEventListener('click', async function() {
         await window.signOut();
-        window.location.href = '/';
+        window.location.href = 'index.html';
       });
 
       // ========== COPY REF ==========
@@ -1020,16 +1036,16 @@
         try {
           const session = await window.getSession();
           if (!session) {
-            window.location.href = '/login';
+            window.location.href = 'login.html';
             return;
           }
           const profile = await window.getUserProfile();
           if (!profile) {
-            window.location.href = '/login';
+            window.location.href = 'login.html';
             return;
           }
           if (profile.role === 'admin') {
-            window.location.href = '/admin';
+            window.location.href = 'admin.html';
             return;
           }
           currentUser = profile;
@@ -1047,7 +1063,7 @@
           window.showSection(savedTab);
         } catch (e) {
           console.error('Auth error:', e);
-          window.location.href = '/login';
+          window.location.href = 'login.html';
         }
       }
 
@@ -1114,15 +1130,16 @@
         }
         document.getElementById('dashProfileName').textContent = currentUser.fullname || currentUser.username;
         document.getElementById('dashProfileId').textContent = 'ID: ' + currentUser.id;
-        document.getElementById('walletAmount').textContent = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString();
-        document.getElementById('sponsorBonus').textContent = currentUser.bonus_sponsor || 0;
-        document.getElementById('binaryBonus').textContent = currentUser.bonus_binary || 0;
-        document.getElementById('rewardBonus').textContent = currentUser.bonus_reward || 0;
-        document.getElementById('roBonus').textContent = currentUser.bonus_ro || 0;
-        document.getElementById('refLink').value = window.location.origin + '/ref/' + currentUser.username;
+        document.getElementById('walletAmount').textContent = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString('id-ID');
+        document.getElementById('sponsorBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_sponsor) || 0).toLocaleString('id-ID');
+        document.getElementById('binaryBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_binary) || 0).toLocaleString('id-ID');
+        document.getElementById('rewardBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_reward) || 0).toLocaleString('id-ID');
+        document.getElementById('roBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_ro) || 0).toLocaleString('id-ID');
+        const regPath = window.location.pathname.includes('dashboard') ? window.location.pathname.replace('dashboard.html', 'register.html') : '/register.html';
+        document.getElementById('refLink').value = window.location.origin + regPath + '?ref=' + currentUser.username + '&upline=' + currentUser.username;
         // Update wallet di withdraw
         const wdBal = document.getElementById('wdAvailableBal');
-        if (wdBal) wdBal.value = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString();
+        if (wdBal) wdBal.value = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString('id-ID');
       }
 
       // ========== DASHBOARD ==========
@@ -1195,7 +1212,7 @@
               showModalAlert('Ditolak', 'Akun Anda belum VERIFIED.');
               return;
             }
-            openROModal(parseInt(this.dataset.id), parseInt(this.dataset.price));
+            openROModal(this.dataset.id, parseFloat(this.dataset.price));
           });
         });
       }
@@ -1213,7 +1230,7 @@
         }
         roPid = productId;
         roPrice = price;
-        const prod = allProducts.find(p => p.id === productId);
+        const prod = allProducts.find(p => String(p.id) === String(productId));
         if (!prod) return;
 
         let imgHtml = prod.image ? `<img src="${prod.image}" alt="${prod.name}" />` : `<div class="ro-icon"><i class="fas ${prod.icon || 'fa-tshirt'}"></i></div>`;
@@ -1277,7 +1294,7 @@
       }
 
       async function prosesRO(method) {
-        const prod = allProducts.find(p => p.id === roPid);
+        const prod = allProducts.find(p => String(p.id) === String(roPid));
         if (!prod) return;
         const size = document.getElementById('roSizeSelect')?.value || '30';
         const color = document.getElementById('roColorSelect')?.value || 'Indigo Blue';
@@ -1649,15 +1666,15 @@
         let nominal = 0;
         let note = '';
         if (type === 'deposit') {
-          const tx = currentUser.transactions.find(t => t.id === id);
+          const tx = (currentUser.transactions || []).find(t => String(t.id) === String(id));
           if (!tx) return;
           nominal = tx.amount;
-          note = `Transfer <b>TEPAT Rp ${nominal.toLocaleString()}</b> (termasuk kode unik).`;
+          note = `Transfer <b>TEPAT Rp ${nominal.toLocaleString('id-ID')}</b> (termasuk kode unik).`;
         } else if (type === 'ro') {
-          const tx = currentUser.purchase_history.find(t => t.id === id);
+          const tx = (currentUser.purchase_history || []).find(t => String(t.id) === String(id));
           if (!tx) return;
           nominal = tx.price;
-          note = `Transfer <b>Rp ${nominal.toLocaleString()}</b> untuk ${tx.productName}.`;
+          note = `Transfer <b>Rp ${nominal.toLocaleString('id-ID')}</b> untuk ${tx.productName}.`;
         }
         document.getElementById('uploadBankInfo').innerHTML = `${note}<br><br><strong>Transfer ke:</strong><br><br><div style="background:#fff; border:1px dashed #ccc; padding:8px; border-radius:6px;">${bankHtml}</div>`;
         document.getElementById('uploadProofFile').value = '';
@@ -1673,19 +1690,19 @@
         reader.onload = async function(e) {
           const proofDataUrl = e.target.result;
           if (uploadType === 'deposit') {
-            let tx = currentUser.transactions.find(t => t.id === uploadTxId);
+            let tx = (currentUser.transactions || []).find(t => String(t.id) === String(uploadTxId));
             if (tx) { tx.proof_uploaded = true; tx.proof_image = proofDataUrl; }
             await window.upsertRow('transactions', tx);
             await renderDepositHistory();
           } else if (uploadType === 'ro') {
-            let txRO = currentUser.purchase_history.find(t => t.id === uploadTxId);
+            let txRO = (currentUser.purchase_history || []).find(t => String(t.id) === String(uploadTxId));
             if (txRO) { txRO.proof_uploaded = true; txRO.proof_image = proofDataUrl; }
-            let txMain = currentUser.transactions.find(t => t.id === uploadTxId);
+            let txMain = (currentUser.transactions || []).find(t => String(t.id) === String(uploadTxId));
             if (txMain) { txMain.proof_uploaded = true; txMain.proof_image = proofDataUrl; }
             await window.upsertRow('transactions', txMain);
             await window.upsertRow('users', currentUser);
             // Update orders juga
-            let order = allOrders.find(o => o.id === uploadTxId);
+            let order = allOrders.find(o => String(o.id) === String(uploadTxId));
             if (order) { order.proof_image = proofDataUrl; await window.upsertRow('orders', order); }
             await renderRoHistory();
           }
