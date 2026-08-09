@@ -1675,17 +1675,15 @@
             productId: roPid,
             productName: `${prod.name} (${qty}x - Size ${size} - ${color})`,
             amount: finalAmount,
-            base_price: baseTotal,
-            unique_code: uniqueCode,
             price: finalAmount,
-            qty: qty,
             date: new Date().toISOString(),
             status: method === 'wallet' ? 'success' : 'pending',
             paymentMethod: method,
             proof_uploaded: method === 'wallet' ? true : false,
             resi: null,
             size,
-            color
+            color,
+            note: `RO Purchase ${qty}x ${prod.name} (Kode Unik: ${uniqueCode})`
           };
 
           if (!currentUser.transactions) currentUser.transactions = [];
