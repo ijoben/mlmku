@@ -264,21 +264,33 @@
                     
                     if (products.length === 0) {
                         const defaults = [
-                            { id: 1, name: 'Slim Fit Premium Indigo 501®', price: 250000 },
-                            { id: 2, name: 'Classic Straight Cut Raw', price: 280000 },
-                            { id: 3, name: 'Jet Black Stretch Comfort', price: 240000 }
+                            { id: 1, serial: 'HDT-5011', name: 'Slim Fit Premium Indigo 501®', price: 250000 },
+                            { id: 2, serial: 'HDT-5022', name: 'Classic Straight Cut Raw', price: 280000 },
+                            { id: 3, serial: 'HDT-5033', name: 'Jet Black Stretch Comfort', price: 240000 }
                         ];
                         select.innerHTML = defaults.map(p => 
-                            `<option value="${p.id}">${p.name} - Rp ${p.price.toLocaleString()}</option>`
+                            `<option value="${p.id}">${p.name} (${p.serial}) - Rp ${p.price.toLocaleString()}</option>`
                         ).join('');
                     } else {
-                        select.innerHTML = products.map(p => 
-                            `<option value="${p.id}">${p.name} - Rp ${(p.price||0).toLocaleString()}</option>`
-                        ).join('');
+                        select.innerHTML = products.map(p => {
+                            const s = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
+                            return `<option value="${p.id}">${p.name} (${s}) - Rp ${(p.price||0).toLocaleString()}</option>`;
+                        }).join('');
                     }
                     
-                    // Auto preview bonus saat produk berubah
-                    select.addEventListener('change', previewBonus);
+                    const updateSerialInput = () => {
+                        const pid = parseInt(select.value);
+                        const selectedP = products.find(p => p.id === pid);
+                        const serialInput = document.getElementById('regSerial');
+                        if (serialInput && selectedP) {
+                            serialInput.value = selectedP.serial || ('HDT-' + String(selectedP.id).padStart(4, '0'));
+                        }
+                    };
+                    updateSerialInput();
+                    select.addEventListener('change', () => {
+                        updateSerialInput();
+                        previewBonus();
+                    });
                 } catch (e) {
                     console.warn('Load products error:', e);
                 }
