@@ -1642,8 +1642,18 @@
             }
           }, 100);
 
-          // 1. Kompres gambar ke ukuran optimal (~100KB)
-          const proofUrl = await compressImage(file, 1000, 1000, 0.75);
+          // 1. Coba upload ke Supabase Storage Bucket ('hedtro-images/receipts')
+          let proofUrl = null;
+          try {
+            proofUrl = await window.uploadFile(file, 'receipts');
+          } catch (stErr) {
+            console.warn('Storage upload warning:', stErr);
+          }
+
+          // Jika storage bucket belum aktif / error, gunakan kompresi gambar Canvas Data URL
+          if (!proofUrl) {
+            proofUrl = await compressImage(file, 1000, 1000, 0.75);
+          }
 
           if (progressBar) progressBar.style.width = '95%';
           if (percentText) percentText.textContent = '95%';
@@ -1652,33 +1662,29 @@
           if (currentUploadTxId) {
             try {
               await supabase.from('orders').update({ proof_image: proofUrl }).eq('id', currentUploadTxId);
-            } catch (e) {
-              console.warn('Update order proof error:', e);
-            }
+            } catch (e) { console.warn('Update order proof warning:', e); }
           }
           try {
             await supabase.from('orders').update({ proof_image: proofUrl }).eq('user_id', currentUser.id);
-          } catch (e) {
-            console.warn('Update orders by user_id error:', e);
-          }
+          } catch (e) { console.warn('Update orders by user_id warning:', e); }
 
-          // 3. Update users table di Supabase
+          // 3. Update users table status
           try {
-            await supabase.from('users').update({ proof_image: proofUrl, status: 'pending' }).eq('id', currentUser.id);
-          } catch (e) {
-            console.warn('Update user proof error:', e);
-          }
+            await supabase.from('users').update({ status: 'pending' }).eq('id', currentUser.id);
+          } catch (e) { console.warn('Update user status warning:', e); }
+
+          try {
+            await supabase.from('users').update({ proof_image: proofUrl }).eq('id', currentUser.id);
+          } catch (e) { console.warn('Update user proof_image warning:', e); }
 
           // 4. Update transactions table di Supabase
           if (currentUploadTxId) {
             try {
               await supabase.from('transactions').update({ proof_uploaded: true, proof_image: proofUrl }).eq('id', currentUploadTxId);
-            } catch (e) {
-              console.warn('Update transaction proof error:', e);
-            }
+            } catch (e) { console.warn('Update transaction proof warning:', e); }
           }
 
-          // 5. Update transaksi & purchase_history di objek currentUser lokal
+          // 5. Sync proof_image ke objek currentUser lokal
           if (currentUser.transactions) {
             currentUser.transactions.forEach(t => {
               if (String(t.id) === String(currentUploadTxId) || t.status === 'pending') {
@@ -1699,7 +1705,13 @@
             currentUser.first_order.proof_image = proofUrl;
           }
           currentUser.proof_image = proofUrl;
-          await window.upsertRow('users', currentUser);
+
+          // Simpan data user (upsertRow otomatis menghapus kolom yang tidak ada di schema jika ada error)
+          try {
+            await window.upsertRow('users', currentUser);
+          } catch (uErr) {
+            console.warn('Upsert user proof warning:', uErr);
+          }
 
           if (progressInterval) clearInterval(progressInterval);
           if (progressBar) progressBar.style.width = '100%';
