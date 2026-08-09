@@ -958,10 +958,10 @@
                         supabase.from('orders').select('*'),
                         supabase.from('transactions').select('*'),
                         supabase.from('bank_info').select('*'),
-                        supabase.from('slides').select('*').catch(() => ({ data: [] })),
-                        supabase.from('faq').select('*').catch(() => ({ data: [] })),
-                        supabase.from('features').select('*').catch(() => ({ data: [] })),
-                        supabase.from('settings').select('*').catch(() => ({ data: [] }))
+                        supabase.from('slides').select('*'),
+                        supabase.from('faq').select('*'),
+                        supabase.from('features').select('*'),
+                        supabase.from('settings').select('*')
                     ]);
 
                     allUsers = resUsers?.data || [];
@@ -975,7 +975,7 @@
                     allSettings = {};
                     (resSettings?.data || []).forEach(r => allSettings[r.key] = r.value);
 
-                    console.log('⚡ Admin Data refreshed in parallel');
+                    console.log('⚡ Admin Data refreshed in parallel:', allUsers.length, 'users,', allOrders.length, 'orders');
                 } catch (e) {
                     console.error('refreshAdminData error:', e);
                 }
