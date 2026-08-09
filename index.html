@@ -1143,11 +1143,14 @@
 
                     let statusText = 'PENDING (Menunggu Verifikasi Admin)';
                     let badgeColor = '#dd6b20';
-                    if (status === 'shipped') {
+                    if (status === 'completed' || status === 'success') {
+                        statusText = '✅ SELESAI / DITERIMA';
+                        badgeColor = '#2e7d32';
+                    } else if (status === 'shipped') {
                         statusText = '🚚 DIKIRIM (Dalam Pengiriman Expedisi)';
                         badgeColor = '#2b6cb0';
-                    } else if (status === 'verified' || status === 'processing' || status === 'success') {
-                        statusText = '✅ TERVERIFIKASI / DIPROSES';
+                    } else if (status === 'verified' || status === 'processing' || status === 'paid') {
+                        statusText = '📦 TERVERIFIKASI / DIPROSES';
                         badgeColor = '#2e7d32';
                     }
 
