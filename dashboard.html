@@ -2248,7 +2248,34 @@
 
       async function renderDepositHistory() {
         const tbody = document.getElementById('depositHistoryBody');
-        const dpTxs = (currentUser.transactions || []).filter(t => t.type === 'deposit').slice().reverse();
+        
+        // Ambil transaksi live dari tabel transactions Supabase untuk user ini
+        let liveTxs = [];
+        try {
+          if (window.getTransactions) {
+            liveTxs = await window.getTransactions(currentUser.id);
+          }
+        } catch (e) { console.warn('Fetch live txs deposit warning:', e); }
+
+        let dpMap = new Map();
+        (currentUser.transactions || []).filter(t => t.type === 'deposit').forEach(t => {
+          dpMap.set(String(t.id), { ...t });
+        });
+
+        (liveTxs || []).filter(t => t.type === 'deposit').forEach(t => {
+          const key = String(t.id);
+          if (dpMap.has(key)) {
+            const existing = dpMap.get(key);
+            existing.status = t.status || existing.status;
+            existing.proof_uploaded = t.proof_uploaded || existing.proof_uploaded;
+            dpMap.set(key, existing);
+          } else {
+            dpMap.set(key, { ...t });
+          }
+        });
+
+        const dpTxs = Array.from(dpMap.values()).reverse();
+
         if (dpTxs.length === 0) {
           tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Kosong</td></tr>';
           document.getElementById('dpHistoryPageInfo').textContent = '1/1';
@@ -2258,18 +2285,22 @@
         const paginated = dpTxs.slice((dpPage - 1) * 10, dpPage * 10);
         let html = '';
         paginated.forEach(t => {
-          const date = new Date(t.date).toLocaleDateString('id-ID');
-          let badge = t.status === 'pending' ? 'status-pending' : (t.status === 'success' ? 'status-success' : 'status-failed');
+          const date = new Date(t.date || Date.now()).toLocaleDateString('id-ID');
+          const st = (t.status || 'pending').toLowerCase();
+          let badge = st === 'pending' ? 'status-pending' : (st === 'success' || st === 'approved' || st === 'completed' ? 'status-success' : 'status-failed');
+          let displayStatus = st === 'pending' ? 'PENDING' : (st === 'success' || st === 'approved' || st === 'completed' ? 'TERVERIFIKASI' : 'DIBATALKAN');
           let aksi = '-';
-          if (t.status === 'pending' && !t.proof_uploaded) {
+          if (st === 'pending' && !t.proof_uploaded) {
             aksi = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload(${t.id}, 'deposit')" style="padding:3px 8px; font-size:0.65rem;">Konfirmasi TF</button>`;
-          } else if (t.status === 'pending' && t.proof_uploaded) {
+          } else if (st === 'pending' && t.proof_uploaded) {
             aksi = `<span style="font-size:0.65rem; color:#dd6b20;"><i class="fas fa-clock"></i> Cek Admin</span>`;
+          } else if (st === 'success' || st === 'approved' || st === 'completed') {
+            aksi = `<span style="font-size:0.65rem; color:#2e7d32; font-weight:700;"><i class="fas fa-check-circle"></i> Selesai</span>`;
           }
           html += `<tr>
             <td data-label="Tanggal">${date}</td>
-            <td data-label="Nominal"><strong style="color:var(--denim-blue);">Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</strong><br><small class="text-muted">${t.method}</small></td>
-            <td data-label="Status"><span class="status-badge ${badge}">${t.status}</span></td>
+            <td data-label="Nominal"><strong style="color:var(--denim-blue);">Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</strong><br><small class="text-muted">${t.method || 'Transfer Bank'}</small></td>
+            <td data-label="Status"><span class="status-badge ${badge}">${displayStatus}</span></td>
             <td data-label="Aksi">${aksi}</td>
           </tr>`;
         });
