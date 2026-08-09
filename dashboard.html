@@ -1316,14 +1316,26 @@
         const prods = await window.getProducts();
         grid.innerHTML = '';
         if (prods.length === 0) {
-          grid.innerHTML = '<p class="text-muted">Belum ada produk.</p>';
+          grid.innerHTML = '<p class="text-muted" style="padding:20px;">Belum ada produk.</p>';
           return;
         }
         prods.forEach(p => {
           const card = document.createElement('div');
           card.className = 'product-card';
           let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
-          card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><span class="tag">${p.tag || 'PRODUK'}</span><h4>${p.name}</h4><div class="price">Rp ${(parseFloat(p.price) || 0).toLocaleString()}</div><div style="font-size:0.6rem; color:#718096; margin-bottom:4px;">Stok: ${p.stock||0}</div><button class="btn-sm btn-sm-gold buy-ro-btn" data-id="${p.id}" data-price="${p.price}"><i class="fas fa-shopping-cart"></i> Beli RO</button></div>`;
+          const prodSerial = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
+          card.innerHTML = `
+            <div class="img-placeholder" style="cursor:pointer;" onclick="openROModal('${p.id}', ${p.price})">${imgHtml}</div>
+            <div class="body">
+              <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;">
+                <span class="tag">${p.tag || 'PRODUK'}</span>
+                <span style="font-size:0.65rem;color:var(--gold-accent);font-weight:700;"><i class="fas fa-barcode"></i> ${prodSerial}</span>
+              </div>
+              <h4 style="cursor:pointer;" onclick="openROModal('${p.id}', ${p.price})">${p.name}</h4>
+              <div class="price">Rp ${(parseFloat(p.price) || 0).toLocaleString()}</div>
+              <div style="font-size:0.65rem; color:#718096; margin-bottom:6px;">Stok: ${p.stock||0} pcs</div>
+              <button class="btn-sm btn-sm-gold buy-ro-btn" data-id="${p.id}" data-price="${p.price}" style="width:100%;"><i class="fas fa-shopping-bag"></i> Detail & Beli RO</button>
+            </div>`;
           grid.appendChild(card);
         });
         document.querySelectorAll('.buy-ro-btn').forEach(btn => {
@@ -1352,6 +1364,7 @@
         roPrice = price;
         const prod = allProducts.find(p => String(p.id) === String(productId));
         if (!prod) return;
+        const prodSerial = prod.serial || ('HDT-' + String(prod.id).padStart(4, '0'));
 
         let imgHtml = prod.image ? `<img src="${prod.image}" alt="${prod.name}" />` : `<div class="ro-icon"><i class="fas ${prod.icon || 'fa-tshirt'}"></i></div>`;
         roModalBody.innerHTML = `
@@ -1361,10 +1374,11 @@
               <span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>
             </div>
             <div class="ro-info">
+              <div style="font-size:0.75rem; color:var(--gold-accent); font-weight:700; margin-bottom:4px;"><i class="fas fa-barcode"></i> Nomor Seri: <strong>${prodSerial}</strong></div>
               <h4>${prod.name}</h4>
-              <div class="ro-price">Rp ${price.toLocaleString()}</div>
-              <div class="ro-desc">${prod.description || 'Deskripsi produk.'}</div>
-              <div style="font-size:0.7rem; color:#718096;">Stok: ${prod.stock||0}</div>
+              <div class="ro-price">Rp ${price.toLocaleString()}${prod.original ? ` <del style="font-size:0.8rem; opacity:0.6; text-decoration:line-through; color:#718096;">Rp ${prod.original.toLocaleString()}</del>` : ''}</div>
+              <div class="ro-desc">${prod.description || 'Produk denim kualitas premium.'}</div>
+              <div style="font-size:0.75rem; color:#718096; margin-top:4px;">Tersedia Stok: <strong>${prod.stock||0} pcs</strong></div>
             </div>
             <div class="ro-options">
               <div class="form-group"><label>Ukuran</label><select id="roSizeSelect">${(prod.sizes || ['30','32']).map(s => `<option value="${s}">Size ${s}</option>`).join('')}</select></div>
