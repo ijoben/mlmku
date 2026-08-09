@@ -196,16 +196,32 @@ window.getTable = async function(table, select, filter, order) {
 
 window.upsertRow = async function(table, data) {
   console.log('🔵 upsertRow dipanggil untuk:', table);
+  var payload = { ...data };
   var { data: result, error } = await supabaseClient
     .from(table)
-    .upsert(data)
+    .upsert(payload)
     .select();
   if (error) {
+    if (error.message && error.message.includes('Could not find the') && error.message.includes('column')) {
+      console.warn('⚠️ Column missing in schema, stripping unknown column and retrying upsert:', error.message);
+      var match = error.message.match(/Could not find the '([^']+)' column/);
+      if (match && match[1]) {
+        delete payload[match[1]];
+        var retry = await supabaseClient
+          .from(table)
+          .upsert(payload)
+          .select();
+        if (!retry.error) {
+          console.log('✅ upsertRow retry berhasil');
+          return retry.data ? retry.data[0] : payload;
+        }
+      }
+    }
     console.error('🔴 upsertRow error:', error);
     throw error;
   }
   console.log('✅ upsertRow berhasil');
-  return result[0];
+  return result ? result[0] : payload;
 };
 
 window.deleteRow = async function(table, id) {
@@ -226,10 +242,11 @@ window.deleteRow = async function(table, id) {
 // ============================================================
 
 window.uploadFile = async function(file, folder = 'products') {
-  console.log('🔵 uploadFile dipanggil:', file.name);
+  console.log('🔵 uploadFile dipanggil:', file ? file.name : 'no file');
+  if (!file) return null;
   
   try {
-    var fileExt = file.name.split('.').pop();
+    var fileExt = (file.name && file.name.includes('.')) ? file.name.split('.').pop() : 'jpg';
     var fileName = Date.now() + '-' + Math.random().toString(36).substring(2, 7) + '.' + fileExt;
     var filePath = folder + '/' + fileName;
     
@@ -238,12 +255,12 @@ window.uploadFile = async function(file, folder = 'products') {
       .from('hedtro-images')
       .upload(filePath, file, {
         cacheControl: '3600',
-        upsert: false
+        upsert: true
       });
     
     if (error) {
-      console.error('🔴 Upload error:', error);
-      throw error;
+      console.warn('⚠️ Storage upload warning:', error.message);
+      return null;
     }
     
     var { data: publicUrlData } = supabaseClient
@@ -251,12 +268,12 @@ window.uploadFile = async function(file, folder = 'products') {
       .from('hedtro-images')
       .getPublicUrl(filePath);
     
-    console.log('✅ Upload berhasil:', publicUrlData.publicUrl);
-    return publicUrlData.publicUrl;
+    console.log('✅ Upload Storage berhasil:', publicUrlData?.publicUrl);
+    return publicUrlData?.publicUrl || null;
     
   } catch (error) {
-    console.error('❌ Upload error:', error);
-    throw error;
+    console.warn('⚠️ Storage upload exception:', error);
+    return null;
   }
 };
 
