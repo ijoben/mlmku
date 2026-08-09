@@ -61,7 +61,7 @@
     <div class="login-wrapper">
         <div class="login-card">
             <div class="logo">
-                <h1><i class="fas fa-tshirt"></i> HEDTRO JEANS</h1>
+                <h1 id="registerLogoHeading"><i class="fas fa-tshirt"></i> HEDTRO JEANS</h1>
                 <p>Daftar menjadi member & mulai bisnis</p>
             </div>
 
@@ -332,8 +332,15 @@
             // ========== CEK SPONSOR DARI URL ==========
             async function checkSponsorFromURL() {
                 const params = new URLSearchParams(window.location.search);
-                const sponsorId = params.get('ref') || params.get('sponsor');
+                let sponsorId = params.get('ref') || params.get('sponsor');
                 const position = params.get('pos') || 'left';
+                
+                if (!sponsorId) {
+                    const match = window.location.pathname.match(/\/(reff|ref)\/([a-zA-Z0-9_\-]+)/i);
+                    if (match && match[2]) {
+                        sponsorId = match[2];
+                    }
+                }
                 
                 if (sponsorId) {
                     try {
