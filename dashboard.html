@@ -1600,31 +1600,46 @@
 
         roModalOverlay.classList.add('active');
 
+        let selectedMethod = null;
+
         document.getElementById('roModalNextBtn').onclick = function() {
           this.style.display = 'none';
           document.getElementById('roPaymentSelection').style.display = 'block';
         };
 
         document.getElementById('btnPayWallet').onclick = function() {
+          selectedMethod = 'wallet';
+          this.style.outline = '2px solid var(--gold-accent)';
+          this.style.opacity = '1';
+          document.getElementById('btnPayBank').style.outline = 'none';
+          document.getElementById('btnPayBank').style.opacity = '0.6';
+          
           const baseSub = roPrice * currentQty;
           if ((currentUser.wallet || 0) < baseSub) { showModalAlert('Saldo Tidak Cukup', 'Saldo dompet Anda tidak mencukupi untuk transaksi ini.'); return; }
-          showModalConfirm('Konfirmasi Dompet', `Bayar sebesar Rp ${baseSub.toLocaleString('id-ID')} menggunakan saldo dompet?`, () => {
-            roModalOverlay.classList.remove('active');
-            prosesRO('wallet', currentQty);
-          });
+          
+          const confirmBtn = document.getElementById('roModalConfirmBankBtn');
+          confirmBtn.innerHTML = '<i class="fas fa-wallet"></i> Konfirmasi Bayar Saldo';
+          confirmBtn.className = 'btn-sm btn-sm-success';
+          confirmBtn.style.display = 'inline-flex';
         };
 
         document.getElementById('btnPayBank').onclick = function() {
-          const bankSub = (roPrice * currentQty) + uniqueCode;
-          showModalConfirm('Konfirmasi Pembayaran Bank', `Buat pesanan sebesar Rp ${bankSub.toLocaleString('id-ID')} (Termasuk Kode Unik ${uniqueCode}) via Transfer Bank?`, () => {
-            roModalOverlay.classList.remove('active');
-            prosesRO('bank', currentQty);
-          });
+          selectedMethod = 'bank';
+          this.style.outline = '2px solid var(--gold-accent)';
+          this.style.opacity = '1';
+          document.getElementById('btnPayWallet').style.outline = 'none';
+          document.getElementById('btnPayWallet').style.opacity = '0.6';
+          
+          const confirmBtn = document.getElementById('roModalConfirmBankBtn');
+          confirmBtn.innerHTML = '<i class="fas fa-check"></i> Konfirmasi Pembayaran Bank';
+          confirmBtn.className = 'btn-sm btn-sm-primary';
+          confirmBtn.style.display = 'inline-flex';
         };
 
         document.getElementById('roModalConfirmBankBtn').onclick = function() {
+          if (!selectedMethod) selectedMethod = 'bank';
           roModalOverlay.classList.remove('active');
-          prosesRO('bank', currentQty);
+          prosesRO(selectedMethod, currentQty);
         };
 
         document.getElementById('roModalCancelBtn').onclick = function() {
