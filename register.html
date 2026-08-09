@@ -257,22 +257,8 @@
 
             // ========== CEK SESSION ==========
             async function checkSession() {
-                try {
-                    const params = new URLSearchParams(window.location.search);
-                    // Jika ada parameter ref / sponsor / upline / pos / new, ijinkan registrasi member baru tanpa redirect
-                    if (params.has('ref') || params.has('sponsor') || params.has('upline') || params.has('pos') || params.has('new')) {
-                        return;
-                    }
-                    const session = await window.getSession();
-                    if (session) {
-                        const profile = await window.getUserProfile();
-                        if (profile) {
-                            window.location.href = profile.role === 'admin' ? 'admin.html' : 'dashboard.html';
-                        }
-                    }
-                } catch (e) {
-                    console.warn('Session check error:', e);
-                }
+                // Selalu izinkan akses ke register.html tanpa auto-redirect agar pendaftaran baru / downline dari pohon jaringan tidak terlempar ke dashboard
+                return;
             }
             checkSession();
 
@@ -599,26 +585,7 @@
                     const product = products.find(p => p.id === parseInt(productId));
                     const productPrice = product ? product.price : memberPrice;
                     
-                    let bonusResults = {
-                        sponsor: 0,
-                        binary: 0,
-                        reward: 0
-                    };
-
-                    // ===== 1. SPONSOR BONUS =====
-                    if (sponsorData) {
-                        try {
-                            await window.calculateSponsorBonus(profile.id, sponsorData.id, productPrice, settings);
-                            const sponsorBonusPercent = parseFloat(settings.sponsorBonus) || 10;
-                            bonusResults.sponsor = (productPrice * sponsorBonusPercent) / 100;
-                            console.log('✅ Sponsor bonus calculated: Rp', bonusResults.sponsor);
-                        } catch (bonusError) {
-                            console.error('❌ Sponsor bonus failed:', bonusError);
-                            showToast('⚠️ Sponsor bonus gagal dihitung, tapi registrasi tetap berhasil.', 'warning');
-                        }
-                    }
-
-                    // ===== 2. UPDATE BINARY TREE (LEFT_ID / RIGHT_ID) =====
+                    // ===== 1. UPDATE BINARY TREE (LEFT_ID / RIGHT_ID) =====
                     if (sponsorData) {
                         try {
                             // Refresh data sponsor terbaru
@@ -635,38 +602,11 @@
                             }
                         } catch (treeError) {
                             console.error('❌ Binary tree update failed:', treeError);
-                            showToast('⚠️ Posisi binary gagal diupdate, tapi registrasi tetap berhasil.', 'warning');
                         }
                     }
 
-                    // ===== 3. BINARY BONUS (10 LEVEL) =====
-                    try {
-                        await window.calculateBinaryBonus(profile.id, productPrice, settings);
-                        const binaryLevels = settings.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
-                        binaryLevels.forEach(level => {
-                            bonusResults.binary += (productPrice * level) / 100;
-                        });
-                        console.log('✅ Binary bonus calculated: Rp', bonusResults.binary);
-                    } catch (bonusError) {
-                        console.error('❌ Binary bonus failed:', bonusError);
-                        showToast('⚠️ Binary bonus gagal dihitung, tapi registrasi tetap berhasil.', 'warning');
-                    }
-
-                    // ===== 4. REWARD BONUS (5 LEVEL) =====
-                    try {
-                        await window.calculateRewardBonus(profile.id, productPrice, settings);
-                        const rewardLevels = settings.rewardBonusLevels || [5, 4, 3, 2, 1];
-                        rewardLevels.forEach(level => {
-                            bonusResults.reward += (productPrice * level) / 100;
-                        });
-                        console.log('✅ Reward bonus calculated: Rp', bonusResults.reward);
-                    } catch (bonusError) {
-                        console.error('❌ Reward bonus failed:', bonusError);
-                        showToast('⚠️ Reward bonus gagal dihitung, tapi registrasi tetap berhasil.', 'warning');
-                    }
-
                     // ============================================================
-                    // ===== BUAT FIRST ORDER =====
+                    // ===== BUAT FIRST ORDER AUTOMATIS (STATUS PENDING) =====
                     // ============================================================
                     if (product) {
                         try {
@@ -693,7 +633,7 @@
                             };
                             
                             await window.saveOrder(newOrder);
-                            console.log('✅ First order created:', orderNum);
+                            console.log('✅ First order created (Pending Admin Approval):', orderNum);
                             
                         } catch (orderError) {
                             console.error('❌ Gagal membuat order:', orderError);
@@ -702,17 +642,13 @@
                     }
 
                     // ===== SUKSES =====
-                    const totalBonus = bonusResults.sponsor + bonusResults.binary + bonusResults.reward;
                     msgEl.className = 'msg success';
                     msgEl.innerHTML = `
-                        ✅ Pendaftaran berhasil!<br>
+                        ✅ Pendaftaran Akun Berhasil!<br>
                         <small>
-                            📧 Email verifikasi telah dikirim ke <strong>${email}</strong><br>
-                            Silakan cek inbox atau spam Anda.<br><br>
-                            💰 Total Bonus: <strong>Rp ${totalBonus.toLocaleString()}</strong>
-                            ${bonusResults.sponsor > 0 ? `<br>👤 Sponsor: Rp ${bonusResults.sponsor.toLocaleString()}` : ''}
-                            ${bonusResults.binary > 0 ? `<br>🌳 Binary: Rp ${bonusResults.binary.toLocaleString()}` : ''}
-                            ${bonusResults.reward > 0 ? `<br>🏆 Reward: Rp ${bonusResults.reward.toLocaleString()}` : ''}
+                            📦 First Order pertama Anda telah otomatis dibuat.<br>
+                            💳 Silakan login & lakukan transfer sebesar <strong>Rp ${(product ? product.price : 0).toLocaleString()}</strong> serta upload bukti transfer.<br>
+                            Status akun Anda akan berubah menjadi <strong>VERIFIED</strong> & bonus upline akan dicairkan setelah disetujui Admin.
                         </small>
                     `;
                     
