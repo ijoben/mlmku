@@ -1468,7 +1468,7 @@
           user_id: currentUser.id,
           user_name: currentUser.fullname || currentUser.username,
           type: 'ro',
-          items: [{ product_id: prod.id, name: prod.name, price: roPrice, qty: 1, size, color }],
+          items: [{ product_id: prod.id, name: `${prod.name} (${size} - ${color})`, price: roPrice, qty: 1, size, color }],
           total: roPrice,
           status: method === 'wallet' ? 'processing' : 'pending',
           created_at: new Date().toISOString(),
@@ -1477,24 +1477,18 @@
         };
         await window.upsertRow('orders', orderObj);
 
-        // ============================================================
-        // ===== HITUNG BONUS UNTUK TRANSAKSI RO =====
-        // ============================================================
-        try {
-          const settings = await window.getSettings();
-          
-          // 1. Binary Bonus (10 level)
-          await window.calculateBinaryBonus(currentUser.id, roPrice, settings);
-          
-          // 2. Reward Bonus (5 level)
-          await window.calculateRewardBonus(currentUser.id, roPrice, settings);
-          
-          // 3. RO Bonus (khusus repeat order)
-          await window.calculateRoBonus(currentUser.id, roPrice, settings);
-          
-          console.log('✅ RO bonuses calculated!');
-        } catch (bonusError) {
-          console.error('❌ Error calculating RO bonuses:', bonusError);
+        // BONUS HANYA DICETAK SEKETIKA JIKA DIBAYAR DENGAN WALLET BALENCE
+        // UNTUK TRANSFER BANK, BONUS BARU CAIR SAAT ADMIN APPRAVE DI ADMIN
+        if (method === 'wallet') {
+          try {
+            const settings = await window.getSettings();
+            await window.calculateBinaryBonus(currentUser.id, roPrice, settings);
+            await window.calculateRewardBonus(currentUser.id, roPrice, settings);
+            await window.calculateRoBonus(currentUser.id, roPrice, settings);
+            console.log('✅ RO bonuses calculated for wallet payment!');
+          } catch (bonusError) {
+            console.error('❌ Error calculating RO bonuses:', bonusError);
+          }
         }
 
         // Refresh data
@@ -1504,17 +1498,114 @@
         allOrders = await window.getOrders();
 
         if (method === 'wallet') {
-          showModalAlert('Sukses', 'RO lunas dari dompet.', () => { renderDashboard(); window.showSection('ro-history'); });
+          showModalAlert('Sukses', 'RO lunas dari saldo dompet. Pesanan sedang diproses Admin.', () => { renderDashboard(); window.showSection('ro-history'); });
         } else {
-          showModalAlert('Pesanan Dibuat', 'Buka <b>Riwayat RO</b> untuk upload bukti.', () => { renderDashboard(); window.showSection('ro-history'); });
+          showModalAlert('Pesanan Dibuat', 'Silakan upload bukti transfer pada menu <b>Riwayat RO</b> agar Admin dapat memverifikasi dan memproses pengiriman.', () => { renderDashboard(); window.showSection('ro-history'); });
         }
       }
+
+      // ========== UPLOAD BUKTI TRANSFER MODAL ==========
+      window.bukaModalUpload = function(txId, type) {
+        let modal = document.getElementById('uploadProofModal');
+        if (!modal) {
+          modal = document.createElement('div');
+          modal.id = 'uploadProofModal';
+          modal.className = 'popup-overlay';
+          modal.innerHTML = `
+            <div class="popup-box" style="max-width:450px;">
+              <span class="close-popup" onclick="closeUploadProofModal()">&times;</span>
+              <h3><i class="fas fa-upload" style="color:var(--gold-accent);"></i> Upload Bukti Transfer</h3>
+              <p class="sub">Unggah foto / screenshot struk bukti transfer pembayaran Anda.</p>
+              <div class="popup-form">
+                <input type="file" id="proofFileInputModal" accept="image/*" />
+                <img id="proofPreviewModal" style="max-height:160px; object-fit:contain; border-radius:12px; display:none; margin-top:8px; border:1px dashed var(--denim-blue);" />
+                <button id="btnSubmitProofModal" style="margin-top:12px;"><i class="fas fa-paper-plane"></i> Kirim Bukti Pembayaran</button>
+              </div>
+            </div>
+          `;
+          document.body.appendChild(modal);
+        }
+        
+        const fileInput = document.getElementById('proofFileInputModal');
+        const previewImg = document.getElementById('proofPreviewModal');
+        const submitBtn = document.getElementById('btnSubmitProofModal');
+        fileInput.value = '';
+        previewImg.style.display = 'none';
+        previewImg.src = '';
+
+        fileInput.onchange = function() {
+          const file = this.files[0];
+          if (file) {
+            const reader = new FileReader();
+            reader.onload = function(e) {
+              previewImg.src = e.target.result;
+              previewImg.style.display = 'block';
+            };
+            reader.readAsDataURL(file);
+          }
+        };
+
+        submitBtn.onclick = async function() {
+          if (!previewImg.src) {
+            showModalAlert('Peringatan', 'Silakan pilih foto bukti transfer terlebih dahulu.');
+            return;
+          }
+          const proofUrl = previewImg.src;
+          try {
+            submitBtn.disabled = true;
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim...';
+            
+            // Update orders table
+            const { error: orderErr } = await supabase.from('orders').update({ proof_image: proofUrl }).eq('id', txId);
+            if (orderErr) {
+              await supabase.from('orders').update({ proof_image: proofUrl }).eq('user_id', currentUser.id);
+            }
+            
+            // Update users table
+            await supabase.from('users').update({ proof_image: proofUrl }).eq('id', currentUser.id);
+
+            // Update transactions & purchase_history local
+            if (currentUser.transactions) {
+              currentUser.transactions.forEach(t => {
+                if (String(t.id) === String(txId) || t.status === 'pending') { t.proof_uploaded = true; t.proof_image = proofUrl; }
+              });
+            }
+            if (currentUser.purchase_history) {
+              currentUser.purchase_history.forEach(p => {
+                if (String(p.id) === String(txId) || p.status === 'pending') { p.proof_uploaded = true; p.proof_image = proofUrl; }
+              });
+            }
+            currentUser.proof_image = proofUrl;
+            await window.upsertRow('users', currentUser);
+
+            closeUploadProofModal();
+            showModalAlert('Berhasil', 'Bukti transfer berhasil dikirim. Menunggu verifikasi Admin.');
+            allOrders = await window.getOrders();
+            await renderDashboard();
+            renderRoHistory();
+          } catch (e) {
+            console.error('Upload proof error:', e);
+            showModalAlert('Gagal', 'Gagal mengunggah bukti: ' + e.message);
+          } finally {
+            submitBtn.disabled = false;
+            submitBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Bukti Pembayaran';
+          }
+        };
+
+        modal.classList.add('active', 'show');
+      };
+
+      window.closeUploadProofModal = function() {
+        const modal = document.getElementById('uploadProofModal');
+        if (modal) modal.classList.remove('active', 'show');
+      };
 
       // ========== RO HISTORY ==========
       async function renderRoHistory() {
         const tbody = document.getElementById('roHistoryBody');
         
-        // Combine purchase_history and orders from orders table
+        // Refresh orders & user
+        allOrders = await window.getOrders();
         const userOrders = (allOrders || []).filter(o => String(o.user_id) === String(currentUser.id));
         let combined = [];
 
@@ -1526,7 +1617,7 @@
             price: o.total || 0,
             status: o.status,
             paymentMethod: 'bank',
-            proof_uploaded: !!o.proof_image,
+            proof_uploaded: !!(o.proof_image || currentUser.proof_image),
             resi: o.resi || null,
             type: o.type
           });
@@ -1541,7 +1632,7 @@
               price: t.price || t.amount || 0,
               status: t.status,
               paymentMethod: t.paymentMethod || 'bank',
-              proof_uploaded: !!(t.proof_uploaded || t.proof_image),
+              proof_uploaded: !!(t.proof_uploaded || t.proof_image || currentUser.proof_image),
               resi: t.resi || null,
               type: 'ro'
             });
