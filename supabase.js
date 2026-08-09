@@ -89,54 +89,48 @@ window.getUserProfile = async function() {
   console.log('🔵 getUserProfile dipanggil');
   try {
     var session = await window.getSession();
-    if (!session) {
-      console.log('⚠️ Tidak ada session');
-      return null;
-    }
+    if (!session) return null;
     var { data, error } = await supabaseClient
       .from('users')
       .select('*')
-      .eq('id', session.user.id)
-      .single();
-    if (error && error.code !== 'PGRST116') {
+      .eq('id', session.user.id);
+    if (error) {
       console.error('🔴 getUserProfile error:', error);
-      throw error;
+      return null;
     }
-    console.log('✅ getUserProfile berhasil:', !!data);
-    return data;
+    return (data && data.length > 0) ? data[0] : null;
   } catch (e) {
     console.error('🔴 getUserProfile exception:', e);
-    throw e;
+    return null;
   }
 };
 
 window.getUserById = async function(id) {
+  if (!id) return null;
   console.log('🔵 getUserById dipanggil untuk:', id);
   var { data, error } = await supabaseClient
     .from('users')
     .select('*')
-    .eq('id', id)
-    .single();
-  if (error && error.code !== 'PGRST116') {
+    .eq('id', id);
+  if (error) {
     console.error('🔴 getUserById error:', error);
-    throw error;
+    return null;
   }
-  return data;
+  return (data && data.length > 0) ? data[0] : null;
 };
 
 window.getUserByEmail = async function(email) {
+  if (!email) return null;
   console.log('🔵 getUserByEmail dipanggil untuk:', email);
   var { data, error } = await supabaseClient
     .from('users')
     .select('*')
-    .eq('email', email)
-    .single();
-  if (error && error.code !== 'PGRST116') {
+    .eq('email', email);
+  if (error) {
     console.error('🔴 getUserByEmail error:', error);
-    throw error;
+    return null;
   }
-  console.log('✅ getUserByEmail berhasil:', !!data);
-  return data;
+  return (data && data.length > 0) ? data[0] : null;
 };
 
 window.getUserByUsername = async function(username) {
@@ -145,15 +139,14 @@ window.getUserByUsername = async function(username) {
   var { data } = await supabaseClient
     .from('users')
     .select('*')
-    .eq('username', username)
-    .single();
-  if (data) return data;
+    .eq('username', username);
+  if (data && data.length > 0) return data[0];
+  
   var { data: dataById } = await supabaseClient
     .from('users')
     .select('*')
-    .eq('id', username)
-    .single();
-  return dataById || null;
+    .eq('id', username);
+  return (dataById && dataById.length > 0) ? dataById[0] : null;
 };
 
 window.updateUserProfile = async function(data) {
@@ -672,42 +665,90 @@ window.saveOrder = async function(order) {
 // ============================================================
 window.approveOrderAndDistributeBonuses = async function(orderId) {
   console.log('🔵 Approving order & distributing bonuses for orderId:', orderId);
-  var { data: order, error: oErr } = await supabaseClient
-    .from('orders')
-    .select('*')
-    .eq('id', orderId)
-    .single();
-  
-  if (oErr || !order) {
-    throw new Error(oErr ? oErr.message : 'Order tidak ditemukan');
+  var order = null;
+
+  // 1. Ambil data order dari tabel orders (tanpa .single() untuk mencegah PGRST116)
+  try {
+    var { data: ordersData } = await supabaseClient
+      .from('orders')
+      .select('*')
+      .eq('id', orderId);
+    
+    if (ordersData && ordersData.length > 0) {
+      order = ordersData[0];
+    }
+  } catch (e) {
+    console.warn('⚠️ Query orders table warning:', e);
+  }
+
+  // 2. Fallback: Cari di tabel users jika order tidak ditemukan di tabel orders
+  if (!order) {
+    var allUsers = await window.getTable('users');
+    for (var i = 0; i < (allUsers || []).length; i++) {
+      var u = allUsers[i];
+      if (u.first_order && String(u.first_order.id) === String(orderId)) {
+        order = u.first_order;
+        break;
+      }
+      if (u.purchase_history && u.purchase_history.length > 0) {
+        var foundP = u.purchase_history.find(p => String(p.id) === String(orderId));
+        if (foundP) {
+          order = {
+            id: foundP.id,
+            user_id: u.id,
+            user_name: u.fullname || u.username,
+            type: foundP.type || 'ro',
+            total: foundP.price || foundP.amount || 0,
+            status: foundP.status || 'pending',
+            proof_image: foundP.proof_image || u.proof_image || null
+          };
+          break;
+        }
+      }
+    }
+  }
+
+  if (!order) {
+    throw new Error('Pesanan #' + orderId + ' tidak ditemukan');
   }
 
   if (order.status === 'processing' || order.status === 'completed' || order.status === 'shipped') {
     return { alreadyProcessed: true };
   }
 
-  // 1. Update status order menjadi processing
-  var { error: updateErr } = await supabaseClient
-    .from('orders')
-    .update({ status: 'processing' })
-    .eq('id', orderId);
-  if (updateErr) throw updateErr;
+  // 3. Update status order menjadi processing di tabel orders (jika ada)
+  try {
+    await supabaseClient
+      .from('orders')
+      .update({ status: 'processing' })
+      .eq('id', orderId);
+  } catch (e) {
+    console.warn('⚠️ Update orders status warning:', e);
+  }
 
-  // 2. Ambil data pembeli / member
+  // 4. Ambil data pembeli / member
   var buyer = await window.getUserById(order.user_id);
   if (!buyer) return { success: true };
 
-  // 3. Ubah status member menjadi 'verified'
+  // 5. Ubah status member menjadi 'verified' & status pesanan lokal menjadi 'processing'
   buyer.status = 'verified';
+  if (buyer.first_order && String(buyer.first_order.id) === String(orderId)) {
+    buyer.first_order.status = 'processing';
+  }
+  if (buyer.purchase_history) {
+    buyer.purchase_history.forEach(p => {
+      if (String(p.id) === String(orderId)) p.status = 'processing';
+    });
+  }
 
-  // 4. Load Pengaturan Sistem untuk persentase bonus
+  // 6. Load Pengaturan Sistem untuk persentase bonus
   var { data: settingsData } = await supabaseClient.from('settings').select('*');
   var settings = {};
   (settingsData || []).forEach(function(r) { settings[r.key] = r.value; });
 
   var orderAmount = parseFloat(order.total) || 0;
 
-  // 5. Hitung & distribusikan bonus jika total order > 0
+  // 7. Hitung & distribusikan bonus jika total order > 0
   if (orderAmount > 0) {
     if (order.type === 'first_order') {
       if (buyer.sponsor_id) {
