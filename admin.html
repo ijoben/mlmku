@@ -471,7 +471,7 @@
                 </div>
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>#</th><th>Member</th><th>Tipe</th><th>Produk</th><th>Total</th><th>Status</th><th>Tanggal</th><th>Bukti</th><th>Aksi</th></tr></thead>
+                        <thead><tr><th>#</th><th>Member</th><th>Tipe</th><th>Produk</th><th>Total</th><th>Status</th><th>Tanggal</th><th>Bukti</th><th>Resi</th><th>Aksi</th></tr></thead>
                         <tbody id="ordersTableBody"></tbody>
                     </table>
                 </div>
@@ -1854,6 +1854,8 @@
                         const proofImage = o.proof_image || user?.proof_image || null;
                         const hasProof = !!proofImage;
 
+                        const resiHtml = o.resi ? `<span class="badge-status badge-gold" style="font-weight:700;"><i class="fas fa-truck"></i> ${o.resi}</span>` : '<span style="color:#a0aec0;">Belum ada</span>';
+
                         html += `<tr>
                             <td data-label="#">${startIdx + idx + 1}</td>
                             <td data-label="Member"><strong>${userName}</strong></td>
@@ -1863,10 +1865,11 @@
                             <td data-label="Status"><span class="badge-status ${statusClass}">${(o.status||'pending').toUpperCase()}</span></td>
                             <td data-label="Tanggal">${new Date(o.created_at || Date.now()).toLocaleDateString('id-ID')}</td>
                             <td data-label="Bukti">${hasProof ? `<button class="btn-sm btn-sm-gold view-order-proof" data-proof="${proofImage}" data-id="${o.id}">Lihat</button>` : 'Belum upload'}</td>
+                            <td data-label="Resi">${resiHtml}</td>
                             <td data-label="Aksi">
                                 <div>
                                     ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
-                                    ${o.status === 'processing' ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim</button>` : ''}
+                                    ${(o.status === 'processing' || o.status === 'verified' || o.status === 'success') ? `<button class="btn-sm btn-sm-primary ship-order" data-id="${o.id}">Kirim</button>` : ''}
                                 </div>
                             </td>
                         </tr>`;
@@ -1918,7 +1921,7 @@
 
                     tbody.querySelectorAll('.approve-order').forEach(btn => {
                         btn.onclick = async function() {
-                            const id = parseInt(this.dataset.id);
+                            const id = this.dataset.id;
                             try {
                                 await window.approveOrderAndDistributeBonuses(id);
                                 await refreshAdminData();
@@ -1936,8 +1939,8 @@
 
                     tbody.querySelectorAll('.ship-order').forEach(btn => {
                         btn.onclick = function() {
-                            const id = parseInt(this.dataset.id);
-                            const order = allOrders.find(o => o.id === id);
+                            const id = this.dataset.id;
+                            const order = combinedOrders.find(o => String(o.id) === String(id));
                             openModal(`
                                 <h3><i class="fas fa-truck" style="color:var(--gold-accent);"></i> Proses Pengiriman Barang</h3>
                                 <p style="font-size:0.85rem; color:var(--denim-navy); margin-bottom:12px;">Masukkan Nomor Resi Pengiriman untuk pesanan <strong>#${order ? order.order_number || id : id}</strong></p>
@@ -1948,25 +1951,47 @@
                             document.getElementById('confirmShipBtn').onclick = async function() {
                                 const resi = document.getElementById('shipResiInput').value.trim() || ('RESI-' + Date.now().toString().slice(-6));
                                 try {
-                                    const { error } = await supabase
-                                        .from('orders')
-                                        .update({ status: 'shipped', resi: resi })
-                                        .eq('id', id);
-                                    if (error) throw error;
+                                    // 1. Update orders table di Supabase
+                                    try {
+                                        await supabase
+                                            .from('orders')
+                                            .update({ status: 'shipped', resi: resi })
+                                            .eq('id', id);
+                                    } catch (err1) {
+                                        console.warn('Update orders table warning:', err1);
+                                    }
 
-                                    if (order && order.user_id) {
-                                        const buyer = allUsers.find(u => u.id === order.user_id);
+                                    // 2. Update buyer user object
+                                    const buyerId = order ? order.user_id : null;
+                                    if (buyerId) {
+                                        const buyer = allUsers.find(u => String(u.id) === String(buyerId));
                                         if (buyer) {
+                                            buyer.resi = resi;
+                                            if (buyer.first_order) {
+                                                buyer.first_order.status = 'shipped';
+                                                buyer.first_order.resi = resi;
+                                            }
                                             if (buyer.purchase_history) {
-                                                buyer.purchase_history.forEach(p => { if (String(p.id) === String(id)) { p.status = 'shipped'; p.resi = resi; } });
+                                                buyer.purchase_history.forEach(p => {
+                                                    if (String(p.id) === String(id) || p.status === 'pending' || p.status === 'processing' || p.status === 'verified') {
+                                                        p.status = 'shipped';
+                                                        p.resi = resi;
+                                                    }
+                                                });
                                             }
                                             if (buyer.transactions) {
-                                                buyer.transactions.forEach(t => { if (String(t.id) === String(id)) { t.status = 'shipped'; t.resi = resi; } });
+                                                buyer.transactions.forEach(t => {
+                                                    if (String(t.id) === String(id) || t.status === 'pending' || t.status === 'processing' || t.status === 'verified') {
+                                                        t.status = 'shipped';
+                                                        t.resi = resi;
+                                                    }
+                                                });
                                             }
                                             await window.upsertRow('users', buyer);
                                         }
                                     }
 
+                                    try { localStorage.removeItem('hedtro_index_cache_v1'); } catch (e) {}
                                     await refreshAdminData();
                                     await renderOrders();
                                     await renderDashboard();
