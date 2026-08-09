@@ -1,0 +1,292 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Reset & Recalculate Bonus MLM - HEDTRO JEANS</title>
+  <!-- Google Fonts & FontAwesome -->
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <!-- Supabase CDN -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2/dist/umd/supabase.min.js"></script>
+  <style>
+    :root {
+      --denim-navy: #1a2b4c;
+      --denim-dark: #0f1a30;
+      --gold-accent: #d4af37;
+      --gold-hover: #b8963a;
+      --white: #ffffff;
+      --cream: #f9f8f3;
+      --gray-bg: #f4f6f8;
+      --radius: 12px;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: 'Inter', sans-serif; }
+    body { background: var(--gray-bg); color: var(--denim-dark); padding: 30px 15px; }
+    .container { max-width: 900px; margin: 0 auto; background: var(--white); border-radius: var(--radius); padding: 24px 30px; box-shadow: 0 10px 30px rgba(0,0,0,0.08); }
+    h1 { font-size: 1.5rem; color: var(--denim-navy); margin-bottom: 8px; display: flex; align-items: center; gap: 10px; }
+    p.desc { font-size: 0.88rem; color: #64748b; margin-bottom: 24px; line-height: 1.5; }
+    .alert-info { background: #e0f2fe; border-left: 4px solid #0284c7; color: #0369a1; padding: 12px 16px; border-radius: 8px; font-size: 0.85rem; margin-bottom: 20px; }
+    .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 16px; margin-bottom: 24px; }
+    .card { background: var(--cream); border: 1px solid #e2e8f0; border-radius: var(--radius); padding: 18px; }
+    .card h3 { font-size: 1.05rem; margin-bottom: 8px; color: var(--denim-navy); display: flex; align-items: center; gap: 8px; }
+    .card p { font-size: 0.8rem; color: #64748b; margin-bottom: 14px; }
+    .btn { display: inline-flex; align-items: center; justify-content: center; gap: 8px; padding: 10px 16px; border: none; border-radius: 8px; font-weight: 600; font-size: 0.85rem; cursor: pointer; transition: all 0.2s ease; width: 100%; }
+    .btn-danger { background: #ef4444; color: white; }
+    .btn-danger:hover { background: #dc2626; }
+    .btn-warning { background: #f59e0b; color: white; }
+    .btn-warning:hover { background: #d97706; }
+    .btn-success { background: #10b981; color: white; }
+    .btn-success:hover { background: #059669; }
+    .btn-primary { background: var(--denim-navy); color: white; }
+    .btn-primary:hover { background: var(--denim-dark); }
+    .form-group { margin-bottom: 12px; }
+    .form-group label { display: block; font-size: 0.8rem; font-weight: 600; margin-bottom: 4px; }
+    .form-group input { width: 100%; padding: 8px 12px; border: 1px solid #cbd5e1; border-radius: 6px; font-size: 0.85rem; }
+    #logOutput { background: var(--denim-dark); color: #4ade80; font-family: monospace; font-size: 0.8rem; padding: 16px; border-radius: 8px; max-height: 350px; overflow-y: auto; white-space: pre-wrap; margin-top: 20px; }
+    table { width: 100%; border-collapse: collapse; margin-top: 15px; font-size: 0.8rem; }
+    th, td { border: 1px solid #e2e8f0; padding: 8px 10px; text-align: left; }
+    th { background: #f1f5f9; font-weight: 600; }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <h1><i class="fas fa-undo-alt" style="color: var(--gold-accent);"></i> Tool Reset & Recalculate Bonus MLM</h1>
+    <p class="desc">Gunakan halaman ini untuk membersihkan bonus bermasalah (bonus binary/reward yang salah masuk ke diri sendiri) atau menghitung ulang bonus seluruh jaringan secara bersih.</p>
+
+    <div class="alert-info">
+      <i class="fas fa-info-circle"></i> <strong>Informasi:</strong> Logika bonus telah diperbaiki di <code>supabase.js</code>. Pilihan di bawah ini akan memperbaiki data dompet & saldo bonus member yang sudah terlanjur mendapatkan bonus abnormal.
+    </div>
+
+    <div class="grid">
+      <!-- FITUR 1: Reset Bonus Abnormal (Rekomendasi) -->
+      <div class="card">
+        <h3><i class="fas fa-magic" style="color: #10b981;"></i> Fix Bonus Abnormal</h3>
+        <p>Bersihkan bonus binary & reward dari member yang belum memiliki downline (reset ke 0 & perbarui saldo dompet).</p>
+        <button class="btn btn-success" id="btnFixAbnormal"><i class="fas fa-wrench"></i> Perbaiki Bonus Abnormal</button>
+      </div>
+
+      <!-- FITUR 2: Reset Bonus Spesifik Member -->
+      <div class="card">
+        <h3><i class="fas fa-user-edit" style="color: #0284c7;"></i> Reset Member Spesifik</h3>
+        <div class="form-group">
+          <label>Username / ID Member:</label>
+          <input type="text" id="targetMember" placeholder="Contoh: user123 atau ID">
+        </div>
+        <button class="btn btn-warning" id="btnResetMember"><i class="fas fa-eraser"></i> Reset Bonus Member Ini</button>
+      </div>
+
+      <!-- FITUR 3: Reset Total Semua Bonus & Recalculate -->
+      <div class="card">
+        <h3><i class="fas fa-sync" style="color: #ef4444;"></i> Recalculate Total Bonus</h3>
+        <p>Nol-kan semua bonus seluruh member, lalu hitung ulang dari awal berdasarkan order terverifikasi secara akurat.</p>
+        <button class="btn btn-danger" id="btnRecalculateAll"><i class="fas fa-calculator"></i> Hitung Ulang Semua Bonus</button>
+      </div>
+    </div>
+
+    <!-- PREVIEW TABEL USERS -->
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 20px;">
+      <h3 style="font-size: 1rem; color: var(--denim-navy);"><i class="fas fa-users"></i> Daftar Saldo Bonus Member Saat Ini</h3>
+      <button class="btn btn-primary" id="btnLoadMembers" style="width: auto; padding: 6px 12px;"><i class="fas fa-sync"></i> Refresh Data</button>
+    </div>
+    
+    <div style="overflow-x: auto; max-height: 250px; overflow-y: auto; margin-top: 10px; border: 1px solid #e2e8f0; border-radius: 8px;">
+      <table id="membersTable">
+        <thead>
+          <tr>
+            <th>ID</th>
+            <th>Username</th>
+            <th>Status</th>
+            <th>Sponsor ID</th>
+            <th>Bonus Sponsor</th>
+            <th>Bonus Binary</th>
+            <th>Bonus Reward</th>
+            <th>Bonus RO</th>
+            <th>Total Dompet</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td colspan="9" style="text-align: center;">Klik Refresh Data untuk memuat member.</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- LOG OPERASI -->
+    <h3 style="font-size: 1rem; color: var(--denim-navy); margin-top: 24px;"><i class="fas fa-terminal"></i> Log Hasil Operasi</h3>
+    <div id="logOutput">Pilih salah satu tombol tindakan di atas untuk memulai...</div>
+  </div>
+
+  <!-- External JavaScript -->
+  <script src="supabase.js"></script>
+  <script>
+    (function() {
+      const logEl = document.getElementById('logOutput');
+      function log(msg) {
+        const time = new Date().toLocaleTimeString('id-ID');
+        logEl.textContent += `[${time}] ${msg}\n`;
+        logEl.scrollTop = logEl.scrollHeight;
+      }
+      function clearLog() {
+        logEl.textContent = '';
+      }
+
+      // Load Members Table
+      async function loadMembers() {
+        try {
+          const { data: users, error } = await supabase.from('users').select('*').order('id', { ascending: true });
+          if (error) throw error;
+          const tbody = document.querySelector('#membersTable tbody');
+          if (!users || users.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="9" style="text-align: center;">Tidak ada data member.</td></tr>';
+            return;
+          }
+          tbody.innerHTML = users.map(u => `
+            <tr>
+              <td>${u.id}</td>
+              <td><strong>${u.username}</strong> ${u.role === 'admin' ? '<small style="color:red;">(Admin)</small>' : ''}</td>
+              <td><span style="font-weight:bold; color:${u.status === 'verified' ? 'green' : 'orange'}">${(u.status||'free').toUpperCase()}</span></td>
+              <td>${u.sponsor_id || '-'}</td>
+              <td>Rp ${(parseFloat(u.bonus_sponsor)||0).toLocaleString('id-ID')}</td>
+              <td style="color:${(u.bonus_binary>0 && !hasDownlines(u, users)) ? 'red' : 'inherit'}">Rp ${(parseFloat(u.bonus_binary)||0).toLocaleString('id-ID')}</td>
+              <td style="color:${(u.bonus_reward>0 && !hasDownlines(u, users)) ? 'red' : 'inherit'}">Rp ${(parseFloat(u.bonus_reward)||0).toLocaleString('id-ID')}</td>
+              <td>Rp ${(parseFloat(u.bonus_ro)||0).toLocaleString('id-ID')}</td>
+              <td><strong>Rp ${(parseFloat(u.wallet)||0).toLocaleString('id-ID')}</strong></td>
+            </tr>
+          `).join('');
+          log('✅ Data member berhasil diperbarui (' + users.length + ' member).');
+        } catch(e) {
+          log('🔴 Error load members: ' + e.message);
+        }
+      }
+
+      function hasDownlines(user, allUsers) {
+        return allUsers.some(u => String(u.sponsor_id) === String(user.id) || String(u.upline_id) === String(user.id));
+      }
+
+      // 1. Fix Bonus Abnormal (Untuk member tanpa downline yang dapat bonus binary/reward)
+      document.getElementById('btnFixAbnormal').addEventListener('click', async function() {
+        if (!confirm('Apakah Anda yakin ingin memperbaiki bonus abnormal pada member yang belum memiliki downline?')) return;
+        clearLog();
+        log('🔵 Memulai perbaikan bonus abnormal...');
+        try {
+          const { data: users, error } = await supabase.from('users').select('*');
+          if (error) throw error;
+          let fixedCount = 0;
+
+          for (const u of users) {
+            if (u.role === 'admin') continue;
+            const downlines = users.filter(x => String(x.sponsor_id) === String(u.id) || String(x.upline_id) === String(u.id));
+            const hasNoDownline = downlines.length === 0;
+
+            if (hasNoDownline && ((parseFloat(u.bonus_binary) || 0) > 0 || (parseFloat(u.bonus_reward) || 0) > 0)) {
+              log(`⚠️ Menemukan bonus abnormal pada [${u.username}]: Binary=Rp ${u.bonus_binary}, Reward=Rp ${u.bonus_reward}`);
+              
+              // Hitung saldo dompet yang benar (Dompet - Bonus Abnormal)
+              const abnormalBonus = (parseFloat(u.bonus_binary) || 0) + (parseFloat(u.bonus_reward) || 0);
+              u.bonus_binary = 0;
+              u.bonus_reward = 0;
+              u.wallet = Math.max(0, (parseFloat(u.wallet) || 0) - abnormalBonus);
+              
+              await window.upsertRow('users', u);
+              fixedCount++;
+              log(`✅ Berhasil mereset bonus abnormal [${u.username}]. Saldo baru: Rp ${u.wallet.toLocaleString('id-ID')}`);
+            }
+          }
+          log(`🎉 Selesai! Sebanyak ${fixedCount} member berhasil diperbaiki bonusnya.`);
+          await loadMembers();
+        } catch(e) {
+          log('🔴 Error perbaikan: ' + e.message);
+        }
+      });
+
+      // 2. Reset Member Spesifik
+      document.getElementById('btnResetMember').addEventListener('click', async function() {
+        const query = document.getElementById('targetMember').value.trim();
+        if (!query) { alert('Masukkan username atau ID member!'); return; }
+        if (!confirm(`Reset semua bonus untuk member '${query}'?`)) return;
+        clearLog();
+        log(`🔵 Mencari member '${query}'...`);
+        try {
+          const { data: users, error } = await supabase.from('users').select('*');
+          if (error) throw error;
+          const target = users.find(u => String(u.id) === String(query) || u.username.toLowerCase() === query.toLowerCase());
+          if (!target) { log(`❌ Member '${query}' tidak ditemukan!`); return; }
+
+          target.bonus_sponsor = 0;
+          target.bonus_binary = 0;
+          target.bonus_reward = 0;
+          target.bonus_ro = 0;
+          target.wallet = 0;
+          target.bonuses_distributed = false;
+          await window.upsertRow('users', target);
+          log(`✅ Member [${target.username}] berhasil direset total bonusnya ke Rp 0.`);
+          await loadMembers();
+        } catch(e) {
+          log('🔴 Error reset member: ' + e.message);
+        }
+      });
+
+      // 3. Recalculate Total Bonus All Users
+      document.getElementById('btnRecalculateAll').addEventListener('click', async function() {
+        if (!confirm('PERINGATAN: Tindakan ini akan me-reset seluruh bonus semua member dan menghitung ulang secara tepat berdasarkan pesanan terverifikasi. Lanjutkan?')) return;
+        clearLog();
+        log('🔵 Memulai reset & hitung ulang total bonus jaringan...');
+        try {
+          const { data: users, error: uErr } = await supabase.from('users').select('*');
+          if (uErr) throw uErr;
+
+          // Step 1: Reset kaji ulang semua bonus non-admin
+          log('⏳ Mereset bonus seluruh member ke 0...');
+          for (const u of users) {
+            if (u.role === 'admin') continue;
+            u.bonus_sponsor = 0;
+            u.bonus_binary = 0;
+            u.bonus_reward = 0;
+            u.bonus_ro = 0;
+            u.wallet = 0;
+            u.bonuses_distributed = false;
+            await window.upsertRow('users', u);
+          }
+
+          // Step 2: Ambil semua order yang sudah terverifikasi (processing/shipped/success)
+          const { data: orders, error: oErr } = await supabase.from('orders').select('*');
+          if (oErr) throw oErr;
+
+          const validOrders = (orders || []).filter(o => o.status === 'processing' || o.status === 'shipped' || o.status === 'success' || o.status === 'verified');
+          log(`⏳ Ditemukan ${validOrders.length} pesanan terverifikasi untuk dihitung ulang...`);
+
+          const { data: settingsData } = await supabase.from('settings').select('*');
+          const settings = {};
+          (settingsData || []).forEach(r => settings[r.key] = r.value);
+
+          for (const ord of validOrders) {
+            const buyer = users.find(u => String(u.id) === String(ord.user_id));
+            if (!buyer) continue;
+            const amt = parseFloat(ord.total) || 100000;
+            log(`▶ Distribusi ulang bonus untuk order #${ord.id} (${buyer.username})...`);
+            
+            if (buyer.sponsor_id) {
+              await window.calculateSponsorBonus(buyer.id, buyer.sponsor_id, amt, settings);
+            }
+            await window.calculateBinaryBonus(buyer.id, amt, settings);
+            await window.calculateRewardBonus(buyer.id, amt, settings);
+            if (ord.type === 'ro') {
+              await window.calculateRoBonus(buyer.id, amt, settings);
+            }
+            buyer.bonuses_distributed = true;
+            await window.upsertRow('users', buyer);
+          }
+
+          log('🎉 HITUNG ULANG SELESAI DENGAN SUKSES!');
+          await loadMembers();
+        } catch(e) {
+          log('🔴 Error recalculate all: ' + e.message);
+        }
+      });
+
+      document.getElementById('btnLoadMembers').addEventListener('click', loadMembers);
+      loadMembers();
+    })();
+  </script>
+</body>
+</html>
