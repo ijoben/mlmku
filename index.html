@@ -1514,10 +1514,11 @@
 
         .faq-item .faq-answer {
             display: none;
-            padding-top: 8px;
-            color: var(--denim-navy);
-            line-height: 1.6;
-            font-size: 0.85rem;
+            padding-top: 10px;
+            padding-left: 26px;
+            color: #475569;
+            line-height: 1.7;
+            font-size: 0.9rem;
         }
 
         .faq-item .faq-answer.open {
@@ -2228,9 +2229,9 @@
                         <div class="faq-item" style="border-bottom:1px solid #e2e8f0; padding:14px 0;">
                             <div class="faq-question" onclick="toggleFaq(this)" style="display:flex; justify-content:space-between; align-items:center; cursor:pointer; font-weight:700; color:var(--denim-dark); font-size:0.95rem;">
                                 <span><i class="fas fa-question-circle" style="color:var(--gold-accent); margin-right:8px;"></i> ${f.question}</span>
-                                <i class="fas fa-chevron-down" style="color:var(--gold-accent); transition:0.3s;"></i>
+                                <i class="fas fa-chevron-down" style="color:var(--gold-accent); transition:transform 0.3s ease;"></i>
                             </div>
-                            <div class="faq-answer" style="display:none; padding-top:10px; color:#475569; line-height:1.6; font-size:0.88rem; padding-left:26px;">
+                            <div class="faq-answer">
                                 ${f.answer}
                             </div>
                         </div>
@@ -2685,10 +2686,24 @@
 
             // ========== FAQ TOGGLE ==========
             window.toggleFaq = function (el) {
-                const answer = el.parentElement.querySelector('.faq-answer');
+                const item = el.parentElement;
+                const answer = item.querySelector('.faq-answer');
+                const chevron = el.querySelector('.fa-chevron-down');
                 const isOpen = answer.classList.contains('open');
+
+                // Close all other FAQs
                 document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
-                if (!isOpen) answer.classList.add('open');
+                document.querySelectorAll('.faq-question').forEach(q => {
+                    q.classList.remove('active');
+                    const c = q.querySelector('.fa-chevron-down');
+                    if (c) c.style.transform = 'rotate(0deg)';
+                });
+
+                if (!isOpen) {
+                    answer.classList.add('open');
+                    el.classList.add('active');
+                    if (chevron) chevron.style.transform = 'rotate(180deg)';
+                }
             };
 
             // ========== INIT ==========
