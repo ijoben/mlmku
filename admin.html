@@ -1860,7 +1860,7 @@
                             <td data-label="Total">Rp ${(parseFloat(o.total) || 0).toLocaleString()}</td>
                             <td data-label="Status"><span class="badge-status ${statusClass}">${(o.status||'pending').toUpperCase()}</span></td>
                             <td data-label="Tanggal">${new Date(o.created_at || Date.now()).toLocaleDateString('id-ID')}</td>
-                            <td data-label="Bukti">${hasProof ? `<button class="btn-sm btn-sm-gold view-order-proof" data-proof="${proofImage}">Lihat</button>` : 'Belum upload'}</td>
+                            <td data-label="Bukti">${hasProof ? `<button class="btn-sm btn-sm-gold view-order-proof" data-proof="${proofImage}" data-id="${o.id}">Lihat</button>` : 'Belum upload'}</td>
                             <td data-label="Aksi">
                                 <div>
                                     ${o.status === 'pending' ? `<button class="btn-sm btn-sm-success approve-order" data-id="${o.id}">Approve</button>` : ''}
@@ -1875,7 +1875,42 @@
                     tbody.querySelectorAll('.view-order-proof').forEach(btn => {
                         btn.onclick = function() {
                             const proofUrl = this.dataset.proof;
-                            if (proofUrl) openModal(`<h3><i class="fas fa-image" style="color:var(--gold-accent);"></i> Bukti Pembayaran</h3><div class="proof-image"><img src="${proofUrl}" style="max-width:100%; border-radius:10px;" /></div><button class="btn-submit" onclick="closeModal()" style="margin-top:12px;">Tutup</button>`);
+                            const orderId = this.dataset.id;
+                            const order = combinedOrders.find(o => String(o.id) === String(orderId));
+                            const isPending = order ? (order.status === 'pending') : true;
+
+                            if (proofUrl) {
+                                openModal(`
+                                    <h3><i class="fas fa-image" style="color:var(--gold-accent);"></i> Bukti Pembayaran Pesanan</h3>
+                                    <div class="proof-image" style="margin-top:10px; text-align:center;">
+                                        <img src="${proofUrl}" style="max-width:100%; max-height:65vh; border-radius:10px; border:2px solid var(--gold-accent);" />
+                                    </div>
+                                    <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px;">
+                                        ${isPending ? `<button class="btn-sm btn-sm-success approve-from-modal" data-id="${orderId}" style="padding:8px 16px; font-size:0.85rem;"><i class="fas fa-check"></i> Approve Pesanan Ini</button>` : '<span></span>'}
+                                        <button class="btn-submit" onclick="closeModal()" style="margin:0;">Tutup</button>
+                                    </div>
+                                `);
+
+                                const approveModalBtn = document.querySelector('.approve-from-modal');
+                                if (approveModalBtn) {
+                                    approveModalBtn.onclick = async function() {
+                                        closeModal();
+                                        const id = this.dataset.id;
+                                        try {
+                                            await window.approveOrderAndDistributeBonuses(id);
+                                            await refreshAdminData();
+                                            await renderOrders();
+                                            await renderVerification();
+                                            await renderAdminMembers();
+                                            await renderDashboard();
+                                            showToast('✅ Order disetujui, Member terverifikasi, dan Bonus upline berhasil dicairkan!', 'success');
+                                        } catch (e) {
+                                            console.error('Approve order error:', e);
+                                            showToast('Gagal approve order: ' + e.message, 'error');
+                                        }
+                                    };
+                                }
+                            }
                         };
                     });
 
