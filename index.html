@@ -594,10 +594,19 @@
         }
 
         .product-detail-popup .popup-info h2 {
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             font-weight: 700;
             color: var(--denim-dark);
             margin-bottom: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .product-detail-popup .popup-grid { grid-template-columns: 1fr; gap: 12px; }
+            .product-detail-popup .popup-image { min-height: 150px; height: 150px; }
+            .product-detail-popup .popup-info h2 { font-size: 0.95rem; }
+            .product-detail-popup .popup-info .popup-price { font-size: 0.95rem; }
+            .product-detail-popup .popup-info .popup-price del { font-size: 0.75rem; }
+            .product-detail-popup .popup-box { padding: 18px 16px; }
         }
 
         .product-detail-popup .popup-info .popup-tag {
