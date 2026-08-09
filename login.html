@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
-    <title>Register · HEDTRO JEANS</title>
+    <title>Login · HEDTRO JEANS</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
     <!-- SUPABASE -->
@@ -17,7 +17,7 @@
             --shadow-lg: 0 20px 60px rgba(0,0,0,0.15); --radius: 24px; --radius-sm: 12px; --transition: 0.3s ease;
         }
         body { font-family: 'Inter', -apple-system, sans-serif; background: var(--cream); color: var(--denim-dark); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
-        .login-wrapper { max-width: 550px; width: 100%; }
+        .login-wrapper { max-width: 440px; width: 100%; }
         .login-card { background: var(--white); border-radius: var(--radius); padding: 36px 34px 40px; box-shadow: var(--shadow-lg); border: 1px solid var(--denim-light); }
         .login-card .logo { text-align: center; margin-bottom: 24px; }
         .login-card .logo h1 { font-family: 'Playfair Display', serif; font-size: 1.8rem; font-weight: 800; color: var(--denim-dark); }
@@ -25,201 +25,46 @@
         .login-card .logo p { color: var(--denim-navy); font-size: 0.85rem; opacity: 0.7; margin-top: 2px; }
         .form-group { margin-bottom: 16px; }
         .form-group label { display: block; font-weight: 600; color: var(--denim-navy); font-size: 0.8rem; margin-bottom: 4px; }
-        .form-group label .required { color: #e53e3e; }
-        .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 18px; border: 1.5px solid var(--denim-light); border-radius: 60px; font-size: 0.95rem; background: var(--cream); color: var(--denim-dark); outline: none; transition: var(--transition); font-family: inherit; }
-        .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold-accent); }
-        .form-group textarea { border-radius: var(--radius-sm); resize: vertical; min-height: 60px; }
+        .form-group input { width: 100%; padding: 12px 18px; border: 1.5px solid var(--denim-light); border-radius: 60px; font-size: 0.95rem; background: var(--cream); color: var(--denim-dark); outline: none; transition: var(--transition); }
+        .form-group input:focus { border-color: var(--gold-accent); }
         .btn-login { width: 100%; padding: 14px; border: none; border-radius: 60px; background: var(--gold-accent); color: var(--denim-dark); font-weight: 700; font-size: 1rem; cursor: pointer; transition: var(--transition); margin-top: 4px; }
         .btn-login:hover { background: #b8963a; transform: scale(0.98); }
-        .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
         .login-footer { text-align: center; margin-top: 24px; font-size: 0.85rem; color: var(--denim-navy); }
         .login-footer a { color: var(--gold-accent); font-weight: 600; text-decoration: none; }
         .msg { margin-top: 12px; text-align: center; font-size: 0.85rem; min-height: 24px; padding: 8px; border-radius: var(--radius-sm); }
         .msg.error { background: #fde8e8; color: #b13e3e; }
         .msg.success { background: #e8f5ed; color: #1f7a4b; }
-        .msg.warning { background: #fff3cd; color: #856404; }
         .back-link { display: inline-block; margin-top: 16px; color: var(--denim-navy); font-size: 0.8rem; opacity: 0.6; text-decoration: none; }
         .back-link:hover { opacity: 1; color: var(--gold-accent); }
         .loading { opacity: 0.7; pointer-events: none; }
-        .password-requirements { font-size: 0.7rem; color: #718096; margin-top: 4px; }
-        .password-requirements .valid { color: #2e7d32; }
-        .password-requirements .invalid { color: #c53030; }
-        .form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-        .form-row-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-        .section-title { margin: 12px 0 8px; border-bottom: 2px solid var(--gold-accent); padding-bottom: 6px; }
-        .section-title small { font-weight: 700; color: var(--denim-blue); }
-        @media (max-width: 600px) { .form-row { grid-template-columns: 1fr; gap: 0; } .form-row-3 { grid-template-columns: 1fr; gap: 0; } }
-        .info-box { background: #fff8e7; border-left: 4px solid var(--gold-accent); padding: 12px 16px; border-radius: var(--radius-sm); margin-bottom: 16px; font-size: 0.85rem; color: var(--denim-navy); }
-        .bonus-summary { background: #e8f5ed; border-left: 4px solid #2e7d32; padding: 12px 16px; border-radius: var(--radius-sm); margin: 12px 0; font-size: 0.8rem; display: none; }
-        .bonus-summary.show { display: block; }
-        .bonus-summary .bonus-item { display: flex; justify-content: space-between; padding: 2px 0; }
-        .bonus-summary .bonus-item .label { font-weight: 600; }
-        .bonus-summary .bonus-item .value { color: #2e7d32; font-weight: 700; }
     </style>
 </head>
 <body>
     <div class="login-wrapper">
         <div class="login-card">
             <div class="logo">
-                <h1 id="registerLogoHeading"><i class="fas fa-tshirt"></i> HEDTRO JEANS</h1>
-                <p>Daftar menjadi member & mulai bisnis</p>
+                <h1 id="loginLogoHeading"><i class="fas fa-tshirt"></i> HEDTRO JEANS</h1>
+                <p>Masuk ke akun member Anda</p>
             </div>
 
-            <div id="registerForm">
-                <!-- INFO SPONSOR -->
-                <div class="info-box" id="sponsorInfo" style="display:none;">
-                    <i class="fas fa-user-plus" style="color:var(--gold-accent);"></i> 
-                    Anda didaftarkan oleh: <strong id="sponsorNameDisplay">-</strong> (ID: <span id="sponsorIdDisplay">-</span>)
-                    <br><small>Posisi: <span id="sponsorPositionDisplay">-</span></small>
-                </div>
-
-
-
-                <!-- ===== AKUN ===== -->
-                <div class="section-title"><small><i class="fas fa-user"></i> Data Akun</small></div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Username <span class="required">*</span></label>
-                        <input type="text" id="regUsername" placeholder="username" autocomplete="username" />
-                    </div>
-                    <div class="form-group">
-                        <label>Nama Lengkap <span class="required">*</span></label>
-                        <input type="text" id="regFullname" placeholder="Nama Lengkap" autocomplete="name" />
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Email <span class="required">*</span></label>
-                        <input type="email" id="regEmail" placeholder="email@domain.com" autocomplete="email" />
-                    </div>
-                    <div class="form-group">
-                        <label>No. HP <span class="required">*</span></label>
-                        <input type="text" id="regPhone" placeholder="0812-3456-7890" />
-                    </div>
-                </div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>WhatsApp</label>
-                        <input type="text" id="regWhatsapp" placeholder="0812-3456-7890" />
-                    </div>
-                    <div class="form-group">
-                        <label>NIK <span class="required">*</span></label>
-                        <input type="text" id="regNik" placeholder="16 digit NIK" maxlength="16" />
-                    </div>
-                </div>
-
-                <!-- ===== PASSWORD ===== -->
-                <div class="section-title"><small><i class="fas fa-lock"></i> Keamanan</small></div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Kata Sandi <span class="required">*</span></label>
-                        <input type="password" id="regPassword" placeholder="Minimal 6 karakter" autocomplete="new-password" />
-                        <div class="password-requirements" id="passwordHint">Minimal 6 karakter</div>
-                    </div>
-                    <div class="form-group">
-                        <label>Konfirmasi Sandi <span class="required">*</span></label>
-                        <input type="password" id="regConfirmPassword" placeholder="Ulangi kata sandi" autocomplete="new-password" />
-                    </div>
-                </div>
-
-                <!-- ===== ALAMAT ===== -->
-                <div class="section-title"><small><i class="fas fa-map-pin"></i> Alamat</small></div>
+            <div id="loginForm">
                 <div class="form-group">
-                    <label>Alamat Lengkap <span class="required">*</span></label>
-                    <textarea id="regAddress" rows="2" placeholder="Jl. Contoh No. 123, RT/RW, Kelurahan, Kecamatan"></textarea>
+                    <label>Email</label>
+                    <input type="email" id="loginEmail" placeholder="email@domain.com" autocomplete="email" />
                 </div>
                 <div class="form-group">
-                    <label>Kota / Provinsi <span class="required">*</span></label>
-                    <input type="text" id="regCity" placeholder="Contoh: Jakarta Selatan, DKI Jakarta" />
+                    <label>Kata Sandi</label>
+                    <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
                 </div>
-
-                <!-- ===== REKENING BANK ===== -->
-                <div class="section-title"><small><i class="fas fa-university"></i> Rekening Bank (untuk Withdraw)</small></div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Nama Bank <span class="required">*</span></label>
-                        <input type="text" id="regBankName" placeholder="BCA / Mandiri / BNI" />
-                    </div>
-                    <div class="form-group">
-                        <label>No. Rekening <span class="required">*</span></label>
-                        <input type="text" id="regBankAccount" placeholder="1234567890" />
-                    </div>
-                </div>
-                <div class="form-group">
-                    <label>Atas Nama Rekening <span class="required">*</span></label>
-                    <input type="text" id="regBankHolder" placeholder="Nama pemilik rekening" />
-                </div>
-
-                <!-- ===== SPONSOR & POSISI ===== -->
-                <div class="section-title"><small><i class="fas fa-sitemap"></i> Sponsor & Posisi Binary</small></div>
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>ID Sponsor</label>
-                        <input type="text" id="regSponsor" placeholder="ID Sponsor (opsional)" />
-                        <small style="font-size:0.65rem; color:#718096;">Kosongkan jika tidak ada sponsor</small>
-                    </div>
-                    <div class="form-group">
-                        <label>Posisi <span class="required">*</span></label>
-                        <select id="regPosition">
-                            <option value="left">Kiri</option>
-                            <option value="right">Kanan</option>
-                        </select>
-                        <small style="font-size:0.65rem; color:#718096;">Pilih posisi di jaringan binary</small>
-                    </div>
-                </div>
-
-                <!-- ===== PRODUK PERTAMA ===== -->
-                <div class="section-title"><small><i class="fas fa-tshirt"></i> Produk Pertama (First Order)</small></div>
-                <p style="font-size:0.75rem; color:#718096; margin-bottom:12px;">Pilih produk untuk pembelian pertama Anda</p>
-                
-                <div class="form-row">
-                    <div class="form-group">
-                        <label>Produk <span class="required">*</span></label>
-                        <select id="regProduct"></select>
-                    </div>
-                </div>
-                <div class="form-row-3">
-                    <div class="form-group">
-                        <label>Ukuran <span class="required">*</span></label>
-                        <select id="regSize">
-                            <option value="28">28</option>
-                            <option value="29">29</option>
-                            <option value="30" selected>30</option>
-                            <option value="31">31</option>
-                            <option value="32">32</option>
-                            <option value="33">33</option>
-                            <option value="34">34</option>
-                            <option value="36">36</option>
-                            <option value="38">38</option>
-                            <option value="40">40</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Warna <span class="required">*</span></label>
-                        <select id="regColor">
-                            <option value="Indigo Blue">Indigo Blue</option>
-                            <option value="Black Stretch">Black Stretch</option>
-                            <option value="Raw Denim">Raw Denim</option>
-                            <option value="Dark Navy">Dark Navy</option>
-                            <option value="Grey Stone">Grey Stone</option>
-                        </select>
-                    </div>
-                    <div class="form-group">
-                        <label>Nomor Seri</label>
-                        <input type="text" id="regSerial" placeholder="HDT-XXXX (opsional)" />
-                    </div>
-                </div>
-
-                <!-- ===== SUBMIT ===== -->
-                <button type="button" class="btn-login" id="regBtn"><i class="fas fa-user-plus"></i> Daftar</button>
-                <div class="msg" id="regMsg"></div>
+                <button type="button" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
+                <div class="msg" id="loginMsg"></div>
             </div>
 
             <div class="login-footer">
-                Sudah punya akun? <a href="login.html">Login di sini</a>
+                Belum punya akun? <a href="/register">Daftar di sini</a>
             </div>
             <div style="text-align:center; margin-top:12px;">
-                <a href="index.html" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
+                <a href="/" class="back-link"><i class="fas fa-arrow-left"></i> Kembali ke Beranda</a>
             </div>
         </div>
     </div>
@@ -228,547 +73,102 @@
         (function() {
             'use strict';
 
-            // ========== TOAST NOTIFICATION ==========
-            function showToast(message, type = 'info', duration = 5000) {
-                const container = document.getElementById('toastContainer');
-                if (!container) {
-                    // Buat container jika belum ada
-                    const newContainer = document.createElement('div');
-                    newContainer.id = 'toastContainer';
-                    newContainer.style.cssText = 'position:fixed;bottom:20px;right:20px;z-index:9999;display:flex;flex-direction:column;gap:10px;max-width:380px;width:100%;pointer-events:none;';
-                    document.body.appendChild(newContainer);
-                }
-                const toastContainer = document.getElementById('toastContainer');
-                const icons = { success: 'fa-check-circle', error: 'fa-exclamation-circle', info: 'fa-info-circle', warning: 'fa-exclamation-triangle' };
-                const toast = document.createElement('div');
-                toast.className = `toast-item ${type}`;
-                toast.style.cssText = 'background:#0b1a2b;color:#f7f4ef;padding:14px 18px;border-radius:12px;border-left:4px solid #c9a84c;box-shadow:0 10px 40px rgba(0,0,0,0.2);animation:slideInRight 0.4s ease;pointer-events:all;display:flex;align-items:center;gap:12px;font-size:0.85rem;';
-                toast.innerHTML = `<span style="font-size:1.2rem;flex-shrink:0;"><i class="fas ${icons[type] || icons.info}" style="color:${type === 'success' ? '#2ecc71' : type === 'error' ? '#e74c3c' : type === 'warning' ? '#f39c12' : '#c9a84c'};"></i></span><span style="flex:1;">${message}</span><span style="color:rgba(255,255,255,0.4);font-size:1.2rem;cursor:pointer;" onclick="this.parentElement.remove()">&times;</span>`;
-                toastContainer.appendChild(toast);
-                setTimeout(() => toast.remove(), duration);
-            }
-
             // ========== CEK SESSION ==========
             async function checkSession() {
-                // Selalu izinkan akses ke register.html tanpa auto-redirect agar pendaftaran baru / downline dari pohon jaringan tidak terlempar ke dashboard
-                return;
+                try {
+                    const session = await window.getSession();
+                    if (session) {
+                        const profile = await window.getUserProfile();
+                        if (profile) {
+                            window.location.href = profile.role === 'admin' ? '/admin' : '/dashboard';
+                        }
+                    }
+                } catch (e) {
+                    console.warn('Session check error:', e);
+                }
             }
             checkSession();
 
-            // ========== LOAD PRODUCTS ==========
-            async function loadProducts() {
-                try {
-                    const products = await window.getProducts();
-                    const select = document.getElementById('regProduct');
-                    if (!select) return;
-                    
-                    if (products.length === 0) {
-                        const defaults = [
-                            { id: 1, serial: 'HDT-5011', name: 'Slim Fit Premium Indigo 501®', price: 250000 },
-                            { id: 2, serial: 'HDT-5022', name: 'Classic Straight Cut Raw', price: 280000 },
-                            { id: 3, serial: 'HDT-5033', name: 'Jet Black Stretch Comfort', price: 240000 }
-                        ];
-                        select.innerHTML = defaults.map(p => 
-                            `<option value="${p.id}">${p.name} (${p.serial}) - Rp ${p.price.toLocaleString()}</option>`
-                        ).join('');
-                    } else {
-                        select.innerHTML = products.map(p => {
-                            const s = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
-                            return `<option value="${p.id}">${p.name} (${s}) - Rp ${(p.price||0).toLocaleString()}</option>`;
-                        }).join('');
-                    }
-                    
-                    const updateSerialInput = () => {
-                        const pid = parseInt(select.value);
-                        const selectedP = products.find(p => p.id === pid);
-                        const serialInput = document.getElementById('regSerial');
-                        if (serialInput && selectedP) {
-                            serialInput.value = selectedP.serial || ('HDT-' + String(selectedP.id).padStart(4, '0'));
-                        }
-                    };
-                    updateSerialInput();
-                    select.addEventListener('change', () => {
-                        updateSerialInput();
-                        previewBonus();
-                    });
-                } catch (e) {
-                    console.warn('Load products error:', e);
-                }
-            }
+            // ========== LOGIN ==========
+            const loginBtn = document.getElementById('loginBtn');
+            const emailInput = document.getElementById('loginEmail');
+            const passwordInput = document.getElementById('loginPassword');
+            const msgEl = document.getElementById('loginMsg');
 
-            // ========== PREVIEW BONUS ==========
-            async function previewBonus() {
-                try {
-                    const elSponsor = document.getElementById('bonusSponsorPreview');
-                    const elBinary = document.getElementById('bonusBinaryPreview');
-                    const elReward = document.getElementById('bonusRewardPreview');
-                    const elSummary = document.getElementById('bonusSummary');
-                    if (!elSummary) return;
-
-                    const productSelect = document.getElementById('regProduct');
-                    const products = await window.getProducts();
-                    const product = products.find(p => p.id === parseInt(productSelect.value));
-                    const settings = await window.getSettings();
-                    if (!product) return;
-
-                    const sponsorBonusPercent = parseFloat(settings.sponsorBonus) || 10;
-                    const binaryLevels = settings.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
-                    const rewardLevels = settings.rewardBonusLevels || [5, 4, 3, 2, 1];
-                    const sponsorBonus = (product.price * sponsorBonusPercent) / 100;
-                    let binaryBonus = 0;
-                    let rewardBonus = 0;
-                    binaryLevels.forEach(level => { binaryBonus += (product.price * level) / 100; });
-                    rewardLevels.forEach(level => { rewardBonus += (product.price * level) / 100; });
-
-                    if (elSponsor) elSponsor.textContent = 'Rp ' + sponsorBonus.toLocaleString();
-                    if (elBinary) elBinary.textContent = 'Rp ' + binaryBonus.toLocaleString();
-                    if (elReward) elReward.textContent = 'Rp ' + rewardBonus.toLocaleString();
-                    if (elSummary) elSummary.classList.add('show');
-                } catch (e) {
-                    console.warn('Preview bonus error:', e);
-                }
-            }
-
-            // ========== CEK SPONSOR DARI URL ==========
-            async function checkSponsorFromURL() {
-                const params = new URLSearchParams(window.location.search);
-                const sponsorId = params.get('ref') || params.get('sponsor');
-                const position = params.get('pos') || 'left';
-                
-                if (sponsorId) {
-                    try {
-                        // VALIDASI SPONSOR - CEK APAKAH ADA DI DATABASE
-                        const sponsor = await window.getUserByUsername(sponsorId);
-                        if (!sponsor) {
-                            document.getElementById('sponsorInfo').style.display = 'block';
-                            document.getElementById('sponsorNameDisplay').textContent = '❌ SPONSOR TIDAK DITEMUKAN';
-                            document.getElementById('sponsorIdDisplay').textContent = sponsorId;
-                            document.getElementById('sponsorPositionDisplay').textContent = '⚠️ INVALID';
-                            document.getElementById('sponsorInfo').style.borderLeftColor = '#e53e3e';
-                            document.getElementById('sponsorInfo').style.background = '#fde8e8';
-                            
-                            // Kosongkan field sponsor karena tidak valid
-                            document.getElementById('regSponsor').value = '';
-                            showToast('⚠️ Sponsor tidak ditemukan. Silakan daftar tanpa sponsor.', 'warning');
-                            return;
-                        }
-                        
-                        // SPONSOR VALID
-                        document.getElementById('regSponsor').value = sponsorId;
-                        document.getElementById('regPosition').value = position;
-                        
-                        document.getElementById('sponsorInfo').style.display = 'block';
-                        document.getElementById('sponsorNameDisplay').textContent = sponsor.fullname || sponsor.username;
-                        document.getElementById('sponsorIdDisplay').textContent = sponsorId;
-                        document.getElementById('sponsorPositionDisplay').textContent = position === 'left' ? 'Kiri' : 'Kanan';
-                        document.getElementById('sponsorInfo').style.borderLeftColor = 'var(--gold-accent)';
-                        document.getElementById('sponsorInfo').style.background = '#fff8e7';
-                        
-                        showToast(`✅ Sponsor: ${sponsor.fullname || sponsor.username}`, 'success');
-                        
-                        // Preview bonus setelah sponsor valid
-                        await previewBonus();
-                        
-                    } catch (e) {
-                        console.error('Check sponsor error:', e);
-                        showToast('⚠️ Gagal memverifikasi sponsor.', 'error');
-                    }
-                } else {
-                    // Preview bonus tanpa sponsor
-                    await previewBonus();
-                }
-            }
-
-            // ========== REGISTER ==========
-            const regBtn = document.getElementById('regBtn');
-            const usernameInput = document.getElementById('regUsername');
-            const fullnameInput = document.getElementById('regFullname');
-            const emailInput = document.getElementById('regEmail');
-            const phoneInput = document.getElementById('regPhone');
-            const whatsappInput = document.getElementById('regWhatsapp');
-            const nikInput = document.getElementById('regNik');
-            const passwordInput = document.getElementById('regPassword');
-            const confirmInput = document.getElementById('regConfirmPassword');
-            const addressInput = document.getElementById('regAddress');
-            const cityInput = document.getElementById('regCity');
-            const bankNameInput = document.getElementById('regBankName');
-            const bankAccountInput = document.getElementById('regBankAccount');
-            const bankHolderInput = document.getElementById('regBankHolder');
-            const sponsorInput = document.getElementById('regSponsor');
-            const positionInput = document.getElementById('regPosition');
-            const productSelect = document.getElementById('regProduct');
-            const sizeSelect = document.getElementById('regSize');
-            const colorSelect = document.getElementById('regColor');
-            const serialInput = document.getElementById('regSerial');
-            const msgEl = document.getElementById('regMsg');
-            const passwordHint = document.getElementById('passwordHint');
-
-            // Password strength indicator
-            passwordInput.addEventListener('input', function() {
-                const val = this.value;
-                if (val.length === 0) {
-                    passwordHint.textContent = 'Minimal 6 karakter';
-                    passwordHint.className = 'password-requirements';
-                } else if (val.length < 6) {
-                    passwordHint.textContent = '⚠️ Minimal 6 karakter';
-                    passwordHint.className = 'password-requirements invalid';
-                } else {
-                    passwordHint.textContent = '✅ Password valid';
-                    passwordHint.className = 'password-requirements valid';
-                }
-            });
-
-            async function doRegister() {
-                // Ambil semua data
-                const username = usernameInput.value.trim();
-                const fullname = fullnameInput.value.trim();
+            async function doLogin() {
                 const email = emailInput.value.trim();
-                const phone = phoneInput.value.trim();
-                const whatsapp = whatsappInput.value.trim();
-                const nik = nikInput.value.trim();
                 const password = passwordInput.value.trim();
-                const confirm = confirmInput.value.trim();
-                const address = addressInput.value.trim();
-                const city = cityInput.value.trim();
-                const bankName = bankNameInput.value.trim();
-                const bankAccount = bankAccountInput.value.trim();
-                const bankHolder = bankHolderInput.value.trim();
-                const sponsorUsername = sponsorInput.value.trim();
-                const position = positionInput.value;
-                const productId = productSelect.value;
-                const size = sizeSelect.value;
-                const color = colorSelect.value;
-                const serial = serialInput.value.trim();
 
                 // Reset message
                 msgEl.className = 'msg';
                 msgEl.innerText = '';
 
-                // ===== VALIDASI =====
-                if (!username || !fullname || !email || !phone || !nik || !password || !confirm || !address || !city || !bankName || !bankAccount || !bankHolder) {
+                if (!email || !password) {
                     msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Semua field wajib diisi (kecuali WhatsApp, Sponsor, Serial).';
+                    msgEl.innerText = '⚠️ Isi email dan password.';
                     return;
-                }
-
-                if (password.length < 6) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Password minimal 6 karakter.';
-                    return;
-                }
-
-                if (password !== confirm) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Konfirmasi password tidak cocok.';
-                    return;
-                }
-
-                if (!email.includes('@') || !email.includes('.')) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Email tidak valid.';
-                    return;
-                }
-
-                if (nik.length !== 16 || !/^\d+$/.test(nik)) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ NIK harus 16 digit angka.';
-                    return;
-                }
-
-                const phoneClean = phone.replace(/[^0-9]/g, '');
-                if (phoneClean.length < 10 || phoneClean.length > 15) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ No. HP tidak valid (10-15 digit).';
-                    return;
-                }
-
-                if (!productId) {
-                    msgEl.className = 'msg error';
-                    msgEl.innerText = '⚠️ Pilih produk untuk first order.';
-                    return;
-                }
-
-                // ===== VALIDASI SPONSOR =====
-                let sponsorData = null;
-                if (sponsorUsername) {
-                    try {
-                        sponsorData = await window.getUserByUsername(sponsorUsername);
-                        if (!sponsorData) {
-                            msgEl.className = 'msg error';
-                            msgEl.innerText = '⚠️ Sponsor tidak ditemukan. Periksa kembali ID Sponsor.';
-                            return;
-                        }
-                        console.log('✅ Sponsor valid:', sponsorData.username);
-                    } catch (e) {
-                        msgEl.className = 'msg error';
-                        msgEl.innerText = '⚠️ Gagal memverifikasi sponsor: ' + e.message;
-                        return;
-                    }
                 }
 
                 // Loading state
-                regBtn.disabled = true;
-                regBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
-                regBtn.classList.add('loading');
+                loginBtn.disabled = true;
+                loginBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+                loginBtn.classList.add('loading');
 
                 try {
-                    console.log('🔵 Mencoba register:', email);
+                    console.log('🔵 Mencoba login:', email);
                     
-                    // ===== REGISTRASI VIA SUPABASE AUTH =====
-                    const { user, session } = await window.signUp(email, password, {
-                        username: username,
-                        fullname: fullname,
-                        role: 'user',
-                        phone: phone,
-                        whatsapp: whatsapp || phone,
-                        nik: nik,
-                        address: address,
-                        city: city,
-                        bank_name: bankName,
-                        bank_account: bankAccount,
-                        bank_holder: bankHolder,
-                        sponsor_id: sponsorData ? sponsorData.id : null,
-                        sponsor_username: sponsorUsername || null,
-                        position: position,
-                        product_id: productId,
-                        size: size,
-                        color: color,
-                        serial: serial || null
-                    });
-                    
-                    console.log('✅ Register berhasil:', user.email);
+                    const { user, session } = await window.signIn(email, password);
+                    console.log('✅ Login berhasil:', user.email);
 
-                    // ===== TUNGGU TRIGGER MEMBUAT USER DI TABEL USERS =====
-                    await new Promise(r => setTimeout(r, 3000));
-
-                    // ===== AMBIL PROFILE USER =====
+                    // Ambil profile dari tabel users
                     const profile = await window.getUserProfile();
-                    if (!profile) {
-                        console.error('❌ Profile tidak ditemukan');
-                        msgEl.className = 'msg error';
-                        msgEl.innerText = '❌ Gagal mengambil profile. Silakan coba login.';
-                        regBtn.disabled = false;
-                        regBtn.innerHTML = '<i class="fas fa-user-plus"></i> Daftar';
-                        regBtn.classList.remove('loading');
-                        return;
-                    }
+                    console.log('✅ Profile:', profile);
 
-                    console.log('✅ Profile ditemukan:', profile);
-
-                    // ===== UPDATE PROFILE DENGAN DATA LENGKAP =====
-                    await window.updateUserProfile({
-                        username: username,
-                        fullname: fullname,
-                        phone: phone,
-                        whatsapp: whatsapp || phone,
-                        nik: nik,
-                        address: address,
-                        city: city,
-                        bank_name: bankName,
-                        bank_account: bankAccount,
-                        bank_holder: bankHolder,
-                        sponsor_id: sponsorData ? sponsorData.id : null,
-                        sponsor_username: sponsorUsername || null,
-                        position: position,
-                        status: 'pending'
-                    });
-                    console.log('✅ Profile updated with full data');
-
-                    // ============================================================
-                    // ===== BONUS CALCULATIONS =====
-                    // ============================================================
-                    const settings = await window.getSettings();
-                    const memberPrice = parseFloat(settings.memberPrice) || 550000;
-                    
-                    // Ambil produk yang dipilih
-                    const products = await window.getProducts();
-                    const product = products.find(p => p.id === parseInt(productId));
-                    const productPrice = product ? product.price : memberPrice;
-                    
-                    // ===== 1. UPDATE BINARY TREE (LEFT_ID / RIGHT_ID) =====
-                    if (sponsorData) {
-                        try {
-                            // Refresh data sponsor terbaru
-                            const freshSponsor = await window.getUserById(sponsorData.id);
-                            if (freshSponsor) {
-                                const updateData = {};
-                                if (position === 'left') {
-                                    updateData.left_id = profile.id;
-                                } else {
-                                    updateData.right_id = profile.id;
-                                }
-                                await window.upsertRow('users', { ...freshSponsor, ...updateData });
-                                console.log(`✅ ${position} position updated for sponsor ${sponsorData.username}`);
-                            }
-                        } catch (treeError) {
-                            console.error('❌ Binary tree update failed:', treeError);
-                        }
-                    }
-
-                    // ============================================================
-                    // ===== BUAT FIRST ORDER AUTOMATIS (STATUS PENDING) =====
-                    // ============================================================
-                    if (product) {
-                        try {
-                            const orderId = Date.now();
-                            const orderNum = 'ORD-' + Date.now().toString().slice(-6);
-                            const newOrder = {
-                                id: orderId,
-                                order_number: orderNum,
-                                user_id: profile.id,
-                                user_name: fullname || username,
-                                type: 'first_order',
-                                items: [{
-                                    product_id: product.id,
-                                    name: product.name,
-                                    price: product.price,
-                                    qty: 1,
-                                    size: size,
-                                    color: color,
-                                    serial: serial || null
-                                }],
-                                total: product.price || 0,
-                                status: 'pending',
-                                created_at: new Date().toISOString()
-                            };
-                            
-                            await window.saveOrder(newOrder);
-                            console.log('✅ First order created (Pending Admin Approval):', orderNum);
-                            
-                        } catch (orderError) {
-                            console.error('❌ Gagal membuat order:', orderError);
-                            showToast('⚠️ Order gagal dibuat, tapi registrasi tetap berhasil.', 'warning');
-                        }
-                    }
-
-                    // ===== SUKSES =====
                     msgEl.className = 'msg success';
-                    msgEl.innerHTML = `
-                        ✅ Pendaftaran Akun Berhasil!<br>
-                        <small>
-                            📦 First Order pertama Anda telah otomatis dibuat.<br>
-                            💳 Silakan login & lakukan transfer sebesar <strong>Rp ${(product ? product.price : 0).toLocaleString()}</strong> serta upload bukti transfer.<br>
-                            Status akun Anda akan berubah menjadi <strong>VERIFIED</strong> & bonus upline akan dicairkan setelah disetujui Admin.
-                        </small>
-                    `;
-                    
-                    // Reset form
-                    usernameInput.value = '';
-                    fullnameInput.value = '';
-                    emailInput.value = '';
-                    phoneInput.value = '';
-                    whatsappInput.value = '';
-                    nikInput.value = '';
-                    passwordInput.value = '';
-                    confirmInput.value = '';
-                    addressInput.value = '';
-                    cityInput.value = '';
-                    bankNameInput.value = '';
-                    bankAccountInput.value = '';
-                    bankHolderInput.value = '';
-                    sponsorInput.value = '';
-                    serialInput.value = '';
-                    passwordHint.textContent = 'Minimal 6 karakter';
-                    passwordHint.className = 'password-requirements';
-                    
-                    regBtn.disabled = false;
-                    regBtn.innerHTML = '<i class="fas fa-user-plus"></i> Daftar';
-                    regBtn.classList.remove('loading');
-                    
-                    // Redirect setelah 5 detik
+                    msgEl.innerText = '✅ Login berhasil! Mengarahkan...';
+
                     setTimeout(() => {
-                        window.location.href = 'login.html';
-                    }, 5000);
+                        if (profile?.role === 'admin') {
+                            window.location.href = '/admin';
+                        } else {
+                            window.location.href = '/dashboard';
+                        }
+                    }, 1000);
 
                 } catch (error) {
-                    console.error('❌ Register error:', error);
+                    console.error('❌ Login error:', error);
                     
                     let errorMsg = error.message || 'Terjadi kesalahan.';
-                    if (errorMsg.includes('User already registered')) {
-                        errorMsg = 'Email sudah terdaftar. Silakan login.';
-                    } else if (errorMsg.includes('Password should be at least 6 characters')) {
-                        errorMsg = 'Password minimal 6 karakter.';
-                    } else if (errorMsg.includes('Invalid email')) {
-                        errorMsg = 'Format email tidak valid.';
-                    } else if (errorMsg.includes('rate limit')) {
-                        errorMsg = 'Terlalu banyak percobaan. Tunggu 10-15 menit.';
+                    // Pesan error yang lebih user-friendly
+                    if (errorMsg.includes('Invalid login credentials')) {
+                        errorMsg = 'Email atau password salah.';
+                    } else if (errorMsg.includes('Email not confirmed')) {
+                        errorMsg = 'Email belum diverifikasi. Cek inbox Anda.';
                     }
                     
                     msgEl.className = 'msg error';
                     msgEl.innerText = '❌ ' + errorMsg;
                     
-                    regBtn.disabled = false;
-                    regBtn.innerHTML = '<i class="fas fa-user-plus"></i> Daftar';
-                    regBtn.classList.remove('loading');
+                    loginBtn.disabled = false;
+                    loginBtn.innerHTML = '<i class="fas fa-sign-in-alt"></i> Masuk';
+                    loginBtn.classList.remove('loading');
                 }
             }
 
             // Event listeners
-            regBtn.addEventListener('click', doRegister);
-            confirmInput.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter') {
-                    e.preventDefault();
-                    doRegister();
-                }
-            });
+            loginBtn.addEventListener('click', doLogin);
             passwordInput.addEventListener('keydown', function(e) {
                 if (e.key === 'Enter') {
                     e.preventDefault();
-                    confirmInput.focus();
+                    doLogin();
                 }
             });
-
-            // Auto preview bonus saat sponsor berubah
-            sponsorInput.addEventListener('input', async function() {
-                const val = this.value.trim();
-                if (val) {
-                    try {
-                        const sponsor = await window.getUserByUsername(val);
-                        if (sponsor) {
-                            document.getElementById('sponsorInfo').style.display = 'block';
-                            document.getElementById('sponsorNameDisplay').textContent = sponsor.fullname || sponsor.username;
-                            document.getElementById('sponsorIdDisplay').textContent = val;
-                            document.getElementById('sponsorPositionDisplay').textContent = positionInput.value === 'left' ? 'Kiri' : 'Kanan';
-                            document.getElementById('sponsorInfo').style.borderLeftColor = 'var(--gold-accent)';
-                            document.getElementById('sponsorInfo').style.background = '#fff8e7';
-                        } else {
-                            document.getElementById('sponsorInfo').style.display = 'block';
-                            document.getElementById('sponsorNameDisplay').textContent = '❌ SPONSOR TIDAK DITEMUKAN';
-                            document.getElementById('sponsorIdDisplay').textContent = val;
-                            document.getElementById('sponsorPositionDisplay').textContent = '⚠️ INVALID';
-                            document.getElementById('sponsorInfo').style.borderLeftColor = '#e53e3e';
-                            document.getElementById('sponsorInfo').style.background = '#fde8e8';
-                        }
-                        await previewBonus();
-                    } catch (e) {
-                        console.warn('Sponsor check error:', e);
-                    }
-                } else {
-                    document.getElementById('sponsorInfo').style.display = 'none';
+            emailInput.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter') {
+                    e.preventDefault();
+                    passwordInput.focus();
                 }
             });
-
-            // Auto preview bonus saat posisi berubah
-            positionInput.addEventListener('change', previewBonus);
-
-            // ========== INIT ==========
-            loadProducts();
-            checkSponsorFromURL();
-
-            // Tambahkan style untuk toast animation
-            const style = document.createElement('style');
-            style.textContent = `
-                @keyframes slideInRight {
-                    from { opacity: 0; transform: translateX(60px) scale(0.9); }
-                    to { opacity: 1; transform: translateX(0) scale(1); }
-                }
-                @keyframes slideOutRight {
-                    from { opacity: 1; transform: translateX(0) scale(1); }
-                    to { opacity: 0; transform: translateX(60px) scale(0.9); }
-                }
-                .toast-item.removing { animation: slideOutRight 0.3s ease forwards; }
-            `;
-            document.head.appendChild(style);
 
         })();
     </script>
