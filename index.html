@@ -465,7 +465,7 @@
                 <h4>Layanan Pelanggan</h4>
                 <ul>
                     <li>Panduan Belanja</li>
-                    <li>Lacak Pesanan</li>
+                    <li id="btnLacakPesanan" style="cursor:pointer;" onclick="window.openTrackModal()"><i class="fas fa-shipping-fast" style="color:var(--gold-accent);"></i> Lacak Pesanan</li>
                     <li>Pengembalian Produk</li>
                 </ul>
             </div>
@@ -1104,6 +1104,69 @@
                 document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
                 if (!isOpen) answer.classList.add('open');
             };
+
+            // ========== LACAK PESANAN ==========
+            window.openTrackModal = function() {
+                const query = prompt('Masukkan Email, Username, atau Nomor Resi / Pesanan Anda untuk melacak:');
+                if (!query || !query.trim()) return;
+                doTrackOrder(query.trim());
+            };
+
+            async function doTrackOrder(query) {
+                try {
+                    showToast('🔍 Mencari data pesanan...', 'info');
+                    const qLower = query.toLowerCase();
+                    const allUsersData = await window.getTable('users');
+                    const ordersData = await window.getOrders();
+
+                    let matchedUser = (allUsersData || []).find(u => 
+                        String(u.id) === query || 
+                        (u.email && u.email.toLowerCase().includes(qLower)) || 
+                        (u.username && u.username.toLowerCase().includes(qLower)) ||
+                        (u.fullname && u.fullname.toLowerCase().includes(qLower)) ||
+                        (u.resi && u.resi.toLowerCase().includes(qLower))
+                    );
+
+                    let matchedOrder = (ordersData || []).find(o => 
+                        String(o.id) === query || 
+                        (o.order_number && o.order_number.toLowerCase().includes(qLower)) ||
+                        (o.resi && o.resi.toLowerCase().includes(qLower))
+                    );
+
+                    if (!matchedUser && matchedOrder) {
+                        matchedUser = (allUsersData || []).find(u => String(u.id) === String(matchedOrder.user_id));
+                    }
+
+                    const resi = (matchedOrder?.resi) || (matchedUser?.resi) || (matchedUser?.first_order?.resi) || null;
+                    const status = (matchedOrder?.status) || (matchedUser?.first_order?.status) || (matchedUser?.status) || 'pending';
+                    const userName = matchedUser ? (matchedUser.fullname || matchedUser.username) : (matchedOrder?.user_name || 'Pelanggan');
+
+                    let statusText = 'PENDING (Menunggu Verifikasi Admin)';
+                    let badgeColor = '#dd6b20';
+                    if (status === 'shipped') {
+                        statusText = '🚚 DIKIRIM (Dalam Pengiriman Expedisi)';
+                        badgeColor = '#2b6cb0';
+                    } else if (status === 'verified' || status === 'processing' || status === 'success') {
+                        statusText = '✅ TERVERIFIKASI / DIPROSES';
+                        badgeColor = '#2e7d32';
+                    }
+
+                    const resiDisplay = resi ? `<div style="margin-top:10px; padding:12px; background:#fff8e7; border:2px solid var(--gold-accent); border-radius:10px; text-align:center;"><strong style="font-size:1.1rem; color:#000;"><i class="fas fa-truck"></i> RESI: ${resi}</strong></div>` : '<div style="margin-top:10px; color:#718096;">Resi pengiriman belum diinput oleh Admin.</div>';
+
+                    openModal(`
+                        <h3><i class="fas fa-search-location" style="color:var(--gold-accent);"></i> Hasil Lacak Pesanan</h3>
+                        <div style="margin-top:14px; text-align:left; font-size:0.9rem; line-height:1.6;">
+                            <p><strong>Nama Pelanggan:</strong> ${userName}</p>
+                            <p><strong>Status Pesanan:</strong> <span style="background:${badgeColor}; color:#fff; padding:2px 8px; border-radius:6px; font-weight:bold; font-size:0.8rem;">${statusText}</span></p>
+                            ${resiDisplay}
+                        </div>
+                        <button class="btn-submit" onclick="closeModal()" style="margin-top:16px;">Tutup</button>
+                    `);
+                } catch (e) {
+                    console.error('Track error:', e);
+                    showToast('Gagal melacak pesanan.', 'error');
+                }
+            }
 
             // ========== INIT ==========
             (async function init() {
