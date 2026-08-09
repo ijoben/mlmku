@@ -1734,7 +1734,7 @@
                                     const { error } = await supabase.from('users').update({ status: 'verified' }).eq('id', id);
                                     if (error) throw error;
                                     const user = allUsers.find(u => String(u.id) === String(id));
-                                    if (user && !user.bonuses_distributed) {
+                                    if (user) {
                                         const { data: settingsData } = await supabase.from('settings').select('*');
                                         const settings = {};
                                         (settingsData || []).forEach(r => settings[r.key] = r.value);
@@ -1744,8 +1744,6 @@
                                         }
                                         await window.calculateBinaryBonus(user.id, pkgPrice, settings);
                                         await window.calculateRewardBonus(user.id, pkgPrice, settings);
-                                        user.bonuses_distributed = true;
-                                        await window.upsertRow('users', user);
                                     }
                                 }
                                 await refreshAdminData();
