@@ -141,16 +141,19 @@ window.getUserByEmail = async function(email) {
 
 window.getUserByUsername = async function(username) {
   console.log('🔵 getUserByUsername dipanggil untuk:', username);
-  var { data, error } = await supabaseClient
+  if (!username) return null;
+  var { data } = await supabaseClient
     .from('users')
     .select('*')
     .eq('username', username)
     .single();
-  if (error && error.code !== 'PGRST116') {
-    console.error('🔴 getUserByUsername error:', error);
-    throw error;
-  }
-  return data;
+  if (data) return data;
+  var { data: dataById } = await supabaseClient
+    .from('users')
+    .select('*')
+    .eq('id', username)
+    .single();
+  return dataById || null;
 };
 
 window.updateUserProfile = async function(data) {
@@ -581,6 +584,70 @@ window.saveSettings = async function(settings) {
     return window.upsertRow('settings', { key: key, value: settings[key] });
   });
   await Promise.all(promises);
+};
+
+// ============================================================
+// APPROVE ORDER & DISTRIBUTE BONUSES
+// ============================================================
+window.approveOrderAndDistributeBonuses = async function(orderId) {
+  console.log('🔵 Approving order & distributing bonuses for orderId:', orderId);
+  var { data: order, error: oErr } = await supabaseClient
+    .from('orders')
+    .select('*')
+    .eq('id', orderId)
+    .single();
+  
+  if (oErr || !order) {
+    throw new Error(oErr ? oErr.message : 'Order tidak ditemukan');
+  }
+
+  if (order.status === 'processing' || order.status === 'completed' || order.status === 'shipped') {
+    return { alreadyProcessed: true };
+  }
+
+  // 1. Update status order menjadi processing
+  var { error: updateErr } = await supabaseClient
+    .from('orders')
+    .update({ status: 'processing' })
+    .eq('id', orderId);
+  if (updateErr) throw updateErr;
+
+  // 2. Ambil data pembeli / member
+  var buyer = await window.getUserById(order.user_id);
+  if (!buyer) return { success: true };
+
+  // 3. Ubah status member menjadi 'verified'
+  buyer.status = 'verified';
+
+  // 4. Load Pengaturan Sistem untuk persentase bonus
+  var { data: settingsData } = await supabaseClient.from('settings').select('*');
+  var settings = {};
+  (settingsData || []).forEach(function(r) { settings[r.key] = r.value; });
+
+  var orderAmount = parseFloat(order.total) || 0;
+
+  // 5. Hitung & distribusikan bonus jika total order > 0
+  if (orderAmount > 0) {
+    if (order.type === 'first_order' || !buyer.bonuses_distributed) {
+      if (buyer.sponsor_id) {
+        await window.calculateSponsorBonus(buyer.id, buyer.sponsor_id, orderAmount, settings);
+      }
+      await window.calculateBinaryBonus(buyer.id, orderAmount, settings);
+      await window.calculateRewardBonus(buyer.id, orderAmount, settings);
+      buyer.bonuses_distributed = true;
+    } else if (order.type === 'ro') {
+      if (buyer.sponsor_id) {
+        await window.calculateSponsorBonus(buyer.id, buyer.sponsor_id, orderAmount, settings);
+      }
+      await window.calculateBinaryBonus(buyer.id, orderAmount, settings);
+      await window.calculateRewardBonus(buyer.id, orderAmount, settings);
+      await window.calculateRoBonus(buyer.id, orderAmount, settings);
+    }
+  }
+
+  await window.upsertRow('users', buyer);
+  console.log('✅ Order approved & bonuses distributed successfully for buyer:', buyer.username);
+  return { success: true };
 };
 
 // ============================================================
