@@ -912,10 +912,39 @@ window.getUniqueCode = function(seed) {
   return (val % 899) + 100; // Returns consistent 3-digit code (100 - 998)
 };
 
-window.formatMemberId = function(user) {
+window.formatMemberId = function(user, allUsersList) {
   if (!user) return 'HDT-001';
-  if (user.member_id) return user.member_id;
-  var num = user.id ? parseInt(user.id) : 1;
-  if (isNaN(num)) return 'HDT-' + String(user.username || '001').toUpperCase();
-  return 'HDT-' + String(num).padStart(3, '0');
+  
+  // If user explicitly has member_id
+  if (user.member_id && typeof user.member_id === 'string' && user.member_id.startsWith('HDT-')) {
+    return user.member_id;
+  }
+  
+  // If user.id is already small integer (1, 2, 3...)
+  var num = parseInt(user.id, 10);
+  if (!isNaN(num) && num > 0 && num < 10000) {
+    return 'HDT-' + String(num).padStart(3, '0');
+  }
+
+  // If user list is provided, calculate sequential registration index
+  if (Array.isArray(allUsersList) && allUsersList.length > 0) {
+    var sorted = allUsersList.slice().sort(function(a, b) {
+      var tA = new Date(a.created_at || a.registered_at || a.id || 0).getTime();
+      var tB = new Date(b.created_at || b.registered_at || b.id || 0).getTime();
+      return tA - tB;
+    });
+    var idx = sorted.findIndex(function(u) {
+      return String(u.id) === String(user.id) || (user.username && String(u.username) === String(user.username));
+    });
+    if (idx !== -1) {
+      return 'HDT-' + String(idx + 1).padStart(3, '0');
+    }
+  }
+
+  // Fallback using modulo digits
+  if (!isNaN(num)) {
+    var shortNum = (num % 999) || 1;
+    return 'HDT-' + String(shortNum).padStart(3, '0');
+  }
+  return 'HDT-001';
 };
