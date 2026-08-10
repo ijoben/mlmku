@@ -1281,6 +1281,15 @@
       100% { box-shadow: 0 0 0 0   rgba(16,185,129,0); }
     }
 
+    /* Locked node: child of an empty slot — not clickable */
+    .tn-card.tn-locked {
+      opacity: 0.35;
+      cursor: not-allowed !important;
+      border-color: rgba(255,255,255,0.1) !important;
+      box-shadow: none !important;
+      pointer-events: none;
+    }
+
     /* ---- RESPONSIVE: mobile tree scale ---- */
     @media (max-width: 600px) {
       .tree-wrapper {
@@ -3876,6 +3885,7 @@
           username: user.username,
           name: user.fullname || user.username,
           status: user.status || 'free',
+          pos: pos || 'left',
           left: buildBinaryTree(leftChildId, level + 1, maxDepth, user.username, 'left'),
           right: buildBinaryTree(rightChildId, level + 1, maxDepth, user.username, 'right')
         };
@@ -3885,17 +3895,35 @@
         window.location.href = `/register?ref=${encodeURIComponent(sponsor)}&upline=${encodeURIComponent(upline)}&pos=${pos}&new=1`;
       };
 
-      /* ---------- TREE RENDER v3 (level-by-level + SVG connectors) ---------- */
+      /* ---------- TREE RENDER v4 (Proper BFS level-by-level) ---------- */
 
-      // Collect all nodes level by level from tree data
-      function collectLevels(node, level = 0, levels = []) {
-        if (!node) return levels;
-        if (!levels[level]) levels[level] = [];
-        levels[level].push(node);
-        // Both children always exist (empty or real) at each level up to max
-        if (node.left !== undefined || node.right !== undefined) {
-          collectLevels(node.left || { empty: true, parentUsername: node.username, pos: 'left' }, level + 1, levels);
-          collectLevels(node.right || { empty: true, parentUsername: node.username, pos: 'right' }, level + 1, levels);
+      /*
+       * flattenToLevels: BFS expansion so every level has EXACTLY 2^depth entries.
+       * This is required for correct alignment and SVG connector pi*2 indexing.
+       * Empty nodes (real empty slots) also produce 2 placeholder children marked
+       * as `locked:true` so the user knows that slot can't be filled yet.
+       */
+      function flattenToLevels(root, maxDepth) {
+        const levels = [];
+        let queue = [root];
+        for (let d = 0; d <= maxDepth; d++) {
+          levels.push([...queue]);
+          if (d < maxDepth) {
+            const next = [];
+            queue.forEach(node => {
+              if (!node || node.empty) {
+                // Empty slot: produce 2 locked placeholder children
+                const pName = node ? (node.username || node.parentUsername) : null;
+                next.push({ empty: true, locked: true, parentUsername: pName, pos: 'left' });
+                next.push({ empty: true, locked: true, parentUsername: pName, pos: 'right' });
+              } else {
+                // Real node: produce its actual children (real or empty slot)
+                next.push(node.left  || { empty: true, parentUsername: node.username, pos: 'left' });
+                next.push(node.right || { empty: true, parentUsername: node.username, pos: 'right' });
+              }
+            });
+            queue = next;
+          }
         }
         return levels;
       }
@@ -3904,44 +3932,60 @@
         if (!node) return '';
         const sponsor = currentUser.username || currentUser.id;
         if (node.empty) {
-          const upline = node.parentUsername || sponsor;
           const pos = node.pos || 'left';
           const posText = pos === 'left' ? 'Kiri' : 'Kanan';
+          if (node.locked) {
+            // Child of an empty slot — not clickable, shown dimmer
+            return `
+              <div class="tn-card tn-empty tn-locked" title="Isi slot induk dulu sebelum posisi ini tersedia">
+                <div class="tn-avatar" style="opacity:0.4;"><i class="fas fa-lock"></i></div>
+                <div class="tn-name" style="opacity:0.5; font-size:0.62rem;">Terkunci</div>
+                <div class="tn-user" style="opacity:0.4;">Kaki ${posText}</div>
+              </div>`;
+          }
+          const upline = node.parentUsername || sponsor;
           const posBadge = pos === 'left'
-            ? '<span class="tn-pos-badge" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">🠔 KIRI</span>'
-            : '<span class="tn-pos-badge" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">KANAN 🠖</span>';
+            ? '<span class="tn-pos-badge" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">◀ KIRI</span>'
+            : '<span class="tn-pos-badge" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">KANAN ▶</span>';
           return `
-            <div class="tn-card tn-empty" onclick="window.openRegisterDownline('${sponsor}','${upline}','${pos}')" title="Daftarkan member di Kaki ${posText}">
+            <div class="tn-card tn-empty" onclick="window.openRegisterDownline('${sponsor}','${upline}','${pos}')" title="Klik: Daftarkan member di Kaki ${posText}">
               ${posBadge}
               <div class="tn-avatar"><i class="fas fa-plus"></i></div>
               <div class="tn-name">+ TAMBAH</div>
               <div class="tn-user">Kaki ${posText}</div>
-              <span class="tn-badge pending" style="background:rgba(255,107,0,0.2);color:rgba(255,107,0,0.95);box-shadow:none;">SLOT KOSONG</span>
-            </div>
-          `;
+              <span class="tn-badge pending" style="background:rgba(255,107,0,0.2);color:rgba(255,107,0,0.9);box-shadow:none;">SLOT KOSONG</span>
+            </div>`;
         }
         const isVerified = node.status === 'verified';
         const isRoot = (node.id === currentUser.id);
         const iconClass = isRoot ? 'fa-crown' : 'fa-user-tie';
         const rootClass = isRoot ? ' tn-root' : '';
+        const posBadge = !isRoot && node.pos
+          ? (node.pos === 'left'
+            ? '<span class="tn-pos-badge" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">◀ KIRI</span>'
+            : '<span class="tn-pos-badge" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">KANAN ▶</span>')
+          : '';
         return `
           <div class="tn-card${rootClass}" data-uid="${node.id}" title="${node.name} (@${node.username})">
+            ${posBadge}
             <div class="tn-avatar"><i class="fas ${iconClass}"></i></div>
             <div class="tn-name">${node.name}</div>
             <div class="tn-user">@${node.username}</div>
             <span class="tn-badge ${isVerified ? 'verified' : 'pending'}">${isVerified ? '✓ VERIFIED' : '⏳ PENDING'}</span>
-          </div>
-        `;
+          </div>`;
       }
 
       function renderBinaryTreeHTML(treeRoot) {
-        // Flatten tree into ordered level arrays
-        const levels = collectLevels(treeRoot);
+        const TREE_DEPTH = 3;  // root(0) + 3 generasi = 4 level, 15 slot total
+        const levels = flattenToLevels(treeRoot, TREE_DEPTH);
         if (!levels.length) return '<p style="color:#aaa;text-align:center;">Tidak ada data jaringan.</p>';
 
         let html = '<div class="tree-levels" id="treeLevels">';
         levels.forEach((levelNodes, lIdx) => {
-          html += `<div class="tree-level-row" id="treeRow_${lIdx}">`;
+          // Level label (Gen 0 = Anda, Gen 1 = Kaki Kiri/Kanan, dst)
+          const genLabel = lIdx === 0 ? 'Anda' : `Generasi ${lIdx}`;
+          html += `<div class="tree-level-row" id="treeRow_${lIdx}" data-depth="${lIdx}"
+            title="${genLabel} (${levelNodes.length} slot)">`;
           levelNodes.forEach((node, nIdx) => {
             html += `<div class="tn-wrap" id="tnWrap_${lIdx}_${nIdx}">${renderNodeCard(node)}</div>`;
           });
