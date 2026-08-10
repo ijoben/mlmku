@@ -2917,7 +2917,9 @@
           }
         });
 
-        const txs = Array.from(txMap.values()).reverse();
+        const txs = Array.from(txMap.values())
+          .filter(t => !(t.type && (t.type.startsWith('bonus_') || t.type === 'ro_bonus') && t.from_user_id && window.isSameUser && window.isSameUser(t.user_id, t.from_user_id)))
+          .reverse();
         document.getElementById('dashTotalTx').textContent = txs.length;
 
         if (txs.length === 0) {
@@ -4163,14 +4165,15 @@
         });
 
         let bonusTxs = Array.from(combinedMap.values()).filter(t =>
-          t.type === 'bonus' ||
+          (t.type === 'bonus' ||
           t.type === 'sponsor' ||
           t.type === 'binary' ||
           t.type === 'reward' ||
           t.type === 'ro_bonus' ||
           t.type === 'bonus_sponsor' ||
           t.type === 'bonus_binary' ||
-          t.type === 'bonus_reward'
+          t.type === 'bonus_reward') &&
+          !(t.from_user_id && window.isSameUser && window.isSameUser(currentUser.id, t.from_user_id))
         );
 
         // 2. FALLBACK DINAMIS: Jika belum ada record transaksi spesifik tapi totalBonus > 0, hubungkan dengan downline dari allUsers
