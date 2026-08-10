@@ -1061,214 +1061,218 @@
       color: var(--denim-dark);
     }
 
-    /* ===== TREE STYLING OVERHAUL ===== */
+    /* ===== TREE STYLING PREMIUM v3 ===== */
     .tree-wrapper {
       overflow-x: auto;
-      padding: 30px 20px;
-      background: linear-gradient(135deg, #0b1a2b 0%, #15283c 100%);
+      overflow-y: visible;
+      padding: 36px 24px 40px;
+      background: linear-gradient(160deg, #0a1628 0%, #12223a 60%, #0f1e34 100%);
       border-radius: var(--radius);
-      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(11, 26, 43, 0.15);
-      border: 1px solid rgba(212, 175, 55, 0.3);
+      box-shadow: inset 0 0 60px rgba(0,0,0,0.5), 0 16px 48px rgba(11,26,43,0.25);
+      border: 1.5px solid rgba(255,107,0,0.28);
       margin-bottom: 14px;
       position: relative;
     }
 
-    .binary-tree {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-width: 720px;
-      padding: 10px 0;
-      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-      transform-origin: top center;
-    }
+    /* Scrollbar inside tree */
+    .tree-wrapper::-webkit-scrollbar { height: 6px; }
+    .tree-wrapper::-webkit-scrollbar-track { background: rgba(255,255,255,0.05); border-radius:4px; }
+    .tree-wrapper::-webkit-scrollbar-thumb { background: var(--gold-accent); border-radius:4px; }
 
-    .node-wrapper {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
+    /* The outer container for the rendered tree + svg overlay */
+    .tree-canvas {
       position: relative;
+      display: inline-block;
+      min-width: 100%;
     }
 
-    .tree-node-card {
-      background: linear-gradient(145deg, #15283c 0%, #0b1a2b 100%);
-      color: #ffffff;
-      padding: 10px 14px;
-      border-radius: 16px;
-      text-align: center;
-      border: 2px solid var(--gold-accent);
-      width: 140px;
-      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
-      z-index: 2;
-      position: relative;
-      transition: all 0.3s ease;
-      cursor: pointer;
-    }
-
-    .tree-node-card:hover {
-      transform: translateY(-4px) scale(1.03);
-      box-shadow: 0 14px 32px rgba(212, 175, 55, 0.35);
-      border-color: #ffd700;
-    }
-
-    /* Connection Line DOWN from parent card */
-    .node-wrapper.has-children > .tree-node-card::after {
-      content: '';
+    /* SVG connector overlay */
+    .tree-connector-svg {
       position: absolute;
-      bottom: -20px;
-      left: 50%;
-      width: 2px;
-      height: 20px;
-      background: var(--gold-accent);
-      transform: translateX(-50%);
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      pointer-events: none;
+      overflow: visible;
+      z-index: 0;
+    }
+
+    /* ---- LEVEL ROWS ---- */
+    .tree-levels {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0;
+      position: relative;
       z-index: 1;
     }
 
-    .tree-node-card .avatar-box {
+    .tree-level-row {
+      display: flex;
+      justify-content: center;
+      align-items: flex-start;
+      width: 100%;
+      padding: 0;
+    }
+
+    /* Space between levels — occupied by connector lines */
+    .tree-level-spacer {
+      height: 60px;
+    }
+
+    /* ---- NODE WRAPPER ---- */
+    .tn-wrap {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      min-width: 160px;   /* prevents collapse on deeper levels */
+    }
+
+    /* ---- NODE CARD ---- */
+    .tn-card {
+      width: 136px;
+      background: linear-gradient(145deg, rgba(21,40,60,0.96) 0%, rgba(11,26,43,0.96) 100%);
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      color: #ffffff;
+      padding: 12px 10px 10px;
+      border-radius: 16px;
+      text-align: center;
+      border: 1.5px solid rgba(255,107,0,0.55);
+      box-shadow: 0 8px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
       position: relative;
-      width: 38px;
-      height: 38px;
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+      cursor: default;
+    }
+
+    .tn-card:hover {
+      transform: translateY(-5px) scale(1.04);
+      box-shadow: 0 16px 40px rgba(255,107,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+      border-color: #ff9100;
+    }
+
+    .tn-card.tn-root {
+      border-color: #ffd700;
+      box-shadow: 0 8px 28px rgba(255,215,0,0.35), inset 0 1px 0 rgba(255,255,255,0.1);
+    }
+    .tn-card.tn-root:hover {
+      box-shadow: 0 16px 40px rgba(255,215,0,0.5), inset 0 1px 0 rgba(255,255,255,0.12);
+    }
+
+    /* Position badge */
+    .tn-pos-badge {
+      position: absolute;
+      top: -9px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: var(--gold-gradient);
+      color: #fff;
+      font-size: 0.52rem;
+      font-weight: 900;
+      padding: 2px 8px;
+      border-radius: 20px;
+      letter-spacing: 0.8px;
+      white-space: nowrap;
+      text-transform: uppercase;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    }
+
+    /* Avatar circle */
+    .tn-avatar {
+      width: 44px;
+      height: 44px;
       border-radius: 50%;
       background: var(--gold-gradient);
       color: #0b1a2b;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 0 auto 6px;
-      font-size: 1rem;
+      margin: 6px auto 8px;
+      font-size: 1.1rem;
       font-weight: 900;
-      box-shadow: 0 3px 12px rgba(212, 175, 55, 0.4);
-      border: 2px solid #ffffff;
+      box-shadow: 0 4px 14px rgba(255,107,0,0.45);
+      border: 2px solid rgba(255,255,255,0.25);
     }
 
-    .tree-node-card .node-pos-tag {
-      position: absolute;
-      top: -8px;
-      right: -8px;
-      background: var(--gold-accent);
-      color: #0b1a2b;
-      font-size: 0.55rem;
-      font-weight: 900;
-      padding: 2px 7px;
-      border-radius: 10px;
-      text-transform: uppercase;
-      letter-spacing: 0.5px;
-      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+    .tn-card.tn-root .tn-avatar {
+      background: linear-gradient(135deg, #ffd700, #ffb300);
+      box-shadow: 0 4px 14px rgba(255,215,0,0.55);
     }
 
-    .tree-node-card .node-name {
+    /* Name */
+    .tn-name {
       font-weight: 800;
-      font-size: 0.82rem;
-      color: #ffffff;
+      font-size: 0.8rem;
+      color: #f0f4f8;
       line-height: 1.2;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      margin-bottom: 2px;
+      margin-bottom: 3px;
+      text-shadow: 0 1px 3px rgba(0,0,0,0.5);
     }
 
-    .tree-node-card .node-id {
-      font-size: 0.65rem;
-      color: var(--gold-light);
-      font-family: 'Courier New', Courier, monospace;
+    /* Username */
+    .tn-user {
+      font-size: 0.62rem;
+      color: rgba(255,107,0,0.9);
       font-weight: 700;
-      background: rgba(212, 175, 55, 0.18);
-      padding: 2px 6px;
-      border-radius: 4px;
-      display: inline-block;
-      margin-bottom: 4px;
+      margin-bottom: 5px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
     }
 
-    .tree-node-card .node-status {
-      font-size: 0.6rem;
-      padding: 2px 8px;
+    /* Status badge */
+    .tn-badge {
+      font-size: 0.58rem;
+      font-weight: 900;
+      padding: 2px 9px;
       border-radius: 20px;
       display: inline-block;
       text-transform: uppercase;
-      font-weight: 800;
-      letter-spacing: 0.3px;
+      letter-spacing: 0.4px;
+    }
+    .tn-badge.verified {
+      background: linear-gradient(135deg,#10b981,#059669);
+      color:#fff;
+      box-shadow: 0 2px 6px rgba(16,185,129,0.4);
+    }
+    .tn-badge.pending {
+      background: linear-gradient(135deg,#f59e0b,#d97706);
+      color:#fff;
+      box-shadow: 0 2px 6px rgba(245,158,11,0.4);
     }
 
-    .tree-node-card .node-status.status-verified {
-      background: linear-gradient(135deg, #10b981, #059669);
-      color: #ffffff;
-      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+    /* ---- EMPTY SLOT CARD ---- */
+    .tn-card.tn-empty {
+      background: rgba(11,26,43,0.6);
+      border: 1.5px dashed rgba(255,107,0,0.55);
+      box-shadow: none;
+      cursor: pointer;
     }
-
-    .tree-node-card .node-status.status-free {
-      background: linear-gradient(135deg, #f59e0b, #d97706);
-      color: #ffffff;
-      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
+    .tn-card.tn-empty:hover {
+      background: rgba(255,107,0,0.12);
+      border-color: #ff9100;
+      transform: translateY(-4px) scale(1.06);
+      box-shadow: 0 10px 30px rgba(255,107,0,0.3);
     }
-
-    /* EMPTY SLOT CARD */
-    .tree-node-card.empty {
-      background: rgba(11, 26, 43, 0.65);
-      color: var(--gold-light);
-      border: 2px dashed rgba(212, 175, 55, 0.65);
-      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
-    }
-
-    .tree-node-card.empty:hover {
-      background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(11, 26, 43, 0.95) 100%);
-      border-color: #ffd700;
-      color: #ffffff;
-      transform: translateY(-3px) scale(1.04);
-      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
-    }
-
-    .tree-node-card.empty .avatar-box {
-      background: rgba(212, 175, 55, 0.2);
+    .tn-card.tn-empty .tn-avatar {
+      background: rgba(255,107,0,0.18);
       color: var(--gold-accent);
-      border-color: var(--gold-accent);
+      border: 1.5px dashed rgba(255,107,0,0.7);
+      box-shadow: none;
+      font-size: 1.3rem;
+    }
+    .tn-card.tn-empty .tn-name {
+      color: rgba(255,107,0,0.9);
+      font-size: 0.75rem;
+    }
+    .tn-card.tn-empty .tn-user {
+      color: rgba(255,255,255,0.4);
     }
 
-    .tree-node-card.empty .node-name {
-      font-size: 0.72rem;
-      font-weight: 900;
-      color: var(--gold-light);
-    }
-
-    /* BINARY CHILDREN & CONNECTORS */
-    .binary-children {
-      display: flex;
-      justify-content: center;
-      width: 100%;
-      padding-top: 20px;
-      position: relative;
-    }
-
-    .binary-children::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 25%;
-      right: 25%;
-      height: 2px;
-      background: var(--gold-accent);
-      z-index: 1;
-    }
-
-    .binary-child {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex: 1;
-      position: relative;
-      padding: 0 4px;
-    }
-
-    .binary-child::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 50%;
-      height: 20px;
-      width: 2px;
-      background: var(--gold-accent);
-      transform: translateX(-50%);
-      z-index: 1;
-    }
+    /* (old tree CSS removed — now uses .tn-* classes with SVG connectors) */
 
     /* ===== ENHANCED PRODUCT GRID & CARD ===== */
     .product-grid {
@@ -3641,12 +3645,19 @@
 
       // ========== TREE ==========
       function applyTreeZoom() {
-        const tree = document.querySelector('.binary-tree');
-        if (tree) tree.style.transform = `scale(${currentZoom})`;
+        const canvas = document.getElementById('treeCanvas');
+        if (canvas) {
+          canvas.style.transform = `scale(${currentZoom})`;
+          canvas.style.transformOrigin = 'top center';
+          // Redraw connectors after zoom
+          requestAnimationFrame(() => requestAnimationFrame(drawTreeConnectors));
+        }
       }
-      document.getElementById('zoomInBtn')?.addEventListener('click', () => { currentZoom = Math.min(1.8, currentZoom + 0.15); applyTreeZoom(); });
-      document.getElementById('zoomOutBtn')?.addEventListener('click', () => { currentZoom = Math.max(0.4, currentZoom - 0.15); applyTreeZoom(); });
+      document.getElementById('zoomInBtn')?.addEventListener('click', () => { currentZoom = Math.min(2.0, currentZoom + 0.15); applyTreeZoom(); });
+      document.getElementById('zoomOutBtn')?.addEventListener('click', () => { currentZoom = Math.max(0.3, currentZoom - 0.15); applyTreeZoom(); });
       document.getElementById('resetZoomBtn')?.addEventListener('click', () => { currentZoom = 1.0; applyTreeZoom(); });
+      // Redraw on window resize
+      window.addEventListener('resize', () => { if (document.getElementById('treeCanvas')) requestAnimationFrame(drawTreeConnectors); });
 
       async function renderNetwork() {
         const container = document.getElementById('treeContainer');
@@ -3663,9 +3674,12 @@
         }
 
         const treeData = buildBinaryTree(currentUser.id, 0, 3);
-        container.innerHTML = `<div class="binary-tree">${renderBinaryTreeHTML(treeData)}</div>`;
+        const innerHTML = renderBinaryTreeHTML(treeData);
+        container.innerHTML = `<div class="tree-canvas" id="treeCanvas">${innerHTML}</div>`;
         currentZoom = 1.0;
         applyTreeZoom();
+        // Wait for layout then draw connectors
+        requestAnimationFrame(() => requestAnimationFrame(drawTreeConnectors));
       }
 
       function isSameUser(val1, val2) {
@@ -3751,56 +3765,162 @@
         window.location.href = `/register?ref=${encodeURIComponent(sponsor)}&upline=${encodeURIComponent(upline)}&pos=${pos}&new=1`;
       };
 
-      function renderBinaryTreeHTML(node, positionLabel = '') {
-        if (!node) return '';
-        const posTag = positionLabel ? `<span class="node-pos-tag">${positionLabel}</span>` : '';
+      /* ---------- TREE RENDER v3 (level-by-level + SVG connectors) ---------- */
 
+      // Collect all nodes level by level from tree data
+      function collectLevels(node, level = 0, levels = []) {
+        if (!node) return levels;
+        if (!levels[level]) levels[level] = [];
+        levels[level].push(node);
+        // Both children always exist (empty or real) at each level up to max
+        if (node.left !== undefined || node.right !== undefined) {
+          collectLevels(node.left || { empty: true, parentUsername: node.username, pos: 'left' }, level + 1, levels);
+          collectLevels(node.right || { empty: true, parentUsername: node.username, pos: 'right' }, level + 1, levels);
+        }
+        return levels;
+      }
+
+      function renderNodeCard(node) {
+        if (!node) return '';
+        const sponsor = currentUser.username || currentUser.id;
         if (node.empty) {
-          const sponsor = currentUser.username || currentUser.id;
-          const upline = node.parentUsername || currentUser.username || currentUser.id;
+          const upline = node.parentUsername || sponsor;
           const pos = node.pos || 'left';
           const posText = pos === 'left' ? 'Kiri' : 'Kanan';
+          const posBadge = pos === 'left'
+            ? '<span class="tn-pos-badge" style="background:linear-gradient(135deg,#2563eb,#1d4ed8);">🠔 KIRI</span>'
+            : '<span class="tn-pos-badge" style="background:linear-gradient(135deg,#7c3aed,#6d28d9);">KANAN 🠖</span>';
           return `
-            <div class="tree-node-card empty" onclick="window.openRegisterDownline('${sponsor}', '${upline}', '${pos}')" title="Klik untuk Daftarkan Member Baru di Kaki ${posText}">
-              ${posTag}
-              <div class="avatar-box"><i class="fas fa-plus"></i></div>
-              <div class="node-name">+ TAMBAH</div>
-              <div class="node-id" style="font-size:0.58rem; background:none;">(Kaki ${posText})</div>
-              <div class="node-status" style="background:rgba(212,175,55,0.25); color:var(--gold-accent); border:1px solid var(--gold-accent);">SLOT KOSONG</div>
+            <div class="tn-card tn-empty" onclick="window.openRegisterDownline('${sponsor}','${upline}','${pos}')" title="Daftarkan member di Kaki ${posText}">
+              ${posBadge}
+              <div class="tn-avatar"><i class="fas fa-plus"></i></div>
+              <div class="tn-name">+ TAMBAH</div>
+              <div class="tn-user">Kaki ${posText}</div>
+              <span class="tn-badge pending" style="background:rgba(255,107,0,0.2);color:rgba(255,107,0,0.95);box-shadow:none;">SLOT KOSONG</span>
             </div>
           `;
         }
-
         const isVerified = node.status === 'verified';
-        const badgeClass = isVerified ? 'status-verified' : 'status-free';
-        const badgeText = isVerified ? 'VERIFIED' : 'PENDING';
         const isRoot = (node.id === currentUser.id);
-        const avatarIcon = isRoot ? 'fa-crown' : 'fa-user-tie';
-
-        const hasChildren = node.left || node.right;
-        const wrapperClass = hasChildren ? 'node-wrapper has-children' : 'node-wrapper';
-
-        let html = `
-          <div class="${wrapperClass}">
-            <div class="tree-node-card" title="Member: ${node.name} (@${node.username})">
-              ${posTag}
-              <div class="avatar-box"><i class="fas ${avatarIcon}"></i></div>
-              <div class="node-name">${node.name}</div>
-              <div class="node-id">@${node.username}</div>
-              <div class="node-status ${badgeClass}">${badgeText}</div>
-            </div>
+        const iconClass = isRoot ? 'fa-crown' : 'fa-user-tie';
+        const rootClass = isRoot ? ' tn-root' : '';
+        return `
+          <div class="tn-card${rootClass}" data-uid="${node.id}" title="${node.name} (@${node.username})">
+            <div class="tn-avatar"><i class="fas ${iconClass}"></i></div>
+            <div class="tn-name">${node.name}</div>
+            <div class="tn-user">@${node.username}</div>
+            <span class="tn-badge ${isVerified ? 'verified' : 'pending'}">${isVerified ? '✓ VERIFIED' : '⏳ PENDING'}</span>
+          </div>
         `;
+      }
 
-        if (hasChildren) {
-          html += `
-            <div class="binary-children">
-              <div class="binary-child">${renderBinaryTreeHTML(node.left, 'KIRI')}</div>
-              <div class="binary-child">${renderBinaryTreeHTML(node.right, 'KANAN')}</div>
-            </div>
-          `;
-        }
-        html += `</div>`;
+      function renderBinaryTreeHTML(treeRoot) {
+        // Flatten tree into ordered level arrays
+        const levels = collectLevels(treeRoot);
+        if (!levels.length) return '<p style="color:#aaa;text-align:center;">Tidak ada data jaringan.</p>';
+
+        let html = '<div class="tree-levels" id="treeLevels">';
+        levels.forEach((levelNodes, lIdx) => {
+          html += `<div class="tree-level-row" id="treeRow_${lIdx}">`;
+          levelNodes.forEach((node, nIdx) => {
+            html += `<div class="tn-wrap" id="tnWrap_${lIdx}_${nIdx}">${renderNodeCard(node)}</div>`;
+          });
+          html += `</div>`;
+          if (lIdx < levels.length - 1) {
+            html += `<div class="tree-level-spacer" id="treeSpacer_${lIdx}"></div>`;
+          }
+        });
+        html += '</div>';
         return html;
+      }
+
+      // Draw SVG connector lines between parent and children after DOM render
+      function drawTreeConnectors() {
+        const canvas = document.getElementById('treeCanvas');
+        if (!canvas) return;
+        let svg = document.getElementById('treeConnectorSvg');
+        if (svg) svg.remove();
+
+        const canvasRect = canvas.getBoundingClientRect();
+        const scrollLeft = canvas.parentElement.scrollLeft;
+        const scrollTop = canvas.parentElement.scrollTop;
+
+        svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
+        svg.id = 'treeConnectorSvg';
+        svg.classList.add('tree-connector-svg');
+        svg.setAttribute('width', canvas.offsetWidth);
+        svg.setAttribute('height', canvas.offsetHeight);
+
+        const defs = document.createElementNS('http://www.w3.org/2000/svg', 'defs');
+        const grad = document.createElementNS('http://www.w3.org/2000/svg', 'linearGradient');
+        grad.setAttribute('id', 'connGrad');
+        grad.setAttribute('x1', '0%'); grad.setAttribute('y1', '0%');
+        grad.setAttribute('x2', '0%'); grad.setAttribute('y2', '100%');
+        const s1 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        s1.setAttribute('offset', '0%'); s1.setAttribute('stop-color', '#ff9100'); s1.setAttribute('stop-opacity', '0.9');
+        const s2 = document.createElementNS('http://www.w3.org/2000/svg', 'stop');
+        s2.setAttribute('offset', '100%'); s2.setAttribute('stop-color', '#ff6b00'); s2.setAttribute('stop-opacity', '0.6');
+        grad.appendChild(s1); grad.appendChild(s2); defs.appendChild(grad); svg.appendChild(defs);
+
+        // For each level row, pair parents with children 2-by-2
+        let levelIdx = 0;
+        while (true) {
+          const parentRow = document.getElementById(`treeRow_${levelIdx}`);
+          const childRow  = document.getElementById(`treeRow_${levelIdx + 1}`);
+          if (!parentRow || !childRow) break;
+
+          const parentWraps = [...parentRow.querySelectorAll('.tn-wrap')];
+          const childWraps  = [...childRow.querySelectorAll('.tn-wrap')];
+
+          parentWraps.forEach((pWrap, pi) => {
+            const pCard = pWrap.querySelector('.tn-card');
+            if (!pCard) return;
+            const leftChild  = childWraps[pi * 2];
+            const rightChild = childWraps[pi * 2 + 1];
+
+            const pRect = pCard.getBoundingClientRect();
+            const parentX = pRect.left + pRect.width / 2 - canvasRect.left;
+            const parentY = pRect.bottom - canvasRect.top;
+
+            [leftChild, rightChild].forEach((cWrap, ci) => {
+              if (!cWrap) return;
+              const cCard = cWrap.querySelector('.tn-card');
+              if (!cCard) return;
+              const cRect = cCard.getBoundingClientRect();
+              const childX = cRect.left + cRect.width / 2 - canvasRect.left;
+              const childY = cRect.top - canvasRect.top;
+
+              const midY = (parentY + childY) / 2;
+
+              // Elbow path: down → horizontal → down
+              const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+              const d = `M ${parentX} ${parentY} L ${parentX} ${midY} L ${childX} ${midY} L ${childX} ${childY}`;
+              path.setAttribute('d', d);
+              path.setAttribute('stroke', 'url(#connGrad)');
+              path.setAttribute('stroke-width', '2');
+              path.setAttribute('fill', 'none');
+              path.setAttribute('stroke-linecap', 'round');
+              path.setAttribute('stroke-linejoin', 'round');
+              // Glow
+              path.setAttribute('filter', 'drop-shadow(0 0 3px rgba(255,107,0,0.6))');
+              svg.appendChild(path);
+
+              // Dot at child end
+              const dot = document.createElementNS('http://www.w3.org/2000/svg', 'circle');
+              dot.setAttribute('cx', childX);
+              dot.setAttribute('cy', childY);
+              dot.setAttribute('r', '3.5');
+              dot.setAttribute('fill', ci === 0 ? '#2563eb' : '#7c3aed');
+              dot.setAttribute('stroke', '#fff');
+              dot.setAttribute('stroke-width', '1.5');
+              svg.appendChild(dot);
+            });
+          });
+
+          levelIdx++;
+        }
+
+        canvas.insertBefore(svg, canvas.firstChild);
       }
 
       // ========== BONUS SUMMARY ==========
