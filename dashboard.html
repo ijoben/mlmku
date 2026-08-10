@@ -3586,22 +3586,70 @@
         applyTreeZoom();
       }
 
+      function isSameUser(val1, val2) {
+        if (!val1 || !val2) return false;
+        return String(val1).trim().toLowerCase() === String(val2).trim().toLowerCase();
+      }
+
       function findChildId(parentUser, position) {
         if (!parentUser) return null;
-        if (position === 'left' && parentUser.left_id) return parentUser.left_id;
-        if (position === 'right' && parentUser.right_id) return parentUser.right_id;
 
-        const child = (allUsers || []).find(u =>
-          (String(u.upline_id) === String(parentUser.id) || String(u.sponsor_id) === String(parentUser.id)) &&
-          (u.position === position || (position === 'left' ? u.position === 'L' : u.position === 'R'))
-        );
-        return child ? child.id : null;
+        // 1. Explicit child IDs on parent user object
+        if (position === 'left' && parentUser.left_id) {
+          const explicitChild = (allUsers || []).find(u => isSameUser(u.id, parentUser.left_id) || isSameUser(u.username, parentUser.left_id));
+          if (explicitChild) return explicitChild.id;
+        }
+        if (position === 'right' && parentUser.right_id) {
+          const explicitChild = (allUsers || []).find(u => isSameUser(u.id, parentUser.right_id) || isSameUser(u.username, parentUser.right_id));
+          if (explicitChild) return explicitChild.id;
+        }
+
+        const isLeftTarget = (position === 'left');
+
+        // 2. Search downlines matching parentUser (by ID or Username) and position
+        const candidates = (allUsers || []).filter(u => {
+          if (isSameUser(u.id, parentUser.id) || isSameUser(u.username, parentUser.username)) return false;
+
+          const matchUpline = isSameUser(u.upline_id, parentUser.id) || 
+                              isSameUser(u.upline_id, parentUser.username) || 
+                              isSameUser(u.upline_username, parentUser.username) || 
+                              isSameUser(u.upline_username, parentUser.id);
+
+          const matchSponsor = isSameUser(u.sponsor_id, parentUser.id) || 
+                               isSameUser(u.sponsor_id, parentUser.username) || 
+                               isSameUser(u.sponsor_username, parentUser.username) || 
+                               isSameUser(u.sponsor_username, parentUser.id);
+
+          if (!matchUpline && !matchSponsor) return false;
+
+          const pos = String(u.position || u.pos || '').trim().toLowerCase();
+          if (isLeftTarget) {
+            return pos === 'left' || pos === 'l' || pos === 'kiri' || pos === '1';
+          } else {
+            return pos === 'right' || pos === 'r' || pos === 'kanan' || pos === '2';
+          }
+        });
+
+        if (candidates.length > 0) return candidates[0].id;
+
+        // 3. Fallback for unpositioned downlines
+        const allDownlinesOfParent = (allUsers || []).filter(u => {
+          if (isSameUser(u.id, parentUser.id) || isSameUser(u.username, parentUser.username)) return false;
+          const matchUpline = isSameUser(u.upline_id, parentUser.id) || isSameUser(u.upline_id, parentUser.username) || isSameUser(u.upline_username, parentUser.username) || isSameUser(u.upline_username, parentUser.id);
+          const matchSponsor = isSameUser(u.sponsor_id, parentUser.id) || isSameUser(u.sponsor_id, parentUser.username) || isSameUser(u.sponsor_username, parentUser.username) || isSameUser(u.sponsor_username, parentUser.id);
+          return matchUpline || matchSponsor;
+        });
+
+        if (isLeftTarget && allDownlinesOfParent.length > 0) return allDownlinesOfParent[0].id;
+        if (!isLeftTarget && allDownlinesOfParent.length > 1) return allDownlinesOfParent[1].id;
+
+        return null;
       }
 
       function buildBinaryTree(nodeId, level, maxDepth, parentUsername, pos) {
         if (level > maxDepth) return null;
         if (!nodeId) return { empty: true, parentUsername: parentUsername || currentUser.username, pos: pos || 'left' };
-        const user = (allUsers || []).find(u => String(u.id) === String(nodeId) || (nodeId && u.username && u.username.toLowerCase() === String(nodeId).toLowerCase()));
+        const user = (allUsers || []).find(u => isSameUser(u.id, nodeId) || isSameUser(u.username, nodeId));
         if (!user) return { empty: true, parentUsername: parentUsername || currentUser.username, pos: pos || 'left' };
 
         const leftChildId = findChildId(user, 'left');
@@ -3834,7 +3882,17 @@
           console.warn('Fetch allUsers downline warning:', e);
         }
 
-        const downlines = (allUsers || []).filter(u => String(u.sponsor_id) === String(currentUser.id) || String(u.upline_id) === String(currentUser.id));
+        const downlines = (allUsers || []).filter(u => 
+          isSameUser(u.sponsor_id, currentUser.id) || 
+          isSameUser(u.sponsor_id, currentUser.username) || 
+          isSameUser(u.sponsor_username, currentUser.username) || 
+          isSameUser(u.sponsor_username, currentUser.id) || 
+          isSameUser(u.upline_id, currentUser.id) || 
+          isSameUser(u.upline_id, currentUser.username) || 
+          isSameUser(u.upline_username, currentUser.username) || 
+          isSameUser(u.upline_username, currentUser.id)
+        );
+
         document.getElementById('totalDownlineCount').textContent = downlines.length;
         if (downlines.length === 0) {
           tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada downline.</td></tr>';
@@ -3861,7 +3919,17 @@
       }
       document.getElementById('prevDownlineBtn').addEventListener('click', () => { if (downlineCurrentPage > 1) { downlineCurrentPage--; renderDownlineTable(); } });
       document.getElementById('nextDownlineBtn').addEventListener('click', () => {
-        const max = Math.ceil((allUsers.filter(u => u.sponsor_id === currentUser.id).length) / 10) || 1;
+        const downlines = (allUsers || []).filter(u => 
+          isSameUser(u.sponsor_id, currentUser.id) || 
+          isSameUser(u.sponsor_id, currentUser.username) || 
+          isSameUser(u.sponsor_username, currentUser.username) || 
+          isSameUser(u.sponsor_username, currentUser.id) || 
+          isSameUser(u.upline_id, currentUser.id) || 
+          isSameUser(u.upline_id, currentUser.username) || 
+          isSameUser(u.upline_username, currentUser.username) || 
+          isSameUser(u.upline_username, currentUser.id)
+        );
+        const max = Math.ceil(downlines.length / 10) || 1;
         if (downlineCurrentPage < max) { downlineCurrentPage++; renderDownlineTable(); }
       });
 
