@@ -620,12 +620,31 @@
         }
 
         @media (max-width: 768px) {
-            .product-detail-popup .popup-grid { grid-template-columns: 1fr; gap: 12px; }
-            .product-detail-popup .popup-image { min-height: 150px; height: 150px; }
-            .product-detail-popup .popup-info h2 { font-size: 0.95rem; }
-            .product-detail-popup .popup-info .popup-price { font-size: 0.95rem; }
-            .product-detail-popup .popup-info .popup-price del { font-size: 0.75rem; }
-            .product-detail-popup .popup-box { padding: 18px 16px; }
+            .product-detail-popup .popup-grid {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .product-detail-popup .popup-image {
+                min-height: 150px;
+                height: 150px;
+            }
+
+            .product-detail-popup .popup-info h2 {
+                font-size: 0.95rem;
+            }
+
+            .product-detail-popup .popup-info .popup-price {
+                font-size: 0.95rem;
+            }
+
+            .product-detail-popup .popup-info .popup-price del {
+                font-size: 0.75rem;
+            }
+
+            .product-detail-popup .popup-box {
+                padding: 18px 16px;
+            }
         }
 
         .product-detail-popup .popup-info .popup-tag {
@@ -1190,7 +1209,7 @@
         .product-card .body .price {
             font-weight: 800;
             color: #ff6b00;
-            font-size: 1.05rem;
+            font-size: 0.6rem;
             display: flex;
             align-items: baseline;
             gap: 6px;
@@ -1271,7 +1290,7 @@
             font-size: 1rem;
             cursor: pointer;
             z-index: 5;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
             transition: var(--transition);
             display: flex;
             align-items: center;
@@ -1299,10 +1318,12 @@
                 height: 32px;
                 font-size: 0.8rem;
             }
+
             .product-carousel .product-card {
                 flex: 0 0 170px;
                 min-width: 150px;
             }
+
             .product-card .img-placeholder {
                 height: 150px;
             }
@@ -1958,7 +1979,8 @@
 
         <!-- PRODUK FAVORIT -->
         <div class="section-header-block">
-            <h2 class="section-title" id="sectionFavorite"><i class="fas fa-heart" style="color:#ff6b00;"></i> PRODUK FAVORIT</h2>
+            <h2 class="section-title" id="sectionFavorite"><i class="fas fa-heart" style="color:#ff6b00;"></i> PRODUK
+                FAVORIT</h2>
             <div class="section-title-sub">Koleksi denim pilihan terbaik yang paling diminati pelanggan</div>
         </div>
         <div class="product-carousel-wrapper">
@@ -1969,7 +1991,8 @@
 
         <!-- TOP TRENDING -->
         <div class="section-header-block">
-            <h2 class="section-title" id="sectionTrending"><i class="fas fa-fire" style="color:#ff6b00;"></i> TOP TRENDING DENIM</h2>
+            <h2 class="section-title" id="sectionTrending"><i class="fas fa-fire" style="color:#ff6b00;"></i> TOP
+                TRENDING DENIM</h2>
             <div class="section-title-sub">Katalog celana jeans populer dengan potongan modern & kualitas ekspor</div>
         </div>
         <div class="product-grid-wrapper">
@@ -2521,16 +2544,16 @@
 
                 document.getElementById('detailBuyBtn').onclick = async function () {
                     const session = await window.getSession();
-                    if (!session) { 
-                        showToast('Silakan login terlebih dahulu untuk memesan.', 'error'); 
-                        window.location.href = '/login'; 
-                        return; 
+                    if (!session) {
+                        showToast('Silakan login terlebih dahulu untuk memesan.', 'error');
+                        window.location.href = '/login';
+                        return;
                     }
                     const profile = await window.getUserProfile();
                     if (!profile) { showToast('Profile tidak ditemukan.', 'error'); return; }
-                    if ((profile.status || '').toLowerCase() !== 'verified') { 
-                        showToast('Akun belum terverifikasi.', 'error'); 
-                        return; 
+                    if ((profile.status || '').toLowerCase() !== 'verified') {
+                        showToast('Akun belum terverifikasi.', 'error');
+                        return;
                     }
 
                     const size = sizeSel.value;
