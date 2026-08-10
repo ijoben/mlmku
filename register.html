@@ -13,7 +13,7 @@
         * { margin: 0; padding: 0; box-sizing: border-box; }
         :root {
             --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2;
-            --gold-accent: #d97706; --gold-light: #fef3c7; --cream: #f7f4ef; --white: #ffffff;
+            --gold-accent: #ff6b00; --gold-light: #fff0e6; --cream: #f7f4ef; --white: #ffffff;
             --shadow-lg: 0 20px 60px rgba(0,0,0,0.15); --radius: 24px; --radius-sm: 12px; --transition: 0.3s ease;
         }
         body { font-family: 'Inter', -apple-system, sans-serif; background: var(--cream); color: var(--denim-dark); min-height: 100vh; display: flex; align-items: center; justify-content: center; padding: 20px; }
@@ -29,8 +29,9 @@
         .form-group input, .form-group select, .form-group textarea { width: 100%; padding: 12px 18px; border: 1.5px solid var(--denim-light); border-radius: 60px; font-size: 0.95rem; background: var(--cream); color: var(--denim-dark); outline: none; transition: var(--transition); font-family: inherit; }
         .form-group input:focus, .form-group select:focus, .form-group textarea:focus { border-color: var(--gold-accent); }
         .form-group textarea { border-radius: var(--radius-sm); resize: vertical; min-height: 60px; }
-        .btn-login { width: 100%; padding: 14px; border: none; border-radius: 60px; background: linear-gradient(135deg, #d97706 0%, #b45309 100%); color: #ffffff; font-weight: 700; font-size: 1rem; cursor: pointer; transition: var(--transition); margin-top: 4px; box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3); }
-        .btn-login:hover { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); transform: translateY(-2px); box-shadow: 0 6px 18px rgba(217, 119, 6, 0.45); }
+        .btn-login { width: 100%; padding: 14px; border: none; border-radius: 60px; background: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%); color: #ffffff !important; font-weight: 800 !important; letter-spacing: 0.5px; text-shadow: 0 1px 3px rgba(0, 0, 0, 0.25); font-size: 1rem; cursor: pointer; transition: var(--transition); margin-top: 4px; box-shadow: 0 4px 16px rgba(255, 107, 0, 0.35); }
+        .btn-login i { color: #ffffff !important; }
+        .btn-login:hover { background: linear-gradient(135deg, #ff8800 0%, #ffa000 100%); color: #ffffff !important; transform: translateY(-2px); box-shadow: 0 8px 22px rgba(255, 107, 0, 0.48); }
         .btn-login:disabled { opacity: 0.6; cursor: not-allowed; }
         .login-footer { text-align: center; margin-top: 24px; font-size: 0.85rem; color: var(--denim-navy); }
         .login-footer a { color: var(--gold-accent); font-weight: 600; text-decoration: none; }
