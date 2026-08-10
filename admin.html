@@ -1015,20 +1015,13 @@
 
                     if (usersData && usersData.length > 0) {
                         allUsers = usersData;
-                        localSavedUsers.forEach(lu => {
-                            if (!allUsers.some(u => String(u.id) === String(lu.id))) {
-                                allUsers.push(lu);
-                            }
-                        });
                     } else if (localSavedUsers.length > 0) {
                         allUsers = localSavedUsers;
-                    } else if (!allUsers || allUsers.length === 0) {
+                    } else {
                         allUsers = usersData || [];
                     }
 
-                    if (allUsers && allUsers.length > 0) {
-                        try { localStorage.setItem('hedtro_test_users', JSON.stringify(allUsers)); } catch (e) {}
-                    }
+                    try { localStorage.setItem('hedtro_test_users', JSON.stringify(allUsers)); } catch (e) {}
 
                     if (productsData && productsData.length > 0) {
                         allProducts = productsData;
@@ -1835,8 +1828,9 @@
                                     throw new Error(res.error.message || 'Gagal menghapus user dari Supabase.');
                                 }
 
-                                // 4. Update local state ONLY after successful DB deletion
+                                // 4. Update local state & localStorage cache ONLY after successful DB deletion
                                 allUsers = (allUsers || []).filter(u => String(u.id) !== String(id) && u.username !== username);
+                                try { localStorage.setItem('hedtro_test_users', JSON.stringify(allUsers)); } catch(e) {}
 
                                 await renderAdminMembers();
                                 await renderDashboard();
