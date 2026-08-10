@@ -1038,53 +1038,145 @@
                 try {
                     await refreshAdminData();
                     
-                    document.getElementById('statTotalMember').textContent = allUsers.length;
-                    document.getElementById('statVerifiedMember').textContent = allUsers.filter(u => u.status === 'verified').length;
-                    document.getElementById('statTotalOrders').textContent = allOrders.length;
-                    document.getElementById('statPendingOrders').textContent = allOrders.filter(o => o.status === 'pending').length;
-                    document.getElementById('statTotalProducts').textContent = allProducts.length;
-                    const totalVol = allTransactions.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
-                    document.getElementById('statTotalTransactions').textContent = 'Rp ' + totalVol.toLocaleString();
+                    const totalMembers = allUsers.length;
+                    const verifiedMembers = allUsers.filter(u => (u.status || '').toLowerCase() === 'verified').length;
+                    
+                    // Total orders (gabungkan allOrders dan user first_order/purchase_history)
+                    const combinedOrdersMap = new Map();
+                    (allOrders || []).forEach(o => { if (o && o.id) combinedOrdersMap.set(String(o.id), o); });
+                    (allUsers || []).forEach(u => {
+                        if (u.first_order && u.first_order.id) combinedOrdersMap.set(String(u.first_order.id), u.first_order);
+                        (u.purchase_history || []).forEach(p => { if (p && p.id) combinedOrdersMap.set(String(p.id), p); });
+                    });
+                    const totalOrdersList = Array.from(combinedOrdersMap.values());
+                    const totalOrdersCount = totalOrdersList.length;
+                    const pendingOrdersCount = totalOrdersList.filter(o => (o.status || '').toLowerCase() === 'pending').length;
 
-                    // Hitung statistik bonus langsung dari database users & transactions
-                    let totalBonus = 0, totalSponsor = 0, totalBinary = 0, totalReward = 0;
+                    document.getElementById('statTotalMember').textContent = totalMembers;
+                    document.getElementById('statVerifiedMember').textContent = verifiedMembers;
+                    document.getElementById('statTotalOrders').textContent = totalOrdersCount;
+                    document.getElementById('statPendingOrders').textContent = pendingOrdersCount;
+                    document.getElementById('statTotalProducts').textContent = allProducts.length;
+
+                    // Hitung total volume uang transaksi (Order Sukses/Aktif + Deposit Sukses + Pendaftaran Verified)
+                    let totalVolume = 0;
+                    totalOrdersList.forEach(o => {
+                        if ((o.status || '').toLowerCase() !== 'cancelled' && (o.status || '').toLowerCase() !== 'rejected') {
+                            totalVolume += (parseFloat(o.total_price) || parseFloat(o.total) || parseFloat(o.packagePrice) || 0);
+                        }
+                    });
+
+                    (allTransactions || []).forEach(t => {
+                        if (t.type === 'deposit' && (t.status || '').toLowerCase() === 'success') {
+                            totalVolume += (parseFloat(t.amount) || 0);
+                        }
+                    });
+
+                    const memberPkgPrice = 550000;
+                    const verifiedMemberVol = verifiedMembers * memberPkgPrice;
+                    if (totalVolume < verifiedMemberVol) {
+                        totalVolume = Math.max(totalVolume, verifiedMemberVol);
+                    }
+
+                    document.getElementById('statTotalTransactions').textContent = 'Rp ' + totalVolume.toLocaleString('id-ID');
+
+                    // Hitung statistik bonus dari seluruh member & transaksi
+                    let totalSponsor = 0, totalBinary = 0, totalReward = 0, totalRo = 0;
+
                     (allUsers || []).forEach(u => {
                         totalSponsor += parseFloat(u.bonus_sponsor) || 0;
                         totalBinary += parseFloat(u.bonus_binary) || 0;
                         totalReward += parseFloat(u.bonus_reward) || 0;
+                        totalRo += parseFloat(u.bonus_ro) || 0;
                     });
-                    totalBonus = totalSponsor + totalBinary + totalReward;
+
+                    (allTransactions || []).forEach(t => {
+                        const amt = parseFloat(t.amount) || 0;
+                        if (t.type === 'bonus_sponsor' || t.type === 'sponsor') {
+                            if (totalSponsor === 0) totalSponsor += amt;
+                        } else if (t.type === 'bonus_binary' || t.type === 'binary') {
+                            if (totalBinary === 0) totalBinary += amt;
+                        } else if (t.type === 'bonus_reward' || t.type === 'reward') {
+                            if (totalReward === 0) totalReward += amt;
+                        } else if (t.type === 'ro_bonus' || t.type === 'ro') {
+                            if (totalRo === 0) totalRo += amt;
+                        }
+                    });
+
+                    const totalBonus = totalSponsor + totalBinary + totalReward + totalRo;
 
                     document.getElementById('statTotalBonus').textContent = 'Rp ' + totalBonus.toLocaleString('id-ID');
                     document.getElementById('statSponsorBonus').textContent = 'Rp ' + totalSponsor.toLocaleString('id-ID');
                     document.getElementById('statBinaryBonus').textContent = 'Rp ' + totalBinary.toLocaleString('id-ID');
                     document.getElementById('statRewardBonus').textContent = 'Rp ' + totalReward.toLocaleString('id-ID');
 
+                    // Kumpulkan seluruh riwayat transaksi dari allTransactions, allUsers.transactions, dan allOrders
+                    const mapAllTxs = new Map();
+
+                    (allTransactions || []).forEach(t => {
+                        if (t && t.id) mapAllTxs.set(String(t.id), t);
+                    });
+
+                    (allUsers || []).forEach(u => {
+                        (u.transactions || []).forEach(t => {
+                            if (t && t.id) {
+                                if (!t.user_id) t.user_id = u.id;
+                                mapAllTxs.set(String(t.id), t);
+                            }
+                        });
+                    });
+
+                    (allOrders || []).forEach(o => {
+                        if (o && o.id) {
+                            mapAllTxs.set('order_tx_' + o.id, {
+                                id: o.id,
+                                user_id: o.user_id,
+                                type: o.type || 'order',
+                                amount: o.total_price || o.total || 0,
+                                status: o.status || 'pending',
+                                date: o.created_at || o.date || new Date().toISOString(),
+                                desc: `Belanja Produk (${o.product_name || 'Order'})`
+                            });
+                        }
+                    });
+
+                    const mergedAll = Array.from(mapAllTxs.values());
+                    mergedAll.sort((a, b) => new Date(b.date || b.created_at || 0) - new Date(a.date || a.created_at || 0));
+                    const sorted = mergedAll.slice(0, 20);
+
                     const container = document.getElementById('adminTransactionHistory');
-                    const sorted = [...allTransactions].reverse().slice(0, 15);
                     if (sorted.length === 0) {
                         container.innerHTML = '<p class="text-muted">Belum ada transaksi.</p>';
                         return;
                     }
+
                     let html = '';
                     sorted.forEach(t => {
                         const user = allUsers.find(u => String(u.id) === String(t.user_id));
                         const userName = user ? (user.fullname || user.username || 'Pelanggan') : 'Pelanggan';
-                        const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'withdraw' ? 'Withdraw' : (t.type === 'order' ? 'Order' : (t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' ? '🎁 Bonus' : 'RO')));
-                        const amountClass = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase' || t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward') ? 'plus' : 'minus';
-                        const sign = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase' || t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward') ? '+' : '-';
-                        const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' || t.status === 'processing' ? '✅ Selesai' : '❌ Gagal');
-                        const date = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID');
+                        const typeLabel = t.type === 'deposit' ? '💳 Deposit' : 
+                                         (t.type === 'withdraw' ? '💸 Withdraw' : 
+                                         (t.type === 'order' || t.type === 'ro_purchase' ? '🛒 Order Produk' : 
+                                         (t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' || t.type === 'bonus_sponsor' || t.type === 'bonus_binary' || t.type === 'bonus_reward' ? '🎁 Bonus MLM' : '🔄 RO')));
+                        const amountClass = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase' || t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' || t.type === 'bonus_sponsor' || t.type === 'bonus_binary' || t.type === 'bonus_reward') ? 'plus' : 'minus';
+                        const sign = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase' || t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' || t.type === 'bonus_sponsor' || t.type === 'bonus_binary' || t.type === 'bonus_reward') ? '+' : '-';
+                        const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' || t.status === 'processing' || t.status === 'verified' ? '✅ Selesai' : '❌ Gagal');
+                        const date = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID', {
+                            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+                        });
+
                         let actionBtn = '';
                         if (t.status === 'pending' && (t.type === 'deposit' || t.type === 'withdraw')) {
                             actionBtn = `<button class="btn-sm btn-sm-success approve-tx-btn" data-id="${t.id}" data-type="${t.type}" style="margin-left:6px; padding:4px 8px; font-size:0.7rem;">Approve</button>`;
                             if (t.proof_image) actionBtn += `<button class="btn-sm btn-sm-gold view-tx-proof" data-proof="${t.proof_image}" style="margin-left:4px; padding:4px 8px; font-size:0.7rem;">Bukti</button>`;
                         }
-                        html += `<div class="history-item" style="flex-wrap:wrap; gap:8px;">
-                            <span style="flex:1;"><strong>${userName}</strong> · ${typeLabel} ${statusText} <span class="text-muted" style="font-size:0.7rem;">${date}</span></span>
-                            <span class="amount ${amountClass}" style="display:flex; align-items:center;">${sign} Rp ${(parseFloat(t.amount) || 0).toLocaleString()} ${actionBtn}</span>
+
+                        html += `<div class="history-item" style="flex-wrap:wrap; gap:8px; padding:10px 12px; border-bottom:1px solid #edf2f7;">
+                            <span style="flex:1;"><strong>${userName}</strong> · ${typeLabel} <span class="badge-status ${t.status === 'pending' ? 'badge-pending' : 'badge-success'}">${statusText}</span><br><small class="text-muted" style="font-size:0.75rem;">${t.desc || t.description || date}</small></span>
+                            <span class="amount ${amountClass}" style="display:flex; align-items:center; font-weight:700;">${sign} Rp ${(parseFloat(t.amount) || 0).toLocaleString('id-ID')} ${actionBtn}</span>
                         </div>`;
                     });
+
                     container.innerHTML = html;
 
                     container.querySelectorAll('.view-tx-proof').forEach(btn => {
@@ -1095,7 +1187,7 @@
 
                     container.querySelectorAll('.approve-tx-btn').forEach(btn => {
                         btn.addEventListener('click', function() {
-                            processTransaction(parseInt(this.dataset.id), 'success', this.dataset.type);
+                            processTransaction(this.dataset.id, 'success', this.dataset.type);
                         });
                     });
                 } catch (e) {
@@ -1110,8 +1202,8 @@
                     const { error: txError } = await supabase
                         .from('transactions')
                         .update({ status: newStatus })
-                        .eq('id', id);
-                    if (txError) throw txError;
+                        .eq('id', String(id));
+                    if (txError) console.warn('Supabase tx update notice:', txError);
                     
                     const tx = allTransactions.find(t => String(t.id) === String(id));
                     const targetUserId = tx ? tx.user_id : null;
@@ -3100,6 +3192,17 @@
                 await renderDashboard();
                 showToast('✅ Statistik diperbarui!', 'success');
             });
+
+            // ========== AUTO REFRESH DEDICATED TIMER (REAL-TIME UPDATE) ==========
+            setInterval(async function() {
+                try {
+                    await refreshAdminData();
+                    const activeSection = document.querySelector('.section-content.active');
+                    if (activeSection && activeSection.id === 'sec-dashboard') {
+                        await renderDashboard();
+                    }
+                } catch (e) {}
+            }, 10000);
 
             // ========== INIT ==========
             (async function init() {
