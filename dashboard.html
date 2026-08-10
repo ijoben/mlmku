@@ -3871,13 +3871,28 @@
         return null;
       }
 
-      function buildBinaryTree(nodeId, level, maxDepth, parentUsername, pos) {
+      function buildBinaryTree(nodeId, level, maxDepth, parentUsername, pos, _seen) {
+        if (!_seen) _seen = new Set();
         if (level > maxDepth) return null;
         if (!nodeId) return { empty: true, parentUsername: parentUsername || currentUser.username, pos: pos || 'left' };
+
         const user = (allUsers || []).find(u => isSameUser(u.id, nodeId) || isSameUser(u.username, nodeId));
         if (!user) return { empty: true, parentUsername: parentUsername || currentUser.username, pos: pos || 'left' };
 
-        const leftChildId = findChildId(user, 'left');
+        // ── Cycle / duplicate guard ──────────────────────────────────────────
+        // Build a normalised key for this user so the same person can't appear
+        // more than once anywhere in the tree, regardless of ID vs username match.
+        const keyId  = user.id       ? String(user.id).trim().toLowerCase()       : null;
+        const keyUn  = user.username ? String(user.username).trim().toLowerCase() : null;
+        if ((keyId && _seen.has(keyId)) || (keyUn && _seen.has(keyUn))) {
+          console.warn('🔄 Duplicate node detected in tree, skipping:', user.username || user.id);
+          return { empty: true, parentUsername: parentUsername || currentUser.username, pos: pos || 'left' };
+        }
+        if (keyId) _seen.add(keyId);
+        if (keyUn) _seen.add(keyUn);
+        // ────────────────────────────────────────────────────────────────────
+
+        const leftChildId  = findChildId(user, 'left');
         const rightChildId = findChildId(user, 'right');
 
         return {
@@ -3886,8 +3901,8 @@
           name: user.fullname || user.username,
           status: user.status || 'free',
           pos: pos || 'left',
-          left: buildBinaryTree(leftChildId, level + 1, maxDepth, user.username, 'left'),
-          right: buildBinaryTree(rightChildId, level + 1, maxDepth, user.username, 'right')
+          left:  buildBinaryTree(leftChildId,  level + 1, maxDepth, user.username, 'left',  _seen),
+          right: buildBinaryTree(rightChildId, level + 1, maxDepth, user.username, 'right', _seen)
         };
       }
 
