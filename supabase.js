@@ -113,6 +113,58 @@ window.getCurrentUser = async function() {
 // USER PROFILE FUNCTIONS
 // ============================================================
 
+window.syncUserWalletWithTransactions = async function(profile) {
+  if (!profile || !profile.id) return profile;
+  try {
+    var { data: txs } = await supabaseClient
+      .from('transactions')
+      .select('*')
+      .eq('user_id', profile.id);
+
+    if (txs && txs.length > 0) {
+      var bSponsor = 0, bBinary = 0, bReward = 0, bRo = 0, totalWithdrawal = 0;
+      var validTxs = [];
+
+      for (var i = 0; i < txs.length; i++) {
+        var t = txs[i];
+        if (t.type && (t.type.startsWith('bonus_') || t.type === 'ro_bonus')) {
+          if (t.from_user_id && window.isSameUser(t.user_id, t.from_user_id)) {
+            try { await supabaseClient.from('transactions').delete().eq('id', t.id); } catch(e) {}
+            continue;
+          }
+        }
+
+        validTxs.push(t);
+        var amt = parseFloat(t.amount) || 0;
+        if (t.type === 'bonus_sponsor') bSponsor += amt;
+        else if (t.type === 'bonus_binary') bBinary += amt;
+        else if (t.type === 'bonus_reward') bReward += amt;
+        else if (t.type === 'ro_bonus') bRo += amt;
+        else if (t.type === 'withdrawal' && t.status !== 'rejected' && t.status !== 'failed') totalWithdrawal += amt;
+      }
+
+      var totalIncome = bSponsor + bBinary + bReward + bRo;
+      var newWallet = Math.max(0, totalIncome - totalWithdrawal);
+
+      var changed = false;
+      if (parseFloat(profile.bonus_sponsor || 0) !== bSponsor) { profile.bonus_sponsor = bSponsor; changed = true; }
+      if (parseFloat(profile.bonus_binary || 0) !== bBinary) { profile.bonus_binary = bBinary; changed = true; }
+      if (parseFloat(profile.bonus_reward || 0) !== bReward) { profile.bonus_reward = bReward; changed = true; }
+      if (parseFloat(profile.bonus_ro || 0) !== bRo) { profile.bonus_ro = bRo; changed = true; }
+      if (parseFloat(profile.wallet || 0) !== newWallet && !profile.wallet_override) { profile.wallet = newWallet; changed = true; }
+
+      profile.transactions = validTxs;
+
+      if (changed) {
+        try { await window.upsertRow('users', profile); } catch(e) {}
+      }
+    }
+  } catch (e) {
+    console.warn('syncUserWalletWithTransactions warning:', e);
+  }
+  return profile;
+};
+
 window.getUserProfile = async function() {
   console.log('🔵 getUserProfile dipanggil');
   try {
@@ -120,7 +172,7 @@ window.getUserProfile = async function() {
     if (impersonateId) {
       console.log('🔑 Impersonating user ID:', impersonateId);
       var impUser = await window.getUserById(impersonateId);
-      if (impUser) return impUser;
+      if (impUser) return await window.syncUserWalletWithTransactions(impUser);
     }
 
     var session = await window.getSession();
@@ -150,7 +202,7 @@ window.getUserProfile = async function() {
       }
     }
 
-    return profile;
+    return await window.syncUserWalletWithTransactions(profile);
   } catch (e) {
     console.error('🔴 getUserProfile exception:', e);
     return null;
