@@ -1790,31 +1790,60 @@
                             const targetUser = (allUsers || []).find(u => String(u.id) === String(id));
                             const displayName = targetUser ? `@${targetUser.username || targetUser.fullname}` : id;
 
-                            if (!confirm(`Apakah Anda yakin ingin MENGHAPUS member ${displayName}? Semua transaksi terkait akan dibersihkan. Tindakan ini tidak dapat dibatalkan.`)) return;
+                            if (!confirm(`Apakah Anda yakin ingin MENGHAPUS PERMANEN member ${displayName} dari database?`)) return;
 
                             try {
-                                // 1. Cleanup associated rows to prevent Foreign Key constraints
-                                try { await supabase.from('orders').delete().eq('user_id', id); } catch(e) {}
-                                try { await supabase.from('transactions').delete().eq('user_id', id); } catch(e) {}
-                                try { await supabase.from('bonus_history').delete().eq('user_id', id); } catch(e) {}
-                                
-                                // 2. Delete user row from database
-                                let { error } = await supabase.from('users').delete().eq('id', id);
-                                if (error && targetUser && targetUser.email) {
-                                    const resEmail = await supabase.from('users').delete().eq('email', targetUser.email);
-                                    if (resEmail.error) console.warn('Delete by email warning:', resEmail.error);
+                                showToast('⏳ Menghapus member dari database...', 'info');
+
+                                const numId = !isNaN(id) ? parseInt(id) : null;
+                                const userUuid = targetUser?.id || id;
+                                const username = targetUser?.username;
+                                const email = targetUser?.email;
+
+                                // 1. Remove references in downlines (nullify sponsor/upline pointers to prevent FK error)
+                                if (username) {
+                                    try { await supabase.from('users').update({ sponsor_username: null, sponsor_id: null }).eq('sponsor_username', username); } catch(e) {}
+                                    try { await supabase.from('users').update({ upline_username: null, upline_id: null }).eq('upline_username', username); } catch(e) {}
+                                }
+                                try { await supabase.from('users').update({ sponsor_id: null }).eq('sponsor_id', userUuid); } catch(e) {}
+                                try { await supabase.from('users').update({ upline_id: null }).eq('upline_id', userUuid); } catch(e) {}
+
+                                // 2. Clean up associated tables
+                                try { await supabase.from('orders').delete().eq('user_id', userUuid); } catch(e) {}
+                                try { await supabase.from('transactions').delete().eq('user_id', userUuid); } catch(e) {}
+                                try { await supabase.from('bonus_history').delete().eq('user_id', userUuid); } catch(e) {}
+                                try { await supabase.from('withdrawal_history').delete().eq('user_id', userUuid); } catch(e) {}
+
+                                // 3. Delete from users table by ID
+                                let res = await supabase.from('users').delete().eq('id', userUuid);
+
+                                // If numId exists and primary delete failed, try numeric ID
+                                if (res.error && numId) {
+                                    res = await supabase.from('users').delete().eq('id', numId);
                                 }
 
-                                // 3. Update local array immediately
-                                allUsers = (allUsers || []).filter(u => String(u.id) !== String(id));
+                                // Fallback deletion by username or email if ID mismatch
+                                if (res.error && username) {
+                                    res = await supabase.from('users').delete().eq('username', username);
+                                }
+                                if (res.error && email) {
+                                    res = await supabase.from('users').delete().eq('email', email);
+                                }
 
-                                // 4. Re-render table & stats
+                                if (res.error) {
+                                    console.error('❌ Delete user database error:', res.error);
+                                    throw new Error(res.error.message || 'Gagal menghapus user dari Supabase.');
+                                }
+
+                                // 4. Update local state ONLY after successful DB deletion
+                                allUsers = (allUsers || []).filter(u => String(u.id) !== String(id) && u.username !== username);
+
                                 await renderAdminMembers();
                                 await renderDashboard();
-                                showToast(`✅ Member ${displayName} berhasil dihapus.`, 'info');
+                                showToast(`✅ Member ${displayName} berhasil dihapus permanen!`, 'success');
                             } catch (e) {
                                 console.error('Delete member error:', e);
-                                showToast('Gagal menghapus member: ' + (e.message || e), 'error');
+                                showToast('❌ Gagal menghapus: ' + (e.message || e), 'error');
                             }
                         };
                     });
