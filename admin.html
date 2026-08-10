@@ -1046,26 +1046,19 @@
                     const totalVol = allTransactions.reduce((sum, t) => sum + (parseFloat(t.amount) || 0), 0);
                     document.getElementById('statTotalTransactions').textContent = 'Rp ' + totalVol.toLocaleString();
 
-                    // Hitung statistik bonus
-                    const bonusTxs = allTransactions.filter(t => 
-                        t.type === 'bonus' || 
-                        t.type === 'sponsor' || 
-                        t.type === 'binary' || 
-                        t.type === 'reward' || 
-                        t.type === 'ro_bonus'
-                    );
+                    // Hitung statistik bonus langsung dari database users & transactions
                     let totalBonus = 0, totalSponsor = 0, totalBinary = 0, totalReward = 0;
-                    bonusTxs.forEach(t => {
-                        const amount = parseFloat(t.amount) || 0;
-                        totalBonus += amount;
-                        if (t.type === 'sponsor' || t.type === 'bonus_sponsor') totalSponsor += amount;
-                        else if (t.type === 'binary' || t.type === 'bonus_binary') totalBinary += amount;
-                        else if (t.type === 'reward' || t.type === 'bonus_reward') totalReward += amount;
+                    (allUsers || []).forEach(u => {
+                        totalSponsor += parseFloat(u.bonus_sponsor) || 0;
+                        totalBinary += parseFloat(u.bonus_binary) || 0;
+                        totalReward += parseFloat(u.bonus_reward) || 0;
                     });
-                    document.getElementById('statTotalBonus').textContent = 'Rp ' + totalBonus.toLocaleString();
-                    document.getElementById('statSponsorBonus').textContent = 'Rp ' + totalSponsor.toLocaleString();
-                    document.getElementById('statBinaryBonus').textContent = 'Rp ' + totalBinary.toLocaleString();
-                    document.getElementById('statRewardBonus').textContent = 'Rp ' + totalReward.toLocaleString();
+                    totalBonus = totalSponsor + totalBinary + totalReward;
+
+                    document.getElementById('statTotalBonus').textContent = 'Rp ' + totalBonus.toLocaleString('id-ID');
+                    document.getElementById('statSponsorBonus').textContent = 'Rp ' + totalSponsor.toLocaleString('id-ID');
+                    document.getElementById('statBinaryBonus').textContent = 'Rp ' + totalBinary.toLocaleString('id-ID');
+                    document.getElementById('statRewardBonus').textContent = 'Rp ' + totalReward.toLocaleString('id-ID');
 
                     const container = document.getElementById('adminTransactionHistory');
                     const sorted = [...allTransactions].reverse().slice(0, 15);
@@ -1172,17 +1165,85 @@
                     const tbody = document.getElementById('bonusTableBody');
                     if (!tbody) return;
 
-                    // Kumpulkan semua transaksi bonus
-                    const bonusTransactions = allTransactions.filter(t => 
-                        t.type === 'bonus' || 
-                        t.type === 'sponsor' || 
-                        t.type === 'binary' || 
-                        t.type === 'reward' || 
-                        t.type === 'ro_bonus' ||
-                        t.type === 'bonus_sponsor' ||
-                        t.type === 'bonus_binary' ||
-                        t.type === 'bonus_reward'
-                    );
+                    // Kumpulkan semua transaksi bonus dari Supabase transactions, user transactions, & accumulator fields
+                    const mapBonusTxs = new Map();
+
+                    // 1. Dari allTransactions DB
+                    (allTransactions || []).forEach(t => {
+                        if (t && t.id && (
+                            t.type === 'bonus' || 
+                            t.type === 'sponsor' || 
+                            t.type === 'binary' || 
+                            t.type === 'reward' || 
+                            t.type === 'ro_bonus' ||
+                            t.type === 'bonus_sponsor' ||
+                            t.type === 'bonus_binary' ||
+                            t.type === 'bonus_reward'
+                        )) {
+                            mapBonusTxs.set(String(t.id), t);
+                        }
+                    });
+
+                    // 2. Dari allUsers array
+                    (allUsers || []).forEach(u => {
+                        (u.transactions || []).forEach(t => {
+                            if (t && t.id && (
+                                t.type === 'bonus' || 
+                                t.type === 'sponsor' || 
+                                t.type === 'binary' || 
+                                t.type === 'reward' || 
+                                t.type === 'ro_bonus' ||
+                                t.type === 'bonus_sponsor' ||
+                                t.type === 'bonus_binary' ||
+                                t.type === 'bonus_reward'
+                            )) {
+                                if (!t.user_id) t.user_id = u.id;
+                                mapBonusTxs.set(String(t.id), t);
+                            }
+                        });
+
+                        // 3. Fallback jika user punya bonus_sponsor/binary/reward > 0 tapi belum ada transaksi
+                        const bSp = parseFloat(u.bonus_sponsor) || 0;
+                        const bBin = parseFloat(u.bonus_binary) || 0;
+                        const bRew = parseFloat(u.bonus_reward) || 0;
+                        const bRo = parseFloat(u.bonus_ro) || 0;
+
+                        if (bSp > 0 && !Array.from(mapBonusTxs.values()).some(t => String(t.user_id) === String(u.id) && (t.type === 'sponsor' || t.type === 'bonus_sponsor'))) {
+                            mapBonusTxs.set(`syn_sp_${u.id}`, {
+                                id: `syn_sp_${u.id}`,
+                                user_id: u.id,
+                                type: 'bonus_sponsor',
+                                amount: bSp,
+                                status: 'success',
+                                desc: `🎁 Bonus Sponsor untuk @${u.username}`,
+                                date: u.registered_at || u.created_at || new Date().toISOString()
+                            });
+                        }
+                        if (bBin > 0 && !Array.from(mapBonusTxs.values()).some(t => String(t.user_id) === String(u.id) && (t.type === 'binary' || t.type === 'bonus_binary'))) {
+                            mapBonusTxs.set(`syn_bin_${u.id}`, {
+                                id: `syn_bin_${u.id}`,
+                                user_id: u.id,
+                                type: 'bonus_binary',
+                                amount: bBin,
+                                status: 'success',
+                                desc: `🌳 Bonus Binary untuk @${u.username}`,
+                                date: u.registered_at || u.created_at || new Date().toISOString()
+                            });
+                        }
+                        if (bRew > 0 && !Array.from(mapBonusTxs.values()).some(t => String(t.user_id) === String(u.id) && (t.type === 'reward' || t.type === 'bonus_reward'))) {
+                            mapBonusTxs.set(`syn_rew_${u.id}`, {
+                                id: `syn_rew_${u.id}`,
+                                user_id: u.id,
+                                type: 'bonus_reward',
+                                amount: bRew,
+                                status: 'success',
+                                desc: `🏆 Bonus Reward untuk @${u.username}`,
+                                date: u.registered_at || u.created_at || new Date().toISOString()
+                            });
+                        }
+                    });
+
+                    const bonusTransactions = Array.from(mapBonusTxs.values());
 
                     // Hitung total per jenis
                     let totalSponsor = 0, totalBinary = 0, totalReward = 0;
@@ -1196,10 +1257,10 @@
                         else if (t.type === 'reward' || t.type === 'bonus_reward') totalReward += amount;
                     });
 
-                    document.getElementById('bonusTotalPaid').textContent = 'Rp ' + totalAll.toLocaleString();
-                    document.getElementById('bonusSponsorTotal').textContent = 'Rp ' + totalSponsor.toLocaleString();
-                    document.getElementById('bonusBinaryTotal').textContent = 'Rp ' + totalBinary.toLocaleString();
-                    document.getElementById('bonusRewardTotal').textContent = 'Rp ' + totalReward.toLocaleString();
+                    document.getElementById('bonusTotalPaid').textContent = 'Rp ' + totalAll.toLocaleString('id-ID');
+                    document.getElementById('bonusSponsorTotal').textContent = 'Rp ' + totalSponsor.toLocaleString('id-ID');
+                    document.getElementById('bonusBinaryTotal').textContent = 'Rp ' + totalBinary.toLocaleString('id-ID');
+                    document.getElementById('bonusRewardTotal').textContent = 'Rp ' + totalReward.toLocaleString('id-ID');
 
                     // Filter
                     const filter = document.getElementById('bonusFilterType').value;
@@ -1209,7 +1270,7 @@
                     }
 
                     // Sorting terbaru
-                    filtered.sort((a, b) => new Date(b.date || b.created_at) - new Date(a.date || a.created_at));
+                    filtered.sort((a, b) => new Date(b.date || b.created_at || 0) - new Date(a.date || a.created_at || 0));
 
                     if (filtered.length === 0) {
                         tbody.innerHTML = '<tr><td colspan="7" style="text-align:center;">Belum ada data bonus.</td></tr>';
@@ -1245,13 +1306,14 @@
                                            (t.status === 'success' ? 'badge-success' : 'badge-failed');
                         
                         const date = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID');
+                        const sourceDetail = t.from_name ? `${t.from_name} (@${t.from_username || ''})` : (t.desc || t.description || t.source_id || t.note || '-');
                         
                         html += `<tr>
                             <td data-label="Tanggal">${date}</td>
                             <td data-label="Member"><strong>${userName}</strong></td>
                             <td data-label="Tipe Bonus">${typeLabel}</td>
-                            <td data-label="Nominal" style="color:#2e7d32; font-weight:700;">Rp ${(parseFloat(t.amount) || 0).toLocaleString()}</td>
-                            <td data-label="Dari Transaksi">${t.source_id || t.note || '-'}</td>
+                            <td data-label="Nominal" style="color:#2e7d32; font-weight:700;">Rp ${(parseFloat(t.amount) || 0).toLocaleString('id-ID')}</td>
+                            <td data-label="Dari Transaksi">${sourceDetail}</td>
                             <td data-label="Status"><span class="badge-status ${statusClass}">${(t.status || 'success').toUpperCase()}</span></td>
                             <td data-label="Aksi">
                                 <div>
@@ -1266,17 +1328,17 @@
                     tbody.innerHTML = html;
                     buildPagination(totalItems, statePage.bonus, 'bonusPagination', 'bonus', renderBonusManagement);
 
-                    // Event listeners untuk tombol
+                    // Event listeners untuk tombol (menggunakan String ID)
                     tbody.querySelectorAll('.approve-bonus').forEach(btn => {
-                        btn.onclick = function() { approveBonus(parseInt(this.dataset.id)); };
+                        btn.onclick = function() { approveBonus(this.dataset.id); };
                     });
 
                     tbody.querySelectorAll('.reject-bonus').forEach(btn => {
-                        btn.onclick = function() { rejectBonus(parseInt(this.dataset.id)); };
+                        btn.onclick = function() { rejectBonus(this.dataset.id); };
                     });
 
                     tbody.querySelectorAll('.delete-bonus').forEach(btn => {
-                        btn.onclick = function() { deleteBonus(parseInt(this.dataset.id)); };
+                        btn.onclick = function() { deleteBonus(this.dataset.id); };
                     });
 
                 } catch (e) {
