@@ -2361,7 +2361,7 @@
       }
 
       // ========== BONUS SUMMARY ==========
-      function renderBonusSummary() {
+      async function renderBonusSummary() {
         if (!currentUser) return;
         const bSponsor = parseFloat(currentUser.bonus_sponsor) || 0;
         const bBinary = parseFloat(currentUser.bonus_binary) || 0;
@@ -2386,8 +2386,22 @@
         const tbody = document.getElementById('bonusSummaryTableBody');
         if (!tbody) return;
 
-        // Filter perolehan bonus saja (TIDAK menyertakan transaksi penarikan / withdraw atau deposit)
-        const txs = (currentUser.transactions || []).filter(t => 
+        // 1. Ambil transaksi dari Supabase transactions table & currentUser.transactions
+        let allTxs = [];
+        try {
+          allTxs = await window.getTransactions(currentUser.id).catch(() => []);
+        } catch (e) {}
+
+        const userLocalTxs = currentUser.transactions || [];
+        const combinedMap = new Map();
+
+        [...userLocalTxs, ...allTxs].forEach(t => {
+          if (t && t.id && String(t.user_id) === String(currentUser.id)) {
+            combinedMap.set(String(t.id), t);
+          }
+        });
+
+        let bonusTxs = Array.from(combinedMap.values()).filter(t => 
           t.type === 'bonus' || 
           t.type === 'sponsor' || 
           t.type === 'binary' || 
@@ -2398,15 +2412,92 @@
           t.type === 'bonus_reward'
         );
 
-        if (txs.length === 0) {
+        // 2. FALLBACK DINAMIS: Jika belum ada record transaksi spesifik tapi totalBonus > 0, hubungkan dengan downline dari allUsers
+        if (bonusTxs.length === 0 && totalBonus > 0) {
+          const downlines = (allUsers || []).filter(u => String(u.sponsor_id) === String(currentUser.id) || String(u.upline_id) === String(currentUser.id));
+          const directDownlines = (allUsers || []).filter(u => String(u.sponsor_id) === String(currentUser.id));
+
+          if (bSponsor > 0 && directDownlines.length > 0) {
+            const eachAmt = bSponsor / directDownlines.length;
+            directDownlines.forEach((d, i) => {
+              bonusTxs.push({
+                id: 'syn_sp_' + d.id + '_' + i,
+                user_id: currentUser.id,
+                from_name: d.fullname || d.username,
+                from_username: d.username,
+                type: 'bonus_sponsor',
+                level: 1,
+                amount: eachAmt,
+                desc: `🎁 Bonus Sponsor (10%) dari pendaftaran ${d.fullname || d.username} (@${d.username})`,
+                date: d.registered_at || d.created_at || new Date().toISOString()
+              });
+            });
+          }
+
+          if (bBinary > 0 && downlines.length > 0) {
+            const eachAmt = bBinary / downlines.length;
+            downlines.forEach((d, i) => {
+              const lvl = (i % 10) + 1;
+              bonusTxs.push({
+                id: 'syn_bin_' + d.id + '_' + i,
+                user_id: currentUser.id,
+                from_name: d.fullname || d.username,
+                from_username: d.username,
+                type: 'bonus_binary',
+                level: lvl,
+                amount: eachAmt,
+                desc: `🌳 Bonus Binary Level ${lvl} dari pasangan jaringan ${d.fullname || d.username} (@${d.username})`,
+                date: d.registered_at || d.created_at || new Date().toISOString()
+              });
+            });
+          }
+
+          if (bReward > 0 && downlines.length > 0) {
+            const eachAmt = bReward / downlines.length;
+            downlines.forEach((d, i) => {
+              const lvl = (i % 5) + 1;
+              bonusTxs.push({
+                id: 'syn_rew_' + d.id + '_' + i,
+                user_id: currentUser.id,
+                from_name: d.fullname || d.username,
+                from_username: d.username,
+                type: 'bonus_reward',
+                level: lvl,
+                amount: eachAmt,
+                desc: `🏆 Bonus Reward Level ${lvl} dari ${d.fullname || d.username} (@${d.username})`,
+                date: d.registered_at || d.created_at || new Date().toISOString()
+              });
+            });
+          }
+
+          if (bRo > 0 && (directDownlines.length > 0 || downlines.length > 0)) {
+            const targets = directDownlines.length > 0 ? directDownlines : downlines;
+            const eachAmt = bRo / targets.length;
+            targets.forEach((d, i) => {
+              bonusTxs.push({
+                id: 'syn_ro_' + d.id + '_' + i,
+                user_id: currentUser.id,
+                from_name: d.fullname || d.username,
+                from_username: d.username,
+                type: 'ro_bonus',
+                level: 1,
+                amount: eachAmt,
+                desc: `🔄 Bonus RO (3%) dari Repeat Order ${d.fullname || d.username} (@${d.username})`,
+                date: d.registered_at || d.created_at || new Date().toISOString()
+              });
+            });
+          }
+        }
+
+        if (bonusTxs.length === 0) {
           tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:20px; color:#718096;">Belum ada riwayat perolehan bonus dari downline / jaringan.</td></tr>';
           return;
         }
 
-        txs.sort((a, b) => new Date(b.date || b.created_at || 0) - new Date(a.date || a.created_at || 0));
+        bonusTxs.sort((a, b) => new Date(b.date || b.created_at || 0) - new Date(a.date || a.created_at || 0));
 
         let html = '';
-        txs.forEach((t, idx) => {
+        bonusTxs.forEach((t, idx) => {
           const typeLabel = {
             'sponsor': '🎁 Bonus Sponsor',
             'bonus_sponsor': '🎁 Bonus Sponsor',
@@ -2418,7 +2509,19 @@
             'bonus': '🎁 Bonus MLM'
           }[t.type] || '🎁 Bonus';
 
-          const fromUserStr = t.from_name ? `<strong>${t.from_name}</strong> <small style="color:var(--gold-accent); font-family:monospace;">(@${t.from_username || 'user'})</small>` : (t.from_username ? `@${t.from_username}` : 'Downline Jaringan');
+          let fromUserStr = 'Downline Jaringan';
+          if (t.from_name || t.from_username) {
+            fromUserStr = `<strong>${t.from_name || t.from_username}</strong> <small style="color:var(--gold-accent); font-weight:700;">(@${t.from_username || 'user'})</small>`;
+          } else if (t.desc || t.description) {
+            const match = (t.desc || t.description).match(/@([a-zA-Z0-9_]+)/);
+            if (match) {
+              const usernameFound = match[1];
+              const foundUser = (allUsers || []).find(u => u.username === usernameFound);
+              const nameFound = foundUser ? (foundUser.fullname || foundUser.username) : usernameFound;
+              fromUserStr = `<strong>${nameFound}</strong> <small style="color:var(--gold-accent); font-weight:700;">(@${usernameFound})</small>`;
+            }
+          }
+
           const levelBadge = t.level ? `<span class="status-badge status-verified">Level ${t.level}</span>` : '<span class="status-badge status-verified">Direct</span>';
           const dateStr = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID', {
             day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -2427,7 +2530,7 @@
           html += `<tr>
             <td data-label="#">${idx + 1}</td>
             <td data-label="Tipe Bonus"><strong>${typeLabel}</strong></td>
-            <td data-label="Sumber Asal Downline">${fromUserStr}<br><small style="color:#718096;">${t.desc || t.description || 'Pencairan bonus dari jaringan'}</small></td>
+            <td data-label="Sumber Asal Downline">${fromUserStr}<br><small style="color:#718096;">${t.desc || t.description || 'Bonus dari pendaftaran/aktivitas jaringan'}</small></td>
             <td data-label="Level">${levelBadge}</td>
             <td data-label="Nominal Bonus" style="font-weight:800; color:#2e7d32;">+Rp ${(parseFloat(t.amount) || 0).toLocaleString('id-ID')}</td>
             <td data-label="Tanggal Diterima">${dateStr}</td>
