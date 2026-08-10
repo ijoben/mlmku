@@ -1,101 +1,301 @@
 <!DOCTYPE html>
 <html lang="id">
+
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
   <title>Dashboard · HEDTRO JEANS</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet" />
   <!-- SUPABASE -->
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="supabase.js"></script>
   <style>
-    * { margin:0; padding:0; box-sizing:border-box; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
     :root {
-      --denim-dark: #0b1a2b; --denim-navy: #15283c; --denim-blue: #2a4b6e; --denim-light: #f0f4f8;
-      --gold-accent: #ff6b00; --gold-light: #fff0e6;
+      --denim-dark: #0b1a2b;
+      --denim-navy: #15283c;
+      --denim-blue: #2a4b6e;
+      --denim-light: #f0f4f8;
+      --gold-accent: #ff6b00;
+      --gold-light: #fff0e6;
       --gold-gradient: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
       --btn-gold-bg: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
       --btn-gold-text: #ffffff;
-      --cream: #faf8f5; --white: #ffffff;
-      --shadow-sm: 0 4px 15px rgba(0,0,0,0.05); --shadow: 0 8px 24px rgba(11,26,43,0.08); --shadow-lg: 0 16px 32px rgba(11,26,43,0.12);
-      --radius: 14px; --radius-sm: 10px; --transition: all 0.3s cubic-bezier(0.4,0,0.2,1); --sidebar-width: 240px;
+      --cream: #faf8f5;
+      --white: #ffffff;
+      --shadow-sm: 0 4px 15px rgba(0, 0, 0, 0.05);
+      --shadow: 0 8px 24px rgba(11, 26, 43, 0.08);
+      --shadow-lg: 0 16px 32px rgba(11, 26, 43, 0.12);
+      --radius: 14px;
+      --radius-sm: 10px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      --sidebar-width: 240px;
     }
-    body { font-family: 'Plus Jakarta Sans', -apple-system, sans-serif; background: #f4f6f9; color: var(--denim-dark); padding-top: 64px; overflow-x: hidden; }
-    a { text-decoration:none; color:inherit; }
-    button { cursor:pointer; font-family:inherit; border:none; background:none; }
-    ::-webkit-scrollbar { width:5px; }
-    ::-webkit-scrollbar-track { background:#f4f6f9; }
-    ::-webkit-scrollbar-thumb { background:var(--denim-blue); border-radius:10px; }
+
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: #f4f6f9;
+      color: var(--denim-dark);
+      padding-top: 64px;
+      overflow-x: hidden;
+    }
+
+    a {
+      text-decoration: none;
+      color: inherit;
+    }
+
+    button {
+      cursor: pointer;
+      font-family: inherit;
+      border: none;
+      background: none;
+    }
+
+    ::-webkit-scrollbar {
+      width: 5px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: #f4f6f9;
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--denim-blue);
+      border-radius: 10px;
+    }
 
     /* ===== NAVBAR ===== */
     .navbar {
-      position: fixed; top:0; left:0; right:0; z-index:1100;
-      background: rgba(11, 26, 43, 0.95); backdrop-filter: blur(10px);
-      padding: 8px 20px; display: flex; align-items:center; justify-content:space-between;
-      border-bottom:2px solid var(--gold-accent); height:64px;
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      z-index: 1100;
+      background: rgba(11, 26, 43, 0.95);
+      backdrop-filter: blur(10px);
+      padding: 8px 20px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--gold-accent);
+      height: 64px;
     }
-    .navbar .logo { display:flex; align-items:center; gap:8px; color:var(--white); font-weight:800; font-size:1.1rem; }
-    .navbar .logo i { color:var(--gold-accent); font-size:1.3rem; }
-    .navbar .logo span { font-weight:400; color:var(--gold-light); font-size:0.65rem; margin-left:2px; }
-    .navbar .logo img { height:32px; width:auto; object-fit:contain; }
-    .nav-right { display:flex; align-items:center; gap:8px; }
-    .nav-right .user-badge {
-      display:flex; align-items:center; gap:6px; color:var(--cream); font-size:0.75rem; font-weight:600;
-      background:rgba(255,255,255,0.08); padding:5px 12px; border-radius:60px;
-      border:1px solid rgba(255,255,255,0.1); cursor:pointer; transition:var(--transition);
-    }
-    .nav-right .user-badge:hover { background:rgba(255,255,255,0.15); }
-    .nav-right .user-badge i { color:var(--gold-accent); }
 
-    .burger-btn { display:none; flex-direction:column; gap:4px; padding:4px; background:transparent; border:none; cursor:pointer; z-index:1101; }
-    .burger-btn span { display:block; width:22px; height:2.5px; background:var(--cream); border-radius:4px; transition:var(--transition); transform-origin:center; }
-    .burger-btn.active span:nth-child(1) { transform:translateY(6px) rotate(45deg); }
-    .burger-btn.active span:nth-child(2) { opacity:0; transform:scaleX(0); }
-    .burger-btn.active span:nth-child(3) { transform:translateY(-6px) rotate(-45deg); }
+    .navbar .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      color: var(--white);
+      font-weight: 800;
+      font-size: 1.1rem;
+    }
+
+    .navbar .logo i {
+      color: var(--gold-accent);
+      font-size: 1.3rem;
+    }
+
+    .navbar .logo span {
+      font-weight: 400;
+      color: var(--gold-light);
+      font-size: 0.65rem;
+      margin-left: 2px;
+    }
+
+    .navbar .logo img {
+      height: 32px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .nav-right {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-right .user-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      color: var(--cream);
+      font-size: 0.75rem;
+      font-weight: 600;
+      background: rgba(255, 255, 255, 0.08);
+      padding: 5px 12px;
+      border-radius: 60px;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .nav-right .user-badge:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    .nav-right .user-badge i {
+      color: var(--gold-accent);
+    }
+
+    .burger-btn {
+      display: none;
+      flex-direction: column;
+      gap: 4px;
+      padding: 4px;
+      background: transparent;
+      border: none;
+      cursor: pointer;
+      z-index: 1101;
+    }
+
+    .burger-btn span {
+      display: block;
+      width: 22px;
+      height: 2.5px;
+      background: var(--cream);
+      border-radius: 4px;
+      transition: var(--transition);
+      transform-origin: center;
+    }
+
+    .burger-btn.active span:nth-child(1) {
+      transform: translateY(6px) rotate(45deg);
+    }
+
+    .burger-btn.active span:nth-child(2) {
+      opacity: 0;
+      transform: scaleX(0);
+    }
+
+    .burger-btn.active span:nth-child(3) {
+      transform: translateY(-6px) rotate(-45deg);
+    }
 
     /* ===== SIDEBAR ===== */
     .sidebar-overlay {
-      display:none; position:fixed; top:0; left:0; width:100%; height:100%;
-      background:rgba(11,26,43,0.6); z-index:1050; opacity:0; pointer-events:none;
-      transition:var(--transition); backdrop-filter: blur(4px);
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(11, 26, 43, 0.6);
+      z-index: 1050;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
+      backdrop-filter: blur(4px);
     }
-    .sidebar-overlay.active { opacity:1; pointer-events:all; }
+
+    .sidebar-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
     .sidebar {
-      position:fixed; top:0; left:0; bottom:0; width:var(--sidebar-width);
-      background:var(--denim-dark); z-index:1060; padding:16px 14px;
-      overflow-y:auto; border-right:1px solid rgba(212,175,55,0.15);
-      display:flex; flex-direction:column; gap:3px; transition:left 0.3s ease; left:0;
+      position: fixed;
+      top: 0;
+      left: 0;
+      bottom: 0;
+      width: var(--sidebar-width);
+      background: var(--denim-dark);
+      z-index: 1060;
+      padding: 16px 14px;
+      overflow-y: auto;
+      border-right: 1px solid rgba(212, 175, 55, 0.15);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+      transition: left 0.3s ease;
+      left: 0;
     }
+
     @media (max-width: 768px) {
-      .sidebar { left:-300px; width:280px; } .sidebar.open { left:0; }
-      .burger-btn { display:flex; } .sidebar-overlay { display:block; }
+      .sidebar {
+        left: -300px;
+        width: 280px;
+      }
+
+      .sidebar.open {
+        left: 0;
+      }
+
+      .burger-btn {
+        display: flex;
+      }
+
+      .sidebar-overlay {
+        display: block;
+      }
     }
+
     .sidebar .sidebar-header {
-      display:flex; align-items:center; justify-content:space-between;
-      padding-bottom:10px; border-bottom:1px solid rgba(255,255,255,0.06); margin-bottom:6px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding-bottom: 10px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.06);
+      margin-bottom: 6px;
     }
-    .sidebar .sidebar-header .logo-side { color:var(--white); font-weight:800; font-size:1rem; display:flex; align-items:center; gap:6px; }
-    .sidebar .sidebar-header .logo-side i { color:var(--gold-accent); }
-    .sidebar .sidebar-header .logo-side img { height:26px; width:auto; object-fit:contain; }
-    .sidebar .sidebar-header .close-side { display:none; color:var(--cream); font-size:1.4rem; cursor:pointer; opacity:0.7; }
-    @media (max-width: 768px) { .sidebar .sidebar-header .close-side { display:block; } }
+
+    .sidebar .sidebar-header .logo-side {
+      color: var(--white);
+      font-weight: 800;
+      font-size: 1rem;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .sidebar .sidebar-header .logo-side i {
+      color: var(--gold-accent);
+    }
+
+    .sidebar .sidebar-header .logo-side img {
+      height: 26px;
+      width: auto;
+      object-fit: contain;
+    }
+
+    .sidebar .sidebar-header .close-side {
+      display: none;
+      color: var(--cream);
+      font-size: 1.4rem;
+      cursor: pointer;
+      opacity: 0.7;
+    }
+
+    @media (max-width: 768px) {
+      .sidebar .sidebar-header .close-side {
+        display: block;
+      }
+    }
 
     /* ===== SIDEBAR USER CARD ===== */
     .sidebar-user-card {
       background: linear-gradient(145deg, #15283c 0%, #0d1e30 100%);
-      border: 1px solid rgba(212,175,55,0.22);
+      border: 1px solid rgba(212, 175, 55, 0.22);
       border-radius: 12px;
       padding: 12px;
       margin: 8px 0 12px;
-      box-shadow: 0 4px 16px rgba(0,0,0,0.25);
+      box-shadow: 0 4px 16px rgba(0, 0, 0, 0.25);
     }
+
     .sidebar-user-top {
       display: flex;
       align-items: center;
       gap: 10px;
       margin-bottom: 8px;
     }
+
     .sidebar-user-avatar {
       width: 36px;
       height: 36px;
@@ -108,23 +308,28 @@
       align-items: center;
       justify-content: center;
     }
+
     .sidebar-user-avatar img {
       width: 100%;
       height: 100%;
       object-fit: cover;
     }
+
     .sidebar-user-avatar #sideProfilePlaceholder {
       color: var(--gold-light);
       font-size: 1rem;
       display: flex;
       align-items: center;
       justify-content: center;
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
     }
+
     .sidebar-user-meta {
       flex: 1;
       min-width: 0;
     }
+
     .sidebar-user-name {
       color: var(--white);
       font-weight: 700;
@@ -133,67 +338,192 @@
       overflow: hidden;
       text-overflow: ellipsis;
     }
+
     .sidebar-user-id {
       color: var(--gold-light);
       font-size: 0.6rem;
       font-family: monospace;
       opacity: 0.85;
     }
+
     .sidebar-wallet-box {
-      background: rgba(0,0,0,0.25);
+      background: rgba(0, 0, 0, 0.25);
       border-radius: 8px;
       padding: 8px 10px;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(255, 255, 255, 0.06);
     }
+
     .sidebar-wallet-label {
       display: flex;
       align-items: center;
       justify-content: space-between;
       font-size: 0.62rem;
-      color: rgba(255,255,255,0.65);
+      color: rgba(255, 255, 255, 0.65);
       margin-bottom: 2px;
     }
+
     .sidebar-wallet-label i {
       color: var(--gold-accent);
       margin-right: 3px;
     }
+
     .sidebar-wallet-val {
       color: var(--white);
       font-weight: 800;
       font-size: 1.05rem;
       letter-spacing: -0.3px;
     }
+
     .sidebar .menu-item {
-      display:flex; align-items:center; gap:10px; padding:8px 12px; border-radius:8px;
-      color:rgba(255,255,255,0.65); font-weight:600; font-size:0.8rem; transition:var(--transition); cursor:pointer;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 12px;
+      border-radius: 8px;
+      color: rgba(255, 255, 255, 0.65);
+      font-weight: 600;
+      font-size: 0.8rem;
+      transition: var(--transition);
+      cursor: pointer;
     }
-    .sidebar .menu-item:hover { background:rgba(255,255,255,0.06); color:var(--white); }
-    .sidebar .menu-item i { width:16px; text-align:center; color:var(--gold-accent); font-size:0.85rem; }
-    .sidebar .menu-item.active { background:linear-gradient(90deg, rgba(212,175,55,0.12) 0%, rgba(212,175,55,0.02) 100%); color:var(--gold-accent); border-left:3px solid var(--gold-accent); border-radius:3px 8px 8px 3px; }
-    .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.05); margin:4px 0; }
-    .sidebar .menu-item.logout { margin-top:auto; color:#ff6b6b; }
-    .sidebar .menu-item.logout i { color:#ff6b6b; }
-    .sidebar .menu-item.logout:hover { background:rgba(255,107,107,0.08); }
+
+    .sidebar .menu-item:hover {
+      background: rgba(255, 255, 255, 0.06);
+      color: var(--white);
+    }
+
+    .sidebar .menu-item i {
+      width: 16px;
+      text-align: center;
+      color: var(--gold-accent);
+      font-size: 0.85rem;
+    }
+
+    .sidebar .menu-item.active {
+      background: linear-gradient(90deg, rgba(212, 175, 55, 0.12) 0%, rgba(212, 175, 55, 0.02) 100%);
+      color: var(--gold-accent);
+      border-left: 3px solid var(--gold-accent);
+      border-radius: 3px 8px 8px 3px;
+    }
+
+    .sidebar .menu-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.05);
+      margin: 4px 0;
+    }
+
+    .sidebar .menu-item.logout {
+      margin-top: auto;
+      color: #ff6b6b;
+    }
+
+    .sidebar .menu-item.logout i {
+      color: #ff6b6b;
+    }
+
+    .sidebar .menu-item.logout:hover {
+      background: rgba(255, 107, 107, 0.08);
+    }
 
     /* ===== MAIN CONTENT ===== */
     .main-content {
-      margin-left: var(--sidebar-width); padding: 16px 24px 30px;
-      transition: margin-left 0.3s ease; max-width: calc(100% - var(--sidebar-width));
+      margin-left: var(--sidebar-width);
+      padding: 16px 24px 30px;
+      transition: margin-left 0.3s ease;
+      max-width: calc(100% - var(--sidebar-width));
     }
-    @media (max-width: 768px) { .main-content { margin-left:0; max-width:100%; padding:12px 12px 24px; } }
 
-    .page-title { font-size:1.2rem; font-weight:800; color:var(--denim-dark); margin-bottom:14px; display:flex; align-items:center; gap:8px; }
-    .page-title i { color:var(--gold-accent); font-size:1.1rem; }
+    @media (max-width: 768px) {
+      .main-content {
+        margin-left: 0;
+        max-width: 100%;
+        padding: 12px 12px 24px;
+      }
+    }
+
+    .page-title {
+      font-size: 1.2rem;
+      font-weight: 800;
+      color: var(--denim-dark);
+      margin-bottom: 14px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .page-title i {
+      color: var(--gold-accent);
+      font-size: 1.1rem;
+    }
 
     /* ===== BUTTONS ===== */
-    .btn-sm { padding:6px 14px; border-radius:60px; font-weight:700; font-size:0.75rem; transition:var(--transition); font-family:inherit; display:inline-flex; align-items:center; gap:5px; box-shadow:0 3px 10px rgba(0,0,0,0.06); cursor:pointer; }
-    .btn-sm-success { background:#2e7d32; color:#fff; } .btn-sm-success:hover { background:#1b5e20; transform:translateY(-1px); }
-    .btn-sm-primary { background:var(--denim-blue); color:#fff; } .btn-sm-primary:hover { background:var(--denim-dark); transform:translateY(-1px); }
-    .btn-sm-gold { background:linear-gradient(135deg, #ff6b00 0%, #ff9100 100%); color:#ffffff !important; font-weight:800 !important; text-shadow:0 1px 2px rgba(0,0,0,0.25); box-shadow:0 4px 14px rgba(255,107,0,0.35); border:none; }
-    .btn-sm-gold i { color:#ffffff !important; }
-    .btn-sm-gold:hover { background:linear-gradient(135deg, #ff8800 0%, #ffa000 100%); color:#ffffff !important; transform:translateY(-1px); box-shadow:0 6px 18px rgba(255,107,0,0.48); }
-    .btn-sm-danger { background:#e53e3e; color:#fff; }
-    .btn-sm-info { background:#3182ce; color:#fff; } .btn-sm-info:hover { background:#2b6cb0; }
+    .btn-sm {
+      padding: 6px 14px;
+      border-radius: 60px;
+      font-weight: 700;
+      font-size: 0.75rem;
+      transition: var(--transition);
+      font-family: inherit;
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      box-shadow: 0 3px 10px rgba(0, 0, 0, 0.06);
+      cursor: pointer;
+    }
+
+    .btn-sm-success {
+      background: #2e7d32;
+      color: #fff;
+    }
+
+    .btn-sm-success:hover {
+      background: #1b5e20;
+      transform: translateY(-1px);
+    }
+
+    .btn-sm-primary {
+      background: var(--denim-blue);
+      color: #fff;
+    }
+
+    .btn-sm-primary:hover {
+      background: var(--denim-dark);
+      transform: translateY(-1px);
+    }
+
+    .btn-sm-gold {
+      background: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
+      color: #ffffff !important;
+      font-weight: 800 !important;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+      box-shadow: 0 4px 14px rgba(255, 107, 0, 0.35);
+      border: none;
+    }
+
+    .btn-sm-gold i {
+      color: #ffffff !important;
+    }
+
+    .btn-sm-gold:hover {
+      background: linear-gradient(135deg, #ff8800 0%, #ffa000 100%);
+      color: #ffffff !important;
+      transform: translateY(-1px);
+      box-shadow: 0 6px 18px rgba(255, 107, 0, 0.48);
+    }
+
+    .btn-sm-danger {
+      background: #e53e3e;
+      color: #fff;
+    }
+
+    .btn-sm-info {
+      background: #3182ce;
+      color: #fff;
+    }
+
+    .btn-sm-info:hover {
+      background: #2b6cb0;
+    }
 
     /* ===== DASHBOARD 3 KOLOM ===== */
     .dash-grid {
@@ -202,11 +532,18 @@
       gap: 14px;
       margin-bottom: 16px;
     }
+
     @media (max-width: 992px) {
-      .dash-grid { grid-template-columns: 1fr 1fr; }
+      .dash-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
+
     @media (max-width: 768px) {
-      .dash-grid { grid-template-columns: 1fr; gap: 10px; }
+      .dash-grid {
+        grid-template-columns: 1fr;
+        gap: 10px;
+      }
     }
 
     /* ===== BONUS SUMMARY GRID (2 KOLOM PADA MODE HP) ===== */
@@ -216,29 +553,36 @@
       gap: 16px;
       margin-bottom: 20px;
     }
+
     @media (max-width: 1024px) {
       .bonus-summary-grid {
         grid-template-columns: repeat(2, 1fr);
         gap: 12px;
       }
     }
+
     @media (max-width: 768px) {
       .bonus-summary-grid {
         grid-template-columns: 1fr 1fr !important;
         gap: 10px !important;
       }
+
       .bonus-summary-grid .bonus-metric-card {
         padding: 12px 10px !important;
       }
+
       .bonus-summary-grid .bonus-metric-card .bonus-val {
         font-size: 1.05rem !important;
       }
+
       .bonus-summary-grid .bonus-metric-card .bonus-label {
         font-size: 0.68rem !important;
       }
+
       .bonus-summary-grid .bonus-metric-card .bonus-desc {
         font-size: 0.6rem !important;
       }
+
       .bonus-summary-grid .bonus-metric-card .bonus-icon {
         width: 26px !important;
         height: 26px !important;
@@ -251,14 +595,15 @@
       background: linear-gradient(135deg, #0f2237 0%, #1a324b 100%);
       border-radius: var(--radius);
       padding: 16px 18px;
-      border: 1px solid rgba(212,175,55,0.25);
-      box-shadow: 0 8px 24px rgba(11,26,43,0.1);
+      border: 1px solid rgba(212, 175, 55, 0.25);
+      box-shadow: 0 8px 24px rgba(11, 26, 43, 0.1);
       position: relative;
       overflow: hidden;
       height: 100%;
       display: flex;
       flex-direction: column;
     }
+
     .wallet-card::before {
       content: '';
       position: absolute;
@@ -266,9 +611,10 @@
       right: -5%;
       width: 150px;
       height: 150px;
-      background: radial-gradient(circle, rgba(212,175,55,0.1) 0%, rgba(255,255,255,0) 70%);
+      background: radial-gradient(circle, rgba(212, 175, 55, 0.1) 0%, rgba(255, 255, 255, 0) 70%);
       pointer-events: none;
     }
+
     .wallet-card .wallet-top {
       display: flex;
       align-items: center;
@@ -276,6 +622,7 @@
       margin-bottom: 8px;
       z-index: 1;
     }
+
     .wallet-card .wallet-top .avatar-mini {
       width: 40px;
       height: 40px;
@@ -290,17 +637,20 @@
       font-size: 1.2rem;
       flex-shrink: 0;
     }
+
     .wallet-card .wallet-top .user-info .name {
       font-weight: 700;
       font-size: 0.9rem;
       color: var(--cream);
     }
+
     .wallet-card .wallet-top .user-info .id {
       font-size: 0.6rem;
       opacity: 0.5;
       font-family: monospace;
       color: var(--cream);
     }
+
     .wallet-card .wallet-balance {
       display: flex;
       align-items: baseline;
@@ -309,32 +659,36 @@
       margin-bottom: 6px;
       z-index: 1;
     }
+
     .wallet-card .wallet-balance .label {
       font-size: 0.6rem;
       text-transform: uppercase;
       letter-spacing: 0.8px;
-      color: rgba(255,255,255,0.4);
+      color: rgba(255, 255, 255, 0.4);
       font-weight: 700;
     }
+
     .wallet-card .wallet-balance .amount {
       font-size: 1.6rem;
       font-weight: 800;
       color: var(--white);
       letter-spacing: -0.5px;
-      text-shadow: 0 2px 8px rgba(0,0,0,0.15);
+      text-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
     }
+
     .wallet-card .ref-box {
-      background: rgba(0,0,0,0.15);
+      background: rgba(0, 0, 0, 0.15);
       padding: 4px 10px;
       border-radius: 6px;
       display: flex;
       align-items: center;
       gap: 6px;
       font-size: 0.7rem;
-      border: 1px solid rgba(255,255,255,0.06);
+      border: 1px solid rgba(255, 255, 255, 0.06);
       z-index: 1;
       margin-bottom: 8px;
     }
+
     .wallet-card .ref-box input {
       background: transparent;
       border: none;
@@ -345,6 +699,7 @@
       flex: 1;
       min-width: 60px;
     }
+
     .wallet-card .ref-box .copy-btn {
       background: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
       color: #ffffff !important;
@@ -354,9 +709,10 @@
       cursor: pointer;
       font-size: 0.6rem;
       font-weight: 800 !important;
-      text-shadow: 0 1px 2px rgba(0,0,0,0.25);
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
       white-space: nowrap;
     }
+
     .wallet-card .wallet-actions {
       display: flex;
       gap: 6px;
@@ -364,6 +720,7 @@
       margin-top: auto;
       z-index: 1;
     }
+
     .wallet-card .wallet-actions .btn-sm {
       padding: 5px 12px;
       font-size: 0.7rem;
@@ -374,31 +731,56 @@
       background: var(--white);
       border-radius: var(--radius-sm);
       padding: 14px 16px;
-      box-shadow: 0 4px 12px rgba(11,26,43,0.04);
-      border: 1px solid rgba(212,175,55,0.06);
+      box-shadow: 0 4px 12px rgba(11, 26, 43, 0.04);
+      border: 1px solid rgba(212, 175, 55, 0.06);
       transition: var(--transition);
       display: flex;
       align-items: center;
       gap: 12px;
       height: 100%;
     }
-    .stat-mini:hover { transform: translateY(-2px); box-shadow: var(--shadow); }
+
+    .stat-mini:hover {
+      transform: translateY(-2px);
+      box-shadow: var(--shadow);
+    }
+
     .stat-mini .icon-box {
       width: 36px;
       height: 36px;
       border-radius: 8px;
-      background: linear-gradient(135deg, rgba(212,175,55,0.1) 0%, rgba(212,175,55,0.02) 100%);
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.1) 0%, rgba(212, 175, 55, 0.02) 100%);
       color: var(--gold-accent);
-      border: 1px solid rgba(212,175,55,0.1);
+      border: 1px solid rgba(212, 175, 55, 0.1);
       display: flex;
       align-items: center;
       justify-content: center;
       font-size: 1rem;
       flex-shrink: 0;
     }
-    .stat-mini .stat-info { display: flex; flex-direction: column; flex:1; min-width:0; }
-    .stat-mini .stat-info .label { font-size:0.6rem; text-transform:uppercase; color:#718096; font-weight:700; letter-spacing:0.3px; }
-    .stat-mini .stat-info .value { font-size:1.3rem; font-weight:800; color:var(--denim-dark); letter-spacing:-0.3px; line-height:1.2; }
+
+    .stat-mini .stat-info {
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      min-width: 0;
+    }
+
+    .stat-mini .stat-info .label {
+      font-size: 0.6rem;
+      text-transform: uppercase;
+      color: #718096;
+      font-weight: 700;
+      letter-spacing: 0.3px;
+    }
+
+    .stat-mini .stat-info .value {
+      font-size: 1.3rem;
+      font-weight: 800;
+      color: var(--denim-dark);
+      letter-spacing: -0.3px;
+      line-height: 1.2;
+    }
 
     .stat-stack {
       display: flex;
@@ -412,16 +794,18 @@
       background: var(--white);
       border-radius: var(--radius-sm);
       padding: 14px 16px;
-      box-shadow: 0 4px 12px rgba(11,26,43,0.04);
-      border: 1px solid rgba(0,0,0,0.03);
+      box-shadow: 0 4px 12px rgba(11, 26, 43, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.03);
       margin-bottom: 16px;
     }
+
     .history-card .header {
       display: flex;
       align-items: center;
       justify-content: space-between;
       margin-bottom: 10px;
     }
+
     .history-card .header h3 {
       font-size: 0.95rem;
       font-weight: 800;
@@ -430,7 +814,11 @@
       align-items: center;
       gap: 8px;
     }
-    .history-card .header h3 i { color: var(--gold-accent); }
+
+    .history-card .header h3 i {
+      color: var(--gold-accent);
+    }
+
     .history-card .header .badge-count {
       font-size: 0.65rem;
       background: var(--denim-light);
@@ -439,12 +827,17 @@
       border-radius: 20px;
       font-weight: 700;
     }
-    .history-table-wrap { overflow-x:auto; }
+
+    .history-table-wrap {
+      overflow-x: auto;
+    }
+
     .history-table {
       width: 100%;
       border-collapse: collapse;
       font-size: 0.8rem;
     }
+
     .history-table th {
       text-align: left;
       padding: 6px 8px;
@@ -455,16 +848,34 @@
       text-transform: uppercase;
       border-bottom: 2px solid #edf2f7;
     }
+
     .history-table td {
       padding: 8px 8px;
       border-bottom: 1px solid #edf2f7;
       vertical-align: middle;
       font-size: 0.8rem;
     }
-    .history-table .amount { font-weight: 700; }
-    .history-table .amount.plus { color: #2e7d32; }
-    .history-table .amount.minus { color: #e53e3e; }
-    .history-table .resi { font-size:0.6rem; font-family:monospace; color:var(--denim-blue); background:#f0f4f8; padding:1px 6px; border-radius:3px; }
+
+    .history-table .amount {
+      font-weight: 700;
+    }
+
+    .history-table .amount.plus {
+      color: #2e7d32;
+    }
+
+    .history-table .amount.minus {
+      color: #e53e3e;
+    }
+
+    .history-table .resi {
+      font-size: 0.6rem;
+      font-family: monospace;
+      color: var(--denim-blue);
+      background: #f0f4f8;
+      padding: 1px 6px;
+      border-radius: 3px;
+    }
 
     .status-badge {
       padding: 2px 8px;
@@ -475,10 +886,28 @@
       letter-spacing: 0.3px;
       text-transform: uppercase;
     }
-    .status-pending { background:#feebc8; color:#dd6b20; }
-    .status-success, .status-verified { background:#c6f6d5; color:#2f855a; }
-    .status-failed, .status-free { background:#fed7d7; color:#c53030; }
-    .status-shipped { background:#bee3f8; color:#2a69ac; }
+
+    .status-pending {
+      background: #feebc8;
+      color: #dd6b20;
+    }
+
+    .status-success,
+    .status-verified {
+      background: #c6f6d5;
+      color: #2f855a;
+    }
+
+    .status-failed,
+    .status-free {
+      background: #fed7d7;
+      color: #c53030;
+    }
+
+    .status-shipped {
+      background: #bee3f8;
+      color: #2a69ac;
+    }
 
     .pagination {
       display: flex;
@@ -487,6 +916,7 @@
       gap: 6px;
       padding: 8px 0 0;
     }
+
     .page-btn {
       padding: 3px 10px;
       border: 1px solid #e2e8f0;
@@ -496,8 +926,16 @@
       font-size: 0.75rem;
       color: var(--denim-navy);
     }
-    .page-btn:disabled { opacity:0.4; cursor:not-allowed; }
-    .page-info { font-size:0.75rem; color:#718096; }
+
+    .page-btn:disabled {
+      opacity: 0.4;
+      cursor: not-allowed;
+    }
+
+    .page-info {
+      font-size: 0.75rem;
+      color: #718096;
+    }
 
     /* ===== FORM ===== */
     .form-section-card {
@@ -505,9 +943,10 @@
       border-radius: var(--radius-sm);
       padding: 14px 18px;
       margin-bottom: 14px;
-      box-shadow: 0 4px 12px rgba(11,26,43,0.04);
-      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 4px 12px rgba(11, 26, 43, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.04);
     }
+
     .form-section-card .section-title {
       font-size: 0.85rem;
       font-weight: 700;
@@ -519,70 +958,266 @@
       border-bottom: 1px solid #edf2f7;
       padding-bottom: 6px;
     }
-    .form-row { display:grid; grid-template-columns:1fr 1fr; gap:8px 14px; }
-    .form-group { margin-bottom:8px; }
-    .form-group.full-width { grid-column:1 / -1; }
-    .form-group label { display:block; font-weight:600; color:var(--denim-navy); font-size:0.7rem; margin-bottom:2px; }
-    .form-group input, .form-group select, .form-group textarea {
-      width:100%; padding:6px 12px; border:1.5px solid #e2e8f0; border-radius:7px;
-      font-size:0.8rem; background:#f8fafc; font-family:inherit; transition:var(--transition); color:var(--denim-dark);
+
+    .form-row {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px 14px;
     }
-    .form-group input:focus, .form-group select:focus, .form-group textarea:focus {
-      border-color:var(--denim-blue); outline:none; background:var(--white);
+
+    .form-group {
+      margin-bottom: 8px;
     }
-    .profile-upload-area { display:flex; align-items:center; gap:12px; flex-wrap:wrap; }
+
+    .form-group.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-group label {
+      display: block;
+      font-weight: 600;
+      color: var(--denim-navy);
+      font-size: 0.7rem;
+      margin-bottom: 2px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 6px 12px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 7px;
+      font-size: 0.8rem;
+      background: #f8fafc;
+      font-family: inherit;
+      transition: var(--transition);
+      color: var(--denim-dark);
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      border-color: var(--denim-blue);
+      outline: none;
+      background: var(--white);
+    }
+
+    .profile-upload-area {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      flex-wrap: wrap;
+    }
+
     .profile-upload-area .avatar-preview {
-      width:56px; height:56px; border-radius:50%; object-fit:cover;
-      border:3px solid var(--gold-accent); background:var(--denim-light);
-      display:flex; align-items:center; justify-content:center; font-size:1.4rem; color:var(--denim-blue);
+      width: 56px;
+      height: 56px;
+      border-radius: 50%;
+      object-fit: cover;
+      border: 3px solid var(--gold-accent);
+      background: var(--denim-light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.4rem;
+      color: var(--denim-blue);
     }
 
     /* ===== TABLE CONTAINER ===== */
     .table-container {
       background: var(--white);
       border-radius: var(--radius-sm);
-      box-shadow: 0 4px 12px rgba(11,26,43,0.04);
-      border: 1px solid rgba(0,0,0,0.04);
+      box-shadow: 0 4px 12px rgba(11, 26, 43, 0.04);
+      border: 1px solid rgba(0, 0, 0, 0.04);
       overflow-x: auto;
       margin-bottom: 14px;
     }
-    table { width:100%; border-collapse:collapse; min-width:500px; }
-    th, td { padding:8px 12px; text-align:left; border-bottom:1px solid #edf2f7; vertical-align:middle; }
-    th { background:#f8fafc; color:#718096; font-weight:700; font-size:0.65rem; text-transform:uppercase; }
-    td { font-size:0.8rem; color:var(--denim-dark); }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 500px;
+    }
+
+    th,
+    td {
+      padding: 8px 12px;
+      text-align: left;
+      border-bottom: 1px solid #edf2f7;
+      vertical-align: middle;
+    }
+
+    th {
+      background: #f8fafc;
+      color: #718096;
+      font-weight: 700;
+      font-size: 0.65rem;
+      text-transform: uppercase;
+    }
+
+    td {
+      font-size: 0.8rem;
+      color: var(--denim-dark);
+    }
 
     /* ===== TREE ===== */
-    .tree-wrapper { overflow-x:auto; padding:20px 12px; background:var(--white); border-radius:var(--radius); box-shadow:0 8px 30px rgba(11,26,43,0.05); border:1px solid rgba(212,175,55,0.12); margin-bottom:14px; }
-    .binary-tree { display:flex; flex-direction:column; align-items:center; min-width:640px; transition:transform 0.3s ease; transform-origin:top center; }
-    .node-wrapper { display:flex; flex-direction:column; align-items:center; position:relative; }
+    .tree-wrapper {
+      overflow-x: auto;
+      padding: 20px 12px;
+      background: var(--white);
+      border-radius: var(--radius);
+      box-shadow: 0 8px 30px rgba(11, 26, 43, 0.05);
+      border: 1px solid rgba(212, 175, 55, 0.12);
+      margin-bottom: 14px;
+    }
+
+    .binary-tree {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-width: 640px;
+      transition: transform 0.3s ease;
+      transform-origin: top center;
+    }
+
+    .node-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      position: relative;
+    }
+
     .tree-node-card {
       background: linear-gradient(145deg, #0b1a2b, #15283c);
-      color: var(--white); padding: 10px 16px; border-radius: 14px; text-align: center;
-      border: 2px solid rgba(212,175,55,0.4); min-width: 110px;
-      box-shadow: 0 8px 20px rgba(11,26,43,0.15); z-index: 2; position: relative;
+      color: var(--white);
+      padding: 10px 16px;
+      border-radius: 14px;
+      text-align: center;
+      border: 2px solid rgba(212, 175, 55, 0.4);
+      min-width: 110px;
+      box-shadow: 0 8px 20px rgba(11, 26, 43, 0.15);
+      z-index: 2;
+      position: relative;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     }
-    .tree-node-card:hover { transform: translateY(-3px); box-shadow: 0 12px 28px rgba(11,26,43,0.25); border-color: var(--gold-accent); }
-    .tree-node-card .avatar { width:34px; height:34px; border-radius:50%; background:var(--gold-gradient); color:var(--denim-dark); display:flex; align-items:center; justify-content:center; margin:0 auto 6px; font-size:0.9rem; font-weight:900; box-shadow: 0 3px 10px rgba(212,175,55,0.3); }
-    .tree-node-card .node-name { font-weight:800; font-size:0.78rem; letter-spacing: -0.2px; }
-    .tree-node-card .node-id { font-size:0.62rem; color:var(--gold-light); font-family:monospace; }
-    .tree-node-card .node-status { font-size:0.55rem; padding:2px 8px; border-radius:20px; margin-top:4px; display:inline-block; text-transform:uppercase; font-weight:800; }
+
+    .tree-node-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 28px rgba(11, 26, 43, 0.25);
+      border-color: var(--gold-accent);
+    }
+
+    .tree-node-card .avatar {
+      width: 34px;
+      height: 34px;
+      border-radius: 50%;
+      background: var(--gold-gradient);
+      color: var(--denim-dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 6px;
+      font-size: 0.9rem;
+      font-weight: 900;
+      box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+    }
+
+    .tree-node-card .node-name {
+      font-weight: 800;
+      font-size: 0.78rem;
+      letter-spacing: -0.2px;
+    }
+
+    .tree-node-card .node-id {
+      font-size: 0.62rem;
+      color: var(--gold-light);
+      font-family: monospace;
+    }
+
+    .tree-node-card .node-status {
+      font-size: 0.55rem;
+      padding: 2px 8px;
+      border-radius: 20px;
+      margin-top: 4px;
+      display: inline-block;
+      text-transform: uppercase;
+      font-weight: 800;
+    }
+
     .tree-node-card.empty {
-      background: linear-gradient(135deg, rgba(212,175,55,0.08) 0%, rgba(240,244,248,0.85) 100%);
-      color: var(--denim-navy); border: 2px dashed var(--gold-accent); box-shadow: 0 4px 14px rgba(212,175,55,0.12); cursor: pointer;
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(240, 244, 248, 0.85) 100%);
+      color: var(--denim-navy);
+      border: 2px dashed var(--gold-accent);
+      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.12);
+      cursor: pointer;
     }
+
     .tree-node-card.empty:hover {
-      background: linear-gradient(135deg, rgba(212,175,55,0.22) 0%, rgba(212,175,55,0.08) 100%);
-      border-color: var(--gold-accent); color: var(--denim-dark); transform: translateY(-3px) scale(1.04);
-      box-shadow: 0 8px 22px rgba(212,175,55,0.3);
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.22) 0%, rgba(212, 175, 55, 0.08) 100%);
+      border-color: var(--gold-accent);
+      color: var(--denim-dark);
+      transform: translateY(-3px) scale(1.04);
+      box-shadow: 0 8px 22px rgba(212, 175, 55, 0.3);
     }
-    .tree-node-card.empty .avatar { background: var(--gold-gradient); color: var(--denim-dark); }
-    .tree-node-card.empty .node-name { font-size:0.72rem; font-weight:900; color: var(--denim-navy); }
-    .binary-children { display:flex; justify-content:center; width:100%; padding-top:18px; position:relative; }
-    .binary-child { display:flex; flex-direction:column; align-items:center; flex:1; position:relative; padding:0 8px; }
-    .binary-children::before { content:''; position:absolute; top:0; left:25%; right:25%; height:2px; background:rgba(212,175,55,0.45); }
-    .binary-child::before { content:''; position:absolute; top:0; height:18px; width:2px; background:rgba(212,175,55,0.45); }
-    .binary-children::after { content:''; position:absolute; top:-18px; left:50%; width:2px; height:18px; background:rgba(212,175,55,0.45); transform:translateX(-50%); }
+
+    .tree-node-card.empty .avatar {
+      background: var(--gold-gradient);
+      color: var(--denim-dark);
+    }
+
+    .tree-node-card.empty .node-name {
+      font-size: 0.72rem;
+      font-weight: 900;
+      color: var(--denim-navy);
+    }
+
+    .binary-children {
+      display: flex;
+      justify-content: center;
+      width: 100%;
+      padding-top: 18px;
+      position: relative;
+    }
+
+    .binary-child {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+      padding: 0 8px;
+    }
+
+    .binary-children::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 25%;
+      right: 25%;
+      height: 2px;
+      background: rgba(212, 175, 55, 0.45);
+    }
+
+    .binary-child::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      height: 18px;
+      width: 2px;
+      background: rgba(212, 175, 55, 0.45);
+    }
+
+    .binary-children::after {
+      content: '';
+      position: absolute;
+      top: -18px;
+      left: 50%;
+      width: 2px;
+      height: 18px;
+      background: rgba(212, 175, 55, 0.45);
+      transform: translateX(-50%);
+    }
 
     /* ===== ENHANCED PRODUCT GRID & CARD ===== */
     .product-grid {
@@ -591,22 +1226,25 @@
       gap: 16px;
       margin: 14px 0;
     }
+
     .product-card {
       background: var(--white);
       border-radius: 16px;
       overflow: hidden;
-      box-shadow: 0 6px 18px rgba(11,26,43,0.06);
+      box-shadow: 0 6px 18px rgba(11, 26, 43, 0.06);
       border: 1.5px solid #e2e8f0;
       transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       display: flex;
       flex-direction: column;
       position: relative;
     }
+
     .product-card:hover {
       transform: translateY(-4px);
-      box-shadow: 0 12px 28px rgba(11,26,43,0.14);
+      box-shadow: 0 12px 28px rgba(11, 26, 43, 0.14);
       border-color: var(--gold-accent);
     }
+
     .product-badge-stock {
       position: absolute;
       top: 10px;
@@ -617,11 +1255,19 @@
       font-size: 0.68rem;
       font-weight: 800;
       backdrop-filter: blur(6px);
-      box-shadow: 0 2px 8px rgba(0,0,0,0.12);
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.12);
     }
-    .product-badge-stock.instock { background: rgba(46,125,50,0.9); color: #fff; }
-    .product-badge-stock.outstock { background: rgba(229,62,62,0.9); color: #fff; }
-    
+
+    .product-badge-stock.instock {
+      background: rgba(46, 125, 50, 0.9);
+      color: #fff;
+    }
+
+    .product-badge-stock.outstock {
+      background: rgba(229, 62, 62, 0.9);
+      color: #fff;
+    }
+
     .product-img-wrap {
       height: 160px;
       background: linear-gradient(135deg, #e8edf2 0%, #dbe3ec 100%);
@@ -631,144 +1277,562 @@
       overflow: hidden;
       position: relative;
     }
-    .product-img-wrap img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.4s ease; }
-    .product-card:hover .product-img-wrap img { transform: scale(1.08); }
-    .product-icon-fallback { font-size: 3.2rem; color: var(--denim-blue); }
-    
-    .product-card-body { padding: 14px 16px; display: flex; flex-direction: column; flex: 1; gap: 6px; }
-    .product-serial { font-size: 0.7rem; color: var(--gold-accent); font-weight: 800; letter-spacing: 0.3px; }
-    .product-title { font-size: 0.95rem; font-weight: 800; color: var(--denim-dark); line-height: 1.3; margin: 0; }
-    .product-price-box { display: flex; align-items: baseline; gap: 8px; margin-top: 4px; margin-bottom: 6px; }
-    .price-val { font-size: 1.1rem; font-weight: 800; color: var(--denim-navy); }
-    .price-del { font-size: 0.75rem; color: #a0aec0; text-decoration: line-through; }
+
+    .product-img-wrap img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      transition: transform 0.4s ease;
+    }
+
+    .product-card:hover .product-img-wrap img {
+      transform: scale(1.08);
+    }
+
+    .product-icon-fallback {
+      font-size: 3.2rem;
+      color: var(--denim-blue);
+    }
+
+    .product-card-body {
+      padding: 14px 16px;
+      display: flex;
+      flex-direction: column;
+      flex: 1;
+      gap: 6px;
+    }
+
+    .product-serial {
+      font-size: 0.7rem;
+      color: var(--gold-accent);
+      font-weight: 800;
+      letter-spacing: 0.3px;
+    }
+
+    .product-title {
+      font-size: 0.95rem;
+      font-weight: 800;
+      color: var(--denim-dark);
+      line-height: 1.3;
+      margin: 0;
+    }
+
+    .product-price-box {
+      display: flex;
+      align-items: baseline;
+      gap: 8px;
+      margin-top: 4px;
+      margin-bottom: 6px;
+    }
+
+    .price-val {
+      font-size: 1.1rem;
+      font-weight: 800;
+      color: var(--denim-navy);
+    }
+
+    .price-del {
+      font-size: 0.75rem;
+      color: #a0aec0;
+      text-decoration: line-through;
+    }
 
     /* Quantity Selector */
-    .qty-selector { display: inline-flex; align-items: center; border: 1.5px solid #cbd5e1; border-radius: 8px; overflow: hidden; background: #fff; }
-    .qty-btn { width: 34px; height: 34px; background: #f1f5f9; border: none; font-weight: 800; font-size: 1rem; cursor: pointer; color: var(--denim-dark); transition: 0.2s; }
-    .qty-btn:hover { background: var(--gold-accent); color: var(--denim-dark); }
-    .qty-val { width: 44px; text-align: center; font-weight: 800; font-size: 0.95rem; border: none; outline: none; background: transparent; color: var(--denim-dark); }
+    .qty-selector {
+      display: inline-flex;
+      align-items: center;
+      border: 1.5px solid #cbd5e1;
+      border-radius: 8px;
+      overflow: hidden;
+      background: #fff;
+    }
+
+    .qty-btn {
+      width: 34px;
+      height: 34px;
+      background: #f1f5f9;
+      border: none;
+      font-weight: 800;
+      font-size: 1rem;
+      cursor: pointer;
+      color: var(--denim-dark);
+      transition: 0.2s;
+    }
+
+    .qty-btn:hover {
+      background: var(--gold-accent);
+      color: var(--denim-dark);
+    }
+
+    .qty-val {
+      width: 44px;
+      text-align: center;
+      font-weight: 800;
+      font-size: 0.95rem;
+      border: none;
+      outline: none;
+      background: transparent;
+      color: var(--denim-dark);
+    }
 
     /* ===== MODAL ===== */
     .custom-modal-overlay {
-      position:fixed; top:0; left:0; right:0; bottom:0;
-      background:rgba(11,26,43,0.7); backdrop-filter:blur(6px);
-      z-index:2000; display:flex; align-items:center; justify-content:center; padding:16px;
-      opacity:0; pointer-events:none; transition:var(--transition);
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(11, 26, 43, 0.7);
+      backdrop-filter: blur(6px);
+      z-index: 2000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      opacity: 0;
+      pointer-events: none;
+      transition: var(--transition);
     }
-    .custom-modal-overlay.active { opacity:1; pointer-events:all; }
+
+    .custom-modal-overlay.active {
+      opacity: 1;
+      pointer-events: all;
+    }
+
     .custom-modal {
-      background:var(--white); border-radius:var(--radius); width:100%; max-width:420px;
-      box-shadow:var(--shadow-lg); overflow:hidden; transform:translateY(16px);
-      transition:var(--transition); border:1px solid rgba(212,175,55,0.2);
+      background: var(--white);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 420px;
+      box-shadow: var(--shadow-lg);
+      overflow: hidden;
+      transform: translateY(16px);
+      transition: var(--transition);
+      border: 1px solid rgba(212, 175, 55, 0.2);
     }
-    .custom-modal-overlay.active .custom-modal { transform:translateY(0); }
-    .custom-modal-header { background:var(--denim-dark); color:var(--white); padding:12px 18px; display:flex; align-items:center; justify-content:space-between; border-bottom:2px solid var(--gold-accent); }
-    .custom-modal-header h3 { font-size:0.95rem; font-weight:700; display:flex; align-items:center; gap:6px; }
-    .custom-modal-header h3 i { color:var(--gold-accent); }
-    .custom-modal-body { padding:16px 18px; color:var(--denim-dark); max-height:65vh; overflow-y:auto; }
-    .custom-modal-footer { padding:10px 18px; background:#f8fafc; display:flex; justify-content:flex-end; gap:6px; border-top:1px solid #edf2f7; }
 
-    .text-muted { color:#718096; font-size:0.75rem; }
-    .mt-16 { margin-top:10px; }
+    .custom-modal-overlay.active .custom-modal {
+      transform: translateY(0);
+    }
 
-    .section-content { display:none; animation:fadeIn 0.3s ease; }
-    .section-content.active { display:block; }
-    @keyframes fadeIn { from { opacity:0; transform:translateY(6px); } to { opacity:1; transform:translateY(0); } }
+    .custom-modal-header {
+      background: var(--denim-dark);
+      color: var(--white);
+      padding: 12px 18px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 2px solid var(--gold-accent);
+    }
+
+    .custom-modal-header h3 {
+      font-size: 0.95rem;
+      font-weight: 700;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .custom-modal-header h3 i {
+      color: var(--gold-accent);
+    }
+
+    .custom-modal-body {
+      padding: 16px 18px;
+      color: var(--denim-dark);
+      max-height: 65vh;
+      overflow-y: auto;
+    }
+
+    .custom-modal-footer {
+      padding: 10px 18px;
+      background: #f8fafc;
+      display: flex;
+      justify-content: flex-end;
+      gap: 6px;
+      border-top: 1px solid #edf2f7;
+    }
+
+    .text-muted {
+      color: #718096;
+      font-size: 0.75rem;
+    }
+
+    .mt-16 {
+      margin-top: 10px;
+    }
+
+    .section-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .section-content.active {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from {
+        opacity: 0;
+        transform: translateY(6px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
 
     /* ===== RO MODAL ===== */
-    .ro-detail-grid { display:flex; flex-direction:column; gap:10px; }
+    .ro-detail-grid {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
     .ro-detail-grid .ro-image {
-      background:var(--denim-light); border-radius:var(--radius-sm);
-      display:flex; align-items:center; justify-content:center;
-      min-height:140px; position:relative; overflow:hidden; cursor:pointer;
+      background: var(--denim-light);
+      border-radius: var(--radius-sm);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 140px;
+      position: relative;
+      overflow: hidden;
+      cursor: pointer;
     }
-    .ro-detail-grid .ro-image img { width:100%; height:100%; object-fit:cover; }
-    .ro-detail-grid .ro-image .ro-icon { font-size:3rem; color:var(--denim-blue); }
+
+    .ro-detail-grid .ro-image img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+
+    .ro-detail-grid .ro-image .ro-icon {
+      font-size: 3rem;
+      color: var(--denim-blue);
+    }
+
     .ro-detail-grid .ro-image .zoom-hint {
-      position:absolute; bottom:6px; right:6px;
-      background:rgba(0,0,0,0.5); color:#fff; padding:1px 8px; border-radius:40px;
-      font-size:0.55rem; backdrop-filter:blur(4px);
+      position: absolute;
+      bottom: 6px;
+      right: 6px;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      padding: 1px 8px;
+      border-radius: 40px;
+      font-size: 0.55rem;
+      backdrop-filter: blur(4px);
     }
-    .ro-detail-grid .ro-info h4 { font-size:0.95rem; font-weight:700; }
-    .ro-detail-grid .ro-info .ro-price { font-size:1rem; font-weight:800; color:var(--denim-blue); }
-    .ro-detail-grid .ro-info .ro-desc { font-size:0.75rem; color:#718096; }
-    .ro-detail-grid .ro-options { display:grid; grid-template-columns:1fr 1fr; gap:8px; }
-    .ro-detail-grid .ro-options select { padding:5px 10px; border:1.5px solid #e2e8f0; border-radius:6px; font-size:0.75rem; background:#f8fafc; font-family:inherit; outline:none; }
+
+    .ro-detail-grid .ro-info h4 {
+      font-size: 0.95rem;
+      font-weight: 700;
+    }
+
+    .ro-detail-grid .ro-info .ro-price {
+      font-size: 1rem;
+      font-weight: 800;
+      color: var(--denim-blue);
+    }
+
+    .ro-detail-grid .ro-info .ro-desc {
+      font-size: 0.75rem;
+      color: #718096;
+    }
+
+    .ro-detail-grid .ro-options {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 8px;
+    }
+
+    .ro-detail-grid .ro-options select {
+      padding: 5px 10px;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 6px;
+      font-size: 0.75rem;
+      background: #f8fafc;
+      font-family: inherit;
+      outline: none;
+    }
 
     /* ===== RESPONSIVE HP ===== */
     @media (max-width: 768px) {
-      .dash-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
-      .wallet-card { grid-column: 1 / -1; padding: 14px 16px; }
-      .wallet-card .wallet-top .avatar-mini { width:36px; height:36px; font-size:1rem; }
-      .wallet-card .wallet-balance .amount { font-size:1.4rem; }
+      .dash-grid {
+        grid-template-columns: 1fr 1fr;
+        gap: 10px;
+      }
+
+      .wallet-card {
+        grid-column: 1 / -1;
+        padding: 14px 16px;
+      }
+
+      .wallet-card .wallet-top .avatar-mini {
+        width: 36px;
+        height: 36px;
+        font-size: 1rem;
+      }
+
+      .wallet-card .wallet-balance .amount {
+        font-size: 1.4rem;
+      }
 
       /* Toko Online HP Optimization */
-      .product-grid { grid-template-columns: repeat(2, 1fr); gap: 6px; margin: 10px 0; }
-      .product-card { border-radius: 10px; border-width: 1px; height: 100%; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
-      .product-img-wrap { height: 110px; border-radius: 10px 10px 0 0; }
-      .product-badge-stock { top: 4px; right: 4px; font-size: 0.55rem; padding: 2px 5px; border-radius: 10px; }
-      .product-card-body { padding: 6px 7px; gap: 2px; display: flex; flex-direction: column; justify-content: space-between; }
-      .product-serial { font-size: 0.58rem; margin-bottom: 1px; font-family: monospace; }
-      .product-title {
-        font-size: 0.72rem; font-weight: 700; line-height: 1.2;
-        display: -webkit-box; -webkit-line-clamp: 2; line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; height: 1.95em; margin: 0;
+      .product-grid {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px;
+        margin: 10px 0;
       }
-      .product-price-box { margin-top: 1px; margin-bottom: 3px; gap: 3px; flex-wrap: wrap; }
-      .price-val { font-size: 0.78rem; font-weight: 800; }
-      .price-del { font-size: 0.62rem; }
-      .buy-ro-btn { padding: 5px 2px; font-size: 0.65rem; border-radius: 6px; font-weight: 700; width: 100%; text-align: center; justify-content: center; }
 
-      .form-row { grid-template-columns:1fr; gap:0; }
-      .ro-detail-grid .ro-options { grid-template-columns:1fr 1fr; gap:8px; }
-      .ro-detail-grid .ro-options .form-group:last-child { grid-column:1 / -1; }
-      .stat-stack { gap:8px; }
-      .stat-mini { padding:10px 12px; }
-      .stat-mini .stat-info .value { font-size:1.1rem; }
-      /* Table HP */
-      .table-container { background:transparent !important; border:none !important; box-shadow:none !important; padding:0 !important; overflow-x:hidden !important; }
-      table { min-width:0 !important; width:100% !important; }
-      table, thead, tbody, th, td, tr { display:block; width:100%; box-sizing:border-box; }
-      thead { display:none; }
-      tbody { display:flex; flex-direction:column; gap:10px; width:100%; }
-      tbody tr {
-        display:grid; grid-template-columns:repeat(2, 1fr); gap:6px 8px; padding:12px;
-        border:1px solid #e2e8f0; border-radius:var(--radius-sm); background:var(--white);
-        box-shadow:0 4px 12px rgba(0,0,0,0.04);
+      .product-card {
+        border-radius: 10px;
+        border-width: 1px;
+        height: 100%;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
       }
-      tbody td { padding:0 !important; border:none !important; text-align:left !important; font-size:0.75rem; display:flex; flex-direction:column; align-items:flex-start; }
-      tbody td::before { content:attr(data-label); font-size:0.55rem; color:var(--denim-navy); text-transform:uppercase; font-weight:700; margin-bottom:2px; opacity:0.6; }
-      tbody td[data-label="Aksi"] { grid-column:1 / -1; margin-top:4px; padding-top:6px !important; border-top:1px dashed #e2e8f0 !important; flex-direction:row; justify-content:flex-end; gap:4px; }
-      tbody td[data-label="Aksi"]::before { display:none; }
-      .tree-wrapper { padding:8px 4px; border:none; box-shadow:none; }
+
+      .product-img-wrap {
+        height: 110px;
+        border-radius: 10px 10px 0 0;
+      }
+
+      .product-badge-stock {
+        top: 4px;
+        right: 4px;
+        font-size: 0.55rem;
+        padding: 2px 5px;
+        border-radius: 10px;
+      }
+
+      .product-card-body {
+        padding: 6px 7px;
+        gap: 2px;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+      }
+
+      .product-serial {
+        font-size: 0.58rem;
+        margin-bottom: 1px;
+        font-family: monospace;
+      }
+
+      .product-title {
+        font-size: 0.72rem;
+        font-weight: 700;
+        line-height: 1.2;
+        display: -webkit-box;
+        -webkit-line-clamp: 2;
+        line-clamp: 2;
+        -webkit-box-orient: vertical;
+        overflow: hidden;
+        height: 3em;
+        margin: 0;
+      }
+
+      .product-price-box {
+        margin-top: 1px;
+        margin-bottom: 3px;
+        gap: 3px;
+        flex-wrap: wrap;
+      }
+
+      .price-val {
+        font-size: 0.78rem;
+        font-weight: 800;
+      }
+
+      .price-del {
+        font-size: 0.62rem;
+      }
+
+      .buy-ro-btn {
+        padding: 5px 2px;
+        font-size: 0.65rem;
+        border-radius: 6px;
+        font-weight: 700;
+        width: 100%;
+        text-align: center;
+        justify-content: center;
+      }
+
+      .form-row {
+        grid-template-columns: 1fr;
+        gap: 0;
+      }
+
+      .ro-detail-grid .ro-options {
+        grid-template-columns: 1fr 1fr;
+        gap: 8px;
+      }
+
+      .ro-detail-grid .ro-options .form-group:last-child {
+        grid-column: 1 / -1;
+      }
+
+      .stat-stack {
+        gap: 8px;
+      }
+
+      .stat-mini {
+        padding: 10px 12px;
+      }
+
+      .stat-mini .stat-info .value {
+        font-size: 1.1rem;
+      }
+
+      /* Table HP */
+      .table-container {
+        background: transparent !important;
+        border: none !important;
+        box-shadow: none !important;
+        padding: 0 !important;
+        overflow-x: hidden !important;
+      }
+
+      table {
+        min-width: 0 !important;
+        width: 100% !important;
+      }
+
+      table,
+      thead,
+      tbody,
+      th,
+      td,
+      tr {
+        display: block;
+        width: 100%;
+        box-sizing: border-box;
+      }
+
+      thead {
+        display: none;
+      }
+
+      tbody {
+        display: flex;
+        flex-direction: column;
+        gap: 10px;
+        width: 100%;
+      }
+
+      tbody tr {
+        display: grid;
+        grid-template-columns: repeat(2, 1fr);
+        gap: 6px 8px;
+        padding: 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: var(--radius-sm);
+        background: var(--white);
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.04);
+      }
+
+      tbody td {
+        padding: 0 !important;
+        border: none !important;
+        text-align: left !important;
+        font-size: 0.75rem;
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+      }
+
+      tbody td::before {
+        content: attr(data-label);
+        font-size: 0.55rem;
+        color: var(--denim-navy);
+        text-transform: uppercase;
+        font-weight: 700;
+        margin-bottom: 2px;
+        opacity: 0.6;
+      }
+
+      tbody td[data-label="Aksi"] {
+        grid-column: 1 / -1;
+        margin-top: 4px;
+        padding-top: 6px !important;
+        border-top: 1px dashed #e2e8f0 !important;
+        flex-direction: row;
+        justify-content: flex-end;
+        gap: 4px;
+      }
+
+      tbody td[data-label="Aksi"]::before {
+        display: none;
+      }
+
+      .tree-wrapper {
+        padding: 8px 4px;
+        border: none;
+        box-shadow: none;
+      }
     }
 
     @media (min-width: 769px) and (max-width: 992px) {
-      .dash-grid { grid-template-columns:1fr 1fr; }
+      .dash-grid {
+        grid-template-columns: 1fr 1fr;
+      }
     }
+
     /* Toast Container */
     #toastContainer {
-      position: fixed; top: 76px; right: 20px; z-index: 3000;
-      display: flex; flex-direction: column; gap: 8px; pointer-events: none;
+      position: fixed;
+      top: 76px;
+      right: 20px;
+      z-index: 3000;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      pointer-events: none;
     }
+
     .toast-item {
-      background: var(--denim-dark); color: var(--white);
-      padding: 10px 16px; border-radius: 8px; font-size: 0.8rem; font-weight: 600;
-      box-shadow: var(--shadow); border: 1px solid rgba(212,175,55,0.3);
-      display: flex; align-items: center; gap: 8px; pointer-events: all;
+      background: var(--denim-dark);
+      color: var(--white);
+      padding: 10px 16px;
+      border-radius: 8px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(212, 175, 55, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      pointer-events: all;
       animation: fadeIn 0.3s ease;
     }
-    .toast-item.success { border-color: #2e7d32; }
-    .toast-item.error { border-color: #e53e3e; }
-    .toast-item .toast-close { cursor: pointer; margin-left: auto; opacity: 0.7; font-size: 1rem; }
+
+    .toast-item.success {
+      border-color: #2e7d32;
+    }
+
+    .toast-item.error {
+      border-color: #e53e3e;
+    }
+
+    .toast-item .toast-close {
+      cursor: pointer;
+      margin-left: auto;
+      opacity: 0.7;
+      font-size: 1rem;
+    }
   </style>
 </head>
+
 <body>
   <div id="toastContainer"></div>
 
   <header class="navbar">
-    <a href="/" class="logo" id="navbarLogo" style="text-decoration:none; cursor:pointer;"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></a>
+    <a href="/" class="logo" id="navbarLogo" style="text-decoration:none; cursor:pointer;"><i class="fas fa-tshirt"></i>
+      HEDTRO<span>JEANS</span></a>
     <div class="nav-right">
-      <div class="user-badge" id="navUserBadge"><i class="fas fa-user-circle"></i> <span id="navUserName">Member</span></div>
+      <div class="user-badge" id="navUserBadge"><i class="fas fa-user-circle"></i> <span id="navUserName">Member</span>
+      </div>
       <button class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></button>
     </div>
   </header>
@@ -776,7 +1840,8 @@
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <a href="/" class="logo-side" id="sidebarLogo" style="text-decoration:none; cursor:pointer;"><i class="fas fa-tshirt"></i> HEDTRO</a>
+      <a href="/" class="logo-side" id="sidebarLogo" style="text-decoration:none; cursor:pointer;"><i
+          class="fas fa-tshirt"></i> HEDTRO</a>
       <span class="close-side" id="closeSidebar">&times;</span>
     </div>
 
@@ -821,17 +1886,22 @@
       <h1 class="page-title"><i class="fas fa-chart-line"></i> Dashboard</h1>
 
       <!-- PENDING VERIFICATION ALERT BANNER -->
-      <div id="pendingAlertBox" style="display:none; background: linear-gradient(135deg, #fff8e7 0%, #fff3cd 100%); border: 1.5px solid #ffe8a1; border-left: 5px solid var(--gold-accent); border-radius: 14px; padding: 14px 18px; margin-bottom: 18px; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
+      <div id="pendingAlertBox"
+        style="display:none; background: linear-gradient(135deg, #fff8e7 0%, #fff3cd 100%); border: 1.5px solid #ffe8a1; border-left: 5px solid var(--gold-accent); border-radius: 14px; padding: 14px 18px; margin-bottom: 18px; align-items: center; justify-content: space-between; gap: 12px; box-shadow: 0 4px 16px rgba(0,0,0,0.05);">
         <div style="display:flex; align-items:center; gap:12px;">
-          <div style="width:38px; height:38px; border-radius:50%; background:var(--gold-accent); color:var(--denim-dark); display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0;">
+          <div
+            style="width:38px; height:38px; border-radius:50%; background:var(--gold-accent); color:var(--denim-dark); display:flex; align-items:center; justify-content:center; font-size:1.2rem; flex-shrink:0;">
             <i class="fas fa-exclamation-triangle"></i>
           </div>
           <div>
             <div style="font-weight:800; font-size:0.9rem; color:#744210;">Akun Belum Terverifikasi (Status: FREE)</div>
-            <div style="font-size:0.78rem; color:#744210; opacity:0.9;">Lakukan transfer pembayaran untuk <strong>First Order</strong> dan upload bukti transfer di menu Pesanan / Riwayat RO agar akun menjadi <strong>VERIFIED</strong> & bonus upline dicairkan Admin.</div>
+            <div style="font-size:0.78rem; color:#744210; opacity:0.9;">Lakukan transfer pembayaran untuk <strong>First
+                Order</strong> dan upload bukti transfer di menu Pesanan / Riwayat RO agar akun menjadi
+              <strong>VERIFIED</strong> & bonus upline dicairkan Admin.</div>
           </div>
         </div>
-        <button class="btn-sm btn-sm-gold" onclick="window.showSection('ro-history')" style="flex-shrink:0;"><i class="fas fa-upload"></i> Upload Bukti</button>
+        <button class="btn-sm btn-sm-gold" onclick="window.showSection('ro-history')" style="flex-shrink:0;"><i
+            class="fas fa-upload"></i> Upload Bukti</button>
       </div>
 
       <!-- 3 KOLOM -->
@@ -841,7 +1911,8 @@
           <div class="wallet-top">
             <div class="avatar-mini" id="dashAvatar">
               <i class="fas fa-user" id="dashAvatarIcon"></i>
-              <img id="dashAvatarImg" src="" alt="Foto" style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
+              <img id="dashAvatarImg" src="" alt="Foto"
+                style="display:none; width:100%; height:100%; border-radius:50%; object-fit:cover;">
             </div>
             <div class="user-info">
               <div class="name" id="dashProfileName">Member</div>
@@ -858,8 +1929,10 @@
             <button class="copy-btn" onclick="copyRefLink()">Salin</button>
           </div>
           <div class="wallet-actions">
-            <button class="btn-sm btn-sm-gold" onclick="window.showSection('deposit')"><i class="fas fa-plus-circle"></i> Deposit</button>
-            <button class="btn-sm btn-sm-primary" onclick="window.showSection('withdraw')"><i class="fas fa-minus-circle"></i> Withdraw</button>
+            <button class="btn-sm btn-sm-gold" onclick="window.showSection('deposit')"><i
+                class="fas fa-plus-circle"></i> Deposit</button>
+            <button class="btn-sm btn-sm-primary" onclick="window.showSection('withdraw')"><i
+                class="fas fa-minus-circle"></i> Withdraw</button>
           </div>
         </div>
 
@@ -908,7 +1981,15 @@
         </div>
         <div class="history-table-wrap">
           <table class="history-table">
-            <thead><tr><th>Tanggal</th><th>Jenis</th><th>Detail</th><th>Nominal</th><th>Status</th></tr></thead>
+            <thead>
+              <tr>
+                <th>Tanggal</th>
+                <th>Jenis</th>
+                <th>Detail</th>
+                <th>Nominal</th>
+                <th>Status</th>
+              </tr>
+            </thead>
             <tbody id="transactionHistoryBody"></tbody>
           </table>
         </div>
@@ -925,56 +2006,87 @@
       <h1 class="page-title"><i class="fas fa-gift"></i> Ringkasan Bonus MLM</h1>
 
       <!-- TOTAL SUMMARY BANNER -->
-      <div style="background: linear-gradient(135deg, var(--denim-dark) 0%, var(--denim-navy) 60%, var(--denim-blue) 100%); border-radius: 16px; padding: 20px 24px; color: var(--white); box-shadow: var(--shadow-lg); border-left: 5px solid var(--gold-accent); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+      <div
+        style="background: linear-gradient(135deg, var(--denim-dark) 0%, var(--denim-navy) 60%, var(--denim-blue) 100%); border-radius: 16px; padding: 20px 24px; color: var(--white); box-shadow: var(--shadow-lg); border-left: 5px solid var(--gold-accent); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
         <div>
-          <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; font-weight: 700;">Total Akumulasi Semua Bonus MLM</div>
-          <div id="sumTotalBonus" style="font-size: 1.8rem; font-weight: 800; color: var(--gold-light); margin-top: 2px;">Rp 0</div>
-          <div style="font-size: 0.78rem; opacity: 0.85; margin-top: 4px;">Saldo Dompet Saat Ini: <strong id="sumCurrentWallet" style="color:#fff;">Rp 0</strong></div>
+          <div
+            style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; font-weight: 700;">
+            Total Akumulasi Semua Bonus MLM</div>
+          <div id="sumTotalBonus"
+            style="font-size: 1.8rem; font-weight: 800; color: var(--gold-light); margin-top: 2px;">Rp 0</div>
+          <div style="font-size: 0.78rem; opacity: 0.85; margin-top: 4px;">Saldo Dompet Saat Ini: <strong
+              id="sumCurrentWallet" style="color:#fff;">Rp 0</strong></div>
         </div>
         <div>
-          <button class="btn-sm btn-sm-gold" onclick="window.showSection('withdraw')" style="padding: 10px 18px; font-size: 0.85rem;"><i class="fas fa-money-bill-wave"></i> Tarik Bonus (Withdraw)</button>
+          <button class="btn-sm btn-sm-gold" onclick="window.showSection('withdraw')"
+            style="padding: 10px 18px; font-size: 0.85rem;"><i class="fas fa-money-bill-wave"></i> Tarik Bonus
+            (Withdraw)</button>
         </div>
       </div>
 
       <!-- 4 METRIC CARDS (2 KOLOM PADA HP) -->
       <div class="bonus-summary-grid">
         <!-- BONUS SPONSOR -->
-        <div class="bonus-metric-card" style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid #2e7d32; display: flex; flex-direction: column; gap: 6px;">
+        <div class="bonus-metric-card"
+          style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid #2e7d32; display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
-            <span class="bonus-label" style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus Sponsor (10%)</span>
-            <div class="bonus-icon" style="width: 32px; height: 32px; border-radius: 50%; background: #e8f5e9; color: #2e7d32; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;"><i class="fas fa-handshake"></i></div>
+            <span class="bonus-label"
+              style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus Sponsor
+              (10%)</span>
+            <div class="bonus-icon"
+              style="width: 32px; height: 32px; border-radius: 50%; background: #e8f5e9; color: #2e7d32; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+              <i class="fas fa-handshake"></i></div>
           </div>
-          <div id="sumBonusSponsor" class="bonus-val" style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
+          <div id="sumBonusSponsor" class="bonus-val"
+            style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
           <div class="bonus-desc" style="font-size: 0.7rem; color: #a0aec0;">Bonus pendaftaran langsung downline</div>
         </div>
 
         <!-- BONUS BINARY -->
-        <div class="bonus-metric-card" style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid var(--denim-blue); display: flex; flex-direction: column; gap: 6px;">
+        <div class="bonus-metric-card"
+          style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid var(--denim-blue); display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
-            <span class="bonus-label" style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus Binary (10L)</span>
-            <div class="bonus-icon" style="width: 32px; height: 32px; border-radius: 50%; background: #ebf8ff; color: var(--denim-blue); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;"><i class="fas fa-sitemap"></i></div>
+            <span class="bonus-label"
+              style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus Binary
+              (10L)</span>
+            <div class="bonus-icon"
+              style="width: 32px; height: 32px; border-radius: 50%; background: #ebf8ff; color: var(--denim-blue); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+              <i class="fas fa-sitemap"></i></div>
           </div>
-          <div id="sumBonusBinary" class="bonus-val" style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
+          <div id="sumBonusBinary" class="bonus-val"
+            style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
           <div class="bonus-desc" style="font-size: 0.7rem; color: #a0aec0;">Komisi pasangan 10 level upline</div>
         </div>
 
         <!-- BONUS REWARD -->
-        <div class="bonus-metric-card" style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid var(--gold-accent); display: flex; flex-direction: column; gap: 6px;">
+        <div class="bonus-metric-card"
+          style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid var(--gold-accent); display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
-            <span class="bonus-label" style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus Reward (5L)</span>
-            <div class="bonus-icon" style="width: 32px; height: 32px; border-radius: 50%; background: #fff8e7; color: var(--gold-accent); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;"><i class="fas fa-trophy"></i></div>
+            <span class="bonus-label"
+              style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus Reward
+              (5L)</span>
+            <div class="bonus-icon"
+              style="width: 32px; height: 32px; border-radius: 50%; background: #fff8e7; color: var(--gold-accent); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+              <i class="fas fa-trophy"></i></div>
           </div>
-          <div id="sumBonusReward" class="bonus-val" style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
+          <div id="sumBonusReward" class="bonus-val"
+            style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
           <div class="bonus-desc" style="font-size: 0.7rem; color: #a0aec0;">Apresiasi prestasi 5 level upline</div>
         </div>
 
         <!-- BONUS RO -->
-        <div class="bonus-metric-card" style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid #dd6b20; display: flex; flex-direction: column; gap: 6px;">
+        <div class="bonus-metric-card"
+          style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid #dd6b20; display: flex; flex-direction: column; gap: 6px;">
           <div style="display: flex; align-items: center; justify-content: space-between;">
-            <span class="bonus-label" style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus RO (3%)</span>
-            <div class="bonus-icon" style="width: 32px; height: 32px; border-radius: 50%; background: #feebc8; color: #dd6b20; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;"><i class="fas fa-box-open"></i></div>
+            <span class="bonus-label"
+              style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus RO
+              (3%)</span>
+            <div class="bonus-icon"
+              style="width: 32px; height: 32px; border-radius: 50%; background: #feebc8; color: #dd6b20; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+              <i class="fas fa-box-open"></i></div>
           </div>
-          <div id="sumBonusRo" class="bonus-val" style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
+          <div id="sumBonusRo" class="bonus-val"
+            style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
           <div class="bonus-desc" style="font-size: 0.7rem; color: #a0aec0;">Komisi Repeat Order produk downline</div>
         </div>
       </div>
@@ -997,7 +2109,9 @@
               </tr>
             </thead>
             <tbody id="bonusSummaryTableBody">
-              <tr><td colspan="6" style="text-align:center; padding:16px;">Memuat rincian sumber bonus...</td></tr>
+              <tr>
+                <td colspan="6" style="text-align:center; padding:16px;">Memuat rincian sumber bonus...</td>
+              </tr>
             </tbody>
           </table>
         </div>
@@ -1015,18 +2129,31 @@
       <h1 class="page-title"><i class="fas fa-box"></i> Riwayat RO</h1>
       <div class="table-container">
         <table>
-          <thead><tr><th>Tanggal</th><th>Produk</th><th>Total</th><th>Status</th><th>Resi</th><th>Aksi</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Produk</th>
+              <th>Total</th>
+              <th>Status</th>
+              <th>Resi</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
           <tbody id="roHistoryBody"></tbody>
         </table>
-        <div class="pagination"><button class="page-btn" id="prevRoHistoryBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="roHistoryPageInfo">1/1</span><button class="page-btn" id="nextRoHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
+        <div class="pagination"><button class="page-btn" id="prevRoHistoryBtn" disabled><i
+              class="fas fa-chevron-left"></i></button><span class="page-info" id="roHistoryPageInfo">1/1</span><button
+            class="page-btn" id="nextRoHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
       </div>
     </div>
 
     <!-- JARINGAN -->
     <div class="section-content" id="sec-network">
       <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary</h1>
-      <div style="background:#fffaf0; padding:8px 12px; border-radius:var(--radius-sm); border-left:3px solid #dd6b20; margin-bottom:10px;">
-        <p style="font-size:0.75rem; color:#dd6b20; margin:0;"><i class="fas fa-lightbulb"></i> Klik <strong>"Tambah"</strong> untuk daftarkan member baru.</p>
+      <div
+        style="background:#fffaf0; padding:8px 12px; border-radius:var(--radius-sm); border-left:3px solid #dd6b20; margin-bottom:10px;">
+        <p style="font-size:0.75rem; color:#dd6b20; margin:0;"><i class="fas fa-lightbulb"></i> Klik
+          <strong>"Tambah"</strong> untuk daftarkan member baru.</p>
       </div>
       <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:8px;">
         <button class="btn-sm btn-sm-primary" id="zoomOutBtn"><i class="fas fa-search-minus"></i> Zoom Out</button>
@@ -1038,15 +2165,26 @@
     <!-- DOWNLINE -->
     <div class="section-content" id="sec-downline">
       <h1 class="page-title"><i class="fas fa-users"></i> Downline</h1>
-      <div style="background:var(--white); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:12px; box-shadow:0 4px 12px rgba(11,26,43,0.04);">
-        <p style="font-size:0.85rem;">Total Downline: <strong id="totalDownlineCount" style="color:var(--denim-blue);">0</strong></p>
+      <div
+        style="background:var(--white); border-radius:var(--radius-sm); padding:10px 14px; margin-bottom:12px; box-shadow:0 4px 12px rgba(11,26,43,0.04);">
+        <p style="font-size:0.85rem;">Total Downline: <strong id="totalDownlineCount"
+            style="color:var(--denim-blue);">0</strong></p>
       </div>
       <div class="table-container">
         <table>
-          <thead><tr><th>Tanggal</th><th>Username</th><th>Nama</th><th>Status</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Username</th>
+              <th>Nama</th>
+              <th>Status</th>
+            </tr>
+          </thead>
           <tbody id="downlineTableBody"></tbody>
         </table>
-        <div class="pagination"><button class="page-btn" id="prevDownlineBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="downlinePageInfo">1/1</span><button class="page-btn" id="nextDownlineBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
+        <div class="pagination"><button class="page-btn" id="prevDownlineBtn" disabled><i
+              class="fas fa-chevron-left"></i></button><span class="page-info" id="downlinePageInfo">1/1</span><button
+            class="page-btn" id="nextDownlineBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
       </div>
     </div>
 
@@ -1054,41 +2192,67 @@
     <div class="section-content" id="sec-deposit">
       <h1 class="page-title"><i class="fas fa-plus-circle"></i> Deposit</h1>
       <div class="form-section-card" style="max-width:480px;">
-        <div class="form-group"><label>Nominal Deposit (Rp)</label><input type="number" id="depositAmount" placeholder="Minimal 10.000" min="10000" /></div>
+        <div class="form-group"><label>Nominal Deposit (Rp)</label><input type="number" id="depositAmount"
+            placeholder="Minimal 10.000" min="10000" /></div>
         <div class="form-group"><label>Metode Pembayaran</label><select id="depositMethod"></select></div>
-        <button class="btn-sm btn-sm-success" id="submitDeposit" style="width:100%; padding:10px; justify-content:center;">Buat Deposit</button>
+        <button class="btn-sm btn-sm-success" id="submitDeposit"
+          style="width:100%; padding:10px; justify-content:center;">Buat Deposit</button>
         <p class="text-muted mt-16">Minimal deposit Rp 10.000</p>
       </div>
       <h3 style="font-size:0.95rem; margin-bottom:8px;"><i class="fas fa-list"></i> Konfirmasi Deposit</h3>
       <div class="table-container">
         <table>
-          <thead><tr><th>Tanggal</th><th>Nominal</th><th>Status</th><th>Aksi</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Nominal</th>
+              <th>Status</th>
+              <th>Aksi</th>
+            </tr>
+          </thead>
           <tbody id="depositHistoryBody"></tbody>
         </table>
-        <div class="pagination"><button class="page-btn" id="prevDpHistoryBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="dpHistoryPageInfo">1/1</span><button class="page-btn" id="nextDpHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
+        <div class="pagination"><button class="page-btn" id="prevDpHistoryBtn" disabled><i
+              class="fas fa-chevron-left"></i></button><span class="page-info" id="dpHistoryPageInfo">1/1</span><button
+            class="page-btn" id="nextDpHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
       </div>
     </div>
 
     <!-- WITHDRAW -->
     <div class="section-content" id="sec-withdraw">
       <h1 class="page-title"><i class="fas fa-minus-circle"></i> Withdraw</h1>
-      <div style="background:#fffaf0; padding:8px 12px; border-radius:var(--radius-sm); border-left:3px solid #dd6b20; margin-bottom:12px; max-width:480px;">
-        <p style="font-size:0.75rem; color:#dd6b20; margin:0;"><i class="fas fa-info-circle"></i> Withdraw membutuhkan persetujuan Admin.</p>
+      <div
+        style="background:#fffaf0; padding:8px 12px; border-radius:var(--radius-sm); border-left:3px solid #dd6b20; margin-bottom:12px; max-width:480px;">
+        <p style="font-size:0.75rem; color:#dd6b20; margin:0;"><i class="fas fa-info-circle"></i> Withdraw membutuhkan
+          persetujuan Admin.</p>
       </div>
       <div class="form-section-card" style="max-width:480px;">
-        <div class="form-group"><label>Sisa Saldo</label><input type="text" id="wdAvailableBal" disabled style="font-weight:bold; color:var(--denim-blue);" /></div>
-        <div class="form-group"><label>Nominal Withdraw (Rp)</label><input type="number" id="withdrawAmount" placeholder="Minimal 50.000" min="50000" /></div>
-        <div class="form-group"><label>Rekening Tujuan</label><input type="text" id="withdrawAccount" disabled placeholder="Isi di Profil" /></div>
-        <button class="btn-sm btn-sm-primary" id="submitWithdrawBtn" style="width:100%; padding:10px; justify-content:center;">Ajukan Withdraw</button>
+        <div class="form-group"><label>Sisa Saldo</label><input type="text" id="wdAvailableBal" disabled
+            style="font-weight:bold; color:var(--denim-blue);" /></div>
+        <div class="form-group"><label>Nominal Withdraw (Rp)</label><input type="number" id="withdrawAmount"
+            placeholder="Minimal 50.000" min="50000" /></div>
+        <div class="form-group"><label>Rekening Tujuan</label><input type="text" id="withdrawAccount" disabled
+            placeholder="Isi di Profil" /></div>
+        <button class="btn-sm btn-sm-primary" id="submitWithdrawBtn"
+          style="width:100%; padding:10px; justify-content:center;">Ajukan Withdraw</button>
         <p class="text-muted mt-16">Minimal withdraw Rp 50.000</p>
       </div>
       <h3 style="font-size:0.95rem; margin-bottom:8px;"><i class="fas fa-list"></i> Riwayat Withdraw</h3>
       <div class="table-container">
         <table>
-          <thead><tr><th>Tanggal</th><th>Rekening</th><th>Nominal</th><th>Status</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Rekening</th>
+              <th>Nominal</th>
+              <th>Status</th>
+            </tr>
+          </thead>
           <tbody id="withdrawHistoryBody"></tbody>
         </table>
-        <div class="pagination"><button class="page-btn" id="prevWdHistoryBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="wdHistoryPageInfo">1/1</span><button class="page-btn" id="nextWdHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
+        <div class="pagination"><button class="page-btn" id="prevWdHistoryBtn" disabled><i
+              class="fas fa-chevron-left"></i></button><span class="page-info" id="wdHistoryPageInfo">1/1</span><button
+            class="page-btn" id="nextWdHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
       </div>
     </div>
 
@@ -1097,10 +2261,20 @@
       <h1 class="page-title"><i class="fas fa-history"></i> Riwayat Transaksi</h1>
       <div class="table-container">
         <table>
-          <thead><tr><th>Tanggal</th><th>Jenis</th><th>Detail</th><th>Nominal</th><th>Status</th></tr></thead>
+          <thead>
+            <tr>
+              <th>Tanggal</th>
+              <th>Jenis</th>
+              <th>Detail</th>
+              <th>Nominal</th>
+              <th>Status</th>
+            </tr>
+          </thead>
           <tbody id="historyTableBody"></tbody>
         </table>
-        <div class="pagination"><button class="page-btn" id="prevHistoryBtn" disabled><i class="fas fa-chevron-left"></i></button><span class="page-info" id="historyPageInfo">1/1</span><button class="page-btn" id="nextHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
+        <div class="pagination"><button class="page-btn" id="prevHistoryBtn" disabled><i
+              class="fas fa-chevron-left"></i></button><span class="page-info" id="historyPageInfo">1/1</span><button
+            class="page-btn" id="nextHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button></div>
       </div>
     </div>
 
@@ -1112,7 +2286,8 @@
           <div class="section-title"><i class="fas fa-user-circle"></i> Foto Profil</div>
           <div class="profile-upload-area">
             <img id="profileImagePreview" class="avatar-preview" src="" alt="Foto" style="display:none;">
-            <div id="profileImagePlaceholder" class="avatar-preview" style="display:flex;"><i class="fas fa-user"></i></div>
+            <div id="profileImagePlaceholder" class="avatar-preview" style="display:flex;"><i class="fas fa-user"></i>
+            </div>
             <div>
               <input type="file" id="profileImageInput" accept="image/*" style="margin-bottom:4px;" />
               <button class="btn-sm btn-sm-primary" id="uploadProfileImageBtn">Upload</button>
@@ -1125,8 +2300,10 @@
           <div class="form-row">
             <div class="form-group"><label>Username</label><input type="text" id="profUsername" disabled /></div>
             <div class="form-group"><label>Email</label><input type="email" id="profEmail" disabled /></div>
-            <div class="form-group"><label>Kata Sandi Baru</label><input type="password" id="profPassword" placeholder="Kosongkan jika tidak diubah" /></div>
-            <div class="form-group"><label>Konfirmasi</label><input type="password" id="profConfirmPassword" placeholder="Ulangi sandi baru" /></div>
+            <div class="form-group"><label>Kata Sandi Baru</label><input type="password" id="profPassword"
+                placeholder="Kosongkan jika tidak diubah" /></div>
+            <div class="form-group"><label>Konfirmasi</label><input type="password" id="profConfirmPassword"
+                placeholder="Ulangi sandi baru" /></div>
           </div>
         </div>
         <div class="form-section-card">
@@ -1149,11 +2326,14 @@
         <div class="form-section-card">
           <div class="section-title"><i class="fas fa-map-pin"></i> Alamat</div>
           <div class="form-row">
-            <div class="form-group full-width"><label>Alamat Lengkap</label><textarea id="profAddress" rows="2"></textarea></div>
+            <div class="form-group full-width"><label>Alamat Lengkap</label><textarea id="profAddress"
+                rows="2"></textarea></div>
             <div class="form-group full-width"><label>Kota & Provinsi</label><input type="text" id="profCity" /></div>
           </div>
         </div>
-        <button class="btn-sm btn-sm-gold" id="btnSaveProfile" style="width:100%; padding:12px; justify-content:center; font-size:0.9rem;"><i class="fas fa-save"></i> Simpan Profil</button>
+        <button class="btn-sm btn-sm-gold" id="btnSaveProfile"
+          style="width:100%; padding:12px; justify-content:center; font-size:0.9rem;"><i class="fas fa-save"></i> Simpan
+          Profil</button>
       </div>
     </div>
 
@@ -1162,7 +2342,9 @@
   <!-- MODAL ALERT -->
   <div class="custom-modal-overlay" id="customModalOverlay">
     <div class="custom-modal">
-      <div class="custom-modal-header"><h3 id="modalTitle">Konfirmasi</h3></div>
+      <div class="custom-modal-header">
+        <h3 id="modalTitle">Konfirmasi</h3>
+      </div>
       <div class="custom-modal-body" id="modalBodyText">Pesan...</div>
       <div class="custom-modal-footer" id="modalFooter">
         <button class="btn-sm btn-sm-primary" id="modalBtnOk">OK</button>
@@ -1173,17 +2355,26 @@
   <!-- MODAL UPLOAD -->
   <div class="custom-modal-overlay" id="uploadModalOverlay">
     <div class="custom-modal" style="max-width:420px;">
-      <div class="custom-modal-header"><h3><i class="fas fa-upload"></i> Konfirmasi Transfer</h3></div>
+      <div class="custom-modal-header">
+        <h3><i class="fas fa-upload"></i> Konfirmasi Transfer</h3>
+      </div>
       <div class="custom-modal-body">
-        <div id="uploadBankInfo" style="background:#f8fafc; padding:12px; border-radius:6px; border:1px solid #e2e8f0; margin-bottom:10px; font-size:0.8rem; line-height:1.5;"></div>
-        <div class="form-group"><label>Upload Bukti</label><input type="file" id="uploadProofFile" accept="image/*" style="padding:6px;" /></div>
+        <div id="uploadBankInfo"
+          style="background:#f8fafc; padding:12px; border-radius:6px; border:1px solid #e2e8f0; margin-bottom:10px; font-size:0.8rem; line-height:1.5;">
+        </div>
+        <div class="form-group"><label>Upload Bukti</label><input type="file" id="uploadProofFile" accept="image/*"
+            style="padding:6px;" /></div>
         <div id="uploadProgressBox" style="display:none; margin-top:12px;">
-          <div style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; margin-bottom:4px;">
-            <span style="color:var(--denim-navy);"><i class="fas fa-spinner fa-spin"></i> Mengunggah Bukti Transfer...</span>
+          <div
+            style="display:flex; justify-content:space-between; font-size:0.75rem; font-weight:700; margin-bottom:4px;">
+            <span style="color:var(--denim-navy);"><i class="fas fa-spinner fa-spin"></i> Mengunggah Bukti
+              Transfer...</span>
             <span id="uploadPercentText" style="color:var(--gold-accent);">0%</span>
           </div>
           <div style="background:#e2e8f0; border-radius:10px; height:10px; overflow:hidden; border:1px solid #cbd5e0;">
-            <div id="uploadProgressBar" style="width:0%; height:100%; background:linear-gradient(90deg, #bf953f, #15283c); border-radius:10px; transition:width 0.2s ease;"></div>
+            <div id="uploadProgressBar"
+              style="width:0%; height:100%; background:linear-gradient(90deg, #bf953f, #15283c); border-radius:10px; transition:width 0.2s ease;">
+            </div>
           </div>
         </div>
       </div>
@@ -1197,12 +2388,16 @@
   <!-- MODAL RO -->
   <div class="custom-modal-overlay" id="roModalOverlay">
     <div class="custom-modal" style="max-width:540px;">
-      <div class="custom-modal-header"><h3><i class="fas fa-shopping-bag"></i> Detail & Pembelian Produk</h3></div>
+      <div class="custom-modal-header">
+        <h3><i class="fas fa-shopping-bag"></i> Detail & Pembelian Produk</h3>
+      </div>
       <div class="custom-modal-body" id="roModalBody"></div>
       <div class="custom-modal-footer" id="roModalFooter">
         <button class="btn-sm btn-sm-danger" id="roModalCancelBtn">Batal</button>
-        <button class="btn-sm btn-sm-gold" id="roModalNextBtn"><i class="fas fa-arrow-right"></i> Lanjut Pilih Pembayaran</button>
-        <button class="btn-sm btn-sm-primary" id="roModalConfirmBankBtn" style="display:none;"><i class="fas fa-check"></i> Konfirmasi Pesanan Bank</button>
+        <button class="btn-sm btn-sm-gold" id="roModalNextBtn"><i class="fas fa-arrow-right"></i> Lanjut Pilih
+          Pembayaran</button>
+        <button class="btn-sm btn-sm-primary" id="roModalConfirmBankBtn" style="display:none;"><i
+            class="fas fa-check"></i> Konfirmasi Pesanan Bank</button>
       </div>
     </div>
   </div>
@@ -1217,59 +2412,80 @@
       </div>
       <div class="custom-modal-body" style="padding:20px;">
         <div style="text-align:center; margin-bottom:16px;">
-          <div style="font-size:0.78rem; color:#718096; text-transform:uppercase; font-weight:700;">Nomor Pesanan Anda:</div>
-          <div id="nextStepOrderNum" style="font-size:1.2rem; font-weight:800; color:var(--denim-dark); letter-spacing:0.5px;">RO-123456</div>
+          <div style="font-size:0.78rem; color:#718096; text-transform:uppercase; font-weight:700;">Nomor Pesanan Anda:
+          </div>
+          <div id="nextStepOrderNum"
+            style="font-size:1.2rem; font-weight:800; color:var(--denim-dark); letter-spacing:0.5px;">RO-123456</div>
         </div>
 
-        <div style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:16px; margin-bottom:16px;">
-          <div style="font-size:0.85rem; font-weight:800; color:var(--denim-navy); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
+        <div
+          style="background:#f8fafc; border:1px solid #e2e8f0; border-radius:14px; padding:16px; margin-bottom:16px;">
+          <div
+            style="font-size:0.85rem; font-weight:800; color:var(--denim-navy); margin-bottom:12px; display:flex; align-items:center; gap:6px;">
             <i class="fas fa-list-ol" style="color:var(--gold-accent);"></i> Langkah Selanjutnya Pembayaran:
           </div>
 
           <div style="display:flex; flex-direction:column; gap:14px;">
             <!-- STEP 1 -->
             <div style="display:flex; gap:12px; align-items:flex-start;">
-              <div style="width:26px; height:26px; border-radius:50%; background:var(--gold-accent); color:var(--denim-dark); font-weight:800; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">1</div>
+              <div
+                style="width:26px; height:26px; border-radius:50%; background:var(--gold-accent); color:var(--denim-dark); font-weight:800; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">
+                1</div>
               <div style="font-size:0.85rem; line-height:1.5; flex:1;">
                 <div>Transfer <strong>TEPAT</strong> sebesar:</div>
                 <div style="display:flex; align-items:center; gap:8px; margin:6px 0;">
-                  <span id="nextStepTotalAmount" style="font-size:1.25rem; font-weight:800; color:#2e7d32; background:#e8f5e9; padding:4px 12px; border-radius:8px; border:1px solid #c8e6c9;">Rp 0</span>
-                  <button class="btn-sm btn-sm-gold" id="btnCopyNextStepAmount" style="padding:4px 10px; font-size:0.75rem;"><i class="fas fa-copy"></i> Salin Nominal</button>
+                  <span id="nextStepTotalAmount"
+                    style="font-size:1.25rem; font-weight:800; color:#2e7d32; background:#e8f5e9; padding:4px 12px; border-radius:8px; border:1px solid #c8e6c9;">Rp
+                    0</span>
+                  <button class="btn-sm btn-sm-gold" id="btnCopyNextStepAmount"
+                    style="padding:4px 10px; font-size:0.75rem;"><i class="fas fa-copy"></i> Salin Nominal</button>
                 </div>
-                <div style="font-size:0.75rem; color:#d97706; font-weight:700; background:#fff8e7; padding:6px 10px; border-radius:6px; border-left:3px solid #f59e0b; margin-top:4px;">
-                  ⚠️ Wajib menyertakan <strong>Kode Unik 3 Angka (<span id="nextStepUniqueCode">000</span>)</strong> agar pembayaran otomatis terverifikasi Admin.
+                <div
+                  style="font-size:0.75rem; color:#d97706; font-weight:700; background:#fff8e7; padding:6px 10px; border-radius:6px; border-left:3px solid #f59e0b; margin-top:4px;">
+                  ⚠️ Wajib menyertakan <strong>Kode Unik 3 Angka (<span id="nextStepUniqueCode">000</span>)</strong>
+                  agar pembayaran otomatis terverifikasi Admin.
                 </div>
               </div>
             </div>
 
             <!-- STEP 2 -->
             <div style="display:flex; gap:12px; align-items:flex-start;">
-              <div style="width:26px; height:26px; border-radius:50%; background:var(--denim-navy); color:#fff; font-weight:800; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">2</div>
+              <div
+                style="width:26px; height:26px; border-radius:50%; background:var(--denim-navy); color:#fff; font-weight:800; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">
+                2</div>
               <div style="font-size:0.85rem; line-height:1.5; flex:1;">
                 <div>Transfer ke Rekening Resmi Perusahaan:</div>
-                <div id="nextStepBankList" style="margin-top:6px; background:#fff; padding:10px 12px; border-radius:10px; border:1px solid #cbd5e0; font-size:0.8rem;"></div>
+                <div id="nextStepBankList"
+                  style="margin-top:6px; background:#fff; padding:10px 12px; border-radius:10px; border:1px solid #cbd5e0; font-size:0.8rem;">
+                </div>
               </div>
             </div>
 
             <!-- STEP 3 -->
             <div style="display:flex; gap:12px; align-items:flex-start;">
-              <div style="width:26px; height:26px; border-radius:50%; background:var(--denim-blue); color:#fff; font-weight:800; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">3</div>
+              <div
+                style="width:26px; height:26px; border-radius:50%; background:var(--denim-blue); color:#fff; font-weight:800; font-size:0.85rem; display:flex; align-items:center; justify-content:center; flex-shrink:0; margin-top:2px;">
+                3</div>
               <div style="font-size:0.85rem; line-height:1.5; flex:1;">
-                <div>Simpan foto / screenshot bukti transfer Anda, kemudian klik tombol <strong>"Upload Bukti Sekarang"</strong> di bawah.</div>
+                <div>Simpan foto / screenshot bukti transfer Anda, kemudian klik tombol <strong>"Upload Bukti
+                    Sekarang"</strong> di bawah.</div>
               </div>
             </div>
           </div>
         </div>
       </div>
       <div class="custom-modal-footer" style="gap:10px; flex-wrap:wrap; padding:14px 20px;">
-        <button class="btn-sm btn-sm-success" id="nextStepUploadBtn" style="flex:1; padding:12px; justify-content:center; font-size:0.9rem; font-weight:700;"><i class="fas fa-upload"></i> Upload Bukti Sekarang</button>
-        <button class="btn-sm btn-sm-primary" id="nextStepCloseBtn" style="padding:12px 18px; font-size:0.85rem;"><i class="fas fa-box"></i> Ke Riwayat RO</button>
+        <button class="btn-sm btn-sm-success" id="nextStepUploadBtn"
+          style="flex:1; padding:12px; justify-content:center; font-size:0.9rem; font-weight:700;"><i
+            class="fas fa-upload"></i> Upload Bukti Sekarang</button>
+        <button class="btn-sm btn-sm-primary" id="nextStepCloseBtn" style="padding:12px 18px; font-size:0.85rem;"><i
+            class="fas fa-box"></i> Ke Riwayat RO</button>
       </div>
     </div>
   </div>
 
   <script>
-    (function() {
+    (function () {
       'use strict';
 
       // ========== GLOBAL STATE ==========
@@ -1308,7 +2524,7 @@
         document.getElementById('modalBodyText').innerHTML = message;
         document.getElementById('modalFooter').innerHTML = `<button class="btn-sm btn-sm-gold" id="modalOkBtn">OK</button>`;
         document.getElementById('customModalOverlay').classList.add('active');
-        document.getElementById('modalOkBtn').onclick = function() {
+        document.getElementById('modalOkBtn').onclick = function () {
           document.getElementById('customModalOverlay').classList.remove('active');
           if (callback) callback();
         };
@@ -1357,7 +2573,7 @@
         profile: document.getElementById('sec-profile')
       };
 
-      window.showSection = function(sectionId) {
+      window.showSection = function (sectionId) {
         Object.values(sections).forEach(el => el.classList.remove('active'));
         if (sections[sectionId]) sections[sectionId].classList.add('active');
         document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(el => el.classList.remove('active'));
@@ -1379,17 +2595,17 @@
       };
 
       document.querySelectorAll('.sidebar .menu-item[data-section]').forEach(item => {
-        item.addEventListener('click', function() { window.showSection(this.dataset.section); });
+        item.addEventListener('click', function () { window.showSection(this.dataset.section); });
       });
 
       // ========== LOGOUT ==========
-      document.getElementById('sideLogoutBtn').addEventListener('click', async function() {
+      document.getElementById('sideLogoutBtn').addEventListener('click', async function () {
         await window.signOut();
         window.location.href = '/';
       });
 
       // ========== COPY REF ==========
-      window.copyRefLink = function() {
+      window.copyRefLink = function () {
         const copyText = document.getElementById('refLink');
         copyText.select();
         copyText.setSelectionRange(0, 99999);
@@ -1511,7 +2727,7 @@
         document.getElementById('binaryBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_binary) || 0).toLocaleString('id-ID');
         document.getElementById('rewardBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_reward) || 0).toLocaleString('id-ID');
         document.getElementById('roBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_ro) || 0).toLocaleString('id-ID');
-        
+
         // Referral link format domain/reff/username
         const refUrl = `${window.location.origin}/reff/${currentUser.username}`;
         document.getElementById('refLink').value = refUrl;
@@ -1607,7 +2823,7 @@
 
           html += `<tr>
             <td data-label="Tanggal">${date}</td>
-            <td data-label="Jenis"><strong>${(t.type||'').toUpperCase()}</strong></td>
+            <td data-label="Jenis"><strong>${(t.type || '').toUpperCase()}</strong></td>
             <td data-label="Detail">${t.note || t.productName || t.method || t.account || 'Transaksi'}${resiHtml}</td>
             <td data-label="Nominal" class="amount ${colorClass}">${sign} Rp ${(parseFloat(t.amount || t.price) || 0).toLocaleString('id-ID')}</td>
             <td data-label="Status"><span class="status-badge ${badge}">${realStatus}</span></td>
@@ -1639,7 +2855,7 @@
           card.className = 'product-card';
           let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<div class="product-icon-fallback"><i class="fas ${p.icon || 'fa-tshirt'}"></i></div>`;
           const prodSerial = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
-          
+
           const btnText = window.innerWidth <= 600 ? '<i class="fas fa-shopping-cart"></i> Detail & Beli' : '<i class="fas fa-shopping-cart"></i> Detail & Beli Produk';
           card.innerHTML = `
             <div class="product-badge-stock ${p.stock > 0 ? 'instock' : 'outstock'}">
@@ -1653,8 +2869,8 @@
                 <div class="product-serial"><i class="fas fa-barcode"></i> ${prodSerial}</div>
                 <h3 class="product-title" style="cursor:pointer;" onclick="openROModal('${p.id}', ${p.price})">${p.name}</h3>
                 <div class="product-price-box">
-                  <span class="price-val">Rp ${(parseFloat(p.price)||0).toLocaleString('id-ID')}</span>
-                  ${p.original ? `<del class="price-del">Rp ${(parseFloat(p.original)||0).toLocaleString('id-ID')}</del>` : ''}
+                  <span class="price-val">Rp ${(parseFloat(p.price) || 0).toLocaleString('id-ID')}</span>
+                  ${p.original ? `<del class="price-del">Rp ${(parseFloat(p.original) || 0).toLocaleString('id-ID')}</del>` : ''}
                 </div>
               </div>
               <div class="product-actions-row">
@@ -1666,7 +2882,7 @@
           grid.appendChild(card);
         });
         document.querySelectorAll('.buy-ro-btn').forEach(btn => {
-          btn.addEventListener('click', function() {
+          btn.addEventListener('click', function () {
             if (currentUser.status !== 'verified') {
               showModalAlert('Akun Belum Verifikasi', 'Untuk melakukan Repeat Order (RO), status akun Anda harus VERIFIED terlebih dahulu.');
               return;
@@ -1700,13 +2916,13 @@
         function updateModalTotals() {
           const baseSub = roPrice * currentQty;
           const bankSub = baseSub + uniqueCode;
-          
+
           const qtyInput = document.getElementById('roQtyInput');
           if (qtyInput) qtyInput.value = currentQty;
-          
+
           const baseSubEl = document.getElementById('roBaseSubtotal');
           if (baseSubEl) baseSubEl.textContent = 'Rp ' + baseSub.toLocaleString('id-ID');
-          
+
           const bankTotalEl = document.getElementById('roBankTotalVal');
           if (bankTotalEl) bankTotalEl.textContent = 'Rp ' + bankSub.toLocaleString('id-ID');
         }
@@ -1715,7 +2931,7 @@
           <div class="ro-detail-grid">
             <div style="display:flex; justify-content:space-between; align-items:center; background:#fff8e7; padding:6px 12px; border-radius:8px; border:1px solid #ffe8a1;">
               <span style="font-size:0.7rem; color:#744210; font-weight:800;"><i class="fas fa-barcode"></i> Seri: <strong>${prodSerial}</strong></span>
-              <span style="font-size:0.7rem; color:#2e7d32; font-weight:800;"><i class="fas fa-box"></i> Stok: ${prod.stock||0} pcs</span>
+              <span style="font-size:0.7rem; color:#2e7d32; font-weight:800;"><i class="fas fa-box"></i> Stok: ${prod.stock || 0} pcs</span>
             </div>
             
             <div style="display:grid; grid-template-columns:${window.innerWidth > 600 ? '140px 1fr' : '1fr'}; gap:10px; margin-top:4px;">
@@ -1736,8 +2952,8 @@
             <!-- QTY & OPTIONS -->
             <div style="background:#f8fafc; padding:8px 10px; border-radius:8px; border:1px solid #e2e8f0; margin-top:5px;">
               <div class="ro-options-grid" style="display:grid; grid-template-columns:${window.innerWidth > 500 ? '1fr 1fr 1fr' : '1fr 1fr'}; gap:6px; align-items:end;">
-                <div class="form-group" style="margin:0;"><label style="font-size:0.68rem; font-weight:700;">Ukuran</label><select id="roSizeSelect" style="width:100%; padding:4px 6px; border-radius:5px; font-size:0.72rem; height:30px;">${(prod.sizes || ['30','32','34']).map(s => `<option value="${s}">Size ${s}</option>`).join('')}</select></div>
-                <div class="form-group" style="margin:0;"><label style="font-size:0.68rem; font-weight:700;">Warna</label><select id="roColorSelect" style="width:100%; padding:4px 6px; border-radius:5px; font-size:0.72rem; height:30px;">${(prod.colors || ['Indigo Blue','Dark Blue']).map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
+                <div class="form-group" style="margin:0;"><label style="font-size:0.68rem; font-weight:700;">Ukuran</label><select id="roSizeSelect" style="width:100%; padding:4px 6px; border-radius:5px; font-size:0.72rem; height:30px;">${(prod.sizes || ['30', '32', '34']).map(s => `<option value="${s}">Size ${s}</option>`).join('')}</select></div>
+                <div class="form-group" style="margin:0;"><label style="font-size:0.68rem; font-weight:700;">Warna</label><select id="roColorSelect" style="width:100%; padding:4px 6px; border-radius:5px; font-size:0.72rem; height:30px;">${(prod.colors || ['Indigo Blue', 'Dark Blue']).map(c => `<option value="${c}">${c}</option>`).join('')}</select></div>
                 <div class="form-group" style="margin:0; ${window.innerWidth <= 500 ? 'grid-column:1 / -1;' : ''}">
                   <label style="font-size:0.68rem; font-weight:700;">Jumlah</label>
                   <div class="qty-selector" style="height:30px; width:100%; justify-content:center;">
@@ -1759,7 +2975,7 @@
               <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
                 <button class="btn-sm" id="btnPayWallet" style="background:#2e7d32; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; border-radius:8px; font-size:0.75rem; text-align:center; border:2px solid transparent; width:100%;">
                   <span style="font-weight:700;"><i class="fas fa-wallet"></i> Saldo Dompet</span>
-                  <span id="roWalletBal" style="font-weight:700; font-size:0.68rem; opacity:0.95; margin-top:2px;">(Rp ${(currentUser.wallet||0).toLocaleString('id-ID')})</span>
+                  <span id="roWalletBal" style="font-weight:700; font-size:0.68rem; opacity:0.95; margin-top:2px;">(Rp ${(currentUser.wallet || 0).toLocaleString('id-ID')})</span>
                 </button>
                 <button class="btn-sm" id="btnPayBank" style="background:var(--denim-blue); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; border-radius:8px; font-size:0.75rem; text-align:center; border:2px solid transparent; width:100%;">
                   <span style="font-weight:700;"><i class="fas fa-university"></i> Transfer Bank</span>
@@ -1777,10 +2993,10 @@
         document.getElementById('roModalConfirmBankBtn').style.display = 'none';
 
         // Qty handlers
-        document.getElementById('roQtyMinus').onclick = function() {
+        document.getElementById('roQtyMinus').onclick = function () {
           if (currentQty > 1) { currentQty--; updateModalTotals(); }
         };
-        document.getElementById('roQtyPlus').onclick = function() {
+        document.getElementById('roQtyPlus').onclick = function () {
           const maxStock = prod.stock || 99;
           if (currentQty < maxStock) { currentQty++; updateModalTotals(); }
           else { showToast('Jumlah melebihi stok tersedia.', 'warning'); }
@@ -1789,7 +3005,7 @@
         // Zoom image
         const roImage = document.getElementById('roImageContainer');
         if (roImage) {
-          roImage.onclick = function() {
+          roImage.onclick = function () {
             roZoomed = !roZoomed;
             this.style.transform = roZoomed ? 'scale(1.8)' : 'scale(1)';
             this.style.transition = 'transform 0.3s ease';
@@ -1801,47 +3017,47 @@
 
         let selectedMethod = null;
 
-        document.getElementById('roModalNextBtn').onclick = function() {
+        document.getElementById('roModalNextBtn').onclick = function () {
           this.style.display = 'none';
           document.getElementById('roPaymentSelection').style.display = 'block';
         };
 
-        document.getElementById('btnPayWallet').onclick = function() {
+        document.getElementById('btnPayWallet').onclick = function () {
           selectedMethod = 'wallet';
           this.style.outline = '2px solid var(--gold-accent)';
           this.style.opacity = '1';
           document.getElementById('btnPayBank').style.outline = 'none';
           document.getElementById('btnPayBank').style.opacity = '0.6';
-          
+
           const baseSub = roPrice * currentQty;
           if ((currentUser.wallet || 0) < baseSub) { showModalAlert('Saldo Tidak Cukup', 'Saldo dompet Anda tidak mencukupi untuk transaksi ini.'); return; }
-          
+
           const confirmBtn = document.getElementById('roModalConfirmBankBtn');
           confirmBtn.innerHTML = '<i class="fas fa-wallet"></i> Konfirmasi Bayar Saldo';
           confirmBtn.className = 'btn-sm btn-sm-success';
           confirmBtn.style.display = 'inline-flex';
         };
 
-        document.getElementById('btnPayBank').onclick = function() {
+        document.getElementById('btnPayBank').onclick = function () {
           selectedMethod = 'bank';
           this.style.outline = '2px solid var(--gold-accent)';
           this.style.opacity = '1';
           document.getElementById('btnPayWallet').style.outline = 'none';
           document.getElementById('btnPayWallet').style.opacity = '0.6';
-          
+
           const confirmBtn = document.getElementById('roModalConfirmBankBtn');
           confirmBtn.innerHTML = '<i class="fas fa-check"></i> Konfirmasi Pembayaran Bank';
           confirmBtn.className = 'btn-sm btn-sm-primary';
           confirmBtn.style.display = 'inline-flex';
         };
 
-        document.getElementById('roModalConfirmBankBtn').onclick = function() {
+        document.getElementById('roModalConfirmBankBtn').onclick = function () {
           if (!selectedMethod) selectedMethod = 'bank';
           roModalOverlay.classList.remove('active');
           prosesRO(selectedMethod, currentQty);
         };
 
-        document.getElementById('roModalCancelBtn').onclick = function() {
+        document.getElementById('roModalCancelBtn').onclick = function () {
           roModalOverlay.classList.remove('active');
         };
       }
@@ -1854,7 +3070,7 @@
           const size = document.getElementById('roSizeSelect')?.value || '30';
           const color = document.getElementById('roColorSelect')?.value || 'Indigo Blue';
           const uniqueCode = window.getUniqueCode ? window.getUniqueCode(currentUser.id) : 123;
-          
+
           const baseTotal = roPrice * qty;
           const bankTotal = baseTotal + uniqueCode;
           const finalAmount = method === 'wallet' ? baseTotal : bankTotal;
@@ -1943,7 +3159,7 @@
         }
       }
 
-      window.showOrderNextStepsModal = async function(orderObj, totalAmount, uniqueCode) {
+      window.showOrderNextStepsModal = async function (orderObj, totalAmount, uniqueCode) {
         const modal = document.getElementById('orderNextStepsModal');
         if (!modal) return;
 
@@ -1970,19 +3186,19 @@
           }
         }
 
-        document.getElementById('btnCopyNextStepAmount').onclick = function() {
+        document.getElementById('btnCopyNextStepAmount').onclick = function () {
           navigator.clipboard.writeText(totalAmount.toString());
           showToast('Nominal Rp ' + totalAmount.toLocaleString('id-ID') + ' disalin!', 'success');
         };
 
-        document.getElementById('nextStepUploadBtn').onclick = function() {
+        document.getElementById('nextStepUploadBtn').onclick = function () {
           modal.classList.remove('active');
           renderDashboard();
           window.showSection('ro-history');
           window.bukaModalUpload(orderObj.id, 'ro');
         };
 
-        document.getElementById('nextStepCloseBtn').onclick = function() {
+        document.getElementById('nextStepCloseBtn').onclick = function () {
           modal.classList.remove('active');
           renderDashboard();
           window.showSection('ro-history');
@@ -1995,14 +3211,14 @@
       let currentUploadTxId = null;
       let currentUploadType = 'ro';
 
-      window.bukaModalUpload = async function(txId, type = 'ro') {
+      window.bukaModalUpload = async function (txId, type = 'ro') {
         currentUploadTxId = txId;
         currentUploadType = type;
-        
+
         const modal = document.getElementById('uploadModalOverlay');
         const bankInfoDiv = document.getElementById('uploadBankInfo');
         const fileInput = document.getElementById('uploadProofFile');
-        
+
         if (fileInput) fileInput.value = '';
 
         if (bankInfoDiv) {
@@ -2021,7 +3237,7 @@
         if (modal) modal.classList.add('active');
       };
 
-      window.closeUploadModal = function() {
+      window.closeUploadModal = function () {
         const modal = document.getElementById('uploadModalOverlay');
         if (modal) modal.classList.remove('active');
       };
@@ -2062,7 +3278,7 @@
         });
       }
 
-      document.getElementById('uploadSubmitBtn')?.addEventListener('click', async function() {
+      document.getElementById('uploadSubmitBtn')?.addEventListener('click', async function () {
         const fileInput = document.getElementById('uploadProofFile');
         if (!fileInput || !fileInput.files || !fileInput.files[0]) {
           showModalAlert('Peringatan', 'Silakan pilih foto / gambar bukti transfer Anda.');
@@ -2209,7 +3425,7 @@
       // ========== RO HISTORY ==========
       async function renderRoHistory() {
         const tbody = document.getElementById('roHistoryBody');
-        
+
         // Refresh orders & user
         allOrders = await window.getOrders();
         const userOrders = (allOrders || []).filter(o => String(o.user_id) === String(currentUser.id));
@@ -2272,19 +3488,19 @@
           let statusText = 'Diproses (Pending)';
           let badgeClass = 'status-pending';
           if (t.status === 'completed' || t.status === 'success') {
-            statusText = '✅ SELESAI'; 
-            badgeClass = 'status-success'; 
-          } else if (t.status === 'shipped') { 
-            statusText = '🚚 DIKIRIM'; 
-            badgeClass = 'status-success'; 
-          } else if (t.status === 'processing' || t.status === 'verified' || t.status === 'paid') { 
-            statusText = 'Terverifikasi / Diproses'; 
-            badgeClass = 'status-success'; 
-          } else if (t.status === 'failed') { 
-            statusText = 'Dibatalkan'; 
-            badgeClass = 'status-failed'; 
+            statusText = '✅ SELESAI';
+            badgeClass = 'status-success';
+          } else if (t.status === 'shipped') {
+            statusText = '🚚 DIKIRIM';
+            badgeClass = 'status-success';
+          } else if (t.status === 'processing' || t.status === 'verified' || t.status === 'paid') {
+            statusText = 'Terverifikasi / Diproses';
+            badgeClass = 'status-success';
+          } else if (t.status === 'failed') {
+            statusText = 'Dibatalkan';
+            badgeClass = 'status-failed';
           }
-          
+
           let actionHtml = '-';
           if (t.status === 'completed' || t.status === 'success') {
             actionHtml = `<span style="font-size:0.75rem; color:#2e7d32; font-weight:800;"><i class="fas fa-check-circle"></i> Selesai</span>`;
@@ -2379,7 +3595,7 @@
         };
       }
 
-      window.openRegisterDownline = function(sponsor, upline, pos) {
+      window.openRegisterDownline = function (sponsor, upline, pos) {
         window.location.href = `/register?ref=${encodeURIComponent(sponsor)}&upline=${encodeURIComponent(upline)}&pos=${pos}&new=1`;
       };
 
@@ -2432,7 +3648,7 @@
         let allTxs = [];
         try {
           allTxs = await window.getTransactions(currentUser.id).catch(() => []);
-        } catch (e) {}
+        } catch (e) { }
 
         const userLocalTxs = currentUser.transactions || [];
         const combinedMap = new Map();
@@ -2443,11 +3659,11 @@
           }
         });
 
-        let bonusTxs = Array.from(combinedMap.values()).filter(t => 
-          t.type === 'bonus' || 
-          t.type === 'sponsor' || 
-          t.type === 'binary' || 
-          t.type === 'reward' || 
+        let bonusTxs = Array.from(combinedMap.values()).filter(t =>
+          t.type === 'bonus' ||
+          t.type === 'sponsor' ||
+          t.type === 'binary' ||
+          t.type === 'reward' ||
           t.type === 'ro_bonus' ||
           t.type === 'bonus_sponsor' ||
           t.type === 'bonus_binary' ||
@@ -2635,7 +3851,7 @@
         methodSelect.innerHTML = banks.map(b => `<option value="${b.bank}">${b.bank} - ${b.account} (a.n ${b.name})</option>`).join('');
       }
 
-      document.getElementById('submitDeposit').addEventListener('click', async function() {
+      document.getElementById('submitDeposit').addEventListener('click', async function () {
         const amount = parseInt(document.getElementById('depositAmount').value);
         if (amount < 10000) { showModalAlert('Kesalahan', 'Minimal Rp 10.000'); return; }
         const uniqueCode = Math.floor(Math.random() * 900) + 100;
@@ -2666,7 +3882,7 @@
 
       async function renderDepositHistory() {
         const tbody = document.getElementById('depositHistoryBody');
-        
+
         // Ambil transaksi live dari tabel transactions Supabase untuk user ini
         let liveTxs = [];
         try {
@@ -2745,7 +3961,7 @@
         }
       }
 
-      document.getElementById('submitWithdrawBtn').addEventListener('click', async function() {
+      document.getElementById('submitWithdrawBtn').addEventListener('click', async function () {
         const amount = parseInt(document.getElementById('withdrawAmount').value);
         if (!currentUser.bank_name || !currentUser.bank_account) {
           showModalAlert('Error', 'Lengkapi Rekening Bank di Profil.');
@@ -2753,7 +3969,7 @@
         }
         if (amount < 50000) { showModalAlert('Kesalahan', 'Minimal withdraw Rp 50.000'); return; }
         if ((currentUser.wallet || 0) < amount) { showModalAlert('Gagal', 'Saldo tidak cukup.'); return; }
-        showModalConfirm('Konfirmasi Withdraw', `Tarik <strong>Rp ${amount.toLocaleString()}</strong> ke <strong>${currentUser.bank_name}</strong>?`, async function() {
+        showModalConfirm('Konfirmasi Withdraw', `Tarik <strong>Rp ${amount.toLocaleString()}</strong> ke <strong>${currentUser.bank_name}</strong>?`, async function () {
           currentUser.wallet = (parseFloat(currentUser.wallet) || 0) - amount;
           const txObj = {
             id: Date.now(),
@@ -2835,7 +4051,7 @@
       });
 
       // ========== UPLOAD BUKTI ==========
-      window.bukaModalUpload = function(id, type) {
+      window.bukaModalUpload = function (id, type) {
         uploadTxId = id;
         uploadType = type;
         let banks = allBankInfo;
@@ -2860,11 +4076,11 @@
 
       let uploadTxId = null, uploadType = null;
       document.getElementById('uploadCancelBtn').addEventListener('click', () => document.getElementById('uploadModalOverlay').classList.remove('active'));
-      document.getElementById('uploadSubmitBtn').addEventListener('click', async function() {
+      document.getElementById('uploadSubmitBtn').addEventListener('click', async function () {
         const fileInput = document.getElementById('uploadProofFile');
         if (!fileInput.files || !fileInput.files[0]) { showModalAlert('Error', 'Pilih file bukti.'); return; }
         const reader = new FileReader();
-        reader.onload = async function(e) {
+        reader.onload = async function (e) {
           const proofDataUrl = e.target.result;
           if (uploadType === 'deposit') {
             let tx = (currentUser.transactions || []).find(t => String(t.id) === String(uploadTxId));
@@ -2956,7 +4172,7 @@
 
           html += `<tr>
             <td data-label="Tanggal">${date}</td>
-            <td data-label="Jenis"><strong>${(t.type||'').toUpperCase()}</strong></td>
+            <td data-label="Jenis"><strong>${(t.type || '').toUpperCase()}</strong></td>
             <td data-label="Detail">${t.note || t.productName || t.method || t.account || '-'}${resiHtml}</td>
             <td data-label="Nominal" style="font-weight:700;">${sign} Rp ${(parseFloat(t.amount || t.price) || 0).toLocaleString()}</td>
             <td data-label="Status"><span class="status-badge ${badge}">${realStatus}</span></td>
@@ -3002,13 +4218,13 @@
         updateProfileUI();
       }
 
-      document.getElementById('uploadProfileImageBtn').addEventListener('click', function() {
+      document.getElementById('uploadProfileImageBtn').addEventListener('click', function () {
         const fileInput = document.getElementById('profileImageInput');
         if (!fileInput.files || !fileInput.files[0]) { showModalAlert('Error', 'Pilih gambar.'); return; }
         const file = fileInput.files[0];
         if (file.size > 2 * 1024 * 1024) { showModalAlert('Error', 'Ukuran maksimal 2MB.'); return; }
         const reader = new FileReader();
-        reader.onload = async function(e) {
+        reader.onload = async function (e) {
           currentUser.profile_image = e.target.result;
           await window.upsertRow('users', currentUser);
           await renderProfileForm();
@@ -3017,7 +4233,7 @@
         reader.readAsDataURL(file);
       });
 
-      document.getElementById('btnSaveProfile').addEventListener('click', async function() {
+      document.getElementById('btnSaveProfile').addEventListener('click', async function () {
         const btn = this;
         const password = document.getElementById('profPassword').value.trim();
         const confirmPassword = document.getElementById('profConfirmPassword').value.trim();
@@ -3100,7 +4316,7 @@
       checkAuth();
 
       // Auto refresh tiap 30 detik
-      setInterval(async function() {
+      setInterval(async function () {
         try {
           currentUser = await window.getUserProfile();
           allUsers = await window.getTable('users');
@@ -3126,4 +4342,5 @@
     })();
   </script>
 </body>
+
 </html>
