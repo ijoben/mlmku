@@ -2635,6 +2635,22 @@
       };
 
       // ========== AUTH GUARD ==========
+      function showImpersonateBanner(user) {
+        if (document.getElementById('impersonateBanner')) return;
+        const banner = document.createElement('div');
+        banner.id = 'impersonateBanner';
+        banner.style.cssText = 'background: linear-gradient(135deg, #b91c1c, #d97706); color: #fff; padding: 10px 16px; font-weight: 700; font-size: 0.85rem; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; z-index: 999999; box-shadow: 0 4px 15px rgba(0,0,0,0.3);';
+        banner.innerHTML = `
+          <span><i class="fas fa-user-secret" style="font-size: 1.1rem; margin-right: 8px;"></i> Anda sedang dalam Mode Login Sebagai Member: <strong>@${user.username || user.fullname || user.id}</strong> (Admin Mode)</span>
+          <button id="btnExitImpersonate" style="background: #fff; color: #b91c1c; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;"><i class="fas fa-undo"></i> Kembali ke Admin Panel</button>
+        `;
+        document.body.prepend(banner);
+        document.getElementById('btnExitImpersonate').onclick = function() {
+          localStorage.removeItem('hedtro_impersonate_user_id');
+          window.location.href = '/admin';
+        };
+      }
+
       async function checkAuth() {
         try {
           if (typeof window.showLoadingBar === 'function') window.showLoadingBar();
@@ -2643,16 +2659,20 @@
             window.location.href = '/login';
             return;
           }
+          const impersonateId = localStorage.getItem('hedtro_impersonate_user_id');
           const profile = await window.getUserProfile();
           if (!profile) {
             window.location.href = '/login';
             return;
           }
-          if (profile.role === 'admin') {
+          if (profile.role === 'admin' && !impersonateId) {
             window.location.href = '/admin';
             return;
           }
           currentUser = profile;
+          if (impersonateId) {
+            showImpersonateBanner(currentUser);
+          }
 
           // Tampilkan UI Dashboard secara instan!
           document.body.style.display = 'block';
