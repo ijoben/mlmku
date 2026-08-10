@@ -1000,13 +1000,11 @@ window.applyBrandSettings = async function() {
       }
 
       if (isImageLogo) {
+        // Full hidden logo text when logo is an image ("full hidden logo teksnya jika logo pakai gambar")
         var isCardHeading = (el.tagName === 'H1');
-        var maxH = isCardHeading ? '42px' : '32px';
-        var textHtml = (brandName === 'HEDTRO JEANS' || brandName === 'HEDTRO') 
-          ? ' HEDTRO<span style="font-weight:300; opacity:0.85; margin-left:2px;">JEANS</span>' 
-          : ' ' + brandName;
+        var maxH = isCardHeading ? '48px' : '36px';
         
-        el.innerHTML = '<img class="brand-logo-img" src="' + brandLogo + '" alt="' + brandName + '" style="max-height:' + maxH + '; width:auto; object-fit:contain; vertical-align:middle; margin-right:6px; display:inline-block;" /><span class="brand-name-txt" style="vertical-align:middle;">' + textHtml + '</span>';
+        el.innerHTML = '<img class="brand-logo-img" src="' + brandLogo + '" alt="' + brandName + '" style="max-height:' + maxH + '; width:auto; object-fit:contain; vertical-align:middle; display:inline-block;" />';
       } else {
         // Show icon + text if logo is a fontawesome icon string or default
         var iconClass = (brandLogo && brandLogo.startsWith('fa-')) ? brandLogo : 'fa-tshirt';
