@@ -189,7 +189,9 @@
     .btn-sm { padding:6px 14px; border-radius:60px; font-weight:700; font-size:0.75rem; transition:var(--transition); font-family:inherit; display:inline-flex; align-items:center; gap:5px; box-shadow:0 3px 10px rgba(0,0,0,0.06); cursor:pointer; }
     .btn-sm-success { background:#2e7d32; color:#fff; } .btn-sm-success:hover { background:#1b5e20; transform:translateY(-1px); }
     .btn-sm-primary { background:var(--denim-blue); color:#fff; } .btn-sm-primary:hover { background:var(--denim-dark); transform:translateY(-1px); }
-    .btn-sm-gold { background:var(--gold-gradient); color:var(--denim-dark); font-weight:800; } .btn-sm-gold:hover { transform:translateY(-1px); box-shadow:0 4px 12px rgba(212,175,55,0.3); }
+    .btn-sm-gold { background:linear-gradient(135deg, #ff6b00 0%, #ff9100 100%); color:#ffffff !important; font-weight:800 !important; text-shadow:0 1px 2px rgba(0,0,0,0.25); box-shadow:0 4px 14px rgba(255,107,0,0.35); border:none; }
+    .btn-sm-gold i { color:#ffffff !important; }
+    .btn-sm-gold:hover { background:linear-gradient(135deg, #ff8800 0%, #ffa000 100%); color:#ffffff !important; transform:translateY(-1px); box-shadow:0 6px 18px rgba(255,107,0,0.48); }
     .btn-sm-danger { background:#e53e3e; color:#fff; }
     .btn-sm-info { background:#3182ce; color:#fff; } .btn-sm-info:hover { background:#2b6cb0; }
 
@@ -307,14 +309,15 @@
       min-width: 60px;
     }
     .wallet-card .ref-box .copy-btn {
-      background: var(--gold-gradient);
-      color: var(--denim-dark);
+      background: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
+      color: #ffffff !important;
       border: none;
       padding: 2px 10px;
       border-radius: 4px;
       cursor: pointer;
       font-size: 0.6rem;
-      font-weight: 800;
+      font-weight: 800 !important;
+      text-shadow: 0 1px 2px rgba(0,0,0,0.25);
       white-space: nowrap;
     }
     .wallet-card .wallet-actions {
