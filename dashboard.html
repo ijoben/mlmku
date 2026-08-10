@@ -759,6 +759,7 @@
     </div>
 
     <div class="menu-item active" data-section="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
+    <div class="menu-item" data-section="bonus-summary"><i class="fas fa-gift"></i> Ringkasan Bonus</div>
     <div class="menu-item" data-section="products"><i class="fas fa-store"></i> Toko Online</div>
     <div class="menu-item" data-section="ro-history"><i class="fas fa-box"></i> Riwayat RO</div>
     <div class="menu-item" data-section="network"><i class="fas fa-sitemap"></i> Jaringan Pro</div>
@@ -873,6 +874,89 @@
           <button class="page-btn" id="prevDashHistoryBtn" disabled><i class="fas fa-chevron-left"></i></button>
           <span class="page-info" id="dashHistoryPageInfo">1/1</span>
           <button class="page-btn" id="nextDashHistoryBtn" disabled><i class="fas fa-chevron-right"></i></button>
+        </div>
+      </div>
+    </div>
+
+    <!-- RINGKASAN BONUS MLM -->
+    <div class="section-content" id="sec-bonus-summary">
+      <h1 class="page-title"><i class="fas fa-gift"></i> Ringkasan Bonus MLM</h1>
+
+      <!-- TOTAL SUMMARY BANNER -->
+      <div style="background: linear-gradient(135deg, var(--denim-dark) 0%, var(--denim-navy) 60%, var(--denim-blue) 100%); border-radius: 16px; padding: 20px 24px; color: var(--white); box-shadow: var(--shadow-lg); border-left: 5px solid var(--gold-accent); margin-bottom: 20px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 16px;">
+        <div>
+          <div style="font-size: 0.78rem; text-transform: uppercase; letter-spacing: 0.5px; opacity: 0.8; font-weight: 700;">Total Akumulasi Semua Bonus MLM</div>
+          <div id="sumTotalBonus" style="font-size: 1.8rem; font-weight: 800; color: var(--gold-light); margin-top: 2px;">Rp 0</div>
+          <div style="font-size: 0.78rem; opacity: 0.85; margin-top: 4px;">Saldo Dompet Saat Ini: <strong id="sumCurrentWallet" style="color:#fff;">Rp 0</strong></div>
+        </div>
+        <div>
+          <button class="btn-sm btn-sm-gold" onclick="window.showSection('withdraw')" style="padding: 10px 18px; font-size: 0.85rem;"><i class="fas fa-money-bill-wave"></i> Tarik Bonus (Withdraw)</button>
+        </div>
+      </div>
+
+      <!-- 4 METRIC CARDS -->
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 20px;">
+        <!-- BONUS SPONSOR -->
+        <div style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid #2e7d32; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus Sponsor (10%)</span>
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #e8f5e9; color: #2e7d32; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;"><i class="fas fa-handshake"></i></div>
+          </div>
+          <div id="sumBonusSponsor" style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
+          <div style="font-size: 0.7rem; color: #a0aec0;">Bonus pendaftaran langsung downline</div>
+        </div>
+
+        <!-- BONUS BINARY -->
+        <div style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid var(--denim-blue); display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus Binary (10L)</span>
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #ebf8ff; color: var(--denim-blue); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;"><i class="fas fa-sitemap"></i></div>
+          </div>
+          <div id="sumBonusBinary" style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
+          <div style="font-size: 0.7rem; color: #a0aec0;">Komisi pasangan 10 level upline</div>
+        </div>
+
+        <!-- BONUS REWARD -->
+        <div style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid var(--gold-accent); display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus Reward (5L)</span>
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #fff8e7; color: var(--gold-accent); display: flex; align-items: center; justify-content: center; font-size: 0.9rem;"><i class="fas fa-trophy"></i></div>
+          </div>
+          <div id="sumBonusReward" style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
+          <div style="font-size: 0.7rem; color: #a0aec0;">Apresiasi prestasi 5 level upline</div>
+        </div>
+
+        <!-- BONUS RO -->
+        <div style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid #dd6b20; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus RO (3%)</span>
+            <div style="width: 32px; height: 32px; border-radius: 50%; background: #feebc8; color: #dd6b20; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;"><i class="fas fa-box-open"></i></div>
+          </div>
+          <div id="sumBonusRo" style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
+          <div style="font-size: 0.7rem; color: #a0aec0;">Komisi Repeat Order produk downline</div>
+        </div>
+      </div>
+
+      <!-- TABLE TRANSAKSI BONUS -->
+      <div class="history-card">
+        <div class="header">
+          <h3><i class="fas fa-list-alt"></i> Rincian Riwayat Pencairan Bonus</h3>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>#</th>
+                <th>Tipe Bonus</th>
+                <th>Keterangan / Detail</th>
+                <th>Nominal (Rp)</th>
+                <th>Tanggal Pencairan</th>
+              </tr>
+            </thead>
+            <tbody id="bonusSummaryTableBody">
+              <tr><td colspan="5" style="text-align:center; padding:16px;">Memuat rincian bonus...</td></tr>
+            </tbody>
+          </table>
         </div>
       </div>
     </div>
@@ -1219,6 +1303,7 @@
       // ========== NAVIGASI ==========
       const sections = {
         dashboard: document.getElementById('sec-dashboard'),
+        'bonus-summary': document.getElementById('sec-bonus-summary'),
         products: document.getElementById('sec-products'),
         'ro-history': document.getElementById('sec-ro-history'),
         network: document.getElementById('sec-network'),
@@ -1239,6 +1324,7 @@
         sessionStorage.setItem('memberActiveTab', sectionId);
 
         if (sectionId === 'profile') renderProfileForm();
+        else if (sectionId === 'bonus-summary') renderBonusSummary();
         else if (sectionId === 'network') renderNetwork();
         else if (sectionId === 'downline') renderDownlineTable();
         else if (sectionId === 'history') renderHistoryTable();
@@ -1316,6 +1402,7 @@
             // Update section yang sedang aktif
             const activeSection = sessionStorage.getItem('memberActiveTab') || 'dashboard';
             if (activeSection === 'dashboard') renderDashboard();
+            else if (activeSection === 'bonus-summary') renderBonusSummary();
             else if (activeSection === 'products') renderProductsDashboard();
             else if (activeSection === 'deposit') renderDepositHistory();
             else if (activeSection === 'withdraw') renderWithdrawHistory();
@@ -2270,6 +2357,79 @@
         }
         html += `</div>`;
         return html;
+      }
+
+      // ========== BONUS SUMMARY ==========
+      function renderBonusSummary() {
+        if (!currentUser) return;
+        const bSponsor = parseFloat(currentUser.bonus_sponsor) || 0;
+        const bBinary = parseFloat(currentUser.bonus_binary) || 0;
+        const bReward = parseFloat(currentUser.bonus_reward) || 0;
+        const bRo = parseFloat(currentUser.bonus_ro) || 0;
+        const totalBonus = bSponsor + bBinary + bReward + bRo;
+
+        const elSponsor = document.getElementById('sumBonusSponsor');
+        const elBinary = document.getElementById('sumBonusBinary');
+        const elReward = document.getElementById('sumBonusReward');
+        const elRo = document.getElementById('sumBonusRo');
+        const elTotal = document.getElementById('sumTotalBonus');
+        const elWallet = document.getElementById('sumCurrentWallet');
+
+        if (elSponsor) elSponsor.textContent = 'Rp ' + bSponsor.toLocaleString('id-ID');
+        if (elBinary) elBinary.textContent = 'Rp ' + bBinary.toLocaleString('id-ID');
+        if (elReward) elReward.textContent = 'Rp ' + bReward.toLocaleString('id-ID');
+        if (elRo) elRo.textContent = 'Rp ' + bRo.toLocaleString('id-ID');
+        if (elTotal) elTotal.textContent = 'Rp ' + totalBonus.toLocaleString('id-ID');
+        if (elWallet) elWallet.textContent = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString('id-ID');
+
+        const tbody = document.getElementById('bonusSummaryTableBody');
+        if (!tbody) return;
+
+        const txs = (currentUser.transactions || []).filter(t => 
+          t.type === 'bonus' || 
+          t.type === 'sponsor' || 
+          t.type === 'binary' || 
+          t.type === 'reward' || 
+          t.type === 'ro_bonus' ||
+          t.type === 'bonus_sponsor' ||
+          t.type === 'bonus_binary' ||
+          t.type === 'bonus_reward'
+        );
+
+        if (txs.length === 0) {
+          tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:16px;">Belum ada catatan bonus yang diterima.</td></tr>';
+          return;
+        }
+
+        txs.sort((a, b) => new Date(b.date || b.created_at || 0) - new Date(a.date || a.created_at || 0));
+
+        let html = '';
+        txs.forEach((t, idx) => {
+          const typeLabel = {
+            'sponsor': '🎁 Bonus Sponsor',
+            'bonus_sponsor': '🎁 Bonus Sponsor',
+            'binary': '🌳 Bonus Binary',
+            'bonus_binary': '🌳 Bonus Binary',
+            'reward': '🏆 Bonus Reward',
+            'bonus_reward': '🏆 Bonus Reward',
+            'ro_bonus': '🔄 Bonus RO',
+            'bonus': '🎁 Bonus MLM'
+          }[t.type] || '🎁 Bonus';
+
+          const dateStr = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID', {
+            day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
+          });
+
+          html += `<tr>
+            <td data-label="#">${idx + 1}</td>
+            <td data-label="Tipe Bonus"><strong>${typeLabel}</strong></td>
+            <td data-label="Keterangan">${t.desc || t.description || 'Pencairan bonus otomatis'}</td>
+            <td data-label="Jumlah" style="font-weight:800; color:#2e7d32;">+Rp ${(parseFloat(t.amount) || 0).toLocaleString('id-ID')}</td>
+            <td data-label="Tanggal">${dateStr}</td>
+          </tr>`;
+        });
+
+        tbody.innerHTML = html;
       }
 
       // ========== DOWNLINE ==========
