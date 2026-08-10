@@ -956,29 +956,15 @@
                 }
             }
 
-            // ========== REFRESH DATA (PARALLEL SAFE LOAD WITH BACKUP FALLBACK) ==========
+            // ========== REFRESH DATA (PARALLEL FAST CORE LOAD + BACKGROUND CONFIG) ==========
             async function refreshAdminData() {
                 try {
-                    const [
-                        usersData,
-                        productsData,
-                        ordersData,
-                        transactionsData,
-                        bankInfoData,
-                        slidesData,
-                        faqsData,
-                        featuresData,
-                        settingsData
-                    ] = await Promise.all([
+                    // 1. Fetch core data in parallel (High Priority)
+                    const [usersData, productsData, ordersData, transactionsData] = await Promise.all([
                         getTableSafely('users'),
                         getTableSafely('products'),
                         getTableSafely('orders'),
-                        getTableSafely('transactions'),
-                        getTableSafely('bank_info'),
-                        getTableSafely('slides'),
-                        getTableSafely('faq'),
-                        getTableSafely('features'),
-                        getTableSafely('settings')
+                        getTableSafely('transactions')
                     ]);
 
                     let localSavedUsers = [];
@@ -1003,20 +989,40 @@
                         try { localStorage.setItem('hedtro_test_users', JSON.stringify(allUsers)); } catch (e) {}
                     }
 
-                    allProducts = (productsData && productsData.length > 0) ? productsData : (allProducts || []);
-                    allOrders = ordersData || [];
-                    allTransactions = transactionsData || [];
-                    allBankInfo = bankInfoData || [];
-                    allSlides = slidesData || [];
-                    allFaqs = faqsData || [];
-                    allFeatures = featuresData || [];
-                    allSettings = {};
-                    (settingsData || []).forEach(r => allSettings[r.key] = r.value);
+                    if (productsData && productsData.length > 0) {
+                        allProducts = productsData;
+                        try { localStorage.setItem('hedtro_admin_products', JSON.stringify(allProducts)); } catch (e) {}
+                    }
+                    if (ordersData) {
+                        allOrders = ordersData;
+                        try { localStorage.setItem('hedtro_admin_orders', JSON.stringify(allOrders)); } catch (e) {}
+                    }
+                    if (transactionsData) {
+                        allTransactions = transactionsData;
+                        try { localStorage.setItem('hedtro_admin_txs', JSON.stringify(allTransactions)); } catch (e) {}
+                    }
 
-                    try { localStorage.removeItem('hedtro_index_cache_v1'); } catch (e) {}
                     updateAdminBadges();
 
-                    console.log('⚡ Admin Data refreshed safely:', allUsers.length, 'users,', allOrders.length, 'orders');
+                    // 2. Fetch secondary config tables asynchronously in background (Non-blocking)
+                    Promise.all([
+                        getTableSafely('bank_info'),
+                        getTableSafely('slides'),
+                        getTableSafely('faq'),
+                        getTableSafely('features'),
+                        getTableSafely('settings')
+                    ]).then(([bankData, slidesData, faqsData, featuresData, settingsData]) => {
+                        allBankInfo = bankData || [];
+                        allSlides = slidesData || [];
+                        allFaqs = faqsData || [];
+                        allFeatures = featuresData || [];
+                        if (settingsData && settingsData.length > 0) {
+                            allSettings = {};
+                            settingsData.forEach(r => allSettings[r.key] = r.value);
+                        }
+                    }).catch(() => {});
+
+                    console.log('⚡ Core Admin Data refreshed safely:', allUsers.length, 'users,', allOrders.length, 'orders');
                 } catch (e) {
                     console.error('refreshAdminData error:', e);
                 }
@@ -1057,8 +1063,6 @@
             // ========== DASHBOARD ==========
             async function renderDashboard() {
                 try {
-                    await refreshAdminData();
-                    
                     const totalMembers = allUsers.length;
                     const verifiedMembers = allUsers.filter(u => (u.status || '').toLowerCase() === 'verified').length;
                     
@@ -3214,6 +3218,21 @@
                 showToast('✅ Statistik diperbarui!', 'success');
             });
 
+            // ========== INSTANT CACHE PRE-LOAD ==========
+            (function loadCacheFirst() {
+                try {
+                    const cachedUsers = JSON.parse(localStorage.getItem('hedtro_test_users') || '[]');
+                    const cachedProds = JSON.parse(localStorage.getItem('hedtro_admin_products') || '[]');
+                    const cachedOrders = JSON.parse(localStorage.getItem('hedtro_admin_orders') || '[]');
+                    const cachedTxs = JSON.parse(localStorage.getItem('hedtro_admin_txs') || '[]');
+
+                    if (cachedUsers.length > 0) allUsers = cachedUsers;
+                    if (cachedProds.length > 0) allProducts = cachedProds;
+                    if (cachedOrders.length > 0) allOrders = cachedOrders;
+                    if (cachedTxs.length > 0) allTransactions = cachedTxs;
+                } catch (e) {}
+            })();
+
             // ========== AUTO REFRESH DEDICATED TIMER (REAL-TIME UPDATE) ==========
             setInterval(async function() {
                 try {
@@ -3223,26 +3242,27 @@
                         await renderDashboard();
                     }
                 } catch (e) {}
-            }, 10000);
+            }, 12000);
 
             // ========== INIT ==========
             (async function init() {
                 try {
                     console.log('🔵 Admin panel initializing...');
                     const isAuthenticated = await checkAdminAuth();
-                    if (!isAuthenticated) {
-                        console.log('🔵 Not authenticated as admin');
-                        return;
-                    }
-                    console.log('✅ Admin authenticated, loading data...');
-                    await refreshAdminData();
+                    if (!isAuthenticated) return;
+
+                    // 1. Render INSTANTLY from memory/cache
                     const savedTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
                     await switchTab(savedTab);
-                    const savedSubTab = sessionStorage.getItem('adminActiveSubTab');
-                    if (savedSubTab) {
-                        const btn = document.querySelector(`.sub-tab-btn[data-subtab="${savedSubTab}"]`);
-                        if (btn) btn.click();
-                    }
+                    
+                    // 2. Fetch fresh network data in background and silently re-render
+                    refreshAdminData().then(() => {
+                        const currentTab = sessionStorage.getItem('adminActiveTab') || 'dashboard';
+                        if (currentTab === 'dashboard') renderDashboard();
+                        else if (currentTab === 'members') renderAdminMembers();
+                        else if (currentTab === 'bonus') renderBonusManagement();
+                        else if (currentTab === 'orders') renderOrders();
+                    });
                     console.log('✅ Admin panel ready!');
                 } catch (e) {
                     console.error('❌ Init error:', e);
