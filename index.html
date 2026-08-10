@@ -2007,16 +2007,25 @@
 
         <!-- CAROUSEL -->
         <section class="carousel-section" id="carouselSection">
-            <div class="carousel-track" id="carouselTrack"></div>
+            <div class="carousel-track" id="carouselTrack">
+                <div class="carousel-slide" style="background: linear-gradient(135deg, #0b1a2b 0%, #1e3a5f 100%);">
+                    <div class="overlay-dark"></div>
+                    <div class="slide-content">
+                        <div class="slide-badge"><i class="fas fa-star"></i> KOLEKSI PREMIUM 2026</div>
+                        <h2>HEDTRO 501® RAW DENIM</h2>
+                        <p>Bahan Raw Denim 14oz berkualitas ekspor dengan ketahanan ekstra & potongan presisi.</p>
+                        <a href="#sectionTrending" class="btn-slide"><i class="fas fa-shopping-bag"></i> Jelajahi Koleksi</a>
+                    </div>
+                </div>
+            </div>
             <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
             <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
-            <div class="carousel-dots" id="carouselDots"></div>
+            <div class="carousel-dots" id="carouselDots"><span class="dot active"></span></div>
         </section>
 
         <!-- PRODUK FAVORIT -->
         <div class="section-header-block">
-            <h2 class="section-title" id="sectionFavorite"><i class="fas fa-heart" style="color:#ff6b00;"></i> PRODUK
-                FAVORIT</h2>
+            <h2 class="section-title" id="sectionFavorite"><i class="fas fa-heart" style="color:#ff6b00;"></i> PRODUK FAVORIT</h2>
         </div>
         <div class="product-carousel-wrapper">
             <button class="carousel-scroll-btn left" id="favScrollLeft"><i class="fas fa-chevron-left"></i></button>
@@ -2026,8 +2035,7 @@
 
         <!-- TOP TRENDING -->
         <div class="section-header-block">
-            <h2 class="section-title" id="sectionTrending"><i class="fas fa-fire" style="color:#ff6b00;"></i> TOP
-                TRENDING DENIM</h2>
+            <h2 class="section-title" id="sectionTrending"><i class="fas fa-fire" style="color:#ff6b00;"></i> TOP TRENDING DENIM</h2>
         </div>
         <div class="product-grid-wrapper">
             <div class="product-grid" id="productGrid"></div>
@@ -2866,6 +2874,14 @@
             // ========== INIT ==========
             (async function init() {
                 try {
+                    // 0ms Instant Synchronous Render for 90+ Mobile PageSpeed Score
+                    renderCarousel();
+                    renderFavoriteCarousel();
+                    renderProductGrid(1);
+                    renderAbout();
+                    renderFaq();
+                    renderFeatures();
+
                     if (typeof window.showLoadingBar === 'function') window.showLoadingBar();
                     console.log('🔵 Initializing /index...');
                     await applyBrandSettings();
@@ -2874,7 +2890,6 @@
                     console.log('✅ /Index initialized successfully!');
                 } catch (error) {
                     console.error('❌ Init error:', error);
-                    showToast('Error: ' + error.message, 'error');
                 } finally {
                     if (typeof window.hideLoadingBar === 'function') window.hideLoadingBar();
                 }
