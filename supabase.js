@@ -983,12 +983,30 @@ window.applyBrandSettings = async function() {
     logoElements.forEach(function(el) {
       if (!el) return;
 
+      // Make logo clickable and redirect to main page (/)
+      if (el.id === 'headerLogo' || el.id === 'navbarLogo' || el.id === 'brandLogo' || el.classList.contains('logo')) {
+        el.style.cursor = 'pointer';
+        el.style.textDecoration = 'none';
+        if (!el.getAttribute('data-link-attached')) {
+          el.setAttribute('data-link-attached', 'true');
+          el.addEventListener('click', function(e) {
+            // Prevent duplicate redirection if wrapped in a tag
+            if (el.tagName !== 'A' || !el.getAttribute('href')) {
+              e.preventDefault();
+              window.location.href = '/';
+            }
+          });
+        }
+      }
+
       if (isImageLogo) {
-        // Hide text logo completely when image logo is uploaded ("klw upload logo textnya hiden saja")
         var isCardHeading = (el.tagName === 'H1');
-        var maxH = isCardHeading ? '48px' : '36px';
+        var maxH = isCardHeading ? '42px' : '32px';
+        var textHtml = (brandName === 'HEDTRO JEANS' || brandName === 'HEDTRO') 
+          ? ' HEDTRO<span style="font-weight:300; opacity:0.85; margin-left:2px;">JEANS</span>' 
+          : ' ' + brandName;
         
-        el.innerHTML = '<img class="brand-logo-img" src="' + brandLogo + '" alt="' + brandName + '" style="max-height:' + maxH + '; width:auto; object-fit:contain; vertical-align:middle; display:inline-block;" />';
+        el.innerHTML = '<img class="brand-logo-img" src="' + brandLogo + '" alt="' + brandName + '" style="max-height:' + maxH + '; width:auto; object-fit:contain; vertical-align:middle; margin-right:6px; display:inline-block;" /><span class="brand-name-txt" style="vertical-align:middle;">' + textHtml + '</span>';
       } else {
         // Show icon + text if logo is a fontawesome icon string or default
         var iconClass = (brandLogo && brandLogo.startsWith('fa-')) ? brandLogo : 'fa-tshirt';
@@ -1008,6 +1026,7 @@ window.applyBrandSettings = async function() {
         }
       }
     });
+
 
     // Update Favicon Link
     if (brandIcon && (brandIcon.startsWith('data:image') || brandIcon.startsWith('http://') || brandIcon.startsWith('https://') || brandIcon.startsWith('/'))) {
