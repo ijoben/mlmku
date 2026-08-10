@@ -295,7 +295,10 @@
             <div class="card">
                 <div class="card-header">
                     <span><i class="fas fa-user-plus"></i> Input Member Baru</span>
-                    <button class="btn btn-secondary" id="btnRefresh" style="width: auto; padding: 4px 12px; font-size: 0.75rem;"><i class="fas fa-sync"></i> Refresh Data</button>
+                    <div style="display:flex; gap:6px;">
+                        <button class="btn btn-secondary" id="btnRefresh" style="width: auto; padding: 4px 10px; font-size: 0.75rem;"><i class="fas fa-sync"></i> Refresh</button>
+                        <button class="btn btn-danger" id="btnClearTest" style="width: auto; padding: 4px 10px; font-size: 0.75rem;"><i class="fas fa-trash"></i> Reset Test Data</button>
+                    </div>
                 </div>
 
                 <div class="form-group">
@@ -419,6 +422,25 @@
                 setTimeout(() => toast.remove(), 4000);
             }
 
+            function saveLogsToStorage() {
+                try {
+                    const box = document.getElementById('bonusLogBox');
+                    if (box) {
+                        localStorage.setItem('hedtro_test_bonus_logs_html', box.innerHTML);
+                    }
+                } catch (e) {}
+            }
+
+            function restoreLogsFromStorage() {
+                try {
+                    const savedHtml = localStorage.getItem('hedtro_test_bonus_logs_html');
+                    if (savedHtml && savedHtml.trim()) {
+                        const box = document.getElementById('bonusLogBox');
+                        if (box) box.innerHTML = savedHtml;
+                    }
+                } catch (e) {}
+            }
+
             function logMessage(text, type = 'info') {
                 const box = document.getElementById('bonusLogBox');
                 const time = new Date().toLocaleTimeString('id-ID');
@@ -426,16 +448,37 @@
                 entry.className = `log-entry ${type}`;
                 entry.innerHTML = `[${time}] ${text}`;
                 box.insertBefore(entry, box.firstChild);
+                saveLogsToStorage();
             }
 
             // Load data
             async function loadData() {
                 try {
-                    const usersData = await window.getTable('users').catch(() => []);
-                    allUsers = usersData || [];
+                    let usersData = [];
+                    try {
+                        usersData = await window.getTable('users').catch(() => []);
+                    } catch (e1) {}
+
+                    const localSavedUsers = JSON.parse(localStorage.getItem('hedtro_test_users') || '[]');
+
+                    if (usersData && usersData.length > 0) {
+                        allUsers = usersData;
+                        localSavedUsers.forEach(lu => {
+                            if (!allUsers.some(u => String(u.id) === String(lu.id))) {
+                                allUsers.push(lu);
+                            }
+                        });
+                    } else if (localSavedUsers.length > 0) {
+                        allUsers = localSavedUsers;
+                    }
+
+                    // Save backup to localStorage
+                    localStorage.setItem('hedtro_test_users', JSON.stringify(allUsers));
+
                     populateSponsorSelect();
                     renderMemberTable();
                     renderBinaryTreeVisual();
+                    restoreLogsFromStorage();
                 } catch (e) {
                     console.error('Load data error:', e);
                 }
@@ -571,6 +614,20 @@
                 showToast('Data direfresh dari Supabase.', 'success');
             });
 
+            document.getElementById('btnClearTest')?.addEventListener('click', async function() {
+                if (!confirm('Hapus seluruh log & data pengujian lokal? Data master tidak akan terganggu.')) return;
+                try {
+                    localStorage.removeItem('hedtro_test_users');
+                    localStorage.removeItem('hedtro_test_bonus_logs_html');
+                    const box = document.getElementById('bonusLogBox');
+                    if (box) box.innerHTML = '<div class="log-entry info">ℹ️ Data test direset. Silakan input member baru di formulir sebelah kiri...</div>';
+                    await loadData();
+                    showToast('Data test berhasil direset.', 'info');
+                } catch (e) {
+                    console.error('Clear test error:', e);
+                }
+            });
+
             // Auto fill username & email when name is typed
             document.getElementById('testName').addEventListener('input', function() {
                 const val = this.value.trim().toLowerCase().replace(/[^a-z0-9]/g, '_');
@@ -634,6 +691,14 @@
                     };
 
                     await window.upsertRow('users', newUserObj);
+
+                    // Backup to localStorage
+                    const localSavedUsers = JSON.parse(localStorage.getItem('hedtro_test_users') || '[]');
+                    if (!localSavedUsers.some(u => String(u.id) === String(newUserObj.id))) {
+                        localSavedUsers.push(newUserObj);
+                        localStorage.setItem('hedtro_test_users', JSON.stringify(localSavedUsers));
+                    }
+
                     logMessage(`✅ User <strong>${name}</strong> berhasil dibuat di database dengan status <strong>VERIFIED</strong>!`, 'success');
 
                     // 2. Hubungkan posisi binary pada sponsor (left_id / right_id)
@@ -750,6 +815,13 @@
                         };
 
                         await window.upsertRow('users', newUserObj);
+
+                        // Backup to localStorage
+                        const localUsers = JSON.parse(localStorage.getItem('hedtro_test_users') || '[]');
+                        if (!localUsers.some(u => String(u.id) === String(newUserObj.id))) {
+                            localUsers.push(newUserObj);
+                            localStorage.setItem('hedtro_test_users', JSON.stringify(localUsers));
+                        }
 
                         const sponsor = allUsers.find(u => String(u.id) === String(currentSponsor));
                         if (sponsor) {
