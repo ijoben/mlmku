@@ -13,7 +13,9 @@
         * { margin:0; padding:0; box-sizing:border-box; }
         :root {
             --denim-dark: #0b1a2b; --denim-navy: #1a2e44; --denim-blue: #2a4b6e; --denim-light: #e8edf2;
-            --gold-accent: #c9a84c; --gold-light: #e8d5a3; --cream: #f7f4ef; --white: #ffffff;
+            --gold-accent: #d97706; --gold-light: #fef3c7; --cream: #f7f4ef; --white: #ffffff;
+            --btn-gold-bg: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            --btn-gold-text: #ffffff;
             --shadow: 0 4px 20px rgba(0,0,0,0.08); --shadow-lg: 0 20px 60px rgba(0,0,0,0.15);
             --radius: 28px; --radius-sm: 14px; --transition: 0.3s cubic-bezier(0.4,0,0.2,1); --sidebar-width: 280px;
         }
@@ -284,14 +286,14 @@
     <div id="mainApp" style="display:none;">
 
         <header class="navbar">
-            <div class="logo" id="brandLogo">
+            <a href="/" class="logo" id="brandLogo" style="text-decoration:none; cursor:pointer;">
                 <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
-            </div>
+            </a>
             <div class="nav-right">
                 <div class="user-badge" id="navUserBadge">
                     <i class="fas fa-user-cog"></i> <span id="navUserName">Admin</span>
                 </div>
-                <a href="index.html" class="user-badge" style="background:rgba(255,255,255,0.04);">
+                <a href="/" class="user-badge" style="background:rgba(255,255,255,0.04);" title="Ke Beranda">
                     <i class="fas fa-home"></i>
                 </a>
                 <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
@@ -304,7 +306,7 @@
 
         <nav class="sidebar" id="sidebar">
             <div class="sidebar-header">
-                <div class="logo-side" id="sideBrandLogo"><i class="fas fa-tshirt"></i> HEDTRO</div>
+                <a href="/" class="logo-side" id="sideBrandLogo" style="text-decoration:none; cursor:pointer;"><i class="fas fa-tshirt"></i> HEDTRO</a>
                 <span class="close-side" id="closeSidebar">&times;</span>
             </div>
             <div class="menu-item active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</div>
