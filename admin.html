@@ -941,7 +941,7 @@
             // ========== LOGOUT ==========
             document.getElementById('sideLogoutBtn').addEventListener('click', async function() {
                 await window.signOut();
-                window.location.reload();
+                window.location.href = '/';
             });
 
             // Helper query yang selalu aman & tidak pernah menggagalkan Promise.all
@@ -1645,7 +1645,8 @@
                             <td data-label="Status"><span class="badge-status ${statusClass}">${(u.status || 'free').toUpperCase()}</span></td>
                             <td data-label="Saldo Wallet">Rp ${(parseFloat(u.wallet) || 0).toLocaleString()}</td>
                             <td data-label="Aksi">
-                                <div>
+                                <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                                    <button class="btn-sm btn-sm-gold impersonate-member-btn" data-id="${u.id}" data-username="${u.username || u.fullname || u.id}" title="Login Sebagai User ini"><i class="fas fa-user-secret"></i> Login as User</button>
                                     <button class="btn-sm btn-sm-warning edit-member-btn" data-id="${u.id}"><i class="fas fa-edit"></i> Edit</button>
                                     ${!isAdmin ? `<button class="btn-sm btn-sm-danger delete-member-btn" data-id="${u.id}"><i class="fas fa-trash"></i> Hapus</button>` : ''}
                                 </div>
@@ -1654,6 +1655,19 @@
                     }
                     tbody.innerHTML = html;
                     buildPagination(totalItems, statePage.members, 'membersPagination', 'members', renderAdminMembers);
+
+                    tbody.querySelectorAll('.impersonate-member-btn').forEach(btn => {
+                        btn.onclick = function() {
+                            const userId = this.dataset.id;
+                            const username = this.dataset.username;
+                            if (!confirm(`🔑 Apakah Anda yakin ingin Login Sebagai Member: @${username}?`)) return;
+                            localStorage.setItem('hedtro_impersonate_user_id', userId);
+                            showToast(`🔑 Beralih ke akun @${username}...`, 'info');
+                            setTimeout(() => {
+                                window.location.href = '/dashboard';
+                            }, 500);
+                        };
+                    });
 
                     tbody.querySelectorAll('.delete-member-btn').forEach(btn => {
                         btn.onclick = async function() {
