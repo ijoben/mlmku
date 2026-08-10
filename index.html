@@ -23,8 +23,10 @@
             --denim-navy: #1a2e44;
             --denim-blue: #2a4b6e;
             --denim-light: #e8edf2;
-            --gold-accent: #c9a84c;
-            --gold-light: #e8d5a3;
+            --gold-accent: #d97706;
+            --gold-light: #fef3c7;
+            --btn-gold-bg: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            --btn-gold-text: #ffffff;
             --cream: #f7f4ef;
             --white: #ffffff;
             --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
@@ -242,13 +244,17 @@
         }
 
         .btn-nav-gold {
-            background: var(--gold-accent);
-            color: var(--denim-dark);
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: #ffffff !important;
+            font-weight: 700;
+            box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);
         }
 
         .btn-nav-gold:hover {
-            background: #b8963a;
-            transform: scale(0.97);
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(217, 119, 6, 0.45);
         }
 
         .burger-btn {
@@ -516,18 +522,22 @@
 
         .popup-overlay .popup-box .popup-form button {
             padding: 14px;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
+            background: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+            color: #ffffff !important;
             border-radius: 60px;
             font-weight: 700;
             font-size: 1rem;
             transition: var(--transition);
             font-family: inherit;
+            box-shadow: 0 4px 14px rgba(217, 119, 6, 0.3);
+            border: none;
         }
 
         .popup-overlay .popup-box .popup-form button:hover {
-            background: #b8963a;
-            transform: scale(0.98);
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 18px rgba(217, 119, 6, 0.45);
         }
 
         .popup-overlay .popup-box .popup-result {
@@ -544,8 +554,8 @@
         .product-detail-popup .popup-grid {
             display: grid;
             grid-template-columns: 1fr 1fr;
-            gap: 24px;
-            margin-top: 8px;
+            gap: 20px;
+            align-items: center;
         }
 
         .product-detail-popup .popup-image {
@@ -1733,9 +1743,9 @@
 
     <!-- ===== NAVBAR ===== -->
     <header class="navbar" id="navbar">
-        <div class="logo" id="headerLogo">
+        <a href="/" class="logo" id="headerLogo" style="text-decoration:none; cursor:pointer;">
             <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
-        </div>
+        </a>
 
         <ul class="nav-menu" id="navMenu">
             <li><a href="#" class="active" data-page="home"><i class="fas fa-home"></i> Beranda</a></li>
