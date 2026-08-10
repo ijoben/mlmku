@@ -1032,18 +1032,29 @@
                         try { localStorage.setItem('hedtro_admin_orders', JSON.stringify(allOrders)); } catch (e) {}
                     }
                     if (transactionsData) {
-                        allTransactions = transactionsData;
-                        // Clean any illegal self-bonus transactions where user received bonus from himself
-                        if (allTransactions && allTransactions.length > 0) {
-                            const invalidTxs = allTransactions.filter(t => t.user_id && t.from_user_id && window.isSameUser(t.user_id, t.from_user_id));
-                            if (invalidTxs.length > 0) {
-                                console.warn('🧹 Purging', invalidTxs.length, 'illegal self-bonus transactions...');
-                                allTransactions = allTransactions.filter(t => !(t.user_id && t.from_user_id && window.isSameUser(t.user_id, t.from_user_id)));
-                                for (const itx of invalidTxs) {
-                                    try { await supabase.from('transactions').delete().eq('id', itx.id); } catch(e) {}
-                                }
+                        allTransactions = transactionsData || [];
+                        const seenBonusKeys = new Set();
+
+                        // 1. Identify and purge invalid self-bonus transactions from DB
+                        const invalidTxs = allTransactions.filter(t => t.user_id && t.from_user_id && window.isSameUser(t.user_id, t.from_user_id));
+                        if (invalidTxs.length > 0) {
+                            console.warn('🧹 Purging', invalidTxs.length, 'illegal self-bonus transactions...');
+                            for (const itx of invalidTxs) {
+                                try { await supabase.from('transactions').delete().eq('id', itx.id); } catch(e) {}
                             }
                         }
+
+                        // 2. Globally filter self-bonuses & duplicate bonus records in memory
+                        allTransactions = allTransactions.filter(t => {
+                            if (t.user_id && t.from_user_id && window.isSameUser(t.user_id, t.from_user_id)) return false;
+                            if (t.type && (t.type.startsWith('bonus_') || t.type === 'ro_bonus') && t.user_id && t.from_user_id) {
+                                const key = `${t.user_id}_${t.from_user_id}_${t.type}_${t.level || 1}`;
+                                if (seenBonusKeys.has(key)) return false;
+                                seenBonusKeys.add(key);
+                            }
+                            return true;
+                        });
+
                         try { localStorage.setItem('hedtro_admin_txs', JSON.stringify(allTransactions)); } catch (e) {}
                     }
 
