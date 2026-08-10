@@ -1189,21 +1189,21 @@
         }
 
         .product-card .body .card-meta .product-serial {
-            color: #ff6b00;
+            color: #c2410c;
             font-weight: 700;
             font-family: monospace;
         }
 
         .product-card .body .card-meta .stock-tag {
             background: #f1f5f9;
-            color: #475569;
+            color: #1e293b;
             font-weight: 600;
             padding: 2px 8px;
             border-radius: 20px;
         }
 
-        .product-card .body h4 {
-            font-size: 0.7rem;
+        .product-card .body h3 {
+            font-size: 0.92rem;
             font-weight: 700;
             color: var(--denim-dark);
             line-height: 1.35;
@@ -1218,8 +1218,8 @@
 
         .product-card .body .price {
             font-weight: 800;
-            color: #ff6b00;
-            font-size: 0.6rem;
+            color: #d97706;
+            font-size: 1.05rem;
             display: flex;
             align-items: baseline;
             gap: 6px;
@@ -1228,7 +1228,7 @@
         }
 
         .product-card .body .price del {
-            color: #94a3b8;
+            color: #64748b;
             font-weight: 500;
             font-size: 0.75rem;
             text-decoration: line-through;
@@ -1912,18 +1912,18 @@
         <div class="nav-right">
             <div class="nav-actions">
                 <div class="search-box">
-                    <input type="text" placeholder="Cari produk..." id="searchInputDesktop" />
-                    <button id="searchBtnDesktop"><i class="fas fa-search"></i></button>
+                    <input type="text" placeholder="Cari produk..." id="searchInputDesktop" aria-label="Cari produk..." />
+                    <button id="searchBtnDesktop" aria-label="Cari Produk"><i class="fas fa-search"></i></button>
                 </div>
             </div>
 
-            <span class="search-icon-hp" id="searchIconHp"><i class="fas fa-search"></i></span>
+            <button class="search-icon-hp" id="searchIconHp" aria-label="Cari Produk Mobile"><i class="fas fa-search"></i></button>
 
 
             <a href="/login" class="btn-nav btn-nav-outline" id="navAuthBtn">Login</a>
             <a href="/register" class="btn-nav btn-nav-gold" id="navRegBtn">Daftar</a>
 
-            <button class="burger-btn" id="burgerBtn" aria-label="Toggle menu">
+            <button class="burger-btn" id="burgerBtn" aria-label="Buka Menu Navigasi">
                 <span></span><span></span><span></span>
             </button>
         </div>
@@ -1931,10 +1931,10 @@
 
     <!-- ===== SIDEBAR ===== -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
-    <nav class="sidebar" id="sidebar">
+    <nav class="sidebar" id="sidebar" aria-label="Navigasi Samping">
         <div class="sidebar-header">
             <div class="logo-side" id="sidebarLogo"><i class="fas fa-tshirt"></i> HEDTRO</div>
-            <span class="close-side" id="closeSidebar">&times;</span>
+            <button class="close-side" id="closeSidebar" aria-label="Tutup Navigasi Samping">&times;</button>
         </div>
         <div class="menu-item active" data-page="home"><i class="fas fa-home"></i> Beranda</div>
         <div class="menu-item" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</div>
@@ -1949,12 +1949,12 @@
     <!-- ===== POPUPS ===== -->
     <div class="popup-overlay" id="searchPopup">
         <div class="popup-box">
-            <button class="close-popup" id="closeSearchPopup">&times;</button>
+            <button class="close-popup" id="closeSearchPopup" aria-label="Tutup Pencarian">&times;</button>
             <h3><i class="fas fa-search" style="color:var(--gold-accent);"></i> Cari Produk</h3>
             <p class="sub">Temukan produk denim favorit Anda</p>
             <div class="popup-form">
-                <input type="text" id="searchInputPopup" placeholder="Ketik nama produk..." />
-                <button id="searchBtnPopup"><i class="fas fa-search"></i> Cari</button>
+                <input type="text" id="searchInputPopup" placeholder="Ketik nama produk..." aria-label="Ketik nama produk..." />
+                <button id="searchBtnPopup" aria-label="Cari Produk"><i class="fas fa-search"></i> Cari</button>
             </div>
             <div class="popup-result" id="searchResult"></div>
         </div>
@@ -1962,12 +1962,12 @@
 
     <div class="popup-overlay" id="trackPopup">
         <div class="popup-box">
-            <button class="close-popup" id="closeTrackPopup">&times;</button>
+            <button class="close-popup" id="closeTrackPopup" aria-label="Tutup Lacak Resi">&times;</button>
             <h3><i class="fas fa-shipping-fast" style="color:var(--gold-accent);"></i> Lacak Nomor Resi</h3>
             <p class="sub">Masukkan Nomor Resi Pengiriman</p>
             <div class="popup-form">
-                <input type="text" id="trackInputPopup" placeholder="Contoh: JNE-99882211" />
-                <button id="trackBtnPopup"><i class="fas fa-search"></i> Cek Resi</button>
+                <input type="text" id="trackInputPopup" placeholder="Contoh: JNE-99882211" aria-label="Nomor Resi Pengiriman" />
+                <button id="trackBtnPopup" aria-label="Cek Resi Pengiriman"><i class="fas fa-search"></i> Cek Resi</button>
             </div>
             <div class="popup-result" id="trackResultPopup"></div>
         </div>
@@ -1976,7 +1976,7 @@
 
     <div class="popup-overlay product-detail-popup" id="productDetailPopup">
         <div class="popup-box">
-            <button class="close-popup" id="closeDetailPopup">&times;</button>
+            <button class="close-popup" id="closeDetailPopup" aria-label="Tutup Detail Produk">&times;</button>
             <div class="popup-grid" id="detailGrid">
                 <div class="popup-image" id="detailImage">
                     <div class="popup-icon-wrap" id="detailIconWrap"><i class="fas fa-tshirt" id="detailIcon"></i></div>
@@ -1992,34 +1992,33 @@
                         <span><span class="label">Stok</span> <span id="detailStock">45</span></span>
                     </div>
                     <div class="popup-options">
-                        <select id="detailSize"></select>
-                        <select id="detailColor"></select>
+                        <select id="detailSize" aria-label="Pilih Ukuran"></select>
+                        <select id="detailColor" aria-label="Pilih Warna"></select>
                     </div>
-                    <button class="btn-buy-large" id="detailBuyBtn"><i class="fas fa-shopping-bag"></i> Beli
-                        Sekarang</button>
+                    <button class="btn-buy-large" id="detailBuyBtn" aria-label="Beli Produk Sekarang"><i class="fas fa-shopping-bag"></i> Beli Sekarang</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <!-- ===== MAIN CONTENT ===== -->
-    <div class="app-container" id="home">
+    <!-- ===== MAIN CONTENT LANDMARK ===== -->
+    <main class="app-container" id="home">
 
         <!-- CAROUSEL -->
-        <section class="carousel-section" id="carouselSection">
+        <section class="carousel-section" id="carouselSection" aria-label="Promosi Utama">
             <div class="carousel-track" id="carouselTrack">
                 <div class="carousel-slide" style="background: linear-gradient(135deg, #0b1a2b 0%, #1e3a5f 100%);">
                     <div class="overlay-dark"></div>
                     <div class="slide-content">
                         <div class="slide-badge"><i class="fas fa-star"></i> KOLEKSI PREMIUM 2026</div>
-                        <h2>HEDTRO 501® RAW DENIM</h2>
+                        <h1>HEDTRO 501® RAW DENIM</h1>
                         <p>Bahan Raw Denim 14oz berkualitas ekspor dengan ketahanan ekstra & potongan presisi.</p>
                         <a href="#sectionTrending" class="btn-slide"><i class="fas fa-shopping-bag"></i> Jelajahi Koleksi</a>
                     </div>
                 </div>
             </div>
-            <button class="carousel-btn prev" id="carouselPrev"><i class="fas fa-chevron-left"></i></button>
-            <button class="carousel-btn next" id="carouselNext"><i class="fas fa-chevron-right"></i></button>
+            <button class="carousel-btn prev" id="carouselPrev" aria-label="Slide Sebelumnya"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-btn next" id="carouselNext" aria-label="Slide Selanjutnya"><i class="fas fa-chevron-right"></i></button>
             <div class="carousel-dots" id="carouselDots"><span class="dot active"></span></div>
         </section>
 
@@ -2028,8 +2027,8 @@
             <h2 class="section-title" id="sectionFavorite"><i class="fas fa-heart" style="color:#ff6b00;"></i> PRODUK FAVORIT</h2>
         </div>
         <div class="product-carousel-wrapper">
-            <button class="carousel-scroll-btn left" id="favScrollLeft"><i class="fas fa-chevron-left"></i></button>
-            <button class="carousel-scroll-btn right" id="favScrollRight"><i class="fas fa-chevron-right"></i></button>
+            <button class="carousel-scroll-btn left" id="favScrollLeft" aria-label="Gulir Produk Favorit Ke Kiri"><i class="fas fa-chevron-left"></i></button>
+            <button class="carousel-scroll-btn right" id="favScrollRight" aria-label="Gulir Produk Favorit Ke Kanan"><i class="fas fa-chevron-right"></i></button>
             <div class="product-carousel" id="favoriteCarousel"></div>
         </div>
 
@@ -2057,24 +2056,23 @@
         <!-- FEATURES -->
         <div class="features" id="featuresContainer"></div>
 
-    </div>
+    </main>
 
     <!-- ===== FOOTER ===== -->
     <footer class="footer" id="mainFooter">
         <div class="footer-grid">
             <div class="footer-col">
-                <h4 id="footerBrandTitle"><i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> HEDTRO JEANS
-                </h4>
-                <p id="footerBrandDesc">Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor.</p>
+                <h3 id="footerBrandTitle"><i class="fas fa-tshirt" style="color:var(--gold-accent);"></i> HEDTRO JEANS</h3>
+                <p id="footerBrandDesc" style="color:#cbd5e1;">Brand denim premium dengan bahan raw denim 14oz berkualitas ekspor.</p>
                 <div class="social-icons">
-                    <a href="#" id="socInsta"><i class="fab fa-instagram"></i></a>
-                    <a href="#" id="socFb"><i class="fab fa-facebook-f"></i></a>
-                    <a href="#" id="socYt"><i class="fab fa-youtube"></i></a>
-                    <a href="#" id="socTt"><i class="fab fa-tiktok"></i></a>
+                    <a href="#" id="socInsta" aria-label="Instagram HEDTRO JEANS"><i class="fab fa-instagram"></i></a>
+                    <a href="#" id="socFb" aria-label="Facebook HEDTRO JEANS"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" id="socYt" aria-label="YouTube HEDTRO JEANS"><i class="fab fa-youtube"></i></a>
+                    <a href="#" id="socTt" aria-label="TikTok HEDTRO JEANS"><i class="fab fa-tiktok"></i></a>
                 </div>
             </div>
             <div class="footer-col">
-                <h4>Koleksi Katalog</h4>
+                <h3>Koleksi Katalog</h3>
                 <ul>
                     <li>Celana Jeans Pria</li>
                     <li>Celana Jeans Wanita</li>
@@ -2083,7 +2081,7 @@
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Layanan Pelanggan</h4>
+                <h3>Layanan Pelanggan</h3>
                 <ul>
                     <li>Panduan Belanja</li>
                     <li id="btnLacakPesanan" style="cursor:pointer;" onclick="window.openTrackModal()"><i
@@ -2092,7 +2090,7 @@
                 </ul>
             </div>
             <div class="footer-col">
-                <h4>Hubungi Kami</h4>
+                <h3>Hubungi Kami</h3>
                 <p><i class="fas fa-envelope" style="color:var(--gold-accent);"></i> cs@hedtrojeans.com</p>
                 <p><i class="fas fa-phone" style="color:var(--gold-accent);"></i> +62 812 3456 7890</p>
             </div>
@@ -2425,7 +2423,7 @@
                             <div style="width:50px; height:50px; border-radius:50%; background:rgba(201,168,76,0.12); color:var(--gold-accent); display:flex; align-items:center; justify-content:center; margin:0 auto 12px; font-size:1.4rem;">
                                 <i class="fas ${f.icon || 'fa-check-circle'}"></i>
                             </div>
-                            <h4 style="font-weight:800; font-size:0.9rem; color:var(--denim-dark); margin-bottom:6px;">${f.title}</h4>
+                            <h3 style="font-weight:800; font-size:0.9rem; color:var(--denim-dark); margin-bottom:6px;">${f.title}</h3>
                             <p style="font-size:0.78rem; color:#64748b; line-height:1.4;">${f.description}</p>
                         </div>
                     `;
@@ -2459,14 +2457,14 @@
                             <span class="product-serial"><i class="fas fa-barcode"></i> ${prodSerial}</span>
                             <span class="stock-tag"><i class="fas fa-box"></i> ${stockText}</span>
                         </div>
-                        <h4 title="${p.name}">${p.name}</h4>
+                        <h3 title="${p.name}">${p.name}</h3>
                         <div class="price">
                             <span>Rp ${(p.price || 0).toLocaleString('id-ID')}</span>
                             ${origPriceHtml}
                         </div>
                         <div class="btn-group">
-                            <button class="btn-detail" data-id="${p.id}"><i class="fas fa-eye"></i> Detail</button>
-                            <button class="btn-buy" data-id="${p.id}"><i class="fas fa-shopping-bag"></i> Beli</button>
+                            <button class="btn-detail" data-id="${p.id}" aria-label="Lihat detail ${p.name}"><i class="fas fa-eye"></i> Detail</button>
+                            <button class="btn-buy" data-id="${p.id}" aria-label="Beli ${p.name}"><i class="fas fa-shopping-bag"></i> Beli</button>
                         </div>
                     </div>
                 `;
@@ -2474,25 +2472,27 @@
 
             // ========== FAVORITE CAROUSEL ==========
             function renderFavoriteCarousel() {
-                const container = document.getElementById('favoriteCarousel');
+                const carousel = document.getElementById('favoriteCarousel');
+                if (!carousel) return;
                 const favorites = allProducts.filter(p => p.favorite === true);
-                container.innerHTML = '';
+                carousel.innerHTML = '';
                 if (favorites.length === 0) {
-                    container.innerHTML = '<p class="text-muted" style="padding:20px;">Belum ada produk favorit.</p>';
+                    carousel.innerHTML = '<p class="text-muted" style="padding:20px;">Belum ada produk favorit.</p>';
                     return;
                 }
                 favorites.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
                     card.innerHTML = createProductCardHTML(p);
-                    container.appendChild(card);
+                    carousel.appendChild(card);
                 });
                 bindProductButtons();
             }
 
             // ========== PRODUCT GRID WITH PAGINATION ==========
-            function renderProductGrid(page) {
+            function renderProductGrid(page = 1) {
                 const grid = document.getElementById('productGrid');
+                if (!grid) return;
                 const products = allProducts.filter(p => p.favorite !== true);
                 const totalItems = products.length;
                 const totalPages = Math.ceil(totalItems / itemsPerPage) || 1;
@@ -2526,11 +2526,11 @@
                     return;
                 }
                 let html = '';
-                html += `<button class="page-btn" onclick="window._changePage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''}><i class="fas fa-chevron-left"></i></button>`;
+                html += `<button class="page-btn" onclick="window._changePage(${currentPage - 1})" ${currentPage <= 1 ? 'disabled' : ''} aria-label="Halaman Sebelumnya"><i class="fas fa-chevron-left"></i></button>`;
                 for (let i = 1; i <= totalPages; i++) {
-                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="window._changePage(${i})">${i}</button>`;
+                    html += `<button class="page-btn ${i === currentPage ? 'active' : ''}" onclick="window._changePage(${i})" aria-label="Halaman ${i}">${i}</button>`;
                 }
-                html += `<button class="page-btn" onclick="window._changePage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''}><i class="fas fa-chevron-right"></i></button>`;
+                html += `<button class="page-btn" onclick="window._changePage(${currentPage + 1})" ${currentPage >= totalPages ? 'disabled' : ''} aria-label="Halaman Selanjutnya"><i class="fas fa-chevron-right"></i></button>`;
                 container.innerHTML = html;
             }
 
