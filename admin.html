@@ -403,7 +403,6 @@
                                 <th>ID Member</th>
                                 <th>Nama & Username</th>
                                 <th>Kontak</th>
-                                <th>Sponsor / Upline</th>
                                 <th>Status</th>
                                 <th>Wallet</th>
                                 <th style="text-align:right;">Aksi</th>
@@ -1754,7 +1753,6 @@
                                 <br><small class="text-muted">@${u.username || 'user'}</small> ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}
                             </td>
                             <td data-label="Kontak">${contactHtml}</td>
-                            <td data-label="Sponsor / Upline">${spUpHtml}</td>
                             <td data-label="Status"><span class="badge-status ${statusClass}">${(u.status || 'free').toUpperCase()}</span></td>
                             <td data-label="Saldo Wallet"><strong style="color:#1f7a4b;">Rp ${(parseFloat(u.wallet) || 0).toLocaleString()}</strong></td>
                             <td data-label="Aksi" style="text-align:right;">
@@ -1788,18 +1786,37 @@
 
                     tbody.querySelectorAll('.delete-member-btn').forEach(btn => {
                         btn.onclick = async function() {
-                            if (!confirm('Apakah Anda yakin ingin MENGHAPUS member ini dari database? Permintaan ini tidak dapat dibatalkan.')) return;
                             const id = this.dataset.id;
+                            const targetUser = (allUsers || []).find(u => String(u.id) === String(id));
+                            const displayName = targetUser ? `@${targetUser.username || targetUser.fullname}` : id;
+
+                            if (!confirm(`Apakah Anda yakin ingin MENGHAPUS member ${displayName}? Semua transaksi terkait akan dibersihkan. Tindakan ini tidak dapat dibatalkan.`)) return;
+
                             try {
-                                const { error } = await supabase.from('users').delete().eq('id', id);
-                                if (error) throw error;
-                                await refreshAdminData();
+                                // 1. Cleanup associated rows to prevent Foreign Key constraints
+                                await supabase.from('orders').delete().eq('user_id', id).catch(() => {});
+                                await supabase.from('transactions').delete().eq('user_id', id).catch(() => {});
+                                await supabase.from('bonus_history').delete().eq('user_id', id).catch(() => {});
+                                
+                                // 2. Delete user row from database
+                                let { error } = await supabase.from('users').delete().eq('id', id);
+                                if (error && targetUser && targetUser.email) {
+                                    const { error: errEmail } = await supabase.from('users').delete().eq('email', targetUser.email);
+                                    if (errEmail) throw errEmail;
+                                } else if (error) {
+                                    throw error;
+                                }
+
+                                // 3. Update local array immediately
+                                allUsers = (allUsers || []).filter(u => String(u.id) !== String(id));
+
+                                // 4. Re-render table & stats
                                 await renderAdminMembers();
                                 await renderDashboard();
-                                showToast('✅ Member berhasil dihapus.', 'info');
+                                showToast(`✅ Member ${displayName} berhasil dihapus.`, 'info');
                             } catch (e) {
                                 console.error('Delete member error:', e);
-                                showToast('Gagal menghapus member: ' + e.message, 'error');
+                                showToast('Gagal menghapus member: ' + (e.message || e), 'error');
                             }
                         };
                     });
