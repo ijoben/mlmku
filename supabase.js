@@ -59,6 +59,34 @@ window.signOut = async function() {
   console.log('✅ signOut berhasil');
 };
 
+window.resetPasswordForEmail = async function(email) {
+  console.log('🔵 resetPasswordForEmail dipanggil untuk:', email);
+  var redirectPath = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/reset-password.html');
+  var { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
+    redirectTo: redirectPath
+  });
+  if (error) {
+    console.error('🔴 resetPasswordForEmail error:', error);
+    throw error;
+  }
+  console.log('✅ resetPasswordForEmail berhasil:', data);
+  return data;
+};
+
+window.updateUserPassword = async function(newPassword) {
+  console.log('🔵 updateUserPassword dipanggil');
+  var { data, error } = await supabaseClient.auth.updateUser({
+    password: newPassword
+  });
+  if (error) {
+    console.error('🔴 updateUserPassword error:', error);
+    throw error;
+  }
+  console.log('✅ updateUserPassword berhasil:', data);
+  return data;
+};
+
+
 window.getSession = async function() {
   console.log('🔵 getSession dipanggil');
   var { data, error } = await supabaseClient.auth.getSession();
