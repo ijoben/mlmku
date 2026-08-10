@@ -51,9 +51,10 @@
         .sidebar .menu-item:hover { background:rgba(255,255,255,0.08); }
         .sidebar .menu-item i { width:24px; color:var(--gold-accent); }
         .sidebar .menu-item.active { background:rgba(201,168,76,0.15); color:var(--gold-accent); }
-        .sidebar .menu-divider { height:1px; background:rgba(255,255,255,0.06); margin:6px 0; }
         .sidebar .menu-item.logout { margin-top:auto; color:#e74c3c; }
         .sidebar .menu-item.logout i { color:#e74c3c; }
+        .nav-badge { background:#e74c3c; color:#fff; font-size:0.7rem; font-weight:800; padding:2px 8px; border-radius:20px; margin-left:auto; display:none; }
+        .nav-badge.show { display:inline-block; }
 
         .main-content { margin-left: var(--sidebar-width); padding: 20px 24px 40px; transition: margin-left 0.3s ease; max-width: calc(100% - var(--sidebar-width)); width: 100%; }
         body { padding-top: 70px; }
@@ -310,10 +311,10 @@
             <div class="menu-item" data-tab="members"><i class="fas fa-users"></i> Member</div>
             <div class="menu-item" data-tab="bonus"><i class="fas fa-gift"></i> Bonus</div>
             <div class="menu-item" data-tab="products"><i class="fas fa-boxes"></i> Produk</div>
-            <div class="menu-item" data-tab="verification"><i class="fas fa-check-double"></i> Verifikasi</div>
-            <div class="menu-item" data-tab="orders"><i class="fas fa-shopping-cart"></i> Orders</div>
-            <div class="menu-item" data-tab="deposit"><i class="fas fa-wallet"></i> Deposit</div>
-            <div class="menu-item" data-tab="withdraw"><i class="fas fa-money-bill-wave"></i> Withdraw</div>
+            <div class="menu-item" data-tab="verification"><i class="fas fa-check-double"></i> Verifikasi <span class="nav-badge" id="badgeVerif"></span></div>
+            <div class="menu-item" data-tab="orders"><i class="fas fa-shopping-cart"></i> Orders <span class="nav-badge" id="badgeOrders"></span></div>
+            <div class="menu-item" data-tab="deposit"><i class="fas fa-wallet"></i> Deposit <span class="nav-badge" id="badgeDeposit"></span></div>
+            <div class="menu-item" data-tab="withdraw"><i class="fas fa-money-bill-wave"></i> Withdraw <span class="nav-badge" id="badgeWithdraw"></span></div>
             <div class="menu-divider"></div>
             <div class="menu-item" data-tab="page-settings"><i class="fas fa-paint-brush"></i> Halaman Utama</div>
             <div class="menu-divider"></div>
@@ -991,10 +992,43 @@
                     (settingsData || []).forEach(r => allSettings[r.key] = r.value);
 
                     try { localStorage.removeItem('hedtro_index_cache_v1'); } catch (e) {}
+                    updateAdminBadges();
 
                     console.log('⚡ Admin Data refreshed safely:', allUsers.length, 'users,', allOrders.length, 'orders');
                 } catch (e) {
                     console.error('refreshAdminData error:', e);
+                }
+            }
+
+            function updateAdminBadges() {
+                try {
+                    const verifCount = (allUsers || []).filter(u => {
+                        const st = (u.status || '').toLowerCase();
+                        return st === 'pending' || st === 'free';
+                    }).length;
+                    const ordersCount = (allOrders || []).filter(o => (o.status || '').toLowerCase() === 'pending').length;
+                    const depositCount = (allTransactions || []).filter(t => t.type === 'deposit' && (t.status || '').toLowerCase() === 'pending').length;
+                    const withdrawCount = (allTransactions || []).filter(t => t.type === 'withdraw' && (t.status || '').toLowerCase() === 'pending').length;
+
+                    const setBadge = (id, count) => {
+                        const el = document.getElementById(id);
+                        if (el) {
+                            if (count > 0) {
+                                el.textContent = count;
+                                el.classList.add('show');
+                            } else {
+                                el.textContent = '';
+                                el.classList.remove('show');
+                            }
+                        }
+                    };
+
+                    setBadge('badgeVerif', verifCount);
+                    setBadge('badgeOrders', ordersCount);
+                    setBadge('badgeDeposit', depositCount);
+                    setBadge('badgeWithdraw', withdrawCount);
+                } catch (e) {
+                    console.warn('Update badges warning:', e);
                 }
             }
 
@@ -1040,7 +1074,7 @@
                     }
                     let html = '';
                     sorted.forEach(t => {
-                        const user = allUsers.find(u => u.id === t.user_id);
+                        const user = allUsers.find(u => String(u.id) === String(t.user_id));
                         const userName = user ? (user.fullname || user.username || 'Pelanggan') : 'Pelanggan';
                         const typeLabel = t.type === 'deposit' ? 'Deposit' : (t.type === 'withdraw' ? 'Withdraw' : (t.type === 'order' ? 'Order' : (t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' ? '🎁 Bonus' : 'RO')));
                         const amountClass = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase' || t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward') ? 'plus' : 'minus';
@@ -1192,7 +1226,7 @@
 
                     let html = '';
                     paginatedData.forEach(t => {
-                        const user = allUsers.find(u => u.id === t.user_id);
+                        const user = allUsers.find(u => String(u.id) === String(t.user_id));
                         const userName = user ? (user.fullname || user.username) : 'Unknown';
                         const typeLabel = {
                             'sponsor': '👤 Sponsor',
@@ -1273,10 +1307,10 @@
             async function rejectBonus(id) {
                 try {
                     // Ambil transaksi bonus
-                    const tx = allTransactions.find(t => t.id === id);
+                    const tx = allTransactions.find(t => String(t.id) === String(id));
                     if (tx && tx.user_id) {
                         // Kembalikan saldo jika sudah masuk
-                        const user = allUsers.find(u => u.id === tx.user_id);
+                        const user = allUsers.find(u => String(u.id) === String(tx.user_id));
                         if (user) {
                             // Kurangi wallet
                             const newWallet = Math.max(0, (parseFloat(user.wallet) || 0) - (parseFloat(tx.amount) || 0));
@@ -1308,10 +1342,10 @@
                 if (!confirm('Hapus transaksi bonus ini? Ini akan mengurangi saldo member jika sudah dibayarkan.')) return;
                 
                 try {
-                    const tx = allTransactions.find(t => t.id === id);
+                    const tx = allTransactions.find(t => String(t.id) === String(id));
                     if (tx && tx.user_id && tx.status === 'success') {
                         // Kurangi saldo member
-                        const user = allUsers.find(u => u.id === tx.user_id);
+                        const user = allUsers.find(u => String(u.id) === String(tx.user_id));
                         if (user) {
                             const newWallet = Math.max(0, (parseFloat(user.wallet) || 0) - (parseFloat(tx.amount) || 0));
                             await supabase
@@ -1358,7 +1392,7 @@
                     // Kurangi saldo semua member yang menerima bonus
                     for (const tx of bonusTxs) {
                         if (tx.user_id && tx.status === 'success') {
-                            const user = allUsers.find(u => u.id === tx.user_id);
+                            const user = allUsers.find(u => String(u.id) === String(tx.user_id));
                             if (user) {
                                 const newWallet = Math.max(0, (parseFloat(user.wallet) || 0) - (parseFloat(tx.amount) || 0));
                                 await supabase
@@ -1418,7 +1452,7 @@
                         const statusClass = 'badge-' + (u.status || 'free');
                         let fotoHtml = '<i class="fas fa-user" style="font-size:1.2rem; color:var(--denim-blue);"></i>';
                         if (u.profile_image) fotoHtml = `<img src="${u.profile_image}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-accent);" />`;
-                        const memberIdFormatted = window.formatMemberId ? window.formatMemberId(u, allUsersData) : ('HDT-' + String(u.id).padStart(3, '0'));
+                        const memberIdFormatted = window.formatMemberId ? window.formatMemberId(u, allUsers) : ('HDT-' + String(u.id).padStart(3, '0'));
                         html += `<tr>
                             <td data-label="Foto">${fotoHtml}</td>
                             <td data-label="ID Member"><strong style="color:var(--gold-accent); font-family:monospace;">${memberIdFormatted}</strong></td>
@@ -1733,10 +1767,11 @@
                     let html = '';
                     paginated.forEach(u => {
                         const userOrder = allOrders.find(o => String(o.user_id) === String(u.id) && o.proof_image);
-                        const txProof = (u.transactions || []).find(t => t.proof_image)?.proof_image;
+                        const txProof = (allTransactions || []).find(t => String(t.user_id) === String(u.id) && t.proof_image)?.proof_image;
+                        const userTxProof = (u.transactions || []).find(t => t.proof_image)?.proof_image;
                         const purchaseProof = (u.purchase_history || []).find(p => p.proof_image)?.proof_image;
 
-                        const proofUrl = u.proof_image || u.first_order?.proof_image || userOrder?.proof_image || txProof || purchaseProof || null;
+                        const proofUrl = u.proof_image || u.first_order?.proof_image || userOrder?.proof_image || txProof || userTxProof || purchaseProof || null;
                         const hasProof = !!proofUrl;
 
                         html += `<tr>
@@ -2110,7 +2145,7 @@
 
                     let html = '';
                     paginated.forEach(t => {
-                        const user = allUsers.find(u => u.id === t.user_id);
+                        const user = allUsers.find(u => String(u.id) === String(t.user_id));
                         const userName = user ? (user.fullname || user.username) : 'Pelanggan';
                         const statusClass = t.status === 'pending' ? 'badge-pending' : (t.status === 'success' ? 'badge-success' : 'badge-failed');
                         const hasProof = t.proof_image ? true : false;
@@ -2190,7 +2225,7 @@
 
                     let html = '';
                     paginated.forEach(t => {
-                        const user = allUsers.find(u => u.id === t.user_id);
+                        const user = allUsers.find(u => String(u.id) === String(t.user_id));
                         const userName = user ? (user.fullname || user.username) : 'Pelanggan';
                         const statusClass = t.status === 'pending' ? 'badge-pending' : (t.status === 'success' ? 'badge-success' : 'badge-failed');
                         html += `<tr>
