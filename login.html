@@ -56,8 +56,25 @@
                     <label>Kata Sandi</label>
                     <input type="password" id="loginPassword" placeholder="••••••••" autocomplete="current-password" />
                 </div>
+                <div style="text-align: right; margin-top: -6px; margin-bottom: 14px;">
+                    <a href="#" id="forgotPasswordLink" style="font-size: 0.8rem; color: var(--gold-accent); text-decoration: none; font-weight: 600;">Lupa kata sandi?</a>
+                </div>
                 <button type="button" class="btn-login" id="loginBtn"><i class="fas fa-sign-in-alt"></i> Masuk</button>
                 <div class="msg" id="loginMsg"></div>
+            </div>
+
+            <!-- FORGOT PASSWORD FORM -->
+            <div id="forgotForm" style="display: none;">
+                <p style="font-size: 0.85rem; color: var(--denim-navy); margin-bottom: 16px; text-align: center; opacity: 0.85;">Masukkan alamat email terdaftar Anda. Kami akan mengirimkan tautan untuk mengatur ulang kata sandi ke inbox email Anda.</p>
+                <div class="form-group">
+                    <label>Alamat Email Terdaftar</label>
+                    <input type="email" id="forgotEmail" placeholder="email@domain.com" autocomplete="email" />
+                </div>
+                <button type="button" class="btn-login" id="sendResetBtn"><i class="fas fa-paper-plane"></i> Kirim Link Reset Password</button>
+                <div class="msg" id="forgotMsg"></div>
+                <div style="text-align: center; margin-top: 14px;">
+                    <a href="#" id="backToLoginLink" style="font-size: 0.85rem; color: var(--denim-navy); text-decoration: none; font-weight: 600;"><i class="fas fa-arrow-left"></i> Kembali ke Halaman Login</a>
+                </div>
             </div>
 
             <div class="login-footer">
@@ -68,6 +85,7 @@
             </div>
         </div>
     </div>
+
 
     <script>
         (function() {
@@ -170,7 +188,86 @@
                 }
             });
 
+            // ========== TOGGLE FORGOT PASSWORD FORM ==========
+            const forgotPasswordLink = document.getElementById('forgotPasswordLink');
+            const backToLoginLink = document.getElementById('backToLoginLink');
+            const loginForm = document.getElementById('loginForm');
+            const forgotForm = document.getElementById('forgotForm');
+            const sendResetBtn = document.getElementById('sendResetBtn');
+            const forgotEmailInput = document.getElementById('forgotEmail');
+            const forgotMsgEl = document.getElementById('forgotMsg');
+
+            if (forgotPasswordLink) {
+                forgotPasswordLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    loginForm.style.display = 'none';
+                    forgotForm.style.display = 'block';
+                    forgotEmailInput.value = emailInput.value || '';
+                    forgotEmailInput.focus();
+                });
+            }
+
+            if (backToLoginLink) {
+                backToLoginLink.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    forgotForm.style.display = 'none';
+                    loginForm.style.display = 'block';
+                });
+            }
+
+            // ========== SEND RESET PASSWORD EMAIL ==========
+            async function doSendResetPassword() {
+                const email = forgotEmailInput.value.trim();
+
+                forgotMsgEl.className = 'msg';
+                forgotMsgEl.innerText = '';
+
+                if (!email) {
+                    forgotMsgEl.className = 'msg error';
+                    forgotMsgEl.innerText = '⚠️ Masukkan alamat email Anda.';
+                    return;
+                }
+
+                sendResetBtn.disabled = true;
+                sendResetBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengirim email...';
+
+                try {
+                    console.log('🔵 Mengirim link reset password ke:', email);
+                    await window.resetPasswordForEmail(email);
+
+                    forgotMsgEl.className = 'msg success';
+                    forgotMsgEl.innerText = '✅ Link reset kata sandi telah dikirim ke email Anda! Silakan cek inbox/folder spam email Anda.';
+                    sendResetBtn.style.display = 'none';
+
+                } catch (error) {
+                    console.error('❌ Reset password error:', error);
+                    let errorMsg = error.message || 'Gagal mengirim email reset password.';
+                    if (errorMsg.includes('User not found')) {
+                        errorMsg = 'Email tidak terdaftar dalam sistem.';
+                    } else if (errorMsg.includes('For security purposes')) {
+                        errorMsg = 'Tunggu beberapa saat sebelum mencoba mengirim ulang.';
+                    }
+                    forgotMsgEl.className = 'msg error';
+                    forgotMsgEl.innerText = '❌ ' + errorMsg;
+                    sendResetBtn.disabled = false;
+                    sendResetBtn.innerHTML = '<i class="fas fa-paper-plane"></i> Kirim Link Reset Password';
+                }
+            }
+
+            if (sendResetBtn) {
+                sendResetBtn.addEventListener('click', doSendResetPassword);
+            }
+            if (forgotEmailInput) {
+                forgotEmailInput.addEventListener('keydown', function(e) {
+                    if (e.key === 'Enter') {
+                        e.preventDefault();
+                        doSendResetPassword();
+                    }
+                });
+            }
+
         })();
     </script>
 </body>
 </html>
+
