@@ -803,10 +803,19 @@ window.deleteOrder = async function(id) {
 // Transactions
 window.getTransactions = async function(userId) {
   var allTx = await window.getTable('transactions', '*', null, { by: 'date', ascending: false });
-  if (userId && allTx) {
-    return allTx.filter(t => String(t.user_id) === String(userId));
+  var cleanTxs = (allTx || []).filter(function(t) {
+    if (t.type && (t.type.startsWith('bonus_') || t.type === 'ro_bonus') && t.from_user_id) {
+      if (window.isSameUser && window.isSameUser(t.user_id, t.from_user_id)) return false;
+    }
+    return true;
+  });
+
+  if (userId && cleanTxs) {
+    return cleanTxs.filter(function(t) {
+      return window.isSameUser ? window.isSameUser(t.user_id, userId) : String(t.user_id) === String(userId);
+    });
   }
-  return allTx || [];
+  return cleanTxs;
 };
 window.saveTransaction = async function(t) { 
   return await window.upsertRow('transactions', t); 
