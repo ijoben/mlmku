@@ -363,21 +363,60 @@
 
             <!-- MEMBERS -->
             <div class="tab-content" id="tabMembers">
-                <h1 class="page-title"><i class="fas fa-users"></i> Member</h1>
-                <div class="flex-row">
-                    <button class="btn-sm btn-sm-success" id="addMemberBtn"><i class="fas fa-user-plus"></i> Tambah Member</button>
-                    <button class="btn-sm btn-sm-primary" id="refreshBtn"><i class="fas fa-sync"></i> Refresh</button>
-                    <button class="btn-sm btn-sm-gold" id="seedDemoBtn"><i class="fas fa-database"></i> Seed Demo</button>
-                    <button class="btn-sm btn-sm-danger" id="resetAllBtn"><i class="fas fa-trash"></i> Reset Semua</button>
+                <div style="display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:12px; margin-bottom:20px;">
+                    <h1 class="page-title" style="margin:0;"><i class="fas fa-users" style="color:var(--gold-accent);"></i> Manajemen Member</h1>
+                    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+                        <button class="btn-sm btn-sm-success" id="addMemberBtn" style="padding:10px 18px; font-weight:700;"><i class="fas fa-user-plus"></i> Tambah Member Baru</button>
+                        <button class="btn-sm btn-sm-primary" id="refreshBtn" style="padding:10px 16px;"><i class="fas fa-sync"></i> Refresh Data</button>
+                        <button class="btn-sm btn-sm-gold" id="seedDemoBtn" title="Isi data demo"><i class="fas fa-database"></i> Seed Demo</button>
+                        <button class="btn-sm btn-sm-danger" id="resetAllBtn" title="Hapus semua data"><i class="fas fa-trash"></i> Reset All</button>
+                    </div>
                 </div>
+
+                <!-- Filter & Search Bar -->
+                <div class="member-filter-bar" style="background:var(--white); padding:16px 20px; border-radius:var(--radius-sm); border:1px solid #e2e8f0; box-shadow:var(--shadow); margin-bottom:18px; display:flex; gap:12px; flex-wrap:wrap; align-items:center;">
+                    <div style="flex:1; min-width:240px; position:relative;">
+                        <i class="fas fa-search" style="position:absolute; left:14px; top:50%; transform:translateY(-50%); color:#a0aec0;"></i>
+                        <input type="text" id="memberSearchInput" placeholder="Cari nama, username, email, ID, phone..." style="width:100%; padding:10px 14px 10px 40px; border:1.5px solid #dde3ea; border-radius:60px; font-size:0.88rem; outline:none; background:#fafcff; box-sizing:border-box;">
+                    </div>
+                    <div style="display:flex; gap:10px; flex-wrap:wrap; align-items:center;">
+                        <select id="memberFilterStatus" style="padding:10px 16px; border-radius:60px; border:1.5px solid #dde3ea; background:var(--white); font-size:0.85rem; font-weight:600; color:var(--denim-navy); outline:none; cursor:pointer;">
+                            <option value="all">🔍 Semua Status</option>
+                            <option value="verified">✓ Verified</option>
+                            <option value="pending">⏳ Pending</option>
+                            <option value="free">Free</option>
+                            <option value="admin">⭐ Admin</option>
+                        </select>
+                        <select id="memberSortBy" style="padding:10px 16px; border-radius:60px; border:1.5px solid #dde3ea; background:var(--white); font-size:0.85rem; font-weight:600; color:var(--denim-navy); outline:none; cursor:pointer;">
+                            <option value="newest">📅 Terbaru</option>
+                            <option value="name">🔤 Nama (A-Z)</option>
+                            <option value="wallet">💰 Saldo Wallet (Highest)</option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="table-wrap">
                     <table>
-                        <thead><tr><th>Foto</th><th>ID</th><th>Nama / Username</th><th>Email</th><th>Sponsor</th><th>Status</th><th>Wallet</th><th>Aksi</th></tr></thead>
+                        <thead>
+                            <tr>
+                                <th style="width:50px;">Foto</th>
+                                <th>ID Member</th>
+                                <th>Nama & Username</th>
+                                <th>Kontak</th>
+                                <th>Sponsor / Upline</th>
+                                <th>Status</th>
+                                <th>Wallet</th>
+                                <th style="text-align:right;">Aksi</th>
+                            </tr>
+                        </thead>
                         <tbody id="adminTableBody"></tbody>
                     </table>
                 </div>
                 <div class="pagination" id="membersPagination"></div>
-                <div class="text-muted mt-16">Total member terdaftar: <span id="totalMembers">0</span></div>
+                <div style="display:flex; justify-content:space-between; align-items:center; margin-top:16px; font-size:0.85rem; color:#6a7e9a;">
+                    <div>Total member terdaftar: <strong id="totalMembers" style="color:var(--denim-dark);">0</strong></div>
+                    <div id="memberSearchCount" style="color:var(--gold-accent); font-weight:600;"></div>
+                </div>
             </div>
 
             <!-- BONUS MANAGEMENT -->
@@ -1616,14 +1655,67 @@
                 try {
                     const tbody = document.getElementById('adminTableBody');
                     if (!tbody) return;
-                    const users = allUsers;
+
+                    let users = [...(allUsers || [])];
+
+                    // 1. SEARCH FILTER
+                    const searchInput = document.getElementById('memberSearchInput');
+                    const searchQuery = searchInput ? searchInput.value.trim().toLowerCase() : '';
+                    if (searchQuery) {
+                        users = users.filter(u => {
+                            const name = (u.fullname || '').toLowerCase();
+                            const username = (u.username || '').toLowerCase();
+                            const email = (u.email || '').toLowerCase();
+                            const phone = (u.phone || u.whatsapp || '').toLowerCase();
+                            const nik = (u.nik || '').toLowerCase();
+                            const idStr = String(u.id || '').toLowerCase();
+                            const sponsor = String(u.sponsor_username || u.sponsor_id || '').toLowerCase();
+                            return name.includes(searchQuery) ||
+                                   username.includes(searchQuery) ||
+                                   email.includes(searchQuery) ||
+                                   phone.includes(searchQuery) ||
+                                   nik.includes(searchQuery) ||
+                                   idStr.includes(searchQuery) ||
+                                   sponsor.includes(searchQuery);
+                        });
+                    }
+
+                    // 2. STATUS FILTER
+                    const statusFilter = document.getElementById('memberFilterStatus');
+                    const filterVal = statusFilter ? statusFilter.value : 'all';
+                    if (filterVal !== 'all') {
+                        if (filterVal === 'admin') {
+                            users = users.filter(u => u.role === 'admin');
+                        } else {
+                            users = users.filter(u => (u.status || 'free') === filterVal);
+                        }
+                    }
+
+                    // 3. SORT
+                    const sortBy = document.getElementById('memberSortBy') ? document.getElementById('memberSortBy').value : 'newest';
+                    if (sortBy === 'name') {
+                        users.sort((a, b) => (a.fullname || a.username || '').localeCompare(b.fullname || b.username || ''));
+                    } else if (sortBy === 'wallet') {
+                        users.sort((a, b) => (parseFloat(b.wallet) || 0) - (parseFloat(a.wallet) || 0));
+                    } else {
+                        // newest by ID
+                        users.sort((a, b) => String(b.id).localeCompare(String(a.id), undefined, { numeric: true }));
+                    }
+
                     const totalItems = users.length;
-                    document.getElementById('totalMembers').textContent = totalItems;
+                    const totalMembersEl = document.getElementById('totalMembers');
+                    if (totalMembersEl) totalMembersEl.textContent = (allUsers || []).length;
+                    const searchCountEl = document.getElementById('memberSearchCount');
+                    if (searchCountEl) {
+                        searchCountEl.textContent = (searchQuery || filterVal !== 'all') ? `Menampilkan ${totalItems} hasil filter` : '';
+                    }
+
                     if (totalItems === 0) {
-                        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:20px;">Kosong.</td></tr>`;
+                        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center;padding:30px;color:#a0aec0;"><i class="fas fa-users-slash fa-2x"></i><br><br>Member tidak ditemukan.</td></tr>`;
                         document.getElementById('membersPagination').innerHTML = '';
                         return;
                     }
+
                     const totalPages = Math.ceil(totalItems / ITEMS_PER_PAGE) || 1;
                     statePage.members = Math.max(1, Math.min(statePage.members, totalPages));
                     const startIdx = (statePage.members - 1) * ITEMS_PER_PAGE;
@@ -1633,28 +1725,55 @@
                     for (let u of paginatedData) {
                         const isAdmin = u.role === 'admin';
                         const statusClass = 'badge-' + (u.status || 'free');
-                        let fotoHtml = '<i class="fas fa-user" style="font-size:1.2rem; color:var(--denim-blue);"></i>';
-                        if (u.profile_image) fotoHtml = `<img src="${u.profile_image}" style="width:40px;height:40px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-accent);" />`;
+                        let fotoHtml = `<div style="width:38px;height:38px;border-radius:50%;background:var(--gold-gradient);color:#0b1a2b;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:0.9rem;">${(u.username || u.fullname || 'U')[0].toUpperCase()}</div>`;
+                        if (u.profile_image) {
+                            fotoHtml = `<img src="${u.profile_image}" style="width:38px;height:38px;border-radius:50%;object-fit:cover;border:2px solid var(--gold-accent);" />`;
+                        }
+
                         const memberIdFormatted = window.formatMemberId ? window.formatMemberId(u, allUsers) : ('HDT-' + String(u.id).padStart(3, '0'));
+                        
+                        // Contact HTML
+                        let contactHtml = `<small style="display:block;color:var(--denim-navy);">${u.email || '-'}</small>`;
+                        const phoneNum = u.phone || u.whatsapp;
+                        if (phoneNum) {
+                            const waClean = phoneNum.replace(/[^0-9]/g, '');
+                            contactHtml += `<a href="https://wa.me/${waClean}" target="_blank" style="font-size:0.75rem; color:#25D366; text-decoration:none; font-weight:600;"><i class="fab fa-whatsapp"></i> ${phoneNum}</a>`;
+                        }
+
+                        // Sponsor / Upline HTML
+                        const sp = u.sponsor_username || u.sponsor_id || '-';
+                        const up = u.upline_username || u.upline_id || '-';
+                        const posText = u.position || u.pos ? (u.position === 'left' || u.pos === 'left' ? ' ◀ Kiri' : ' Kanan ▶') : '';
+                        const spUpHtml = `<div style="font-size:0.78rem;"><strong>Sp:</strong> @${sp}</div><div style="font-size:0.75rem; color:#6a7e9a;">Up: @${up}${posText}</div>`;
+
                         html += `<tr>
                             <td data-label="Foto">${fotoHtml}</td>
-                            <td data-label="ID Member"><strong style="color:var(--gold-accent); font-family:monospace;">${memberIdFormatted}</strong></td>
-                            <td data-label="Nama / User"><strong>${u.fullname || u.username}</strong><br><small class="text-muted">@${u.username || 'user'}</small> ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}</td>
-                            <td data-label="Email">${u.email}</td>
-                            <td data-label="Sponsor">${u.sponsor_id || '-'}</td>
+                            <td data-label="ID Member"><strong style="color:var(--gold-accent); font-family:monospace; font-size:0.85rem;">${memberIdFormatted}</strong></td>
+                            <td data-label="Nama / User">
+                                <strong style="color:var(--denim-dark);">${u.fullname || u.username}</strong>
+                                <br><small class="text-muted">@${u.username || 'user'}</small> ${isAdmin ? '<span class="badge-admin">Admin</span>' : ''}
+                            </td>
+                            <td data-label="Kontak">${contactHtml}</td>
+                            <td data-label="Sponsor / Upline">${spUpHtml}</td>
                             <td data-label="Status"><span class="badge-status ${statusClass}">${(u.status || 'free').toUpperCase()}</span></td>
-                            <td data-label="Saldo Wallet">Rp ${(parseFloat(u.wallet) || 0).toLocaleString()}</td>
-                            <td data-label="Aksi">
-                                <div style="display:flex; gap:4px; flex-wrap:wrap;">
+                            <td data-label="Saldo Wallet"><strong style="color:#1f7a4b;">Rp ${(parseFloat(u.wallet) || 0).toLocaleString()}</strong></td>
+                            <td data-label="Aksi" style="text-align:right;">
+                                <div style="display:flex; gap:4px; flex-wrap:wrap; justify-content:flex-end;">
+                                    <button class="btn-sm btn-sm-primary detail-member-btn" data-id="${u.id}" title="Lihat Detail Member"><i class="fas fa-eye"></i> Detail</button>
                                     <button class="btn-sm btn-sm-gold impersonate-member-btn" data-id="${u.id}" data-username="${u.username || u.fullname || u.id}" title="Login Sebagai User ini"><i class="fas fa-user-secret"></i> Login as User</button>
-                                    <button class="btn-sm btn-sm-warning edit-member-btn" data-id="${u.id}"><i class="fas fa-edit"></i> Edit</button>
-                                    ${!isAdmin ? `<button class="btn-sm btn-sm-danger delete-member-btn" data-id="${u.id}"><i class="fas fa-trash"></i> Hapus</button>` : ''}
+                                    <button class="btn-sm btn-sm-warning edit-member-btn" data-id="${u.id}" title="Edit Data Member"><i class="fas fa-edit"></i> Edit</button>
+                                    ${!isAdmin ? `<button class="btn-sm btn-sm-danger delete-member-btn" data-id="${u.id}" title="Hapus Member"><i class="fas fa-trash"></i></button>` : ''}
                                 </div>
                             </td>
                         </tr>`;
                     }
                     tbody.innerHTML = html;
                     buildPagination(totalItems, statePage.members, 'membersPagination', 'members', renderAdminMembers);
+
+                    // Event Listeners
+                    tbody.querySelectorAll('.detail-member-btn').forEach(btn => {
+                        btn.onclick = function() { openMemberDetailModal(this.dataset.id); };
+                    });
 
                     tbody.querySelectorAll('.impersonate-member-btn').forEach(btn => {
                         btn.onclick = function() {
@@ -1663,15 +1782,13 @@
                             if (!confirm(`🔑 Apakah Anda yakin ingin Login Sebagai Member: @${username}?`)) return;
                             localStorage.setItem('hedtro_impersonate_user_id', userId);
                             showToast(`🔑 Beralih ke akun @${username}...`, 'info');
-                            setTimeout(() => {
-                                window.location.href = '/dashboard';
-                            }, 500);
+                            setTimeout(() => { window.location.href = '/dashboard'; }, 500);
                         };
                     });
 
                     tbody.querySelectorAll('.delete-member-btn').forEach(btn => {
                         btn.onclick = async function() {
-                            if (!confirm('Hapus member ini dari database?')) return;
+                            if (!confirm('Apakah Anda yakin ingin MENGHAPUS member ini dari database? Permintaan ini tidak dapat dibatalkan.')) return;
                             const id = this.dataset.id;
                             try {
                                 const { error } = await supabase.from('users').delete().eq('id', id);
@@ -1679,10 +1796,10 @@
                                 await refreshAdminData();
                                 await renderAdminMembers();
                                 await renderDashboard();
-                                showToast('✅ Member dihapus.', 'info');
+                                showToast('✅ Member berhasil dihapus.', 'info');
                             } catch (e) {
                                 console.error('Delete member error:', e);
-                                showToast('Gagal menghapus member.', 'error');
+                                showToast('Gagal menghapus member: ' + e.message, 'error');
                             }
                         };
                     });
@@ -1696,95 +1813,301 @@
                 }
             }
 
+            function openMemberDetailModal(id) {
+                const user = (allUsers || []).find(u => String(u.id) === String(id));
+                if (!user) return showToast('Member tidak ditemukan.', 'error');
+
+                const memberIdFormatted = window.formatMemberId ? window.formatMemberId(user, allUsers) : ('HDT-' + String(user.id).padStart(3, '0'));
+                const downlines = (allUsers || []).filter(u => String(u.sponsor_id) === String(user.id) || String(u.sponsor_username) === String(user.username) || String(u.upline_id) === String(user.id));
+
+                openModal(`
+                    <div style="text-align:center; margin-bottom:16px;">
+                        <div style="width:64px;height:64px;border-radius:50%;background:var(--gold-gradient);color:#0b1a2b;display:inline-flex;align-items:center;justify-content:center;font-size:1.8rem;font-weight:900;margin-bottom:8px;box-shadow:0 4px 14px rgba(255,107,0,0.3);">
+                            ${(user.username || user.fullname || 'U')[0].toUpperCase()}
+                        </div>
+                        <h3 style="margin:0;font-size:1.2rem;color:var(--denim-dark);">${user.fullname || user.username}</h3>
+                        <div style="font-size:0.85rem;color:var(--gold-accent);font-family:monospace;font-weight:700;">${memberIdFormatted} (@${user.username})</div>
+                        <span class="badge-status badge-${user.status || 'free'}" style="margin-top:6px;">${(user.status || 'free').toUpperCase()}</span>
+                    </div>
+
+                    <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; font-size:0.85rem; max-height:60vh; overflow-y:auto; padding-right:4px;">
+                        <div style="background:#f8fafc; padding:10px 12px; border-radius:8px;">
+                            <span style="color:#718096; display:block; font-size:0.75rem;">Email</span>
+                            <strong>${user.email || '-'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; padding:10px 12px; border-radius:8px;">
+                            <span style="color:#718096; display:block; font-size:0.75rem;">No. HP / WhatsApp</span>
+                            <strong>${user.phone || user.whatsapp || '-'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; padding:10px 12px; border-radius:8px;">
+                            <span style="color:#718096; display:block; font-size:0.75rem;">NIK (KTP)</span>
+                            <strong>${user.nik || '-'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; padding:10px 12px; border-radius:8px;">
+                            <span style="color:#718096; display:block; font-size:0.75rem;">Saldo Wallet</span>
+                            <strong style="color:#1f7a4b;">Rp ${(parseFloat(user.wallet) || 0).toLocaleString()}</strong>
+                        </div>
+                        <div style="background:#f8fafc; padding:10px 12px; border-radius:8px;">
+                            <span style="color:#718096; display:block; font-size:0.75rem;">Sponsor</span>
+                            <strong>@${user.sponsor_username || user.sponsor_id || '-'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; padding:10px 12px; border-radius:8px;">
+                            <span style="color:#718096; display:block; font-size:0.75rem;">Upline (Posisi)</span>
+                            <strong>@${user.upline_username || user.upline_id || '-'} (${user.position || user.pos || '-'})</strong>
+                        </div>
+                        <div style="background:#f8fafc; padding:10px 12px; border-radius:8px; grid-column:span 2;">
+                            <span style="color:#718096; display:block; font-size:0.75rem;">Rekening Bank</span>
+                            <strong>${user.bank_name || '-'} — ${user.bank_account || '-'} a.n ${user.bank_holder || '-'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; padding:10px 12px; border-radius:8px; grid-column:span 2;">
+                            <span style="color:#718096; display:block; font-size:0.75rem;">Alamat</span>
+                            <strong>${user.address || '-'}, ${user.city || '-'}</strong>
+                        </div>
+                        <div style="background:#f8fafc; padding:10px 12px; border-radius:8px; grid-column:span 2;">
+                            <span style="color:#718096; display:block; font-size:0.75rem;">Total Downline Direct</span>
+                            <strong>${downlines.length} Downline</strong>
+                        </div>
+                    </div>
+
+                    <div style="display:flex; gap:8px; margin-top:16px;">
+                        <button class="btn-submit" onclick="openMemberModal('${user.id}')" style="background:var(--denim-dark); color:#fff; flex:1; padding:12px;"><i class="fas fa-edit"></i> Edit Member</button>
+                        <button class="btn-submit" onclick="closeModal()" style="background:#e2e8f0; color:#4a5568; flex:1; padding:12px;">Tutup</button>
+                    </div>
+                `);
+            }
+
             async function openMemberModal(id = null) {
                 let user = null;
                 if (id) {
-                    user = allUsers.find(u => u.id === id);
+                    user = (allUsers || []).find(u => String(u.id) === String(id));
                 }
                 const isEdit = !!user;
-                currentEditId = id;
+
                 openModal(`
-                    <h3>${isEdit ? 'Edit Member' : 'Tambah Member'}</h3>
-                    <div class="form-group"><label>Nama Lengkap</label><input type="text" id="mName" value="${isEdit ? (user?.fullname || '') : ''}"></div>
-                    <div class="form-group"><label>Username</label><input type="text" id="mUsername" value="${isEdit ? (user?.username || '') : ''}"></div>
-                    <div class="form-group"><label>Email</label><input type="email" id="mEmail" value="${isEdit ? (user?.email || '') : ''}"></div>
-                    ${!isEdit ? `<div class="form-group"><label>Password</label><input type="password" id="mPass" placeholder="Minimal 6 karakter"></div>` : ''}
-                    <div class="form-group"><label>Status</label><select id="mStatus">
-                        <option value="free" ${isEdit && user?.status === 'free' ? 'selected' : ''}>Free</option>
-                        <option value="verified" ${isEdit && user?.status === 'verified' ? 'selected' : ''}>Verified</option>
-                        <option value="pending" ${isEdit && user?.status === 'pending' ? 'selected' : ''}>Pending</option>
-                    </select></div>
-                    <div class="form-group"><label>Wallet (Saldo)</label><input type="number" id="mWallet" value="${isEdit ? (parseFloat(user?.wallet) || 0) : 0}"></div>
-                    <div class="form-group"><label>Role</label><select id="mRole">
-                        <option value="user" ${isEdit && user?.role === 'user' ? 'selected' : ''}>User</option>
-                        <option value="admin" ${isEdit && user?.role === 'admin' ? 'selected' : ''}>Admin</option>
-                    </select></div>
-                    <button class="btn-submit" id="saveMemberBtn">Simpan</button>
+                    <h3 style="font-family:'Playfair Display',serif; font-size:1.3rem; font-weight:800; color:var(--denim-dark); margin-bottom:14px; display:flex; align-items:center; gap:8px;">
+                        <i class="fas ${isEdit ? 'fa-user-edit' : 'fa-user-plus'}" style="color:var(--gold-accent);"></i>
+                        ${isEdit ? 'Edit Data Member' : 'Tambah Member Baru'}
+                    </h3>
+
+                    <form id="memberModalForm" onsubmit="return false;">
+                        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; max-height:68vh; overflow-y:auto; padding-right:4px;">
+                            <div style="grid-column: span 2; font-weight:700; font-size:0.78rem; color:var(--gold-accent); text-transform:uppercase; letter-spacing:0.5px; margin-top:4px; padding-bottom:4px; border-bottom:1px solid #edf2f7;">
+                                <i class="fas fa-id-card"></i> Informasi Akun & Diri
+                            </div>
+                            <div class="form-group">
+                                <label>Nama Lengkap <span style="color:#e53e3e;">*</span></label>
+                                <input type="text" id="mName" value="${isEdit ? (user?.fullname || '') : ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Username <span style="color:#e53e3e;">*</span></label>
+                                <input type="text" id="mUsername" value="${isEdit ? (user?.username || '') : ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>Email <span style="color:#e53e3e;">*</span></label>
+                                <input type="email" id="mEmail" value="${isEdit ? (user?.email || '') : ''}" required>
+                            </div>
+                            <div class="form-group">
+                                <label>No. HP / WhatsApp</label>
+                                <input type="text" id="mPhone" value="${isEdit ? (user?.phone || user?.whatsapp || '') : ''}">
+                            </div>
+                            <div class="form-group">
+                                <label>NIK (KTP)</label>
+                                <input type="text" id="mNik" value="${isEdit ? (user?.nik || '') : ''}" maxlength="16">
+                            </div>
+                            <div class="form-group">
+                                <label>${isEdit ? 'Reset Password (Opsional)' : 'Password *'}</label>
+                                <input type="password" id="mPass" placeholder="${isEdit ? 'Kosongkan jika tidak diubah' : 'Minimal 6 karakter'}">
+                            </div>
+
+                            <div style="grid-column: span 2; font-weight:700; font-size:0.78rem; color:var(--gold-accent); text-transform:uppercase; letter-spacing:0.5px; margin-top:8px; padding-bottom:4px; border-bottom:1px solid #edf2f7;">
+                                <i class="fas fa-sitemap"></i> Struktur MLM & Jaringan
+                            </div>
+                            <div class="form-group">
+                                <label>ID / Username Sponsor</label>
+                                <input type="text" id="mSponsor" value="${isEdit ? (user?.sponsor_username || user?.sponsor_id || '') : ''}">
+                            </div>
+                            <div class="form-group">
+                                <label>ID / Username Upline</label>
+                                <input type="text" id="mUpline" value="${isEdit ? (user?.upline_username || user?.upline_id || '') : ''}">
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Posisi Binary</label>
+                                <select id="mPosition">
+                                    <option value="left" ${isEdit && (user?.position === 'left' || user?.pos === 'left') ? 'selected' : ''}>◀ Kiri (Left)</option>
+                                    <option value="right" ${isEdit && (user?.position === 'right' || user?.pos === 'right') ? 'selected' : ''}>Kanan ▶ (Right)</option>
+                                </select>
+                            </div>
+
+                            <div style="grid-column: span 2; font-weight:700; font-size:0.78rem; color:var(--gold-accent); text-transform:uppercase; letter-spacing:0.5px; margin-top:8px; padding-bottom:4px; border-bottom:1px solid #edf2f7;">
+                                <i class="fas fa-university"></i> Rekening Bank
+                            </div>
+                            <div class="form-group">
+                                <label>Nama Bank</label>
+                                <input type="text" id="mBankName" value="${isEdit ? (user?.bank_name || '') : ''}" placeholder="BCA / Mandiri / BRI">
+                            </div>
+                            <div class="form-group">
+                                <label>No. Rekening</label>
+                                <input type="text" id="mBankAccount" value="${isEdit ? (user?.bank_account || '') : ''}">
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Atas Nama Rekening</label>
+                                <input type="text" id="mBankHolder" value="${isEdit ? (user?.bank_holder || '') : ''}">
+                            </div>
+
+                            <div style="grid-column: span 2; font-weight:700; font-size:0.78rem; color:var(--gold-accent); text-transform:uppercase; letter-spacing:0.5px; margin-top:8px; padding-bottom:4px; border-bottom:1px solid #edf2f7;">
+                                <i class="fas fa-user-shield"></i> Status, Role & Wallet
+                            </div>
+                            <div class="form-group">
+                                <label>Status Akun</label>
+                                <select id="mStatus">
+                                    <option value="verified" ${isEdit && user?.status === 'verified' ? 'selected' : ''}>✓ Verified</option>
+                                    <option value="pending" ${isEdit && user?.status === 'pending' ? 'selected' : ''}>⏳ Pending</option>
+                                    <option value="free" ${isEdit && user?.status === 'free' ? 'selected' : ''}>Free</option>
+                                </select>
+                            </div>
+                            <div class="form-group">
+                                <label>Role</label>
+                                <select id="mRole">
+                                    <option value="user" ${isEdit && user?.role === 'user' ? 'selected' : ''}>User (Member)</option>
+                                    <option value="admin" ${isEdit && user?.role === 'admin' ? 'selected' : ''}>Admin</option>
+                                </select>
+                            </div>
+                            <div class="form-group" style="grid-column: span 2;">
+                                <label>Saldo Wallet (Rp)</label>
+                                <input type="number" id="mWallet" value="${isEdit ? (parseFloat(user?.wallet) || 0) : 0}">
+                            </div>
+                        </div>
+
+                        <button class="btn-submit" id="saveMemberBtn" style="margin-top:16px;">
+                            <i class="fas fa-save"></i> ${isEdit ? 'Simpan Perubahan' : 'Tambah Member Baru'}
+                        </button>
+                    </form>
                 `);
 
                 document.getElementById('saveMemberBtn').addEventListener('click', async function() {
                     const name = document.getElementById('mName').value.trim();
                     const username = document.getElementById('mUsername').value.trim();
                     const email = document.getElementById('mEmail').value.trim();
+                    const phone = document.getElementById('mPhone').value.trim();
+                    const nik = document.getElementById('mNik').value.trim();
+                    const password = document.getElementById('mPass') ? document.getElementById('mPass').value.trim() : '';
+
+                    const sponsorVal = document.getElementById('mSponsor').value.trim();
+                    const uplineVal = document.getElementById('mUpline').value.trim();
+                    const position = document.getElementById('mPosition').value;
+
+                    const bankName = document.getElementById('mBankName').value.trim();
+                    const bankAccount = document.getElementById('mBankAccount').value.trim();
+                    const bankHolder = document.getElementById('mBankHolder').value.trim();
+
                     const status = document.getElementById('mStatus').value;
-                    const wallet = parseFloat(document.getElementById('mWallet').value) || 0;
                     const role = document.getElementById('mRole').value;
-                    let password = document.getElementById('mPass') ? document.getElementById('mPass').value.trim() : '';
+                    const wallet = parseFloat(document.getElementById('mWallet').value) || 0;
 
                     if (!name || !username || !email) {
-                        showToast('Isi semua field yang wajib.', 'error');
+                        showToast('Nama, Username, dan Email wajib diisi.', 'error');
                         return;
                     }
 
                     try {
+                        let sponsorUser = null;
+                        if (sponsorVal) {
+                            sponsorUser = (allUsers || []).find(u => String(u.username).toLowerCase() === sponsorVal.toLowerCase() || String(u.id) === sponsorVal);
+                        }
+
+                        let uplineUser = null;
+                        if (uplineVal) {
+                            uplineUser = (allUsers || []).find(u => String(u.username).toLowerCase() === uplineVal.toLowerCase() || String(u.id) === uplineVal);
+                        }
+
+                        const userDataPayload = {
+                            fullname: name,
+                            username: username,
+                            email: email,
+                            phone: phone,
+                            whatsapp: phone,
+                            nik: nik,
+                            sponsor_id: sponsorUser ? sponsorUser.id : (sponsorVal || null),
+                            sponsor_username: sponsorUser ? sponsorUser.username : (sponsorVal || null),
+                            upline_id: uplineUser ? uplineUser.id : (uplineVal || null),
+                            upline_username: uplineUser ? uplineUser.username : (uplineVal || null),
+                            position: position,
+                            bank_name: bankName,
+                            bank_account: bankAccount,
+                            bank_holder: bankHolder,
+                            status: status,
+                            role: role,
+                            wallet: wallet
+                        };
+
                         if (isEdit) {
                             const { error } = await supabase
                                 .from('users')
-                                .update({ 
-                                    fullname: name, 
-                                    username, 
-                                    email, 
-                                    status, 
-                                    wallet, 
-                                    role 
-                                })
+                                .update(userDataPayload)
                                 .eq('id', user.id);
+
                             if (error) throw error;
-                            showToast('✅ Member berhasil diupdate!', 'success');
+
+                            showToast('✅ Member berhasil diperbarui!', 'success');
                         } else {
                             if (!password || password.length < 6) {
                                 showToast('Password minimal 6 karakter.', 'error');
                                 return;
                             }
-                            const { data, error } = await supabase.auth.signUp({
+
+                            const { data: authData, error: authError } = await supabase.auth.signUp({
                                 email: email,
                                 password: password,
                                 options: {
                                     data: { username, fullname: name, role }
                                 }
                             });
-                            if (error) throw error;
+                            if (authError) throw authError;
+
                             await new Promise(r => setTimeout(r, 1500));
-                            const { error: updateError } = await supabase
+
+                            const newUserId = authData?.user?.id;
+                            if (newUserId) {
+                                userDataPayload.id = newUserId;
+                            }
+
+                            const { error: upsertErr } = await supabase
                                 .from('users')
-                                .update({ wallet, status })
-                                .eq('email', email);
-                            if (updateError) throw updateError;
-                            showToast('✅ Member berhasil ditambahkan!', 'success');
+                                .upsert({ email, ...userDataPayload });
+
+                            if (upsertErr) throw upsertErr;
+                            showToast('✅ Member baru berhasil ditambahkan!', 'success');
                         }
+
                         await refreshAdminData();
                         await renderAdminMembers();
                         await renderDashboard();
                         closeModal();
                     } catch (e) {
                         console.error('Save member error:', e);
-                        showToast('Gagal menyimpan: ' + e.message, 'error');
+                        showToast('Gagal menyimpan member: ' + e.message, 'error');
                     }
                 });
             }
 
             document.getElementById('addMemberBtn').addEventListener('click', function() { openMemberModal(); });
             document.getElementById('refreshBtn').addEventListener('click', async function() { await refreshAdminData(); await renderAdminMembers(); showToast('Direfresh!', 'info'); });
+
+            // Filter & Search Event Listeners for Member Table
+            document.getElementById('memberSearchInput')?.addEventListener('input', () => {
+                statePage.members = 1;
+                renderAdminMembers();
+            });
+
+            document.getElementById('memberFilterStatus')?.addEventListener('change', () => {
+                statePage.members = 1;
+                renderAdminMembers();
+            });
+
+            document.getElementById('memberSortBy')?.addEventListener('change', () => {
+                statePage.members = 1;
+                renderAdminMembers();
+            });
 
             // ========== PRODUCTS CRUD ==========
             async function renderAdminProducts() {
