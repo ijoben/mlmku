@@ -1033,6 +1033,17 @@
                     }
                     if (transactionsData) {
                         allTransactions = transactionsData;
+                        // Clean any illegal self-bonus transactions where user received bonus from himself
+                        if (allTransactions && allTransactions.length > 0) {
+                            const invalidTxs = allTransactions.filter(t => t.user_id && t.from_user_id && window.isSameUser(t.user_id, t.from_user_id));
+                            if (invalidTxs.length > 0) {
+                                console.warn('🧹 Purging', invalidTxs.length, 'illegal self-bonus transactions...');
+                                allTransactions = allTransactions.filter(t => !(t.user_id && t.from_user_id && window.isSameUser(t.user_id, t.from_user_id)));
+                                for (const itx of invalidTxs) {
+                                    try { await supabase.from('transactions').delete().eq('id', itx.id); } catch(e) {}
+                                }
+                            }
+                        }
                         try { localStorage.setItem('hedtro_admin_txs', JSON.stringify(allTransactions)); } catch (e) {}
                     }
 
@@ -2373,7 +2384,7 @@
                                         const settings = {};
                                         (settingsData || []).forEach(r => settings[r.key] = r.value);
                                         const pkgPrice = 100000;
-                                        if (user.sponsor_id) {
+                                        if (user.sponsor_id && !window.isSameUser(user.id, user.sponsor_id)) {
                                             await window.calculateSponsorBonus(user.id, user.sponsor_id, pkgPrice, settings);
                                         }
                                         await window.calculateBinaryBonus(user.id, pkgPrice, settings);
