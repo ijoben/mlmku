@@ -1,4 +1,6 @@
 {
+  "cleanUrls": true,
+  "trailingSlash": false,
   "headers": [
     {
       "source": "/(.*).(js|css|png|jpg|jpeg|gif|ico|svg|woff|woff2)",
@@ -10,7 +12,7 @@
       ]
     },
     {
-      "source": "/(.*).html",
+      "source": "/(.*)",
       "headers": [
         {
           "key": "Cache-Control",
@@ -26,6 +28,7 @@
     { "source": "/register", "destination": "/register.html" },
     { "source": "/debug", "destination": "/debug.html" },
     { "source": "/confirm-email", "destination": "/confirm-email.html" },
+    { "source": "/reset-password", "destination": "/reset-password.html" },
     { "source": "/reff/:username", "destination": "/register.html?ref=:username" },
     { "source": "/ref/:username", "destination": "/register.html?ref=:username" },
     { "source": "/reff", "destination": "/register.html" },
