@@ -3814,32 +3814,44 @@
         return String(val1).trim().toLowerCase() === String(val2).trim().toLowerCase();
       }
 
-      function findChildId(parentUser, position) {
+      function findChildId(parentUser, position, _seen) {
         if (!parentUser) return null;
+
+        const isUserSeen = (u) => {
+          if (!_seen) return false;
+          const kId = u.id ? String(u.id).trim().toLowerCase() : null;
+          const kUn = u.username ? String(u.username).trim().toLowerCase() : null;
+          return (kId && _seen.has(kId)) || (kUn && _seen.has(kUn));
+        };
 
         // 1. Explicit child IDs stored directly on parent record
         if (position === 'left' && parentUser.left_id) {
-          const explicitChild = (allUsers || []).find(u => isSameUser(u.id, parentUser.left_id) || isSameUser(u.username, parentUser.left_id));
+          const explicitChild = (allUsers || []).find(u => (isSameUser(u.id, parentUser.left_id) || isSameUser(u.username, parentUser.left_id)) && !isUserSeen(u));
           if (explicitChild) return explicitChild.id;
         }
         if (position === 'right' && parentUser.right_id) {
-          const explicitChild = (allUsers || []).find(u => isSameUser(u.id, parentUser.right_id) || isSameUser(u.username, parentUser.right_id));
+          const explicitChild = (allUsers || []).find(u => (isSameUser(u.id, parentUser.right_id) || isSameUser(u.username, parentUser.right_id)) && !isUserSeen(u));
           if (explicitChild) return explicitChild.id;
         }
 
         const isLeftTarget = (position === 'left');
 
-        // 2. Find users whose UPLINE is this parent AND whose position matches
-        //    NOTE: Sponsor ≠ binary upline — do NOT match by sponsor here.
+        // 2. Find unplaced users where parent is either upline OR sponsor, matching requested position
         const candidates = (allUsers || []).filter(u => {
           if (isSameUser(u.id, parentUser.id) || isSameUser(u.username, parentUser.username)) return false;
+          if (isUserSeen(u)) return false;
 
-          // Only match by upline relationship (direct binary parent)
           const matchUpline = isSameUser(u.upline_id, parentUser.id) ||
                               isSameUser(u.upline_id, parentUser.username) ||
                               isSameUser(u.upline_username, parentUser.username) ||
                               isSameUser(u.upline_username, parentUser.id);
-          if (!matchUpline) return false;
+
+          const matchSponsor = isSameUser(u.sponsor_id, parentUser.id) ||
+                               isSameUser(u.sponsor_id, parentUser.username) ||
+                               isSameUser(u.sponsor_username, parentUser.username) ||
+                               isSameUser(u.sponsor_username, parentUser.id);
+
+          if (!matchUpline && !matchSponsor) return false;
 
           const pos = String(u.position || u.pos || '').trim().toLowerCase();
           if (isLeftTarget) {
@@ -3851,22 +3863,29 @@
 
         if (candidates.length > 0) return candidates[0].id;
 
-        // 3. Fallback: upline matches but no position stored — assign by join order
-        //    ONLY use upline (not sponsor) to avoid phantom nodes.
-        const unpositionedUplineChildren = (allUsers || []).filter(u => {
+        // 3. Fallback: unplaced downlines with matching upline or sponsor but no explicit position saved
+        const unpositionedChildren = (allUsers || []).filter(u => {
           if (isSameUser(u.id, parentUser.id) || isSameUser(u.username, parentUser.username)) return false;
+          if (isUserSeen(u)) return false;
+
           const matchUpline = isSameUser(u.upline_id, parentUser.id) ||
                               isSameUser(u.upline_id, parentUser.username) ||
                               isSameUser(u.upline_username, parentUser.username) ||
                               isSameUser(u.upline_username, parentUser.id);
-          if (!matchUpline) return false;
-          // Must have no explicit position to qualify for fallback
+
+          const matchSponsor = isSameUser(u.sponsor_id, parentUser.id) ||
+                               isSameUser(u.sponsor_id, parentUser.username) ||
+                               isSameUser(u.sponsor_username, parentUser.username) ||
+                               isSameUser(u.sponsor_username, parentUser.id);
+
+          if (!matchUpline && !matchSponsor) return false;
+
           const pos = String(u.position || u.pos || '').trim();
           return pos === '';
         });
 
-        if (isLeftTarget  && unpositionedUplineChildren.length > 0) return unpositionedUplineChildren[0].id;
-        if (!isLeftTarget && unpositionedUplineChildren.length > 1) return unpositionedUplineChildren[1].id;
+        if (isLeftTarget  && unpositionedChildren.length > 0) return unpositionedChildren[0].id;
+        if (!isLeftTarget && unpositionedChildren.length > 1) return unpositionedChildren[1].id;
 
         return null;
       }
@@ -3892,8 +3911,8 @@
         if (keyUn) _seen.add(keyUn);
         // ────────────────────────────────────────────────────────────────────
 
-        const leftChildId  = findChildId(user, 'left');
-        const rightChildId = findChildId(user, 'right');
+        const leftChildId  = findChildId(user, 'left',  _seen);
+        const rightChildId = findChildId(user, 'right', _seen);
 
         return {
           id: user.id,
