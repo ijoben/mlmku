@@ -496,7 +496,7 @@
                     return;
                 }
 
-                // ===== VALIDASI SPONSOR =====
+                // ===== VALIDASI SPONSOR & UPLINE =====
                 let sponsorData = null;
                 if (sponsorUsername) {
                     try {
@@ -512,6 +512,21 @@
                         msgEl.innerText = '⚠️ Gagal memverifikasi sponsor: ' + e.message;
                         return;
                     }
+                }
+
+                // Cek Upline dari URL jika pendaftaran via klik slot pohon
+                const regParams = new URLSearchParams(window.location.search);
+                const uplineUsernameParam = regParams.get('upline');
+                let uplineData = null;
+                if (uplineUsernameParam) {
+                    try {
+                        uplineData = await window.getUserByUsername(uplineUsernameParam);
+                    } catch(e) {
+                        console.warn('Upline lookup warning:', e);
+                    }
+                }
+                if (!uplineData) {
+                    uplineData = sponsorData; // fallback ke sponsor jika upline spesifik tidak diisi
                 }
 
                 // Loading state
@@ -537,6 +552,8 @@
                         bank_holder: bankHolder,
                         sponsor_id: sponsorData ? sponsorData.id : null,
                         sponsor_username: sponsorUsername || null,
+                        upline_id: uplineData ? uplineData.id : null,
+                        upline_username: uplineData ? uplineData.username : (sponsorUsername || null),
                         position: position,
                         product_id: productId,
                         size: size,
@@ -580,6 +597,8 @@
                         bank_holder: bankHolder,
                         sponsor_id: sponsorData ? sponsorData.id : null,
                         sponsor_username: sponsorUsername || null,
+                        upline_id: uplineData ? uplineData.id : null,
+                        upline_username: uplineData ? uplineData.username : (sponsorUsername || null),
                         position: position,
                         status: 'pending'
                     };
