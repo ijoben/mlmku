@@ -580,6 +580,16 @@
                 }
             });
 
+            function generateUUID() {
+                if (typeof crypto !== 'undefined' && typeof crypto.randomUUID === 'function') {
+                    return crypto.randomUUID();
+                }
+                return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+                    var r = Math.random() * 16 | 0, v = c === 'x' ? r : (r & 0x3 | 0x8);
+                    return v.toString(16);
+                });
+            }
+
             // DAFTAR & VERIFIKASI LANGSUNG HANDLER
             document.getElementById('btnQuickRegister').addEventListener('click', async function() {
                 const name = document.getElementById('testName').value.trim();
@@ -604,7 +614,7 @@
                 try {
                     logMessage(`⚡ Memulai pendaftaran instan untuk <strong>${name} (@${username})</strong>...`, 'gold');
 
-                    const newUserId = Date.now().toString();
+                    const newUserId = generateUUID();
 
                     // 1. Buat user baru dengan status VERIFIED
                     const newUserObj = {
@@ -639,9 +649,10 @@
                     }
 
                     // 3. Catat Order Pembelian
+                    const orderId = generateUUID();
                     const orderObj = {
-                        id: newUserId,
-                        order_number: 'FO-' + newUserId.toString().slice(-6),
+                        id: orderId,
+                        order_number: 'FO-' + Date.now().toString().slice(-6),
                         user_id: newUserId,
                         user_name: name,
                         type: 'first_order',
@@ -721,7 +732,7 @@
                         const username = `sim_${testNum}_${Date.now().toString().slice(-3)}`;
                         const email = `${username}@hedtro.com`;
                         const pos = (i % 2 === 1) ? 'left' : 'right';
-                        const newUserId = Date.now().toString() + i;
+                        const newUserId = generateUUID();
 
                         logMessage(`🚀 [Simulasi ${i}/5] Mendaftarkan ${name} (@${username})...`, 'info');
 
