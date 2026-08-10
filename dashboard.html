@@ -3808,7 +3808,7 @@
       function findChildId(parentUser, position) {
         if (!parentUser) return null;
 
-        // 1. Explicit child IDs on parent user object
+        // 1. Explicit child IDs stored directly on parent record
         if (position === 'left' && parentUser.left_id) {
           const explicitChild = (allUsers || []).find(u => isSameUser(u.id, parentUser.left_id) || isSameUser(u.username, parentUser.left_id));
           if (explicitChild) return explicitChild.id;
@@ -3820,21 +3820,17 @@
 
         const isLeftTarget = (position === 'left');
 
-        // 2. Search downlines matching parentUser (by ID or Username) and position
+        // 2. Find users whose UPLINE is this parent AND whose position matches
+        //    NOTE: Sponsor ≠ binary upline — do NOT match by sponsor here.
         const candidates = (allUsers || []).filter(u => {
           if (isSameUser(u.id, parentUser.id) || isSameUser(u.username, parentUser.username)) return false;
 
-          const matchUpline = isSameUser(u.upline_id, parentUser.id) || 
-                              isSameUser(u.upline_id, parentUser.username) || 
-                              isSameUser(u.upline_username, parentUser.username) || 
+          // Only match by upline relationship (direct binary parent)
+          const matchUpline = isSameUser(u.upline_id, parentUser.id) ||
+                              isSameUser(u.upline_id, parentUser.username) ||
+                              isSameUser(u.upline_username, parentUser.username) ||
                               isSameUser(u.upline_username, parentUser.id);
-
-          const matchSponsor = isSameUser(u.sponsor_id, parentUser.id) || 
-                               isSameUser(u.sponsor_id, parentUser.username) || 
-                               isSameUser(u.sponsor_username, parentUser.username) || 
-                               isSameUser(u.sponsor_username, parentUser.id);
-
-          if (!matchUpline && !matchSponsor) return false;
+          if (!matchUpline) return false;
 
           const pos = String(u.position || u.pos || '').trim().toLowerCase();
           if (isLeftTarget) {
@@ -3846,16 +3842,22 @@
 
         if (candidates.length > 0) return candidates[0].id;
 
-        // 3. Fallback for unpositioned downlines
-        const allDownlinesOfParent = (allUsers || []).filter(u => {
+        // 3. Fallback: upline matches but no position stored — assign by join order
+        //    ONLY use upline (not sponsor) to avoid phantom nodes.
+        const unpositionedUplineChildren = (allUsers || []).filter(u => {
           if (isSameUser(u.id, parentUser.id) || isSameUser(u.username, parentUser.username)) return false;
-          const matchUpline = isSameUser(u.upline_id, parentUser.id) || isSameUser(u.upline_id, parentUser.username) || isSameUser(u.upline_username, parentUser.username) || isSameUser(u.upline_username, parentUser.id);
-          const matchSponsor = isSameUser(u.sponsor_id, parentUser.id) || isSameUser(u.sponsor_id, parentUser.username) || isSameUser(u.sponsor_username, parentUser.username) || isSameUser(u.sponsor_username, parentUser.id);
-          return matchUpline || matchSponsor;
+          const matchUpline = isSameUser(u.upline_id, parentUser.id) ||
+                              isSameUser(u.upline_id, parentUser.username) ||
+                              isSameUser(u.upline_username, parentUser.username) ||
+                              isSameUser(u.upline_username, parentUser.id);
+          if (!matchUpline) return false;
+          // Must have no explicit position to qualify for fallback
+          const pos = String(u.position || u.pos || '').trim();
+          return pos === '';
         });
 
-        if (isLeftTarget && allDownlinesOfParent.length > 0) return allDownlinesOfParent[0].id;
-        if (!isLeftTarget && allDownlinesOfParent.length > 1) return allDownlinesOfParent[1].id;
+        if (isLeftTarget  && unpositionedUplineChildren.length > 0) return unpositionedUplineChildren[0].id;
+        if (!isLeftTarget && unpositionedUplineChildren.length > 1) return unpositionedUplineChildren[1].id;
 
         return null;
       }
