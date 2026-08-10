@@ -3,14 +3,24 @@
 
 <head>
     <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=5.0" />
     <title>HEDTRO JEANS · Premium Denim</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <link
-        href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap"
-        rel="stylesheet" />
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-    <script src="supabase.js"></script>
+    <meta name="description" content="HEDTRO JEANS - Brand denim lokal Indonesia berkualitas ekspor dari bahan 14oz Raw Selvedge Denim." />
+
+    <!-- DNS Preconnect & Resource Hints for Mobile Performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
+    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+
+    <!-- Asynchronous Non-Blocking Fonts & CSS -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" media="print" onload="this.media='all'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" /></noscript>
+
+    <!-- Deferred Non-Blocking Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
+    <script src="supabase.js" defer></script>
     <style>
         * {
             margin: 0;
@@ -1852,6 +1862,32 @@
                 font-size: 0.75rem;
             }
         }
+
+        /* ===== MOBILE PERFORMANCE & RENDERING ENGINE BOOST ===== */
+        .product-grid-wrapper,
+        .about-section,
+        .faq-section,
+        .footer {
+            content-visibility: auto;
+            contain-intrinsic-size: 1px 400px;
+        }
+
+        @media (max-width: 768px) {
+            .navbar {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+                background: #0b1a2b !important;
+            }
+
+            .popup-overlay {
+                backdrop-filter: none !important;
+                -webkit-backdrop-filter: none !important;
+            }
+
+            img {
+                content-visibility: auto;
+            }
+        }
     </style>
 </head>
 
@@ -2397,7 +2433,7 @@
 
             // ========== HELPER CREATE PRODUCT CARD HTML ==========
             function createProductCardHTML(p) {
-                const imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
+                const imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" loading="lazy" decoding="async" width="230" height="200" />` : `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
                 const prodSerial = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
                 const tagText = p.tag || (p.favorite ? 'FAVORIT' : 'TRENDING');
                 const origPriceHtml = (p.original && p.original > p.price)
