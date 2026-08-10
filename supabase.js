@@ -24,7 +24,7 @@ window.signUp = async function(email, password, metadata = {}) {
     password: password,
     options: {
       data: metadata,
-      emailRedirectTo: 'https://hedtro.com/confirm-email.html'
+      emailRedirectTo: 'https://hedtro.com/confirm-email'
     }
   });
   if (error) {
@@ -61,7 +61,7 @@ window.signOut = async function() {
 
 window.resetPasswordForEmail = async function(email) {
   console.log('🔵 resetPasswordForEmail dipanggil untuk:', email);
-  var redirectPath = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/reset-password.html');
+  var redirectPath = window.location.origin + window.location.pathname.replace(/\/[^\/]*$/, '/reset-password');
   var { data, error } = await supabaseClient.auth.resetPasswordForEmail(email, {
     redirectTo: redirectPath
   });
