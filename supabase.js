@@ -116,6 +116,13 @@ window.getCurrentUser = async function() {
 window.getUserProfile = async function() {
   console.log('🔵 getUserProfile dipanggil');
   try {
+    var impersonateId = localStorage.getItem('hedtro_impersonate_user_id');
+    if (impersonateId) {
+      console.log('🔑 Impersonating user ID:', impersonateId);
+      var impUser = await window.getUserById(impersonateId);
+      if (impUser) return impUser;
+    }
+
     var session = await window.getSession();
     if (!session || !session.user) return null;
     var { data, error } = await supabaseClient
