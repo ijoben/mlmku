@@ -1036,28 +1036,32 @@
 
         /* ===== SECTION TITLE ===== */
         .section-title {
-            font-size: 1.6rem;
-            font-weight: 700;
+            font-family: 'Playfair Display', serif;
+            font-size: 1.45rem;
+            font-weight: 800;
             color: var(--denim-dark);
-            padding: 28px 0 12px;
+            padding: 32px 0 12px;
             display: flex;
             align-items: center;
             gap: 12px;
+            letter-spacing: 0.3px;
         }
 
         .section-title i {
-            color: var(--gold-accent);
+            color: #ff6b00;
+            font-size: 1.3rem;
+            filter: drop-shadow(0 2px 8px rgba(255, 107, 0, 0.4));
         }
 
         @media (max-width: 768px) {
             .section-title {
-                font-size: 1.1rem;
-                padding: 18px 0 8px;
+                font-size: 1.15rem;
+                padding: 22px 0 10px;
                 gap: 8px;
             }
         }
 
-        /* ===== PRODUCT CAROUSEL ===== */
+        /* ===== PRODUCT CAROUSEL & CARDS ===== */
         .product-carousel-wrapper {
             position: relative;
             padding: 0 0 16px;
@@ -1066,10 +1070,10 @@
 
         .product-carousel {
             display: flex;
-            gap: 16px;
+            gap: 18px;
             overflow-x: auto;
             scroll-behavior: smooth;
-            padding: 6px 4px 16px;
+            padding: 8px 6px 20px;
             scrollbar-width: none;
             -webkit-overflow-scrolling: touch;
         }
@@ -1078,124 +1082,180 @@
             display: none;
         }
 
-        .product-carousel .product-card {
-            flex: 0 0 220px;
-            min-width: 180px;
+        .product-card {
             background: var(--white);
-            border-radius: var(--radius-sm);
+            border-radius: 18px;
             overflow: hidden;
-            box-shadow: var(--shadow);
-            transition: var(--transition);
-            border: 1px solid #e8edf2;
+            box-shadow: 0 8px 24px rgba(11, 26, 43, 0.06);
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(226, 232, 240, 0.9);
+            display: flex;
+            flex-direction: column;
+            position: relative;
         }
 
-        .product-carousel .product-card:hover {
-            transform: translateY(-4px);
-            box-shadow: var(--shadow-lg);
+        .product-carousel .product-card {
+            flex: 0 0 230px;
+            min-width: 190px;
         }
 
-        .product-carousel .product-card .img-placeholder {
-            height: 180px;
-            background: var(--denim-light);
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 16px 36px rgba(11, 26, 43, 0.12);
+            border-color: rgba(255, 107, 0, 0.35);
+        }
+
+        .product-card .img-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, #f0f4f8 0%, #e2e8f0 100%);
             display: flex;
             align-items: center;
             justify-content: center;
             color: var(--denim-blue);
-            font-size: 3rem;
+            font-size: 3.2rem;
             overflow: hidden;
+            position: relative;
         }
 
-        .product-carousel .product-card .img-placeholder img {
+        .product-card .img-placeholder img {
             width: 100%;
             height: 100%;
             object-fit: cover;
+            transition: transform 0.4s ease;
         }
 
-        .product-carousel .product-card .body {
-            padding: 14px;
+        .product-card:hover .img-placeholder img {
+            transform: scale(1.08);
         }
 
-        .product-carousel .product-card .body .tag {
-            display: inline-block;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            font-size: 0.5rem;
-            font-weight: 700;
-            padding: 2px 12px;
+        .product-card .product-badge {
+            position: absolute;
+            top: 10px;
+            left: 10px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
+            color: #ffffff !important;
+            font-size: 0.6rem;
+            font-weight: 800;
+            padding: 4px 11px;
             border-radius: 40px;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 4px;
+            box-shadow: 0 3px 10px rgba(255, 107, 0, 0.35);
+            z-index: 2;
         }
 
-        .product-carousel .product-card .body h4 {
-            font-size: 0.85rem;
-            font-weight: 600;
-            margin-bottom: 3px;
-        }
-
-        .product-carousel .product-card .body .price {
-            font-weight: 700;
-            color: var(--denim-blue);
-            font-size: 0.95rem;
-        }
-
-        .product-carousel .product-card .body .price del {
-            color: #8a9aa8;
-            font-weight: 400;
-            font-size: 0.7rem;
-            margin-left: 6px;
-        }
-
-        .product-carousel .product-card .body .btn-group {
+        .product-card .body {
+            padding: 14px 15px 16px;
             display: flex;
-            gap: 6px;
-            margin-top: 8px;
+            flex-direction: column;
+            flex: 1;
         }
 
-        .product-carousel .product-card .body .btn-group .btn-detail {
-            flex: 1;
-            background: var(--denim-dark);
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 60px;
-            font-size: 0.65rem;
+        .product-card .body .card-meta {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 6px;
+            font-size: 0.68rem;
+        }
+
+        .product-card .body .card-meta .product-serial {
+            color: #ff6b00;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .product-card .body .card-meta .stock-tag {
+            background: #f1f5f9;
+            color: #475569;
             font-weight: 600;
+            padding: 2px 8px;
+            border-radius: 20px;
+        }
+
+        .product-card .body h4 {
+            font-size: 0.92rem;
+            font-weight: 700;
+            color: var(--denim-dark);
+            line-height: 1.35;
+            margin-bottom: 8px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            height: 2.5em;
+        }
+
+        .product-card .body .price {
+            font-weight: 800;
+            color: #ff6b00;
+            font-size: 1.05rem;
+            display: flex;
+            align-items: baseline;
+            gap: 6px;
+            margin-top: auto;
+            margin-bottom: 12px;
+        }
+
+        .product-card .body .price del {
+            color: #94a3b8;
+            font-weight: 500;
+            font-size: 0.75rem;
+            text-decoration: line-through;
+        }
+
+        .product-card .body .btn-group {
+            display: grid;
+            grid-template-columns: 1fr 1.2fr;
+            gap: 8px;
+            margin-top: auto;
+        }
+
+        .product-card .body .btn-group .btn-detail {
+            background: var(--denim-dark);
+            color: #ffffff !important;
+            padding: 8px 10px;
+            border-radius: 60px;
+            font-size: 0.72rem;
+            font-weight: 700;
             text-align: center;
             cursor: pointer;
+            border: none;
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
         }
 
-        .product-carousel .product-card .body .btn-group .btn-buy {
-            flex: 1;
+        .product-card .body .btn-group .btn-detail:hover {
+            background: var(--denim-blue);
+            transform: translateY(-1px);
+        }
+
+        .product-card .body .btn-group .btn-buy {
             background: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
             color: #ffffff !important;
-            padding: 6px 12px;
+            padding: 8px 10px;
             border-radius: 60px;
             font-size: 0.72rem;
             font-weight: 800 !important;
             text-align: center;
             cursor: pointer;
             border: none;
-            box-shadow: 0 3px 10px rgba(255, 107, 0, 0.35);
+            box-shadow: 0 4px 14px rgba(255, 107, 0, 0.35);
             transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 4px;
         }
 
-        .product-carousel .product-card .body .btn-group .btn-buy:hover {
+        .product-card .body .btn-group .btn-buy:hover {
             background: linear-gradient(135deg, #ff8800 0%, #ffa000 100%);
-            color: #ffffff !important;
             transform: translateY(-2px);
-            box-shadow: 0 6px 16px rgba(255, 107, 0, 0.45);
-        }
-
-        @media (max-width: 768px) {
-            .product-carousel .product-card {
-                flex: 0 0 160px;
-                min-width: 140px;
-            }
-
-            .product-carousel .product-card .img-placeholder {
-                height: 140px;
-            }
+            box-shadow: 0 6px 18px rgba(255, 107, 0, 0.48);
         }
 
         .carousel-scroll-btn {
@@ -1205,13 +1265,13 @@
             background: var(--white);
             color: var(--denim-dark);
             border: 1px solid var(--denim-light);
-            width: 36px;
-            height: 36px;
+            width: 40px;
+            height: 40px;
             border-radius: 50%;
             font-size: 1rem;
             cursor: pointer;
             z-index: 5;
-            box-shadow: var(--shadow);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
             transition: var(--transition);
             display: flex;
             align-items: center;
@@ -1219,9 +1279,10 @@
         }
 
         .carousel-scroll-btn:hover {
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            border-color: var(--gold-accent);
+            background: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
+            color: #ffffff;
+            border-color: transparent;
+            box-shadow: 0 6px 18px rgba(255, 107, 0, 0.4);
         }
 
         .carousel-scroll-btn.left {
@@ -1234,9 +1295,16 @@
 
         @media (max-width: 768px) {
             .carousel-scroll-btn {
-                width: 28px;
-                height: 28px;
-                font-size: 0.7rem;
+                width: 32px;
+                height: 32px;
+                font-size: 0.8rem;
+            }
+            .product-carousel .product-card {
+                flex: 0 0 170px;
+                min-width: 150px;
+            }
+            .product-card .img-placeholder {
+                height: 150px;
             }
         }
 
@@ -1247,8 +1315,8 @@
 
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
-            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(230px, 1fr));
+            gap: 22px;
         }
 
         .product-grid .product-card {
@@ -1889,8 +1957,10 @@
         </section>
 
         <!-- PRODUK FAVORIT -->
-        <h2 class="section-title" id="sectionFavorite"><i class="fas fa-heart" style="color:var(--gold-accent);"></i>
-            PRODUK FAVORIT</h2>
+        <div class="section-header-block">
+            <h2 class="section-title" id="sectionFavorite"><i class="fas fa-heart" style="color:#ff6b00;"></i> PRODUK FAVORIT</h2>
+            <div class="section-title-sub">Koleksi denim pilihan terbaik yang paling diminati pelanggan</div>
+        </div>
         <div class="product-carousel-wrapper">
             <button class="carousel-scroll-btn left" id="favScrollLeft"><i class="fas fa-chevron-left"></i></button>
             <button class="carousel-scroll-btn right" id="favScrollRight"><i class="fas fa-chevron-right"></i></button>
@@ -1898,7 +1968,10 @@
         </div>
 
         <!-- TOP TRENDING -->
-        <h2 class="section-title" id="sectionTrending"><i class="fas fa-fire"></i> TOP TRENDING DENIM</h2>
+        <div class="section-header-block">
+            <h2 class="section-title" id="sectionTrending"><i class="fas fa-fire" style="color:#ff6b00;"></i> TOP TRENDING DENIM</h2>
+            <div class="section-title-sub">Katalog celana jeans populer dengan potongan modern & kualitas ekspor</div>
+        </div>
         <div class="product-grid-wrapper">
             <div class="product-grid" id="productGrid"></div>
             <div class="pagination" id="paginationContainer"></div>
@@ -2301,6 +2374,39 @@
                 if (f.copyright) document.getElementById('footerCopy').innerHTML = f.copyright;
             }
 
+            // ========== HELPER CREATE PRODUCT CARD HTML ==========
+            function createProductCardHTML(p) {
+                const imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
+                const prodSerial = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
+                const tagText = p.tag || (p.favorite ? 'FAVORIT' : 'TRENDING');
+                const origPriceHtml = (p.original && p.original > p.price)
+                    ? `<del>Rp ${parseFloat(p.original).toLocaleString('id-ID')}</del>`
+                    : '';
+                const stockText = (p.stock !== undefined && p.stock !== null) ? `Stok ${p.stock}` : 'Ready';
+
+                return `
+                    <div class="img-placeholder">
+                        ${imgHtml}
+                        <span class="product-badge">${tagText}</span>
+                    </div>
+                    <div class="body">
+                        <div class="card-meta">
+                            <span class="product-serial"><i class="fas fa-barcode"></i> ${prodSerial}</span>
+                            <span class="stock-tag"><i class="fas fa-box"></i> ${stockText}</span>
+                        </div>
+                        <h4 title="${p.name}">${p.name}</h4>
+                        <div class="price">
+                            <span>Rp ${(p.price || 0).toLocaleString('id-ID')}</span>
+                            ${origPriceHtml}
+                        </div>
+                        <div class="btn-group">
+                            <button class="btn-detail" data-id="${p.id}"><i class="fas fa-eye"></i> Detail</button>
+                            <button class="btn-buy" data-id="${p.id}"><i class="fas fa-shopping-bag"></i> Beli</button>
+                        </div>
+                    </div>
+                `;
+            }
+
             // ========== FAVORITE CAROUSEL ==========
             function renderFavoriteCarousel() {
                 const container = document.getElementById('favoriteCarousel');
@@ -2313,9 +2419,7 @@
                 favorites.forEach(p => {
                     const card = document.createElement('div');
                     card.className = 'product-card';
-                    let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
-                    const prodSerial = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
-                    card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;"><span class="tag">${p.tag || 'PRODUK'}</span><span style="font-size:0.65rem;color:var(--gold-accent);font-weight:700;"><i class="fas fa-barcode"></i> ${prodSerial}</span></div><h4>${p.name}</h4><div class="price">Rp ${(p.price || 0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
+                    card.innerHTML = createProductCardHTML(p);
                     container.appendChild(card);
                 });
                 bindProductButtons();
@@ -2342,9 +2446,7 @@
                     pageItems.forEach(p => {
                         const card = document.createElement('div');
                         card.className = 'product-card';
-                        let imgHtml = p.image ? `<img src="${p.image}" alt="${p.name}" />` : `<i class="fas ${p.icon || 'fa-tshirt'}"></i>`;
-                        const prodSerial = p.serial || ('HDT-' + String(p.id).padStart(4, '0'));
-                        card.innerHTML = `<div class="img-placeholder">${imgHtml}</div><div class="body"><div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:2px;"><span class="tag">${p.tag || 'PRODUK'}</span><span style="font-size:0.65rem;color:var(--gold-accent);font-weight:700;"><i class="fas fa-barcode"></i> ${prodSerial}</span></div><h4>${p.name}</h4><div class="price">Rp ${(p.price || 0).toLocaleString()}</div><div class="btn-group"><button class="btn-detail" data-id="${p.id}">Detail</button><button class="btn-buy" data-id="${p.id}">Beli</button></div></div>`;
+                        card.innerHTML = createProductCardHTML(p);
                         grid.appendChild(card);
                     });
                 }
@@ -2682,14 +2784,14 @@
                 });
             });
 
-            // ========== FAQ TOGGLE ==========
+            // ========== FAQ ACCORDION ==========
             window.toggleFaq = function (el) {
-                const item = el.parentElement;
-                const answer = item.querySelector('.faq-answer');
-                const chevron = el.querySelector('.fa-chevron-down');
-                const isOpen = answer.classList.contains('open');
+                const answer = el.nextElementSibling;
+                if (!answer) return;
 
-                // Close all other FAQs
+                const isOpen = answer.classList.contains('open');
+                const chevron = el.querySelector('.fa-chevron-down');
+
                 document.querySelectorAll('.faq-answer').forEach(a => a.classList.remove('open'));
                 document.querySelectorAll('.faq-question').forEach(q => {
                     q.classList.remove('active');
