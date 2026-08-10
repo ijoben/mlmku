@@ -1061,23 +1061,25 @@
       color: var(--denim-dark);
     }
 
-    /* ===== TREE ===== */
+    /* ===== TREE STYLING OVERHAUL ===== */
     .tree-wrapper {
       overflow-x: auto;
-      padding: 20px 12px;
-      background: var(--white);
+      padding: 30px 20px;
+      background: linear-gradient(135deg, #0b1a2b 0%, #15283c 100%);
       border-radius: var(--radius);
-      box-shadow: 0 8px 30px rgba(11, 26, 43, 0.05);
-      border: 1px solid rgba(212, 175, 55, 0.12);
+      box-shadow: inset 0 2px 10px rgba(0, 0, 0, 0.4), 0 10px 30px rgba(11, 26, 43, 0.15);
+      border: 1px solid rgba(212, 175, 55, 0.3);
       margin-bottom: 14px;
+      position: relative;
     }
 
     .binary-tree {
       display: flex;
       flex-direction: column;
       align-items: center;
-      min-width: 640px;
-      transition: transform 0.3s ease;
+      min-width: 720px;
+      padding: 10px 0;
+      transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
       transform-origin: top center;
     }
 
@@ -1089,104 +1091,151 @@
     }
 
     .tree-node-card {
-      background: linear-gradient(145deg, #0b1a2b, #15283c);
-      color: var(--white);
-      padding: 10px 16px;
-      border-radius: 14px;
+      background: linear-gradient(145deg, #15283c 0%, #0b1a2b 100%);
+      color: #ffffff;
+      padding: 10px 14px;
+      border-radius: 16px;
       text-align: center;
-      border: 2px solid rgba(212, 175, 55, 0.4);
-      min-width: 110px;
-      box-shadow: 0 8px 20px rgba(11, 26, 43, 0.15);
+      border: 2px solid var(--gold-accent);
+      width: 140px;
+      box-shadow: 0 8px 24px rgba(0, 0, 0, 0.35);
       z-index: 2;
       position: relative;
-      transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+      transition: all 0.3s ease;
+      cursor: pointer;
     }
 
     .tree-node-card:hover {
-      transform: translateY(-3px);
-      box-shadow: 0 12px 28px rgba(11, 26, 43, 0.25);
-      border-color: var(--gold-accent);
+      transform: translateY(-4px) scale(1.03);
+      box-shadow: 0 14px 32px rgba(212, 175, 55, 0.35);
+      border-color: #ffd700;
     }
 
-    .tree-node-card .avatar {
-      width: 34px;
-      height: 34px;
+    /* Connection Line DOWN from parent card */
+    .node-wrapper.has-children > .tree-node-card::after {
+      content: '';
+      position: absolute;
+      bottom: -20px;
+      left: 50%;
+      width: 2px;
+      height: 20px;
+      background: var(--gold-accent);
+      transform: translateX(-50%);
+      z-index: 1;
+    }
+
+    .tree-node-card .avatar-box {
+      position: relative;
+      width: 38px;
+      height: 38px;
       border-radius: 50%;
       background: var(--gold-gradient);
-      color: var(--denim-dark);
+      color: #0b1a2b;
       display: flex;
       align-items: center;
       justify-content: center;
       margin: 0 auto 6px;
-      font-size: 0.9rem;
+      font-size: 1rem;
       font-weight: 900;
-      box-shadow: 0 3px 10px rgba(212, 175, 55, 0.3);
+      box-shadow: 0 3px 12px rgba(212, 175, 55, 0.4);
+      border: 2px solid #ffffff;
+    }
+
+    .tree-node-card .node-pos-tag {
+      position: absolute;
+      top: -8px;
+      right: -8px;
+      background: var(--gold-accent);
+      color: #0b1a2b;
+      font-size: 0.55rem;
+      font-weight: 900;
+      padding: 2px 7px;
+      border-radius: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.4);
     }
 
     .tree-node-card .node-name {
       font-weight: 800;
-      font-size: 0.78rem;
-      letter-spacing: -0.2px;
+      font-size: 0.82rem;
+      color: #ffffff;
+      line-height: 1.2;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      margin-bottom: 2px;
     }
 
     .tree-node-card .node-id {
-      font-size: 0.62rem;
+      font-size: 0.65rem;
       color: var(--gold-light);
-      font-family: monospace;
+      font-family: 'Courier New', Courier, monospace;
+      font-weight: 700;
+      background: rgba(212, 175, 55, 0.18);
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin-bottom: 4px;
     }
 
     .tree-node-card .node-status {
-      font-size: 0.55rem;
+      font-size: 0.6rem;
       padding: 2px 8px;
       border-radius: 20px;
-      margin-top: 4px;
       display: inline-block;
       text-transform: uppercase;
       font-weight: 800;
+      letter-spacing: 0.3px;
     }
 
+    .tree-node-card .node-status.status-verified {
+      background: linear-gradient(135deg, #10b981, #059669);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(16, 185, 129, 0.4);
+    }
+
+    .tree-node-card .node-status.status-free {
+      background: linear-gradient(135deg, #f59e0b, #d97706);
+      color: #ffffff;
+      box-shadow: 0 2px 6px rgba(245, 158, 11, 0.4);
+    }
+
+    /* EMPTY SLOT CARD */
     .tree-node-card.empty {
-      background: linear-gradient(135deg, rgba(212, 175, 55, 0.08) 0%, rgba(240, 244, 248, 0.85) 100%);
-      color: var(--denim-navy);
-      border: 2px dashed var(--gold-accent);
-      box-shadow: 0 4px 14px rgba(212, 175, 55, 0.12);
-      cursor: pointer;
+      background: rgba(11, 26, 43, 0.65);
+      color: var(--gold-light);
+      border: 2px dashed rgba(212, 175, 55, 0.65);
+      box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
     }
 
     .tree-node-card.empty:hover {
-      background: linear-gradient(135deg, rgba(212, 175, 55, 0.22) 0%, rgba(212, 175, 55, 0.08) 100%);
-      border-color: var(--gold-accent);
-      color: var(--denim-dark);
+      background: linear-gradient(135deg, rgba(212, 175, 55, 0.25) 0%, rgba(11, 26, 43, 0.95) 100%);
+      border-color: #ffd700;
+      color: #ffffff;
       transform: translateY(-3px) scale(1.04);
-      box-shadow: 0 8px 22px rgba(212, 175, 55, 0.3);
+      box-shadow: 0 8px 24px rgba(212, 175, 55, 0.35);
     }
 
-    .tree-node-card.empty .avatar {
-      background: var(--gold-gradient);
-      color: var(--denim-dark);
+    .tree-node-card.empty .avatar-box {
+      background: rgba(212, 175, 55, 0.2);
+      color: var(--gold-accent);
+      border-color: var(--gold-accent);
     }
 
     .tree-node-card.empty .node-name {
       font-size: 0.72rem;
       font-weight: 900;
-      color: var(--denim-navy);
+      color: var(--gold-light);
     }
 
+    /* BINARY CHILDREN & CONNECTORS */
     .binary-children {
       display: flex;
       justify-content: center;
       width: 100%;
-      padding-top: 18px;
+      padding-top: 20px;
       position: relative;
-    }
-
-    .binary-child {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      flex: 1;
-      position: relative;
-      padding: 0 8px;
     }
 
     .binary-children::before {
@@ -1196,27 +1245,29 @@
       left: 25%;
       right: 25%;
       height: 2px;
-      background: rgba(212, 175, 55, 0.45);
+      background: var(--gold-accent);
+      z-index: 1;
+    }
+
+    .binary-child {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      position: relative;
+      padding: 0 4px;
     }
 
     .binary-child::before {
       content: '';
       position: absolute;
       top: 0;
-      height: 18px;
-      width: 2px;
-      background: rgba(212, 175, 55, 0.45);
-    }
-
-    .binary-children::after {
-      content: '';
-      position: absolute;
-      top: -18px;
       left: 50%;
+      height: 20px;
       width: 2px;
-      height: 18px;
-      background: rgba(212, 175, 55, 0.45);
+      background: var(--gold-accent);
       transform: translateX(-50%);
+      z-index: 1;
     }
 
     /* ===== ENHANCED PRODUCT GRID & CARD ===== */
@@ -2170,17 +2221,26 @@
 
     <!-- JARINGAN -->
     <div class="section-content" id="sec-network">
-      <h1 class="page-title"><i class="fas fa-sitemap"></i> Jaringan Binary</h1>
-      <div
-        style="background:#fffaf0; padding:8px 12px; border-radius:var(--radius-sm); border-left:3px solid #dd6b20; margin-bottom:10px;">
-        <p style="font-size:0.75rem; color:#dd6b20; margin:0;"><i class="fas fa-lightbulb"></i> Klik
-          <strong>"Tambah"</strong> untuk daftarkan member baru.
-        </p>
+      <h1 class="page-title"><i class="fas fa-sitemap"></i> Pohon Jaringan Binary</h1>
+
+      <!-- HEADER LEGEND & CONTROLS -->
+      <div style="display:flex; flex-wrap:wrap; justify-content:space-between; align-items:center; gap:10px; background:var(--white); padding:12px 16px; border-radius:var(--radius-sm); margin-bottom:12px; box-shadow:0 4px 12px rgba(11,26,43,0.04); border:1px solid #e2e8f0;">
+        <div style="display:flex; flex-wrap:wrap; align-items:center; gap:14px; font-size:0.75rem; font-weight:700;">
+          <span style="display:inline-flex; align-items:center; gap:6px; color:#059669;"><span style="width:10px; height:10px; border-radius:50%; background:#10b981; display:inline-block; box-shadow:0 0 6px rgba(16,185,129,0.5);"></span> Verified</span>
+          <span style="display:inline-flex; align-items:center; gap:6px; color:#d97706;"><span style="width:10px; height:10px; border-radius:50%; background:#f59e0b; display:inline-block; box-shadow:0 0 6px rgba(245,158,11,0.5);"></span> Pending/Free</span>
+          <span style="display:inline-flex; align-items:center; gap:6px; color:var(--denim-navy);"><span style="width:10px; height:10px; border-radius:50%; background:var(--gold-accent); display:inline-block; box-shadow:0 0 6px rgba(212,175,55,0.5);"></span> Slot Kosong</span>
+        </div>
+        <div style="display:flex; align-items:center; gap:6px;">
+          <button class="btn-sm btn-sm-gold" id="resetZoomBtn" title="Reset Ukuran Tree"><i class="fas fa-sync-alt"></i> Reset</button>
+          <button class="btn-sm btn-sm-primary" id="zoomOutBtn" title="Perkecil Tampilan Tree"><i class="fas fa-search-minus"></i> Zoom Out</button>
+          <button class="btn-sm btn-sm-primary" id="zoomInBtn" title="Perbesar Tampilan Tree"><i class="fas fa-search-plus"></i> Zoom In</button>
+        </div>
       </div>
-      <div style="display:flex; justify-content:flex-end; gap:6px; margin-bottom:8px;">
-        <button class="btn-sm btn-sm-primary" id="zoomOutBtn"><i class="fas fa-search-minus"></i> Zoom Out</button>
-        <button class="btn-sm btn-sm-primary" id="zoomInBtn"><i class="fas fa-search-plus"></i> Zoom In</button>
+
+      <div style="background:#fffaf0; padding:10px 14px; border-radius:var(--radius-sm); border-left:4px solid #dd6b20; margin-bottom:12px;">
+        <p style="font-size:0.78rem; color:#c05621; margin:0; font-weight:600;"><i class="fas fa-lightbulb" style="color:var(--gold-accent);"></i> Klik slot <strong>"+ TAMBAH"</strong> untuk mendaftarkan member baru secara otomatis di posisi Kiri atau Kanan.</p>
       </div>
+
       <div class="tree-wrapper" id="treeContainer"></div>
     </div>
 
@@ -3584,13 +3644,14 @@
         const tree = document.querySelector('.binary-tree');
         if (tree) tree.style.transform = `scale(${currentZoom})`;
       }
-      document.getElementById('zoomInBtn')?.addEventListener('click', () => { currentZoom += 0.1; applyTreeZoom(); });
-      document.getElementById('zoomOutBtn')?.addEventListener('click', () => { currentZoom = Math.max(0.3, currentZoom - 0.1); applyTreeZoom(); });
+      document.getElementById('zoomInBtn')?.addEventListener('click', () => { currentZoom = Math.min(1.8, currentZoom + 0.15); applyTreeZoom(); });
+      document.getElementById('zoomOutBtn')?.addEventListener('click', () => { currentZoom = Math.max(0.4, currentZoom - 0.15); applyTreeZoom(); });
+      document.getElementById('resetZoomBtn')?.addEventListener('click', () => { currentZoom = 1.0; applyTreeZoom(); });
 
       async function renderNetwork() {
         const container = document.getElementById('treeContainer');
         if (!container) return;
-        container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--denim-navy);"><i class="fas fa-spinner fa-spin"></i> Memuat Pohon Jaringan...</div>';
+        container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--gold-light); font-weight:700;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Memuat Pohon Jaringan Binary...</div>';
 
         try {
           const usersData = await window.getTable('users').catch(() => []);
@@ -3603,6 +3664,7 @@
 
         const treeData = buildBinaryTree(currentUser.id, 0, 3);
         container.innerHTML = `<div class="binary-tree">${renderBinaryTreeHTML(treeData)}</div>`;
+        currentZoom = 1.0;
         applyTreeZoom();
       }
 
@@ -3689,20 +3751,53 @@
         window.location.href = `/register?ref=${encodeURIComponent(sponsor)}&upline=${encodeURIComponent(upline)}&pos=${pos}&new=1`;
       };
 
-      function renderBinaryTreeHTML(node) {
+      function renderBinaryTreeHTML(node, positionLabel = '') {
         if (!node) return '';
+        const posTag = positionLabel ? `<span class="node-pos-tag">${positionLabel}</span>` : '';
+
         if (node.empty) {
           const sponsor = currentUser.username || currentUser.id;
           const upline = node.parentUsername || currentUser.username || currentUser.id;
           const pos = node.pos || 'left';
-          return `<div class="tree-node-card empty" onclick="window.openRegisterDownline('${sponsor}', '${upline}', '${pos}')"><div class="avatar"><i class="fas fa-plus"></i></div><div class="node-name">TAMBAH</div></div>`;
+          const posText = pos === 'left' ? 'Kiri' : 'Kanan';
+          return `
+            <div class="tree-node-card empty" onclick="window.openRegisterDownline('${sponsor}', '${upline}', '${pos}')" title="Klik untuk Daftarkan Member Baru di Kaki ${posText}">
+              ${posTag}
+              <div class="avatar-box"><i class="fas fa-plus"></i></div>
+              <div class="node-name">+ TAMBAH</div>
+              <div class="node-id" style="font-size:0.58rem; background:none;">(Kaki ${posText})</div>
+              <div class="node-status" style="background:rgba(212,175,55,0.25); color:var(--gold-accent); border:1px solid var(--gold-accent);">SLOT KOSONG</div>
+            </div>
+          `;
         }
+
         const isVerified = node.status === 'verified';
-        const badgeClass = isVerified ? 'status-success' : 'status-free';
-        const badgeText = isVerified ? 'VERIFIED' : 'FREE';
-        let html = `<div class="node-wrapper"><div class="tree-node-card"><div class="avatar"><i class="fas fa-user-tie"></i></div><div class="node-name">${node.name}</div><div class="node-id">${node.username}</div><div class="node-status ${badgeClass}" style="color:#fff;">${badgeText}</div></div>`;
-        if (node.left || node.right) {
-          html += `<div class="binary-children"><div class="binary-child">${renderBinaryTreeHTML(node.left)}</div><div class="binary-child">${renderBinaryTreeHTML(node.right)}</div></div>`;
+        const badgeClass = isVerified ? 'status-verified' : 'status-free';
+        const badgeText = isVerified ? 'VERIFIED' : 'PENDING';
+        const isRoot = (node.id === currentUser.id);
+        const avatarIcon = isRoot ? 'fa-crown' : 'fa-user-tie';
+
+        const hasChildren = node.left || node.right;
+        const wrapperClass = hasChildren ? 'node-wrapper has-children' : 'node-wrapper';
+
+        let html = `
+          <div class="${wrapperClass}">
+            <div class="tree-node-card" title="Member: ${node.name} (@${node.username})">
+              ${posTag}
+              <div class="avatar-box"><i class="fas ${avatarIcon}"></i></div>
+              <div class="node-name">${node.name}</div>
+              <div class="node-id">@${node.username}</div>
+              <div class="node-status ${badgeClass}">${badgeText}</div>
+            </div>
+        `;
+
+        if (hasChildren) {
+          html += `
+            <div class="binary-children">
+              <div class="binary-child">${renderBinaryTreeHTML(node.left, 'KIRI')}</div>
+              <div class="binary-child">${renderBinaryTreeHTML(node.right, 'KANAN')}</div>
+            </div>
+          `;
         }
         html += `</div>`;
         return html;
