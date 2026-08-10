@@ -13,8 +13,10 @@
     * { margin:0; padding:0; box-sizing:border-box; }
     :root {
       --denim-dark: #0b1a2b; --denim-navy: #15283c; --denim-blue: #2a4b6e; --denim-light: #f0f4f8;
-      --gold-accent: #d4af37; --gold-light: #f3e5ab;
-      --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+      --gold-accent: #d97706; --gold-light: #fef3c7;
+      --gold-gradient: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      --btn-gold-bg: linear-gradient(135deg, #d97706 0%, #b45309 100%);
+      --btn-gold-text: #ffffff;
       --cream: #faf8f5; --white: #ffffff;
       --shadow-sm: 0 4px 15px rgba(0,0,0,0.05); --shadow: 0 8px 24px rgba(11,26,43,0.08); --shadow-lg: 0 16px 32px rgba(11,26,43,0.12);
       --radius: 14px; --radius-sm: 10px; --transition: all 0.3s cubic-bezier(0.4,0,0.2,1); --sidebar-width: 240px;
@@ -724,7 +726,7 @@
   <div id="toastContainer"></div>
 
   <header class="navbar">
-    <div class="logo" id="navbarLogo"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></div>
+    <a href="/" class="logo" id="navbarLogo" style="text-decoration:none; cursor:pointer;"><i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span></a>
     <div class="nav-right">
       <div class="user-badge" id="navUserBadge"><i class="fas fa-user-circle"></i> <span id="navUserName">Member</span></div>
       <button class="burger-btn" id="burgerBtn"><span></span><span></span><span></span></button>
@@ -734,7 +736,7 @@
   <div class="sidebar-overlay" id="sidebarOverlay"></div>
   <nav class="sidebar" id="sidebar">
     <div class="sidebar-header">
-      <div class="logo-side" id="sidebarLogo"><i class="fas fa-tshirt"></i> HEDTRO</div>
+      <a href="/" class="logo-side" id="sidebarLogo" style="text-decoration:none; cursor:pointer;"><i class="fas fa-tshirt"></i> HEDTRO</a>
       <span class="close-side" id="closeSidebar">&times;</span>
     </div>
 
