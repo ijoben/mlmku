@@ -469,6 +469,7 @@
                 <h1 class="page-title"><i class="fas fa-shopping-cart"></i> Daftar Pesanan</h1>
                 <div class="flex-row">
                     <button class="btn-sm btn-sm-primary" id="refreshOrdersBtn"><i class="fas fa-sync"></i> Refresh</button>
+                    <button class="btn-sm btn-sm-danger" id="resetOrdersBtn"><i class="fas fa-trash"></i> Reset Semua Pesanan</button>
                 </div>
                 <div class="table-wrap">
                     <table>
@@ -1942,6 +1943,7 @@
                                     ${(o.status === 'completed' || o.status === 'success') ? `
                                         <button class="btn-sm btn-sm-gold ship-order" data-id="${o.id}"><i class="fas fa-edit"></i> Edit Resi</button>
                                     ` : ''}
+                                    <button class="btn-sm btn-sm-danger delete-order" data-id="${o.id}"><i class="fas fa-trash"></i> Hapus</button>
                                 </div>
                             </td>
                         </tr>`;
@@ -2118,6 +2120,47 @@
                             };
                         };
                     });
+                    tbody.querySelectorAll('.delete-order').forEach(btn => {
+                        btn.onclick = async function() {
+                            if (!confirm('Hapus pesanan ini dari database?')) return;
+                            const id = this.dataset.id;
+                            try {
+                                try {
+                                    await supabase.from('orders').delete().eq('id', id);
+                                } catch (err1) {}
+                                try {
+                                    await supabase.from('transactions').delete().eq('id', id);
+                                } catch (err2) {}
+
+                                const order = combinedOrders.find(o => String(o.id) === String(id));
+                                const buyerId = order ? order.user_id : null;
+                                if (buyerId) {
+                                    const buyer = allUsers.find(u => String(u.id) === String(buyerId));
+                                    if (buyer) {
+                                        if (buyer.first_order && String(buyer.first_order.id || ('FO-' + buyer.id)) === String(id)) {
+                                            delete buyer.first_order;
+                                        }
+                                        if (buyer.purchase_history) {
+                                            buyer.purchase_history = buyer.purchase_history.filter(p => String(p.id) !== String(id));
+                                        }
+                                        if (buyer.transactions) {
+                                            buyer.transactions = buyer.transactions.filter(t => String(t.id) !== String(id));
+                                        }
+                                        await window.upsertRow('users', buyer);
+                                    }
+                                }
+
+                                try { localStorage.removeItem('hedtro_index_cache_v1'); } catch (e) {}
+                                await refreshAdminData();
+                                await renderOrders();
+                                await renderDashboard();
+                                showToast('✅ Pesanan berhasil dihapus.', 'info');
+                            } catch (e) {
+                                console.error('Delete order error:', e);
+                                showToast('Gagal menghapus pesanan.', 'error');
+                            }
+                        };
+                    });
                 } catch (e) {
                     console.error('Orders error:', e);
                     showToast('Gagal memuat orders.', 'error');
@@ -2125,6 +2168,76 @@
             }
 
             document.getElementById('refreshOrdersBtn').addEventListener('click', async function() { await refreshAdminData(); await renderOrders(); showToast('Direfresh!', 'info'); });
+
+            // ========== RESET ALL ORDERS (BONUS TETAP DISIMPAN) ==========
+            document.getElementById('resetOrdersBtn')?.addEventListener('click', async function() {
+                if (!confirm('⚠️ RESET SEMUA PESANAN & TRANSAKSI ORDER?\n\nIni akan menghapus seluruh data pesanan produk dan transaksi order. Data bonus & deposit/withdraw TIDAK akan terhapus.')) return;
+                if (!confirm('⚠️ PERINGATAN KEDUA: Yakin ingin menghapus seluruh riwayat pesanan? Tindakan ini tidak dapat dibatalkan.')) return;
+
+                try {
+                    showToast('⏳ Memproses reset pesanan...', 'info');
+
+                    // 1. Hapus seluruh data di tabel orders Supabase
+                    try {
+                        const { error: errOrders } = await supabase.from('orders').delete().neq('id', '0');
+                        if (errOrders) console.warn('Delete orders warning:', errOrders);
+                    } catch (e1) {
+                        console.warn('Delete orders exception:', e1);
+                    }
+
+                    // 2. Filter transaksi bertipe order/ro/ro_purchase/first_order dan hapus dari tabel transactions
+                    const orderTxs = allTransactions.filter(t => 
+                        t.type === 'order' || 
+                        t.type === 'ro_purchase' || 
+                        t.type === 'ro' || 
+                        t.type === 'first_order'
+                    );
+
+                    for (const tx of orderTxs) {
+                        try {
+                            await supabase.from('transactions').delete().eq('id', tx.id);
+                        } catch (e2) {}
+                    }
+
+                    // 3. Bersihkan first_order & purchase_history pada data pengguna (TIDAK menyentuh wallet / bonus)
+                    for (const user of allUsers) {
+                        let updated = false;
+                        if (user.first_order) {
+                            delete user.first_order;
+                            updated = true;
+                        }
+                        if (user.purchase_history && user.purchase_history.length > 0) {
+                            user.purchase_history = [];
+                            updated = true;
+                        }
+                        if (user.transactions && user.transactions.length > 0) {
+                            const originalLen = user.transactions.length;
+                            user.transactions = user.transactions.filter(t => 
+                                t.type !== 'order' && 
+                                t.type !== 'ro_purchase' && 
+                                t.type !== 'ro' && 
+                                t.type !== 'first_order'
+                            );
+                            if (user.transactions.length !== originalLen) updated = true;
+                        }
+                        if (updated) {
+                            try {
+                                await window.upsertRow('users', user);
+                            } catch (e3) {}
+                        }
+                    }
+
+                    try { localStorage.removeItem('hedtro_index_cache_v1'); } catch (e) {}
+                    await refreshAdminData();
+                    await renderOrders();
+                    await renderDashboard();
+                    await renderVerification();
+                    showToast('✅ Semua data pesanan produk berhasil direset! Data bonus tetap aman.', 'success', 5000);
+                } catch (e) {
+                    console.error('Reset orders error:', e);
+                    showToast('Gagal reset pesanan: ' + e.message, 'error');
+                }
+            });
 
             // ========== DEPOSIT ==========
             async function renderDeposit() {
