@@ -948,102 +948,102 @@ window.approveOrderAndDistributeBonuses = async function(orderId) {
 // ============================================================
 // BRAND LOGO & FAVICON DYNAMIC APPLICATION
 // ============================================================
-window.applyBrandSettings = async function() {
+window.applyBrandSettings = function() {
   try {
-    var settings = {};
-    if (typeof window.getTable === 'function') {
-      try {
-        var settingsData = await window.getTable('settings', '*');
-        (settingsData || []).forEach(function(r) { settings[r.key] = r.value; });
-      } catch (err) {
-        console.warn('Unable to fetch settings table, fallback to localStorage', err);
-      }
-    }
+    // Helper to render logo into DOM
+    function renderLogoDOM(brandName, brandLogo, brandIcon) {
+      var isImageLogo = brandLogo && (
+        brandLogo.startsWith('data:image') ||
+        brandLogo.startsWith('http://') ||
+        brandLogo.startsWith('https://') ||
+        brandLogo.startsWith('/') ||
+        brandLogo.startsWith('./')
+      );
 
-    var brandName = settings.brandName || settings.site_name || localStorage.getItem('hedtro_brand_name') || 'HEDTRO JEANS';
-    var brandLogo = settings.brandLogo || settings.site_logo || localStorage.getItem('hedtro_brand_logo') || '';
-    var brandIcon = settings.brandIcon || settings.site_icon || localStorage.getItem('hedtro_brand_icon') || '';
+      var selectors = '#headerLogo, #navbarLogo, #brandLogo, #sidebarLogo, #sideBrandLogo, .login-card .logo h1, #loginLogoHeading, #registerLogoHeading, .logo-icon';
+      var logoElements = document.querySelectorAll(selectors);
 
-    if (brandName) localStorage.setItem('hedtro_brand_name', brandName);
-    if (brandLogo) localStorage.setItem('hedtro_brand_logo', brandLogo);
-    if (brandIcon) localStorage.setItem('hedtro_brand_icon', brandIcon);
+      logoElements.forEach(function(el) {
+        if (!el) return;
 
-    var isImageLogo = brandLogo && (
-      brandLogo.startsWith('data:image') ||
-      brandLogo.startsWith('http://') ||
-      brandLogo.startsWith('https://') ||
-      brandLogo.startsWith('/') ||
-      brandLogo.startsWith('./')
-    );
-
-    // Target all key brand logo containers across all pages
-    var selectors = '#headerLogo, #navbarLogo, #brandLogo, #sidebarLogo, #sideBrandLogo, .login-card .logo h1, #loginLogoHeading, #registerLogoHeading, .logo-icon';
-    var logoElements = document.querySelectorAll(selectors);
-
-    logoElements.forEach(function(el) {
-      if (!el) return;
-
-      // Make logo clickable and redirect to main page (/)
-      if (el.id === 'headerLogo' || el.id === 'navbarLogo' || el.id === 'brandLogo' || el.classList.contains('logo')) {
-        el.style.cursor = 'pointer';
-        el.style.textDecoration = 'none';
-        if (!el.getAttribute('data-link-attached')) {
-          el.setAttribute('data-link-attached', 'true');
-          el.addEventListener('click', function(e) {
-            // Prevent duplicate redirection if wrapped in a tag
-            if (el.tagName !== 'A' || !el.getAttribute('href')) {
-              e.preventDefault();
-              window.location.href = '/';
-            }
-          });
+        if (el.id === 'headerLogo' || el.id === 'navbarLogo' || el.id === 'brandLogo' || el.classList.contains('logo')) {
+          el.style.cursor = 'pointer';
+          el.style.textDecoration = 'none';
+          if (!el.getAttribute('data-link-attached')) {
+            el.setAttribute('data-link-attached', 'true');
+            el.addEventListener('click', function(e) {
+              if (el.tagName !== 'A' || !el.getAttribute('href')) {
+                e.preventDefault();
+                window.location.href = '/';
+              }
+            });
+          }
         }
-      }
 
-      if (isImageLogo) {
-        // Full hidden logo text when logo is an image ("full hidden logo teksnya jika logo pakai gambar")
-        var isCardHeading = (el.tagName === 'H1');
-        var maxH = isCardHeading ? '48px' : '36px';
-        
-        el.innerHTML = '<img class="brand-logo-img" src="' + brandLogo + '" alt="' + brandName + '" style="max-height:' + maxH + '; width:auto; object-fit:contain; vertical-align:middle; display:inline-block;" />';
-      } else {
-        // Show icon + text if logo is a fontawesome icon string or default
-        var iconClass = (brandLogo && brandLogo.startsWith('fa-')) ? brandLogo : 'fa-tshirt';
-        
-        if (el.classList.contains('logo-icon')) {
-          el.innerHTML = '<i class="fas ' + iconClass + '"></i>';
-        } else if (el.id === 'sidebarLogo' || el.id === 'sideBrandLogo' || el.classList.contains('logo-side')) {
-          el.innerHTML = '<i class="fas ' + iconClass + '"></i> ' + (brandName.split(' ')[0] || 'HEDTRO');
-        } else if (el.id === 'headerLogo' || el.id === 'navbarLogo' || el.id === 'brandLogo') {
-          if (brandName === 'HEDTRO JEANS' || brandName === 'HEDTRO') {
-            el.innerHTML = '<i class="fas ' + iconClass + '"></i> HEDTRO<span>JEANS</span>';
+        if (isImageLogo) {
+          var isCardHeading = (el.tagName === 'H1');
+          var maxH = isCardHeading ? '48px' : '36px';
+          el.innerHTML = '<img class="brand-logo-img" src="' + brandLogo + '" alt="' + brandName + '" style="max-height:' + maxH + '; width:auto; object-fit:contain; vertical-align:middle; display:inline-block;" />';
+        } else {
+          var iconClass = (brandLogo && brandLogo.startsWith('fa-')) ? brandLogo : 'fa-tshirt';
+          if (el.classList.contains('logo-icon')) {
+            el.innerHTML = '<i class="fas ' + iconClass + '"></i>';
+          } else if (el.id === 'sidebarLogo' || el.id === 'sideBrandLogo' || el.classList.contains('logo-side')) {
+            el.innerHTML = '<i class="fas ' + iconClass + '"></i> ' + (brandName.split(' ')[0] || 'HEDTRO');
+          } else if (el.id === 'headerLogo' || el.id === 'navbarLogo' || el.id === 'brandLogo') {
+            if (brandName === 'HEDTRO JEANS' || brandName === 'HEDTRO') {
+              el.innerHTML = '<i class="fas ' + iconClass + '"></i> HEDTRO<span>JEANS</span>';
+            } else {
+              el.innerHTML = '<i class="fas ' + iconClass + '"></i> ' + brandName;
+            }
           } else {
             el.innerHTML = '<i class="fas ' + iconClass + '"></i> ' + brandName;
           }
-        } else {
-          el.innerHTML = '<i class="fas ' + iconClass + '"></i> ' + brandName;
         }
-      }
-    });
+      });
 
-
-    // Update Favicon Link
-    if (brandIcon && (brandIcon.startsWith('data:image') || brandIcon.startsWith('http://') || brandIcon.startsWith('https://') || brandIcon.startsWith('/'))) {
-      var favicon = document.querySelector("link[rel*='icon']");
-      if (!favicon) {
-        favicon = document.createElement('link');
-        favicon.rel = 'shortcut icon';
-        document.getElementsByTagName('head')[0].appendChild(favicon);
+      if (brandIcon && (brandIcon.startsWith('data:image') || brandIcon.startsWith('http://') || brandIcon.startsWith('https://') || brandIcon.startsWith('/'))) {
+        var favicon = document.querySelector("link[rel*='icon']");
+        if (!favicon) {
+          favicon = document.createElement('link');
+          favicon.rel = 'shortcut icon';
+          document.getElementsByTagName('head')[0].appendChild(favicon);
+        }
+        favicon.href = brandIcon;
       }
-      favicon.href = brandIcon;
+    }
+
+    // 1. INSTANT RENDER FROM LOCALSTORAGE CACHE (0ms Delay)
+    var cachedName = localStorage.getItem('hedtro_brand_name') || 'HEDTRO JEANS';
+    var cachedLogo = localStorage.getItem('hedtro_brand_logo') || '';
+    var cachedIcon = localStorage.getItem('hedtro_brand_icon') || '';
+    renderLogoDOM(cachedName, cachedLogo, cachedIcon);
+
+    // 2. SILENT BACKGROUND FETCH FROM DATABASE
+    if (typeof window.getTable === 'function') {
+      window.getTable('settings', '*').then(function(settingsData) {
+        var settings = {};
+        (settingsData || []).forEach(function(r) { settings[r.key] = r.value; });
+
+        var brandName = settings.brandName || settings.site_name || cachedName;
+        var brandLogo = settings.brandLogo || settings.site_logo || cachedLogo;
+        var brandIcon = settings.brandIcon || settings.site_icon || cachedIcon;
+
+        if (brandName) localStorage.setItem('hedtro_brand_name', brandName);
+        if (brandLogo) localStorage.setItem('hedtro_brand_logo', brandLogo);
+        if (brandIcon) localStorage.setItem('hedtro_brand_icon', brandIcon);
+
+        renderLogoDOM(brandName, brandLogo, brandIcon);
+      }).catch(function() {});
     }
   } catch (e) {
     console.warn('applyBrandSettings warning:', e);
   }
 };
 
-if (document.readyState === 'complete' || document.readyState === 'interactive') {
-  setTimeout(window.applyBrandSettings, 50);
-} else {
+// Immediate Execution on Script Load & DOMContentLoaded
+window.applyBrandSettings();
+if (document.readyState === 'loading') {
   document.addEventListener('DOMContentLoaded', window.applyBrandSettings);
 }
 
