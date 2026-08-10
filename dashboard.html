@@ -1348,7 +1348,7 @@
       // ========== LOGOUT ==========
       document.getElementById('sideLogoutBtn').addEventListener('click', async function() {
         await window.signOut();
-        window.location.href = 'index.html';
+        window.location.href = '/';
       });
 
       // ========== COPY REF ==========
@@ -1365,16 +1365,16 @@
           if (typeof window.showLoadingBar === 'function') window.showLoadingBar();
           const session = await window.getSession();
           if (!session) {
-            window.location.href = 'login.html';
+            window.location.href = '/login';
             return;
           }
           const profile = await window.getUserProfile();
           if (!profile) {
-            window.location.href = 'login.html';
+            window.location.href = '/login';
             return;
           }
           if (profile.role === 'admin') {
-            window.location.href = 'admin.html';
+            window.location.href = '/admin';
             return;
           }
           currentUser = profile;
@@ -1417,7 +1417,7 @@
 
         } catch (e) {
           console.error('Auth error:', e);
-          window.location.href = 'login.html';
+          window.location.href = '/login';
         } finally {
           if (typeof window.hideLoadingBar === 'function') window.hideLoadingBar();
         }
@@ -2343,7 +2343,7 @@
       }
 
       window.openRegisterDownline = function(sponsor, upline, pos) {
-        window.location.href = `register.html?ref=${encodeURIComponent(sponsor)}&upline=${encodeURIComponent(upline)}&pos=${pos}&new=1`;
+        window.location.href = `/register?ref=${encodeURIComponent(sponsor)}&upline=${encodeURIComponent(upline)}&pos=${pos}&new=1`;
       };
 
       function renderBinaryTreeHTML(node) {
