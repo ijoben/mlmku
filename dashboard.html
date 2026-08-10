@@ -1298,11 +1298,13 @@
 
           // Load data pendukung secara paralel di background tanpa memblokir layar
           Promise.all([
+            window.getTable('users').catch(() => []),
             window.getProducts().catch(() => []),
             window.getBankInfo().catch(() => []),
             window.getTransactions(currentUser.id).catch(() => []),
             window.getOrders().catch(() => [])
-          ]).then(([prodsData, banksData, myTxs, myOrders]) => {
+          ]).then(([usersData, prodsData, banksData, myTxs, myOrders]) => {
+            allUsers = usersData || [];
             allProducts = prodsData || [];
             allBankInfo = banksData || [];
             if (myTxs && myTxs.length > 0 && currentUser) {
@@ -2194,28 +2196,56 @@
         const tree = document.querySelector('.binary-tree');
         if (tree) tree.style.transform = `scale(${currentZoom})`;
       }
-      document.getElementById('zoomInBtn').addEventListener('click', () => { currentZoom += 0.1; applyTreeZoom(); });
-      document.getElementById('zoomOutBtn').addEventListener('click', () => { currentZoom = Math.max(0.3, currentZoom - 0.1); applyTreeZoom(); });
+      document.getElementById('zoomInBtn')?.addEventListener('click', () => { currentZoom += 0.1; applyTreeZoom(); });
+      document.getElementById('zoomOutBtn')?.addEventListener('click', () => { currentZoom = Math.max(0.3, currentZoom - 0.1); applyTreeZoom(); });
 
-      function renderNetwork() {
+      async function renderNetwork() {
         const container = document.getElementById('treeContainer');
+        if (!container) return;
+        container.innerHTML = '<div style="text-align:center; padding:20px; color:var(--denim-navy);"><i class="fas fa-spinner fa-spin"></i> Memuat Pohon Jaringan...</div>';
+
+        try {
+          const usersData = await window.getTable('users').catch(() => []);
+          if (usersData && usersData.length > 0) {
+            allUsers = usersData;
+          }
+        } catch (e) {
+          console.warn('Fetch allUsers tree warning:', e);
+        }
+
         const treeData = buildBinaryTree(currentUser.id, 0, 3);
         container.innerHTML = `<div class="binary-tree">${renderBinaryTreeHTML(treeData)}</div>`;
         applyTreeZoom();
       }
 
+      function findChildId(parentUser, position) {
+        if (!parentUser) return null;
+        if (position === 'left' && parentUser.left_id) return parentUser.left_id;
+        if (position === 'right' && parentUser.right_id) return parentUser.right_id;
+
+        const child = (allUsers || []).find(u =>
+          (String(u.upline_id) === String(parentUser.id) || String(u.sponsor_id) === String(parentUser.id)) &&
+          (u.position === position || (position === 'left' ? u.position === 'L' : u.position === 'R'))
+        );
+        return child ? child.id : null;
+      }
+
       function buildBinaryTree(nodeId, level, maxDepth, parentUsername, pos) {
         if (level > maxDepth) return null;
         if (!nodeId) return { empty: true, parentUsername: parentUsername || currentUser.username, pos: pos || 'left' };
-        const user = allUsers.find(u => String(u.id) === String(nodeId));
+        const user = (allUsers || []).find(u => String(u.id) === String(nodeId) || (nodeId && u.username && u.username.toLowerCase() === String(nodeId).toLowerCase()));
         if (!user) return { empty: true, parentUsername: parentUsername || currentUser.username, pos: pos || 'left' };
+
+        const leftChildId = findChildId(user, 'left');
+        const rightChildId = findChildId(user, 'right');
+
         return {
           id: user.id,
           username: user.username,
           name: user.fullname || user.username,
           status: user.status || 'free',
-          left: buildBinaryTree(user.left_id, level + 1, maxDepth, user.username, 'left'),
-          right: buildBinaryTree(user.right_id, level + 1, maxDepth, user.username, 'right')
+          left: buildBinaryTree(leftChildId, level + 1, maxDepth, user.username, 'left'),
+          right: buildBinaryTree(rightChildId, level + 1, maxDepth, user.username, 'right')
         };
       }
 
@@ -2245,7 +2275,18 @@
       // ========== DOWNLINE ==========
       async function renderDownlineTable() {
         const tbody = document.getElementById('downlineTableBody');
-        const downlines = allUsers.filter(u => u.sponsor_id === currentUser.id);
+        if (!tbody) return;
+
+        try {
+          const usersData = await window.getTable('users').catch(() => []);
+          if (usersData && usersData.length > 0) {
+            allUsers = usersData;
+          }
+        } catch (e) {
+          console.warn('Fetch allUsers downline warning:', e);
+        }
+
+        const downlines = (allUsers || []).filter(u => String(u.sponsor_id) === String(currentUser.id) || String(u.upline_id) === String(currentUser.id));
         document.getElementById('totalDownlineCount').textContent = downlines.length;
         if (downlines.length === 0) {
           tbody.innerHTML = '<tr><td colspan="4" style="text-align:center;">Belum ada downline.</td></tr>';
