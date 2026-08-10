@@ -1274,6 +1274,13 @@
 
     /* (old tree CSS removed — now uses .tn-* classes with SVG connectors) */
 
+    /* ---- LIVE dot pulse animation ---- */
+    @keyframes livePulse {
+      0%   { box-shadow: 0 0 0 0   rgba(16,185,129,0.5); }
+      70%  { box-shadow: 0 0 0 6px rgba(16,185,129,0); }
+      100% { box-shadow: 0 0 0 0   rgba(16,185,129,0); }
+    }
+
     /* ---- RESPONSIVE: mobile tree scale ---- */
     @media (max-width: 600px) {
       .tree-wrapper {
@@ -3659,6 +3666,8 @@
       });
 
       // ========== TREE ==========
+      let _networkRealtimeChannel = null;  // track active subscription
+
       function applyTreeZoom() {
         const canvas = document.getElementById('treeCanvas');
         if (canvas) {
@@ -3678,20 +3687,38 @@
       // Redraw on window resize
       window.addEventListener('resize', () => { if (document.getElementById('treeCanvas')) requestAnimationFrame(drawTreeConnectors); });
 
-      async function renderNetwork() {
-        const container = document.getElementById('treeContainer');
-        if (!container) return;
-        container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--gold-light); font-weight:700;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Memuat Pohon Jaringan Binary...</div>';
-
-        try {
-          const usersData = await window.getTable('users').catch(() => []);
-          if (usersData && usersData.length > 0) {
-            allUsers = usersData;
-          }
-        } catch (e) {
-          console.warn('Fetch allUsers tree warning:', e);
+      // --- Unsubscribe realtime channel when leaving network section ---
+      const _origShowSection = window.showSection;
+      window.showSection = function(sectionId) {
+        if (sectionId !== 'network' && _networkRealtimeChannel) {
+          try { window.supabase.removeChannel(_networkRealtimeChannel); } catch(e) {}
+          _networkRealtimeChannel = null;
+          // Remove live badge
+          const lb = document.getElementById('treeLiveBadge');
+          if (lb) lb.remove();
         }
+        _origShowSection(sectionId);
+      };
 
+      // --- Core render (can be called fresh OR from realtime event) ---
+      async function _fetchAndRenderTree(container, silent = false) {
+        if (!silent) {
+          container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--gold-light); font-weight:700;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Memuat Pohon Jaringan Binary...</div>';
+        }
+        try {
+          // ALWAYS fetch fresh from Supabase — no cache
+          const { data: usersData, error: usersErr } = await window.supabase
+            .from('users')
+            .select('*');
+          if (usersErr) throw usersErr;
+          allUsers = usersData || [];
+        } catch (e) {
+          console.warn('⚠️ Tree fetch error:', e);
+          if (!allUsers || allUsers.length === 0) {
+            container.innerHTML = '<p style="color:#f87171;text-align:center;padding:20px;">Gagal memuat data jaringan. Cek koneksi internet.</p>';
+            return;
+          }
+        }
         const treeData = buildBinaryTree(currentUser.id, 0, 3);
         const innerHTML = renderBinaryTreeHTML(treeData);
         container.innerHTML = `<div class="tree-canvas" id="treeCanvas">${innerHTML}</div>`;
@@ -3702,6 +3729,76 @@
         // Wait for layout then draw connectors
         requestAnimationFrame(() => requestAnimationFrame(drawTreeConnectors));
       }
+
+      async function renderNetwork() {
+        const container = document.getElementById('treeContainer');
+        if (!container) return;
+
+        // Fetch & render fresh
+        await _fetchAndRenderTree(container, false);
+
+        // --- REALTIME SUBSCRIPTION ---
+        // Remove any previous channel first
+        if (_networkRealtimeChannel) {
+          try { window.supabase.removeChannel(_networkRealtimeChannel); } catch(e) {}
+          _networkRealtimeChannel = null;
+        }
+
+        try {
+          _networkRealtimeChannel = window.supabase
+            .channel('tree-users-realtime-' + Date.now())
+            .on('postgres_changes',
+              { event: '*', schema: 'public', table: 'users' },
+              async (payload) => {
+                console.log('🔄 Realtime tree update:', payload.eventType, payload.new?.username || payload.old?.id);
+                const cont = document.getElementById('treeContainer');
+                if (!cont) return;
+                // Show live pulse then re-render silently
+                _showLivePulse();
+                await _fetchAndRenderTree(cont, true);
+              }
+            )
+            .subscribe((status) => {
+              console.log('📡 Tree realtime channel status:', status);
+              if (status === 'SUBSCRIBED') _showLiveBadge(true);
+              else if (status === 'CLOSED' || status === 'CHANNEL_ERROR') _showLiveBadge(false);
+            });
+        } catch(e) {
+          console.warn('⚠️ Realtime subscribe error:', e);
+        }
+      }
+
+      // --- Live badge indicator ---
+      function _showLiveBadge(connected) {
+        let badge = document.getElementById('treeLiveBadge');
+        if (!badge) {
+          // Inject into the legend bar above the tree
+          const legendBar = document.querySelector('#sec-network > div');
+          if (!legendBar) return;
+          badge = document.createElement('span');
+          badge.id = 'treeLiveBadge';
+          badge.style.cssText = 'display:inline-flex;align-items:center;gap:5px;font-size:0.7rem;font-weight:800;padding:3px 10px;border-radius:20px;transition:all 0.3s;';
+          legendBar.querySelector('div')?.appendChild(badge);
+        }
+        if (connected) {
+          badge.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:#10b981;display:inline-block;box-shadow:0 0 0 2px rgba(16,185,129,0.35);animation:livePulse 1.4s infinite;"></span> LIVE';
+          badge.style.color = '#10b981';
+        } else {
+          badge.innerHTML = '<span style="width:8px;height:8px;border-radius:50%;background:#ef4444;display:inline-block;"></span> Offline';
+          badge.style.color = '#ef4444';
+        }
+      }
+
+      // --- Pulse flash when realtime update fires ---
+      function _showLivePulse() {
+        const canvas = document.getElementById('treeCanvas');
+        if (canvas) {
+          canvas.style.transition = 'opacity 0.2s';
+          canvas.style.opacity = '0.5';
+          setTimeout(() => { if (canvas) { canvas.style.opacity = '1'; } }, 250);
+        }
+      }
+
 
       function isSameUser(val1, val2) {
         if (!val1 || !val2) return false;
