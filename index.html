@@ -1751,17 +1751,10 @@
                     <input type="text" placeholder="Cari produk..." id="searchInputDesktop" />
                     <button id="searchBtnDesktop"><i class="fas fa-search"></i></button>
                 </div>
-                <button class="cart-btn" id="cartBtnDesktop">
-                    <i class="fas fa-shopping-bag"></i>
-                    <span class="badge">0</span>
-                </button>
             </div>
 
             <span class="search-icon-hp" id="searchIconHp"><i class="fas fa-search"></i></span>
-            <span class="cart-hp" id="cartHp">
-                <i class="fas fa-shopping-bag"></i>
-                <span class="badge">0</span>
-            </span>
+
 
             <a href="/login" class="btn-nav btn-nav-outline" id="navAuthBtn">Login</a>
             <a href="/register" class="btn-nav btn-nav-gold" id="navRegBtn">Daftar</a>
@@ -1816,16 +1809,6 @@
         </div>
     </div>
 
-    <div class="popup-overlay" id="cartPopup">
-        <div class="popup-box">
-            <button class="close-popup" id="closeCartPopup">&times;</button>
-            <h3><i class="fas fa-shopping-bag" style="color:var(--gold-accent);"></i> Keranjang Belanja</h3>
-            <p class="sub" id="cartCountLabel">0 item di keranjang</p>
-            <div id="cartItems" style="margin:12px 0; max-height:300px; overflow-y:auto;"></div>
-            <button id="cartCheckoutBtn"
-                style="width:100%; padding:14px; background:var(--gold-accent); color:var(--denim-dark); border-radius:60px; font-weight:700; font-size:1rem; font-family:inherit; transition:var(--transition);">Checkout</button>
-        </div>
-    </div>
 
     <div class="popup-overlay product-detail-popup" id="productDetailPopup">
         <div class="popup-box">
@@ -1946,7 +1929,6 @@
 
             // ========== GLOBAL STATE ==========
             let allProducts = [];
-            let cartItems = [];
             let currentSlide = 0;
             let slideInterval = null;
             let currentUserProfile = null;
@@ -2396,13 +2378,61 @@
                 const colorSel = document.getElementById('detailColor');
                 colorSel.innerHTML = (product.colors || ['Indigo Blue']).map(c => `<option value="${c}">${c}</option>`).join('');
 
-                document.getElementById('detailBuyBtn').onclick = function () {
-                    window.getSession().then(session => {
-                        if (!session) { showToast('Login dulu.', 'error'); window.location.href = '/login'; return; }
-                        addToCart(product, sizeSel.value, colorSel.value);
+                document.getElementById('detailBuyBtn').onclick = async function () {
+                    const session = await window.getSession();
+                    if (!session) { 
+                        showToast('Silakan login terlebih dahulu untuk memesan.', 'error'); 
+                        window.location.href = '/login'; 
+                        return; 
+                    }
+                    const profile = await window.getUserProfile();
+                    if (!profile) { showToast('Profile tidak ditemukan.', 'error'); return; }
+                    if ((profile.status || '').toLowerCase() !== 'verified') { 
+                        showToast('Akun belum terverifikasi.', 'error'); 
+                        return; 
+                    }
+
+                    const size = sizeSel.value;
+                    const color = colorSel.value;
+                    const orderNum = 'ORD-' + Date.now().toString().slice(-6);
+                    const totalAmount = parseFloat(product.price) || 0;
+
+                    const btn = this;
+                    btn.disabled = true;
+                    btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+
+                    try {
+                        const newOrder = {
+                            id: Date.now(),
+                            order_number: orderNum,
+                            user_id: profile.id,
+                            user_name: profile.fullname || profile.username,
+                            product_name: product.name,
+                            shipping_address: profile.address || 'Alamat Akun',
+                            type: 'regular',
+                            items: [{ product_id: product.id, name: product.name, price: totalAmount, qty: 1, size: size, color: color }],
+                            total: totalAmount,
+                            total_price: totalAmount,
+                            status: 'pending',
+                            created_at: new Date().toISOString()
+                        };
+
+                        await window.saveOrder(newOrder);
+
+                        if (product.stock !== undefined) {
+                            product.stock = Math.max(0, product.stock - 1);
+                            await window.saveProduct(product);
+                        }
+
                         document.getElementById('productDetailPopup').classList.remove('show');
                         document.body.style.overflow = '';
-                    });
+                        showToast(`✅ Pesanan ${orderNum} (${product.name}) berhasil dibuat!`, 'success', 5000);
+                    } catch (error) {
+                        showToast('Gagal membuat pesanan: ' + error.message, 'error');
+                    } finally {
+                        btn.disabled = false;
+                        btn.innerHTML = '<i class="fas fa-shopping-bag"></i> Beli Sekarang';
+                    }
                 };
 
                 document.getElementById('productDetailPopup').classList.add('show');
@@ -2413,83 +2443,6 @@
             }
 
             document.getElementById('closeDetailPopup').onclick = () => { document.getElementById('productDetailPopup').classList.remove('show'); document.body.style.overflow = ''; };
-
-            // ========== CART ==========
-            function addToCart(product, size, color) {
-                const existing = cartItems.find(item => item.id === product.id && item.size === size && item.color === color);
-                if (existing) { existing.qty += 1; }
-                else { cartItems.push({ ...product, qty: 1, size, color }); }
-                updateCartUI();
-                showToast(`🛒 ${product.name} (${size} · ${color}) ditambahkan!`, 'success');
-            }
-
-            function updateCartUI() {
-                const totalItems = cartItems.reduce((sum, item) => sum + item.qty, 0);
-                document.querySelectorAll('.badge').forEach(el => el.textContent = totalItems);
-                document.getElementById('cartCountLabel').textContent = `${totalItems} item di keranjang`;
-                const container = document.getElementById('cartItems');
-                if (cartItems.length === 0) { container.innerHTML = '<p style="color:var(--denim-navy); opacity:0.6;">Keranjang kosong</p>'; return; }
-                let html = '';
-                cartItems.forEach(item => {
-                    html += `<div style="display:flex; justify-content:space-between; align-items:center; padding:8px 0; border-bottom:1px solid var(--denim-light);">
-                        <div><strong>${item.name}</strong><span style="display:block; font-size:0.8rem; color:var(--denim-navy);">${item.size || ''} · ${item.color || ''} · Rp ${item.price.toLocaleString()} x ${item.qty}</span></div>
-                        <button class="remove-cart-item" data-id="${item.id}" style="color:#b13e3e; font-size:0.9rem; padding:4px 10px;">✕</button>
-                    </div>`;
-                });
-                container.innerHTML = html;
-                container.querySelectorAll('.remove-cart-item').forEach(btn => {
-                    btn.addEventListener('click', function () {
-                        const id = parseInt(this.dataset.id);
-                        cartItems = cartItems.filter(item => item.id !== id);
-                        updateCartUI();
-                    });
-                });
-            }
-
-            // ========== CHECKOUT ==========
-            document.getElementById('cartCheckoutBtn').addEventListener('click', async function () {
-                if (cartItems.length === 0) { showToast('Keranjang kosong!', 'error'); return; }
-                const session = await window.getSession();
-                if (!session) { showToast('Login dulu untuk checkout.', 'error'); window.location.href = '/login'; return; }
-                const profile = await window.getUserProfile();
-                if (!profile) { showToast('Profile tidak ditemukan.', 'error'); return; }
-                if (profile.status !== 'verified') { showToast('Akun belum terverifikasi.', 'error'); return; }
-
-                const totalAmount = cartItems.reduce((sum, item) => sum + (item.price * item.qty), 0);
-                const orderNum = 'ORD-' + Date.now().toString().slice(-6);
-                const newOrder = {
-                    id: Date.now(),
-                    order_number: orderNum,
-                    user_id: profile.id,
-                    user_name: profile.fullname || profile.username,
-                    shipping_address: profile.address || 'Alamat Akun',
-                    type: 'regular',
-                    items: cartItems.map(ci => ({ product_id: ci.id, name: ci.name, price: ci.price, qty: ci.qty, size: ci.size, color: ci.color })),
-                    total: totalAmount,
-                    status: 'pending',
-                    created_at: new Date().toISOString()
-                };
-
-                try {
-                    await window.saveOrder(newOrder);
-                    for (let ci of cartItems) {
-                        const p = allProducts.find(x => x.id === ci.id);
-                        if (p && p.stock !== undefined) {
-                            p.stock = Math.max(0, p.stock - ci.qty);
-                            await window.saveProduct(p);
-                        }
-                    }
-                    allProducts = await window.getProducts();
-
-                    cartItems = [];
-                    updateCartUI();
-                    document.getElementById('cartPopup').classList.remove('show');
-                    document.body.style.overflow = '';
-                    showToast(`✅ Pesanan ${orderNum} dibuat! Total: Rp ${totalAmount.toLocaleString()}`, 'success', 5000);
-                } catch (error) {
-                    showToast('Gagal checkout: ' + error.message, 'error');
-                }
-            });
 
             // ========== TRACKING POPUP HANDLERS ==========
             window.openTrackModal = function () {
@@ -2611,9 +2564,6 @@
             });
 
             // ========== POPUP EVENTS ==========
-            document.getElementById('cartBtnDesktop').onclick = () => { updateCartUI(); document.getElementById('cartPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
-            document.getElementById('cartHp').onclick = () => { updateCartUI(); document.getElementById('cartPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
-            document.getElementById('closeCartPopup').onclick = () => { document.getElementById('cartPopup').classList.remove('show'); document.body.style.overflow = ''; };
             document.getElementById('searchIconHp').onclick = () => { document.getElementById('searchPopup').classList.add('show'); document.body.style.overflow = 'hidden'; };
             document.getElementById('closeSearchPopup').onclick = () => { document.getElementById('searchPopup').classList.remove('show'); document.body.style.overflow = ''; };
 
