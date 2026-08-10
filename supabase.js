@@ -433,46 +433,95 @@ window.compressImageFile = function(file, maxWidth, quality) {
 // BONUS CALCULATION FUNCTIONS (BARU!)
 // ============================================================
 
+// Helper to compare two user identifiers (ID or Username)
+window.isSameUser = function(userA, userB) {
+  if (!userA || !userB) return false;
+  var idA = (typeof userA === 'object') ? (userA.id || userA.username) : userA;
+  var unameA = (typeof userA === 'object') ? (userA.username || userA.id) : userA;
+  
+  var idB = (typeof userB === 'object') ? (userB.id || userB.username) : userB;
+  var unameB = (typeof userB === 'object') ? (userB.username || userB.id) : userB;
+
+  var strIdA = String(idA || '').toLowerCase().trim();
+  var strUnameA = String(unameA || '').toLowerCase().trim();
+  var strIdB = String(idB || '').toLowerCase().trim();
+  var strUnameB = String(unameB || '').toLowerCase().trim();
+
+  if (!strIdA || !strIdB) return false;
+  return (strIdA === strIdB || strIdA === strUnameB || strUnameA === strIdB || strUnameA === strUnameB);
+};
+
+window.isBonusAlreadyGiven = async function(userId, fromUserId, type, level) {
+  try {
+    var { data } = await supabaseClient
+      .from('transactions')
+      .select('id')
+      .eq('user_id', userId)
+      .eq('from_user_id', fromUserId)
+      .eq('type', type)
+      .eq('level', level);
+
+    if (data && data.length > 0) {
+      console.warn('⚠️ Bonus ' + type + ' L' + level + ' from ' + fromUserId + ' to ' + userId + ' already exists in DB! Skipping duplicate.');
+      return true;
+    }
+  } catch (e) {
+    console.warn('Check duplicate bonus warning:', e);
+  }
+  return false;
+};
+
 // 1. Hitung Bonus Sponsor
 window.calculateSponsorBonus = async function(userId, sponsorId, amount, settings) {
   var sponsorBonusPercent = parseFloat(settings.sponsorBonus) || 10;
   var bonusAmount = (amount * sponsorBonusPercent) / 100;
   
-  if (bonusAmount <= 0 || !sponsorId || String(sponsorId) === String(userId)) return;
+  if (bonusAmount <= 0 || !sponsorId || window.isSameUser(userId, sponsorId)) {
+    console.log('ℹ️ Sponsor bonus skipped (Invalid amount, missing sponsor, or self-sponsor).');
+    return;
+  }
   
   try {
-    var sponsor = await window.getUserById(sponsorId);
     var buyer = await window.getUserById(userId);
-    if (sponsor) {
-      sponsor.bonus_sponsor = (parseFloat(sponsor.bonus_sponsor) || 0) + bonusAmount;
-      sponsor.wallet = (parseFloat(sponsor.wallet) || 0) + bonusAmount;
+    var sponsor = await window.getUserById(sponsorId);
 
-      var buyerName = buyer ? (buyer.fullname || buyer.username) : 'Downline';
-      var desc = '🎁 Bonus Sponsor (' + sponsorBonusPercent + '%) dari pendaftaran ' + buyerName + ' (@' + (buyer ? buyer.username : 'user') + ')';
-
-      var txObj = {
-        id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('tx_' + Date.now() + '_' + Math.floor(Math.random()*1000)),
-        user_id: sponsor.id,
-        from_user_id: userId,
-        from_username: buyer ? buyer.username : null,
-        from_name: buyerName,
-        type: 'bonus_sponsor',
-        amount: bonusAmount,
-        level: 1,
-        desc: desc,
-        description: desc,
-        status: 'success',
-        date: new Date().toISOString(),
-        created_at: new Date().toISOString()
-      };
-
-      sponsor.transactions = sponsor.transactions || [];
-      sponsor.transactions.push(txObj);
-
-      await window.upsertRow('users', sponsor);
-      try { await window.upsertRow('transactions', txObj); } catch (tErr) {}
-      console.log('✅ Bonus Sponsor Rp' + bonusAmount + ' -> Sponsor: ' + sponsor.username);
+    if (!buyer || !sponsor) return;
+    if (window.isSameUser(buyer, sponsor)) {
+      console.warn('⚠️ Self-sponsor detected - Bonus Sponsor cancelled for', buyer.username);
+      return;
     }
+
+    var isDuplicate = await window.isBonusAlreadyGiven(sponsor.id, buyer.id, 'bonus_sponsor', 1);
+    if (isDuplicate) return;
+
+    sponsor.bonus_sponsor = (parseFloat(sponsor.bonus_sponsor) || 0) + bonusAmount;
+    sponsor.wallet = (parseFloat(sponsor.wallet) || 0) + bonusAmount;
+
+    var buyerName = buyer.fullname || buyer.username;
+    var desc = '🎁 Bonus Sponsor (' + sponsorBonusPercent + '%) dari pendaftaran ' + buyerName + ' (@' + buyer.username + ')';
+
+    var txObj = {
+      id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('tx_' + Date.now() + '_' + Math.floor(Math.random()*1000)),
+      user_id: sponsor.id,
+      from_user_id: buyer.id,
+      from_username: buyer.username,
+      from_name: buyerName,
+      type: 'bonus_sponsor',
+      amount: bonusAmount,
+      level: 1,
+      desc: desc,
+      description: desc,
+      status: 'success',
+      date: new Date().toISOString(),
+      created_at: new Date().toISOString()
+    };
+
+    sponsor.transactions = sponsor.transactions || [];
+    sponsor.transactions.push(txObj);
+
+    await window.upsertRow('users', sponsor);
+    try { await window.upsertRow('transactions', txObj); } catch (tErr) {}
+    console.log('✅ Bonus Sponsor Rp' + bonusAmount + ' -> Sponsor: ' + sponsor.username);
   } catch (e) {
     console.error('Error calculating sponsor bonus:', e);
   }
@@ -487,46 +536,55 @@ window.calculateBinaryBonus = async function(userId, amount, settings) {
     var buyerName = buyer.fullname || buyer.username;
     
     // PENTING: Bonus Binary diberikan ke UPLINE DI ATAS buyer, BUKAN ke buyer itu sendiri!
-    var currentUserId = buyer.sponsor_id || buyer.upline_id;
+    var currentUserId = buyer.upline_id || buyer.sponsor_id;
     var level = 0;
+    var visitedUserIds = new Set([String(buyer.id).toLowerCase(), String(buyer.username).toLowerCase()]);
     
     while (currentUserId && level < 10) {
+      if (visitedUserIds.has(String(currentUserId).toLowerCase())) break;
+
       var upline = await window.getUserById(currentUserId);
-      if (!upline || String(upline.id) === String(userId)) break;
+      if (!upline || window.isSameUser(upline, buyer)) break;
+
+      visitedUserIds.add(String(upline.id).toLowerCase());
+      if (upline.username) visitedUserIds.add(String(upline.username).toLowerCase());
       
       var bonusPercent = parseFloat(binaryLevels[level]) || 0;
       var bonusAmount = (amount * bonusPercent) / 100;
       
       if (bonusAmount > 0) {
-        upline.bonus_binary = (parseFloat(upline.bonus_binary) || 0) + bonusAmount;
-        upline.wallet = (parseFloat(upline.wallet) || 0) + bonusAmount;
+        var isDuplicate = await window.isBonusAlreadyGiven(upline.id, buyer.id, 'bonus_binary', level + 1);
+        if (!isDuplicate) {
+          upline.bonus_binary = (parseFloat(upline.bonus_binary) || 0) + bonusAmount;
+          upline.wallet = (parseFloat(upline.wallet) || 0) + bonusAmount;
 
-        var desc = '🌳 Bonus Binary Level ' + (level + 1) + ' (' + bonusPercent + '%) dari ' + buyerName + ' (@' + buyer.username + ')';
-        var txObj = {
-          id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('tx_' + Date.now() + '_' + Math.floor(Math.random()*1000)),
-          user_id: upline.id,
-          from_user_id: userId,
-          from_username: buyer.username,
-          from_name: buyerName,
-          type: 'bonus_binary',
-          amount: bonusAmount,
-          level: level + 1,
-          desc: desc,
-          description: desc,
-          status: 'success',
-          date: new Date().toISOString(),
-          created_at: new Date().toISOString()
-        };
+          var desc = '🌳 Bonus Binary Level ' + (level + 1) + ' (' + bonusPercent + '%) dari ' + buyerName + ' (@' + buyer.username + ')';
+          var txObj = {
+            id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('tx_' + Date.now() + '_' + Math.floor(Math.random()*1000)),
+            user_id: upline.id,
+            from_user_id: buyer.id,
+            from_username: buyer.username,
+            from_name: buyerName,
+            type: 'bonus_binary',
+            amount: bonusAmount,
+            level: level + 1,
+            desc: desc,
+            description: desc,
+            status: 'success',
+            date: new Date().toISOString(),
+            created_at: new Date().toISOString()
+          };
 
-        upline.transactions = upline.transactions || [];
-        upline.transactions.push(txObj);
+          upline.transactions = upline.transactions || [];
+          upline.transactions.push(txObj);
 
-        await window.upsertRow('users', upline);
-        try { await window.upsertRow('transactions', txObj); } catch (tErr) {}
-        console.log('✅ Bonus Binary Rp' + bonusAmount + ' (' + bonusPercent + '%) -> Upline L' + (level+1) + ': ' + upline.username);
+          await window.upsertRow('users', upline);
+          try { await window.upsertRow('transactions', txObj); } catch (tErr) {}
+          console.log('✅ Bonus Binary Rp' + bonusAmount + ' (' + bonusPercent + '%) -> Upline L' + (level+1) + ': ' + upline.username);
+        }
       }
       
-      currentUserId = upline.sponsor_id || upline.upline_id;
+      currentUserId = upline.upline_id || upline.sponsor_id;
       level++;
     }
   } catch (e) {
@@ -543,46 +601,55 @@ window.calculateRewardBonus = async function(userId, amount, settings) {
     var buyerName = buyer.fullname || buyer.username;
     
     // PENTING: Bonus Reward diberikan ke UPLINE DI ATAS buyer, BUKAN ke buyer itu sendiri!
-    var currentUserId = buyer.sponsor_id || buyer.upline_id;
+    var currentUserId = buyer.upline_id || buyer.sponsor_id;
     var level = 0;
+    var visitedUserIds = new Set([String(buyer.id).toLowerCase(), String(buyer.username).toLowerCase()]);
     
     while (currentUserId && level < 5) {
+      if (visitedUserIds.has(String(currentUserId).toLowerCase())) break;
+
       var upline = await window.getUserById(currentUserId);
-      if (!upline || String(upline.id) === String(userId)) break;
+      if (!upline || window.isSameUser(upline, buyer)) break;
+
+      visitedUserIds.add(String(upline.id).toLowerCase());
+      if (upline.username) visitedUserIds.add(String(upline.username).toLowerCase());
       
       var bonusPercent = parseFloat(rewardLevels[level]) || 0;
       var bonusAmount = (amount * bonusPercent) / 100;
       
       if (bonusAmount > 0) {
-        upline.bonus_reward = (parseFloat(upline.bonus_reward) || 0) + bonusAmount;
-        upline.wallet = (parseFloat(upline.wallet) || 0) + bonusAmount;
+        var isDuplicate = await window.isBonusAlreadyGiven(upline.id, buyer.id, 'bonus_reward', level + 1);
+        if (!isDuplicate) {
+          upline.bonus_reward = (parseFloat(upline.bonus_reward) || 0) + bonusAmount;
+          upline.wallet = (parseFloat(upline.wallet) || 0) + bonusAmount;
 
-        var desc = '🏆 Bonus Reward Level ' + (level + 1) + ' (' + bonusPercent + '%) dari ' + buyerName + ' (@' + buyer.username + ')';
-        var txObj = {
-          id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('tx_' + Date.now() + '_' + Math.floor(Math.random()*1000)),
-          user_id: upline.id,
-          from_user_id: userId,
-          from_username: buyer.username,
-          from_name: buyerName,
-          type: 'bonus_reward',
-          amount: bonusAmount,
-          level: level + 1,
-          desc: desc,
-          description: desc,
-          status: 'success',
-          date: new Date().toISOString(),
-          created_at: new Date().toISOString()
-        };
+          var desc = '🏆 Bonus Reward Level ' + (level + 1) + ' (' + bonusPercent + '%) dari ' + buyerName + ' (@' + buyer.username + ')';
+          var txObj = {
+            id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('tx_' + Date.now() + '_' + Math.floor(Math.random()*1000)),
+            user_id: upline.id,
+            from_user_id: buyer.id,
+            from_username: buyer.username,
+            from_name: buyerName,
+            type: 'bonus_reward',
+            amount: bonusAmount,
+            level: level + 1,
+            desc: desc,
+            description: desc,
+            status: 'success',
+            date: new Date().toISOString(),
+            created_at: new Date().toISOString()
+          };
 
-        upline.transactions = upline.transactions || [];
-        upline.transactions.push(txObj);
+          upline.transactions = upline.transactions || [];
+          upline.transactions.push(txObj);
 
-        await window.upsertRow('users', upline);
-        try { await window.upsertRow('transactions', txObj); } catch (tErr) {}
-        console.log('✅ Bonus Reward Rp' + bonusAmount + ' (' + bonusPercent + '%) -> Upline L' + (level+1) + ': ' + upline.username);
+          await window.upsertRow('users', upline);
+          try { await window.upsertRow('transactions', txObj); } catch (tErr) {}
+          console.log('✅ Bonus Reward Rp' + bonusAmount + ' (' + bonusPercent + '%) -> Upline L' + (level+1) + ': ' + upline.username);
+        }
       }
       
-      currentUserId = upline.sponsor_id || upline.upline_id;
+      currentUserId = upline.upline_id || upline.sponsor_id;
       level++;
     }
   } catch (e) {
@@ -599,12 +666,14 @@ window.calculateRoBonus = async function(userId, amount, settings) {
   
   try {
     var buyer = await window.getUserById(userId);
-    if (!buyer || !buyer.sponsor_id) return;
+    if (!buyer || !buyer.sponsor_id || window.isSameUser(buyer.id, buyer.sponsor_id)) return;
     var buyerName = buyer.fullname || buyer.username;
     
-    // Bonus RO diberikan kepada SPONSOR dari pembeli
     var sponsor = await window.getUserById(buyer.sponsor_id);
-    if (sponsor && String(sponsor.id) !== String(userId)) {
+    if (sponsor && !window.isSameUser(sponsor, buyer)) {
+      var isDuplicate = await window.isBonusAlreadyGiven(sponsor.id, buyer.id, 'ro_bonus', 1);
+      if (isDuplicate) return;
+
       sponsor.bonus_ro = (parseFloat(sponsor.bonus_ro) || 0) + bonusAmount;
       sponsor.wallet = (parseFloat(sponsor.wallet) || 0) + bonusAmount;
 
