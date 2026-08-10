@@ -956,7 +956,7 @@
                 }
             }
 
-            // ========== REFRESH DATA (PARALLEL SAFE LOAD) ==========
+            // ========== REFRESH DATA (PARALLEL SAFE LOAD WITH BACKUP FALLBACK) ==========
             async function refreshAdminData() {
                 try {
                     const [
@@ -981,8 +981,29 @@
                         getTableSafely('settings')
                     ]);
 
-                    allUsers = usersData || [];
-                    allProducts = productsData || [];
+                    let localSavedUsers = [];
+                    try {
+                        localSavedUsers = JSON.parse(localStorage.getItem('hedtro_test_users') || '[]');
+                    } catch (e) {}
+
+                    if (usersData && usersData.length > 0) {
+                        allUsers = usersData;
+                        localSavedUsers.forEach(lu => {
+                            if (!allUsers.some(u => String(u.id) === String(lu.id))) {
+                                allUsers.push(lu);
+                            }
+                        });
+                    } else if (localSavedUsers.length > 0) {
+                        allUsers = localSavedUsers;
+                    } else if (!allUsers || allUsers.length === 0) {
+                        allUsers = usersData || [];
+                    }
+
+                    if (allUsers && allUsers.length > 0) {
+                        try { localStorage.setItem('hedtro_test_users', JSON.stringify(allUsers)); } catch (e) {}
+                    }
+
+                    allProducts = (productsData && productsData.length > 0) ? productsData : (allProducts || []);
                     allOrders = ordersData || [];
                     allTransactions = transactionsData || [];
                     allBankInfo = bankInfoData || [];
