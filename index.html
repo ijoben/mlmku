@@ -1167,14 +1167,24 @@
 
         .product-carousel .product-card .body .btn-group .btn-buy {
             flex: 1;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            padding: 4px 10px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
+            color: #ffffff !important;
+            padding: 6px 12px;
             border-radius: 60px;
-            font-size: 0.65rem;
-            font-weight: 700;
+            font-size: 0.72rem;
+            font-weight: 800 !important;
             text-align: center;
             cursor: pointer;
+            border: none;
+            box-shadow: 0 3px 10px rgba(255, 107, 0, 0.35);
+            transition: var(--transition);
+        }
+
+        .product-carousel .product-card .body .btn-group .btn-buy:hover {
+            background: linear-gradient(135deg, #ff8800 0%, #ffa000 100%);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 107, 0, 0.45);
         }
 
         @media (max-width: 768px) {
@@ -1328,14 +1338,24 @@
 
         .product-grid .product-card .body .btn-group .btn-buy {
             flex: 1;
-            background: var(--gold-accent);
-            color: var(--denim-dark);
-            padding: 5px 10px;
+            background: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
+            color: #ffffff !important;
+            padding: 6px 12px;
             border-radius: 60px;
-            font-size: 0.65rem;
-            font-weight: 700;
+            font-size: 0.72rem;
+            font-weight: 800 !important;
             text-align: center;
             cursor: pointer;
+            border: none;
+            box-shadow: 0 3px 10px rgba(255, 107, 0, 0.35);
+            transition: var(--transition);
+        }
+
+        .product-grid .product-card .body .btn-group .btn-buy:hover {
+            background: linear-gradient(135deg, #ff8800 0%, #ffa000 100%);
+            color: #ffffff !important;
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(255, 107, 0, 0.45);
         }
 
         @media (max-width: 768px) {
