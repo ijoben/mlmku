@@ -1116,7 +1116,7 @@
 
     /* Space between levels — occupied by connector lines */
     .tree-level-spacer {
-      height: 60px;
+      height: 48px;
     }
 
     /* ---- NODE WRAPPER ---- */
@@ -1125,21 +1125,21 @@
       flex-direction: column;
       align-items: center;
       flex: 1;
-      min-width: 160px;   /* prevents collapse on deeper levels */
+      min-width: 130px;   /* prevents collapse on deeper levels */
     }
 
     /* ---- NODE CARD ---- */
     .tn-card {
-      width: 136px;
+      width: 108px;
       background: linear-gradient(145deg, rgba(21,40,60,0.96) 0%, rgba(11,26,43,0.96) 100%);
       backdrop-filter: blur(12px);
       -webkit-backdrop-filter: blur(12px);
       color: #ffffff;
-      padding: 12px 10px 10px;
-      border-radius: 16px;
+      padding: 10px 8px 8px;
+      border-radius: 14px;
       text-align: center;
       border: 1.5px solid rgba(255,107,0,0.55);
-      box-shadow: 0 8px 28px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.08);
+      box-shadow: 0 6px 20px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.08);
       position: relative;
       transition: transform 0.25s ease, box-shadow 0.25s ease;
       cursor: default;
@@ -1179,18 +1179,18 @@
 
     /* Avatar circle */
     .tn-avatar {
-      width: 44px;
-      height: 44px;
+      width: 34px;
+      height: 34px;
       border-radius: 50%;
       background: var(--gold-gradient);
       color: #0b1a2b;
       display: flex;
       align-items: center;
       justify-content: center;
-      margin: 6px auto 8px;
-      font-size: 1.1rem;
+      margin: 4px auto 6px;
+      font-size: 0.9rem;
       font-weight: 900;
-      box-shadow: 0 4px 14px rgba(255,107,0,0.45);
+      box-shadow: 0 3px 10px rgba(255,107,0,0.4);
       border: 2px solid rgba(255,255,255,0.25);
     }
 
@@ -1202,22 +1202,22 @@
     /* Name */
     .tn-name {
       font-weight: 800;
-      font-size: 0.8rem;
+      font-size: 0.72rem;
       color: #f0f4f8;
       line-height: 1.2;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
-      margin-bottom: 3px;
+      margin-bottom: 2px;
       text-shadow: 0 1px 3px rgba(0,0,0,0.5);
     }
 
     /* Username */
     .tn-user {
-      font-size: 0.62rem;
+      font-size: 0.58rem;
       color: rgba(255,107,0,0.9);
       font-weight: 700;
-      margin-bottom: 5px;
+      margin-bottom: 4px;
       overflow: hidden;
       text-overflow: ellipsis;
       white-space: nowrap;
@@ -1273,6 +1273,21 @@
     }
 
     /* (old tree CSS removed — now uses .tn-* classes with SVG connectors) */
+
+    /* ---- RESPONSIVE: mobile tree scale ---- */
+    @media (max-width: 600px) {
+      .tree-wrapper {
+        padding: 24px 10px 28px;
+      }
+      .tn-wrap { min-width: 100px; }
+      .tn-card  { width: 88px; padding: 8px 6px 6px; border-radius: 11px; }
+      .tn-avatar { width: 28px; height: 28px; font-size: 0.75rem; margin: 3px auto 5px; }
+      .tn-name  { font-size: 0.62rem; }
+      .tn-user  { font-size: 0.5rem; }
+      .tn-badge { font-size: 0.5rem; padding: 1px 6px; }
+      .tn-pos-badge { font-size: 0.45rem; padding: 1px 5px; }
+      .tree-level-spacer { height: 36px; }
+    }
 
     /* ===== ENHANCED PRODUCT GRID & CARD ===== */
     .product-grid {
@@ -3655,7 +3670,11 @@
       }
       document.getElementById('zoomInBtn')?.addEventListener('click', () => { currentZoom = Math.min(2.0, currentZoom + 0.15); applyTreeZoom(); });
       document.getElementById('zoomOutBtn')?.addEventListener('click', () => { currentZoom = Math.max(0.3, currentZoom - 0.15); applyTreeZoom(); });
-      document.getElementById('resetZoomBtn')?.addEventListener('click', () => { currentZoom = 1.0; applyTreeZoom(); });
+      document.getElementById('resetZoomBtn')?.addEventListener('click', () => {
+        const sw = window.innerWidth;
+        currentZoom = sw <= 480 ? 0.6 : sw <= 768 ? 0.8 : 1.0;
+        applyTreeZoom();
+      });
       // Redraw on window resize
       window.addEventListener('resize', () => { if (document.getElementById('treeCanvas')) requestAnimationFrame(drawTreeConnectors); });
 
@@ -3676,7 +3695,9 @@
         const treeData = buildBinaryTree(currentUser.id, 0, 3);
         const innerHTML = renderBinaryTreeHTML(treeData);
         container.innerHTML = `<div class="tree-canvas" id="treeCanvas">${innerHTML}</div>`;
-        currentZoom = 1.0;
+        // Auto-set initial zoom based on screen width
+        const sw = window.innerWidth;
+        currentZoom = sw <= 480 ? 0.6 : sw <= 768 ? 0.8 : 1.0;
         applyTreeZoom();
         // Wait for layout then draw connectors
         requestAnimationFrame(() => requestAnimationFrame(drawTreeConnectors));
