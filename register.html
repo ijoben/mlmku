@@ -333,7 +333,7 @@
             // ========== CEK SPONSOR DARI URL ==========
             async function checkSponsorFromURL() {
                 const params = new URLSearchParams(window.location.search);
-                let sponsorId = params.get('ref') || params.get('sponsor');
+                let sponsorId = params.get('ref') || params.get('sponsor') || params.get('reff') || params.get('r');
                 const position = params.get('pos') || 'left';
                 
                 if (!sponsorId) {
@@ -343,8 +343,18 @@
                     }
                 }
                 
+                if (!sponsorId) {
+                    try {
+                        sponsorId = localStorage.getItem('hedtro_sponsor_ref');
+                    } catch (e) {}
+                }
+                
                 if (sponsorId) {
                     try {
+                        try {
+                            localStorage.setItem('hedtro_sponsor_ref', sponsorId);
+                        } catch(e) {}
+
                         // VALIDASI SPONSOR - CEK APAKAH ADA DI DATABASE
                         const sponsor = await window.getUserByUsername(sponsorId);
                         if (!sponsor) {
@@ -362,12 +372,13 @@
                         }
                         
                         // SPONSOR VALID
-                        document.getElementById('regSponsor').value = sponsorId;
+                        const validSponsorId = sponsor.username || sponsor.id || sponsorId;
+                        document.getElementById('regSponsor').value = validSponsorId;
                         document.getElementById('regPosition').value = position;
                         
                         document.getElementById('sponsorInfo').style.display = 'block';
                         document.getElementById('sponsorNameDisplay').textContent = sponsor.fullname || sponsor.username;
-                        document.getElementById('sponsorIdDisplay').textContent = sponsorId;
+                        document.getElementById('sponsorIdDisplay').textContent = validSponsorId;
                         document.getElementById('sponsorPositionDisplay').textContent = position === 'left' ? 'Kiri' : 'Kanan';
                         document.getElementById('sponsorInfo').style.borderLeftColor = 'var(--gold-accent)';
                         document.getElementById('sponsorInfo').style.background = '#fff8e7';
