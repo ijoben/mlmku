@@ -116,24 +116,7 @@
             justify-content: space-between;
         }
 
-        .hp-dash-nav-btn {
-            display: none;
-            align-items: center;
-            gap: 4px;
-            background: linear-gradient(135deg, #bf953f 0%, #d4af37 100%);
-            color: var(--denim-dark);
-            font-weight: 700;
-            font-size: 0.75rem;
-            padding: 6px 14px;
-            border-radius: 20px;
-            text-decoration: none;
-            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
-            transition: var(--transition);
-        }
 
-        .hp-dash-nav-btn:hover {
-            opacity: 0.9;
-        }
 
         .navbar .logo {
             display: flex;
@@ -1951,7 +1934,6 @@
                 <li><a href="#" data-page="about"><i class="fas fa-info-circle"></i> Tentang</a></li>
                 <li><a href="#" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
                 <li><a href="#" id="navTrackBtn"><i class="fas fa-truck"></i> Lacak</a></li>
-                <li id="navDashItem" style="display:none;"><a href="/dashboard" style="color:var(--gold-accent); font-weight:700;"><i class="fas fa-chart-line"></i> Dashboard</a></li>
             </ul>
 
             <div class="nav-right">
@@ -1963,8 +1945,6 @@
                 </div>
 
                 <button class="search-icon-hp" id="searchIconHp" aria-label="Cari Produk Mobile"><i class="fas fa-search"></i></button>
-
-                <a href="/dashboard" id="hpDashNavBtn" class="hp-dash-nav-btn"><i class="fas fa-user-circle"></i> Dashboard</a>
 
                 <a href="/login" class="btn-nav btn-nav-outline" id="navAuthBtn">Login</a>
                 <a href="/register" class="btn-nav btn-nav-gold" id="navRegBtn">Daftar</a>
@@ -2245,8 +2225,6 @@
 
                     const navAuth = document.getElementById('navAuthBtn');
                     const navReg = document.getElementById('navRegBtn');
-                    const navDashItem = document.getElementById('navDashItem');
-                    const hpDash = document.getElementById('hpDashNavBtn');
                     const sideDash = document.getElementById('sideDashboardBtn');
                     const sideLogin = document.getElementById('sideLoginBtn');
                     const sideReg = document.getElementById('sideRegisterBtn');
@@ -2254,17 +2232,7 @@
                     if (isLoggedIn) {
                         if (profile) currentUserProfile = profile;
 
-                        // 1. PC Nav Menu Link
-                        if (navDashItem) {
-                            navDashItem.style.setProperty('display', 'list-item', 'important');
-                            const link = navDashItem.querySelector('a');
-                            if (link) {
-                                link.href = dashHref;
-                                link.innerHTML = `<i class="fas fa-chart-line"></i> ${dashLabel}`;
-                            }
-                        }
-
-                        // 2. PC Nav Right Buttons
+                        // 1. PC Mode: Update login button to Dashboard and register button to Keluar
                         if (navAuth) {
                             navAuth.textContent = dashLabel;
                             navAuth.href = dashHref;
@@ -2280,14 +2248,7 @@
                             };
                         }
 
-                        // 3. Mobile HP Top Header Button
-                        if (hpDash) {
-                            hpDash.innerHTML = `<i class="fas fa-user-circle"></i> ${dashLabel}`;
-                            hpDash.href = dashHref;
-                            hpDash.style.setProperty('display', 'inline-flex', 'important');
-                        }
-
-                        // 4. Mobile HP Sidebar Drawer Links
+                        // 2. Mobile HP Mode: Show Dashboard in Slide Menu ONLY
                         if (sideDash) {
                             sideDash.innerHTML = `<i class="fas fa-chart-line"></i> ${dashLabel} Member`;
                             sideDash.href = dashHref;
@@ -2307,8 +2268,7 @@
                             };
                         }
                     } else {
-                        if (navDashItem) navDashItem.style.setProperty('display', 'none', 'important');
-
+                        // 1. PC Mode: Reset to Login & Daftar
                         if (navAuth) {
                             navAuth.textContent = 'Login';
                             navAuth.href = '/login';
@@ -2319,10 +2279,7 @@
                             navReg.onclick = null;
                         }
 
-                        if (hpDash) {
-                            hpDash.style.setProperty('display', 'none', 'important');
-                        }
-
+                        // 2. Mobile HP Mode: Hide Dashboard in Slide Menu, show Login & Daftar
                         if (sideDash) {
                             sideDash.style.setProperty('display', 'none', 'important');
                         }
