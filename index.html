@@ -98,14 +98,41 @@
             right: 0;
             z-index: 1000;
             background: var(--denim-dark);
-            padding: 10px 28px;
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            padding: 0;
             border-bottom: 3px solid var(--gold-accent);
             height: 80px;
             width: 100%;
             overflow: visible;
+        }
+
+        .nav-container {
+            max-width: 1280px;
+            margin: 0 auto;
+            width: 100%;
+            height: 100%;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .hp-dash-nav-btn {
+            display: none;
+            align-items: center;
+            gap: 4px;
+            background: linear-gradient(135deg, #bf953f 0%, #d4af37 100%);
+            color: var(--denim-dark);
+            font-weight: 700;
+            font-size: 0.75rem;
+            padding: 6px 14px;
+            border-radius: 20px;
+            text-decoration: none;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: var(--transition);
+        }
+
+        .hp-dash-nav-btn:hover {
+            opacity: 0.9;
         }
 
         .navbar .logo {
@@ -1712,6 +1739,7 @@
             gap: 24px;
             max-width: 1280px;
             margin: 0 auto 20px;
+            padding: 0 20px;
         }
 
         .footer-col h4 {
@@ -1752,7 +1780,7 @@
 
         .footer-bottom {
             border-top: 1px solid rgba(255, 255, 255, 0.06);
-            padding-top: 12px;
+            padding: 12px 20px 0;
             text-align: center;
             font-size: 0.7rem;
             color: rgba(255, 255, 255, 0.3);
@@ -1912,35 +1940,38 @@
 
     <!-- ===== NAVBAR ===== -->
     <header class="navbar" id="navbar">
-        <a href="/" class="logo" id="headerLogo" style="text-decoration:none; cursor:pointer;">
-            <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
-        </a>
+        <div class="nav-container">
+            <a href="/" class="logo" id="headerLogo" style="text-decoration:none; cursor:pointer;">
+                <i class="fas fa-tshirt"></i> HEDTRO<span>JEANS</span>
+            </a>
 
-        <ul class="nav-menu" id="navMenu">
-            <li><a href="#" class="active" data-page="home"><i class="fas fa-home"></i> Beranda</a></li>
-            <li><a href="#" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</a></li>
-            <li><a href="#" data-page="about"><i class="fas fa-info-circle"></i> Tentang</a></li>
-            <li><a href="#" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
-            <li><a href="#" id="navTrackBtn"><i class="fas fa-truck"></i> Lacak</a></li>
-        </ul>
+            <ul class="nav-menu" id="navMenu">
+                <li><a href="#" class="active" data-page="home"><i class="fas fa-home"></i> Beranda</a></li>
+                <li><a href="#" data-page="products"><i class="fas fa-tshirt"></i> Koleksi</a></li>
+                <li><a href="#" data-page="about"><i class="fas fa-info-circle"></i> Tentang</a></li>
+                <li><a href="#" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
+                <li><a href="#" id="navTrackBtn"><i class="fas fa-truck"></i> Lacak</a></li>
+            </ul>
 
-        <div class="nav-right">
-            <div class="nav-actions">
-                <div class="search-box">
-                    <input type="text" placeholder="Cari produk..." id="searchInputDesktop" aria-label="Cari produk..." />
-                    <button id="searchBtnDesktop" aria-label="Cari Produk"><i class="fas fa-search"></i></button>
+            <div class="nav-right">
+                <div class="nav-actions">
+                    <div class="search-box">
+                        <input type="text" placeholder="Cari produk..." id="searchInputDesktop" aria-label="Cari produk..." />
+                        <button id="searchBtnDesktop" aria-label="Cari Produk"><i class="fas fa-search"></i></button>
+                    </div>
                 </div>
+
+                <button class="search-icon-hp" id="searchIconHp" aria-label="Cari Produk Mobile"><i class="fas fa-search"></i></button>
+
+                <a href="/dashboard" id="hpDashNavBtn" class="hp-dash-nav-btn"><i class="fas fa-user-circle"></i> Dashboard</a>
+
+                <a href="/login" class="btn-nav btn-nav-outline" id="navAuthBtn">Login</a>
+                <a href="/register" class="btn-nav btn-nav-gold" id="navRegBtn">Daftar</a>
+
+                <button class="burger-btn" id="burgerBtn" aria-label="Buka Menu Navigasi">
+                    <span></span><span></span><span></span>
+                </button>
             </div>
-
-            <button class="search-icon-hp" id="searchIconHp" aria-label="Cari Produk Mobile"><i class="fas fa-search"></i></button>
-
-
-            <a href="/login" class="btn-nav btn-nav-outline" id="navAuthBtn">Login</a>
-            <a href="/register" class="btn-nav btn-nav-gold" id="navRegBtn">Daftar</a>
-
-            <button class="burger-btn" id="burgerBtn" aria-label="Buka Menu Navigasi">
-                <span></span><span></span><span></span>
-            </button>
         </div>
     </header>
 
@@ -1957,6 +1988,7 @@
         <div class="menu-item" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</div>
         <div class="menu-item" id="sideTrackBtn"><i class="fas fa-truck"></i> Lacak Pesanan</div>
         <div class="menu-divider"></div>
+        <a href="/dashboard" class="menu-item" id="sideDashboardBtn" style="display:none; color:var(--gold-accent); font-weight:700;"><i class="fas fa-chart-line"></i> Dashboard Member</a>
         <a href="/login" class="menu-item" id="sideLoginBtn"><i class="fas fa-sign-in-alt"></i> Login</a>
         <a href="/register" class="menu-item" id="sideRegisterBtn"><i class="fas fa-user-plus"></i> Daftar</a>
     </nav>
@@ -2172,25 +2204,85 @@
                     const session = await window.getSession();
                     const navAuth = document.getElementById('navAuthBtn');
                     const navReg = document.getElementById('navRegBtn');
+                    const sideDash = document.getElementById('sideDashboardBtn');
+                    const sideLogin = document.getElementById('sideLoginBtn');
+                    const sideReg = document.getElementById('sideRegisterBtn');
+                    const hpDash = document.getElementById('hpDashNavBtn');
+
                     if (session) {
                         const profile = await window.getUserProfile();
                         if (profile) {
                             currentUserProfile = profile;
-                            navAuth.textContent = profile.role === 'admin' ? 'Admin Panel' : 'Dashboard';
-                            navAuth.href = profile.role === 'admin' ? '/admin' : '/dashboard';
-                            navReg.textContent = 'Keluar';
-                            navReg.onclick = async function (e) {
-                                e.preventDefault();
-                                await window.signOut();
-                                window.location.reload();
-                            };
+                            const isAdmin = profile.role === 'admin';
+                            const dashLabel = isAdmin ? 'Admin Panel' : 'Dashboard';
+                            const dashHref = isAdmin ? '/admin' : '/dashboard';
+
+                            if (navAuth) {
+                                navAuth.textContent = dashLabel;
+                                navAuth.href = dashHref;
+                            }
+                            if (navReg) {
+                                navReg.textContent = 'Keluar';
+                                navReg.onclick = async function (e) {
+                                    e.preventDefault();
+                                    await window.signOut();
+                                    window.location.reload();
+                                };
+                            }
+
+                            if (hpDash) {
+                                hpDash.innerHTML = `<i class="fas fa-user-circle"></i> ${dashLabel}`;
+                                hpDash.href = dashHref;
+                                hpDash.style.display = 'inline-flex';
+                            }
+
+                            if (sideDash) {
+                                sideDash.innerHTML = `<i class="fas fa-chart-line"></i> ${dashLabel}`;
+                                sideDash.href = dashHref;
+                                sideDash.style.display = 'flex';
+                            }
+                            if (sideLogin) {
+                                sideLogin.style.display = 'none';
+                            }
+                            if (sideReg) {
+                                sideReg.innerHTML = `<i class="fas fa-sign-out-alt"></i> Keluar`;
+                                sideReg.href = '#';
+                                sideReg.onclick = async function (e) {
+                                    e.preventDefault();
+                                    await window.signOut();
+                                    window.location.reload();
+                                };
+                            }
                         }
                     } else {
-                        navAuth.textContent = 'Login';
-                        navAuth.href = '/login';
-                        navReg.textContent = 'Daftar';
-                        navReg.href = '/register';
-                        navReg.onclick = null;
+                        if (navAuth) {
+                            navAuth.textContent = 'Login';
+                            navAuth.href = '/login';
+                        }
+                        if (navReg) {
+                            navReg.textContent = 'Daftar';
+                            navReg.href = '/register';
+                            navReg.onclick = null;
+                        }
+
+                        if (hpDash) {
+                            hpDash.style.display = 'none';
+                        }
+
+                        if (sideDash) {
+                            sideDash.style.display = 'none';
+                        }
+                        if (sideLogin) {
+                            sideLogin.style.display = 'flex';
+                            sideLogin.innerHTML = `<i class="fas fa-sign-in-alt"></i> Login`;
+                            sideLogin.href = '/login';
+                        }
+                        if (sideReg) {
+                            sideReg.style.display = 'flex';
+                            sideReg.innerHTML = `<i class="fas fa-user-plus"></i> Daftar`;
+                            sideReg.href = '/register';
+                            sideReg.onclick = null;
+                        }
                     }
                 } catch (e) {
                     console.warn('Update nav auth error:', e);
