@@ -13,14 +13,34 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
-    <!-- Critical Fonts & Icons -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <!-- Non-Blocking Critical Preloaded Fonts & FontAwesome -->
+    <link rel="preload" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" /></noscript>
+
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" as="style" onload="this.onload=null;this.rel='stylesheet'" />
+    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" /></noscript>
 
     <!-- Deferred Non-Blocking Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
     <script src="supabase.js" defer></script>
     <style>
+        @font-face {
+            font-family: 'Inter';
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Playfair Display';
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Font Awesome 6 Free';
+            font-display: swap;
+        }
+        @font-face {
+            font-family: 'Font Awesome 6 Brands';
+            font-display: swap;
+        }
+
         * {
             margin: 0;
             padding: 0;
@@ -2378,7 +2398,7 @@
                     const div = document.createElement('div');
                     div.className = 'carousel-slide';
                     div.style.background = s.bg || 'linear-gradient(135deg, #0b1a2b 0%, #1e3a5f 100%)';
-                    let imgHtml = s.image ? `<img src="${s.image}" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" />` : '';
+                    let imgHtml = s.image ? `<img src="${s.image}" alt="${s.title || 'Banner'}" width="1280" height="500" decoding="async" fetchpriority="high" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" />` : '';
                     const badgeHtml = s.badge ? `<div class="slide-badge"><i class="fas fa-star"></i> ${s.badge}</div>` : '';
                     div.innerHTML = `${imgHtml}<div class="overlay-dark"></div><div class="slide-content">${badgeHtml}<h2>${s.title}</h2><p>${s.subtitle}</p><a href="${s.btnLink || '#sectionTrending'}" class="btn-slide"><i class="fas fa-shopping-bag"></i> ${s.btnText || 'Beli Sekarang'}</a></div>`;
                     track.appendChild(div);
@@ -2681,7 +2701,7 @@
 
                 const imgContainer = document.getElementById('detailImage');
                 if (product.image) {
-                    imgContainer.innerHTML = `<img src="${product.image}" alt="${product.name}" style="width:100%;height:100%;object-fit:cover;" /><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>`;
+                    imgContainer.innerHTML = `<img src="${product.image}" alt="${product.name}" width="400" height="400" decoding="async" style="width:100%;height:100%;object-fit:cover;" /><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>`;
                 } else {
                     imgContainer.innerHTML = `<div class="popup-icon-wrap"><i class="fas ${product.icon || 'fa-tshirt'}"></i></div><span class="zoom-hint"><i class="fas fa-search-plus"></i> Klik zoom</span>`;
                 }
