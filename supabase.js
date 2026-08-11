@@ -12,6 +12,7 @@ console.log('🔵 Supabase client created:', !!supabaseClient);
 // EXPOSE SUPABASE CLIENT KE WINDOW
 // ============================================================
 window.supabase = supabaseClient;
+window.supabaseClient = supabaseClient;
 
 // ============================================================
 // AUTH FUNCTIONS
@@ -1259,3 +1260,16 @@ window.formatMemberId = function(user, allUsersList) {
   }
   return 'HDT-001';
 };
+
+if (typeof supabaseClient !== 'undefined' && supabaseClient.auth) {
+  try {
+    supabaseClient.auth.onAuthStateChange(function() {
+      if (typeof window.updateNavAuth === 'function') {
+        try { window.updateNavAuth(); } catch(e) {}
+      }
+    });
+  } catch(e) {}
+}
+if (typeof window.updateNavAuth === 'function') {
+  try { window.updateNavAuth(); } catch(e) {}
+}
