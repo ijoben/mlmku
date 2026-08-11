@@ -2200,32 +2200,43 @@
             }
 
             // ========== NAV AUTH ==========
+            function hasLocalAuthToken() {
+                try {
+                    for (let i = 0; i < localStorage.length; i++) {
+                        const k = localStorage.key(i) || '';
+                        if (k.includes('-auth-token') || k.includes('supabase.auth.token')) {
+                            const raw = localStorage.getItem(k);
+                            if (raw && (raw.includes('access_token') || raw.includes('user'))) return true;
+                        }
+                    }
+                } catch(e) {}
+                return false;
+            }
+
             async function updateNavAuth() {
                 try {
                     let session = null;
                     let profile = null;
 
-                    try {
-                        if (typeof window.getSession === 'function') {
-                            session = await window.getSession();
-                        }
-                    } catch (e) {}
+                    if (typeof window.getSession === 'function') {
+                        try { session = await window.getSession(); } catch (e) {}
+                    }
 
-                    if (!session && window.supabaseClient && window.supabaseClient.auth) {
+                    const client = window.supabaseClient || window.supabase;
+                    if (!session && client && client.auth) {
                         try {
-                            const res = await window.supabaseClient.auth.getSession();
+                            const res = await client.auth.getSession();
                             session = res && res.data && res.data.session;
                         } catch (e) {}
                     }
 
-                    try {
-                        if (typeof window.getUserProfile === 'function') {
-                            profile = await window.getUserProfile();
-                        }
-                    } catch (e) {}
+                    if (typeof window.getUserProfile === 'function') {
+                        try { profile = await window.getUserProfile(); } catch (e) {}
+                    }
 
                     const impersonateId = localStorage.getItem('hedtro_impersonate_user_id');
-                    const isLoggedIn = !!(session || profile || impersonateId);
+                    const localToken = hasLocalAuthToken();
+                    const isLoggedIn = !!(session || profile || impersonateId || localToken);
 
                     const role = (profile && profile.role) || 'user';
                     const isAdmin = role === 'admin';
@@ -2245,7 +2256,7 @@
 
                         // 1. PC Nav Menu Link
                         if (navDashItem) {
-                            navDashItem.style.setProperty('display', 'inline-block', 'important');
+                            navDashItem.style.setProperty('display', 'list-item', 'important');
                             const link = navDashItem.querySelector('a');
                             if (link) {
                                 link.href = dashHref;
@@ -2264,6 +2275,7 @@
                             navReg.onclick = async function (e) {
                                 e.preventDefault();
                                 if (typeof window.signOut === 'function') await window.signOut();
+                                else localStorage.clear();
                                 window.location.reload();
                             };
                         }
@@ -2290,6 +2302,7 @@
                             sideReg.onclick = async function (e) {
                                 e.preventDefault();
                                 if (typeof window.signOut === 'function') await window.signOut();
+                                else localStorage.clear();
                                 window.location.reload();
                             };
                         }
@@ -2329,6 +2342,18 @@
                     console.warn('Update nav auth error:', e);
                 }
             }
+
+            window.updateNavAuth = updateNavAuth;
+
+            (function startNavAuthWatcher() {
+                updateNavAuth();
+                let checks = 0;
+                const timer = setInterval(() => {
+                    checks++;
+                    updateNavAuth();
+                    if (checks >= 20) clearInterval(timer);
+                }, 150);
+            })();
 
             const INDEX_CACHE_KEY = 'hedtro_index_cache_v1';
 
