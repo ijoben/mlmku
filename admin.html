@@ -1809,12 +1809,7 @@
 
                     tbody.querySelectorAll('.impersonate-member-btn').forEach(btn => {
                         btn.onclick = function() {
-                            const userId = this.dataset.id;
-                            const username = this.dataset.username;
-                            if (!confirm(`🔑 Apakah Anda yakin ingin Login Sebagai Member: @${username}?`)) return;
-                            localStorage.setItem('hedtro_impersonate_user_id', userId);
-                            showToast(`🔑 Beralih ke akun @${username}...`, 'info');
-                            setTimeout(() => { window.location.href = '/dashboard'; }, 500);
+                            window.impersonateUser(this.dataset.id, this.dataset.username);
                         };
                     });
 
@@ -1892,6 +1887,13 @@
                 }
             }
 
+            window.impersonateUser = function(userId, username) {
+                if (!confirm(`🔑 Apakah Anda yakin ingin Login Sebagai Member: @${username}?`)) return;
+                localStorage.setItem('hedtro_impersonate_user_id', userId);
+                showToast(`🔑 Beralih ke akun @${username}...`, 'info');
+                setTimeout(() => { window.location.href = '/dashboard'; }, 500);
+            };
+
             function openMemberDetailModal(id) {
                 const user = (allUsers || []).find(u => String(u.id) === String(id));
                 if (!user) return showToast('Member tidak ditemukan.', 'error');
@@ -1948,9 +1950,10 @@
                         </div>
                     </div>
 
-                    <div style="display:flex; gap:8px; margin-top:16px;">
-                        <button class="btn-submit" onclick="openMemberModal('${user.id}')" style="background:var(--denim-dark); color:#fff; flex:1; padding:12px;"><i class="fas fa-edit"></i> Edit Member</button>
-                        <button class="btn-submit" onclick="closeModal()" style="background:#e2e8f0; color:#4a5568; flex:1; padding:12px;">Tutup</button>
+                    <div style="display:flex; gap:8px; margin-top:16px; flex-wrap:wrap;">
+                        <button class="btn-submit" onclick="window.impersonateUser('${user.id}', '${user.username || user.fullname}')" style="background:linear-gradient(135deg,#ff6b00,#ff9100); color:#fff; flex:1; padding:10px;"><i class="fas fa-user-secret"></i> Login as User</button>
+                        <button class="btn-submit" onclick="openMemberModal('${user.id}')" style="background:var(--denim-dark); color:#fff; flex:1; padding:10px;"><i class="fas fa-edit"></i> Edit Member</button>
+                        <button class="btn-submit" onclick="closeModal()" style="background:#e2e8f0; color:#4a5568; flex:1; padding:10px;">Tutup</button>
                     </div>
                 `);
             }
