@@ -1951,6 +1951,7 @@
                 <li><a href="#" data-page="about"><i class="fas fa-info-circle"></i> Tentang</a></li>
                 <li><a href="#" data-page="faq"><i class="fas fa-question-circle"></i> FAQ</a></li>
                 <li><a href="#" id="navTrackBtn"><i class="fas fa-truck"></i> Lacak</a></li>
+                <li id="navDashItem" style="display:none;"><a href="/dashboard" style="color:var(--gold-accent); font-weight:700;"><i class="fas fa-chart-line"></i> Dashboard</a></li>
             </ul>
 
             <div class="nav-right">
@@ -2201,60 +2202,100 @@
             // ========== NAV AUTH ==========
             async function updateNavAuth() {
                 try {
-                    const session = await window.getSession();
+                    let session = null;
+                    let profile = null;
+
+                    try {
+                        if (typeof window.getSession === 'function') {
+                            session = await window.getSession();
+                        }
+                    } catch (e) {}
+
+                    if (!session && window.supabaseClient && window.supabaseClient.auth) {
+                        try {
+                            const res = await window.supabaseClient.auth.getSession();
+                            session = res && res.data && res.data.session;
+                        } catch (e) {}
+                    }
+
+                    try {
+                        if (typeof window.getUserProfile === 'function') {
+                            profile = await window.getUserProfile();
+                        }
+                    } catch (e) {}
+
+                    const impersonateId = localStorage.getItem('hedtro_impersonate_user_id');
+                    const isLoggedIn = !!(session || profile || impersonateId);
+
+                    const role = (profile && profile.role) || 'user';
+                    const isAdmin = role === 'admin';
+                    const dashLabel = isAdmin ? 'Admin Panel' : 'Dashboard';
+                    const dashHref = isAdmin ? '/admin' : '/dashboard';
+
                     const navAuth = document.getElementById('navAuthBtn');
                     const navReg = document.getElementById('navRegBtn');
+                    const navDashItem = document.getElementById('navDashItem');
+                    const hpDash = document.getElementById('hpDashNavBtn');
                     const sideDash = document.getElementById('sideDashboardBtn');
                     const sideLogin = document.getElementById('sideLoginBtn');
                     const sideReg = document.getElementById('sideRegisterBtn');
-                    const hpDash = document.getElementById('hpDashNavBtn');
 
-                    if (session) {
-                        const profile = await window.getUserProfile();
-                        if (profile) {
-                            currentUserProfile = profile;
-                            const isAdmin = profile.role === 'admin';
-                            const dashLabel = isAdmin ? 'Admin Panel' : 'Dashboard';
-                            const dashHref = isAdmin ? '/admin' : '/dashboard';
+                    if (isLoggedIn) {
+                        if (profile) currentUserProfile = profile;
 
-                            if (navAuth) {
-                                navAuth.textContent = dashLabel;
-                                navAuth.href = dashHref;
-                            }
-                            if (navReg) {
-                                navReg.textContent = 'Keluar';
-                                navReg.onclick = async function (e) {
-                                    e.preventDefault();
-                                    await window.signOut();
-                                    window.location.reload();
-                                };
-                            }
-
-                            if (hpDash) {
-                                hpDash.innerHTML = `<i class="fas fa-user-circle"></i> ${dashLabel}`;
-                                hpDash.href = dashHref;
-                                hpDash.style.display = 'inline-flex';
-                            }
-
-                            if (sideDash) {
-                                sideDash.innerHTML = `<i class="fas fa-chart-line"></i> ${dashLabel}`;
-                                sideDash.href = dashHref;
-                                sideDash.style.display = 'flex';
-                            }
-                            if (sideLogin) {
-                                sideLogin.style.display = 'none';
-                            }
-                            if (sideReg) {
-                                sideReg.innerHTML = `<i class="fas fa-sign-out-alt"></i> Keluar`;
-                                sideReg.href = '#';
-                                sideReg.onclick = async function (e) {
-                                    e.preventDefault();
-                                    await window.signOut();
-                                    window.location.reload();
-                                };
+                        // 1. PC Nav Menu Link
+                        if (navDashItem) {
+                            navDashItem.style.setProperty('display', 'inline-block', 'important');
+                            const link = navDashItem.querySelector('a');
+                            if (link) {
+                                link.href = dashHref;
+                                link.innerHTML = `<i class="fas fa-chart-line"></i> ${dashLabel}`;
                             }
                         }
+
+                        // 2. PC Nav Right Buttons
+                        if (navAuth) {
+                            navAuth.textContent = dashLabel;
+                            navAuth.href = dashHref;
+                        }
+                        if (navReg) {
+                            navReg.textContent = 'Keluar';
+                            navReg.href = '#';
+                            navReg.onclick = async function (e) {
+                                e.preventDefault();
+                                if (typeof window.signOut === 'function') await window.signOut();
+                                window.location.reload();
+                            };
+                        }
+
+                        // 3. Mobile HP Top Header Button
+                        if (hpDash) {
+                            hpDash.innerHTML = `<i class="fas fa-user-circle"></i> ${dashLabel}`;
+                            hpDash.href = dashHref;
+                            hpDash.style.setProperty('display', 'inline-flex', 'important');
+                        }
+
+                        // 4. Mobile HP Sidebar Drawer Links
+                        if (sideDash) {
+                            sideDash.innerHTML = `<i class="fas fa-chart-line"></i> ${dashLabel} Member`;
+                            sideDash.href = dashHref;
+                            sideDash.style.setProperty('display', 'flex', 'important');
+                        }
+                        if (sideLogin) {
+                            sideLogin.style.setProperty('display', 'none', 'important');
+                        }
+                        if (sideReg) {
+                            sideReg.innerHTML = `<i class="fas fa-sign-out-alt"></i> Keluar`;
+                            sideReg.href = '#';
+                            sideReg.onclick = async function (e) {
+                                e.preventDefault();
+                                if (typeof window.signOut === 'function') await window.signOut();
+                                window.location.reload();
+                            };
+                        }
                     } else {
+                        if (navDashItem) navDashItem.style.setProperty('display', 'none', 'important');
+
                         if (navAuth) {
                             navAuth.textContent = 'Login';
                             navAuth.href = '/login';
@@ -2266,19 +2307,19 @@
                         }
 
                         if (hpDash) {
-                            hpDash.style.display = 'none';
+                            hpDash.style.setProperty('display', 'none', 'important');
                         }
 
                         if (sideDash) {
-                            sideDash.style.display = 'none';
+                            sideDash.style.setProperty('display', 'none', 'important');
                         }
                         if (sideLogin) {
-                            sideLogin.style.display = 'flex';
+                            sideLogin.style.setProperty('display', 'flex', 'important');
                             sideLogin.innerHTML = `<i class="fas fa-sign-in-alt"></i> Login`;
                             sideLogin.href = '/login';
                         }
                         if (sideReg) {
-                            sideReg.style.display = 'flex';
+                            sideReg.style.setProperty('display', 'flex', 'important');
                             sideReg.innerHTML = `<i class="fas fa-user-plus"></i> Daftar`;
                             sideReg.href = '/register';
                             sideReg.onclick = null;
@@ -2996,6 +3037,9 @@
             // ========== INIT ==========
             (async function init() {
                 try {
+                    // Instant auth state check for PC & HP
+                    updateNavAuth();
+
                     // 0ms Instant Synchronous Render for 90+ Mobile PageSpeed Score
                     renderCarousel();
                     renderFavoriteCarousel();
@@ -3006,7 +3050,9 @@
 
                     if (typeof window.showLoadingBar === 'function') window.showLoadingBar();
                     console.log('🔵 Initializing /index...');
+                    await updateNavAuth();
                     await applyBrandSettings();
+                    await updateNavAuth();
                     await loadAllData();
                     await updateNavAuth();
                     console.log('✅ /Index initialized successfully!');
