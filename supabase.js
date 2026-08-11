@@ -226,15 +226,43 @@ window.getUserProfile = async function(ignoreImpersonate = false) {
 window.getUserById = async function(id) {
   if (!id) return null;
   console.log('🔵 getUserById dipanggil untuk:', id);
-  var { data, error } = await supabaseClient
-    .from('users')
-    .select('*')
-    .eq('id', id);
-  if (error) {
-    console.error('🔴 getUserById error:', error);
+  try {
+    // 1. Direct ID match
+    var { data, error } = await supabaseClient
+      .from('users')
+      .select('*')
+      .eq('id', id);
+
+    if (!error && data && data.length > 0) return data[0];
+
+    // 2. Numeric ID match
+    if (!isNaN(id)) {
+      var { data: dataNum } = await supabaseClient
+        .from('users')
+        .select('*')
+        .eq('id', parseInt(id));
+      if (dataNum && dataNum.length > 0) return dataNum[0];
+    }
+
+    // 3. Username match
+    var { data: dataUn } = await supabaseClient
+      .from('users')
+      .select('*')
+      .eq('username', id);
+    if (dataUn && dataUn.length > 0) return dataUn[0];
+
+    // 4. Email match
+    var { data: dataEm } = await supabaseClient
+      .from('users')
+      .select('*')
+      .eq('email', id);
+    if (dataEm && dataEm.length > 0) return dataEm[0];
+
+    return null;
+  } catch (e) {
+    console.error('🔴 getUserById exception:', e);
     return null;
   }
-  return (data && data.length > 0) ? data[0] : null;
 };
 
 window.getUserByEmail = async function(email) {
@@ -270,17 +298,30 @@ window.getUserByUsername = async function(username) {
 window.updateUserProfile = async function(data) {
   console.log('🔵 updateUserProfile dipanggil');
   try {
-    var session = await window.getSession();
-    if (!session) throw new Error('Unauthorized');
+    var isAdminPage = typeof window !== 'undefined' && window.location && (window.location.pathname.includes('/admin') || window.location.href.includes('admin'));
+    var impersonateId = typeof localStorage !== 'undefined' ? localStorage.getItem('hedtro_impersonate_user_id') : null;
+    var targetId = null;
+
+    if (impersonateId && !isAdminPage) {
+      var impUser = await window.getUserById(impersonateId);
+      if (impUser) targetId = impUser.id;
+    }
+
+    if (!targetId) {
+      var session = await window.getSession();
+      if (!session || !session.user) throw new Error('Unauthorized');
+      targetId = session.user.id;
+    }
+
     var { error } = await supabaseClient
       .from('users')
       .update(data)
-      .eq('id', session.user.id);
+      .eq('id', targetId);
     if (error) {
       console.error('🔴 updateUserProfile error:', error);
       throw error;
     }
-    console.log('✅ updateUserProfile berhasil');
+    console.log('✅ updateUserProfile berhasil untuk user:', targetId);
   } catch (e) {
     console.error('🔴 updateUserProfile exception:', e);
     throw e;
