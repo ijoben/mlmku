@@ -166,11 +166,12 @@ window.syncUserWalletWithTransactions = async function(profile) {
   return profile;
 };
 
-window.getUserProfile = async function() {
+window.getUserProfile = async function(ignoreImpersonate = false) {
   console.log('🔵 getUserProfile dipanggil');
   try {
+    const isAdminPage = typeof window !== 'undefined' && window.location && (window.location.pathname.includes('/admin') || window.location.href.includes('admin'));
     var impersonateId = localStorage.getItem('hedtro_impersonate_user_id');
-    if (impersonateId) {
+    if (impersonateId && !ignoreImpersonate && !isAdminPage) {
       console.log('🔑 Impersonating user ID:', impersonateId);
       var impUser = await window.getUserById(impersonateId);
       if (impUser) return await window.syncUserWalletWithTransactions(impUser);
@@ -185,15 +186,27 @@ window.getUserProfile = async function() {
 
     var profile = (data && data.length > 0) ? { ...data[0] } : { id: session.user.id, email: session.user.email };
     var meta = session.user.user_metadata || {};
+    var appMeta = session.user.app_metadata || {};
     var updated = false;
 
-    var fields = ['username', 'fullname', 'phone', 'whatsapp', 'nik', 'address', 'city', 'bank_name', 'bank_account', 'bank_holder'];
+    var fields = ['username', 'fullname', 'phone', 'whatsapp', 'nik', 'address', 'city', 'bank_name', 'bank_account', 'bank_holder', 'role'];
     fields.forEach(function(k) {
       if (!profile[k] && meta[k]) {
         profile[k] = meta[k];
         updated = true;
       }
     });
+
+    if (!profile.role) {
+      if (appMeta && appMeta.role) profile.role = appMeta.role;
+      else if (meta && meta.role) profile.role = meta.role;
+      else if (session.user.email && (session.user.email.toLowerCase().startsWith('admin') || session.user.email.toLowerCase().includes('admin@'))) profile.role = 'admin';
+      else profile.role = 'user';
+      updated = true;
+    } else if (profile.role !== 'admin' && session.user.email && (session.user.email.toLowerCase().startsWith('admin') || session.user.email.toLowerCase().includes('admin@'))) {
+      profile.role = 'admin';
+      updated = true;
+    }
 
     if (updated) {
       try {
