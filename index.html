@@ -13,11 +13,9 @@
     <link rel="preconnect" href="https://cdnjs.cloudflare.com" crossorigin />
     <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
 
-    <!-- Asynchronous Non-Blocking Fonts & CSS -->
-    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" media="print" onload="this.media='all'" />
-    <noscript><link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" /></noscript>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" media="print" onload="this.media='all'" />
-    <noscript><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" /></noscript>
+    <!-- Critical Fonts & Icons -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 
     <!-- Deferred Non-Blocking Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2" defer></script>
@@ -2184,39 +2182,20 @@
                 try {
                     for (let i = 0; i < localStorage.length; i++) {
                         const k = localStorage.key(i) || '';
-                        if (k.includes('-auth-token') || k.includes('supabase.auth.token')) {
+                        if (k.includes('-auth-token') || k.includes('supabase.auth.token') || k === 'hedtro_impersonate_user_id') {
                             const raw = localStorage.getItem(k);
-                            if (raw && (raw.includes('access_token') || raw.includes('user'))) return true;
+                            if (raw && (raw.includes('access_token') || raw.includes('user') || k === 'hedtro_impersonate_user_id')) return true;
                         }
                     }
                 } catch(e) {}
                 return false;
             }
 
-            async function updateNavAuth() {
+            function updateNavAuth() {
                 try {
-                    let session = null;
-                    let profile = null;
-
-                    if (typeof window.getSession === 'function') {
-                        try { session = await window.getSession(); } catch (e) {}
-                    }
-
-                    const client = window.supabaseClient || window.supabase;
-                    if (!session && client && client.auth) {
-                        try {
-                            const res = await client.auth.getSession();
-                            session = res && res.data && res.data.session;
-                        } catch (e) {}
-                    }
-
-                    if (typeof window.getUserProfile === 'function') {
-                        try { profile = await window.getUserProfile(); } catch (e) {}
-                    }
-
                     const impersonateId = localStorage.getItem('hedtro_impersonate_user_id');
                     const localToken = hasLocalAuthToken();
-                    const isLoggedIn = !!(session || profile || impersonateId || localToken);
+                    const isLoggedIn = !!(impersonateId || localToken);
 
                     const navAuth = document.getElementById('navAuthBtn');
                     const navReg = document.getElementById('navRegBtn');
@@ -2225,8 +2204,6 @@
                     const sideReg = document.getElementById('sideRegisterBtn');
 
                     if (isLoggedIn) {
-                        if (profile) currentUserProfile = profile;
-
                         // 1. PC Mode: Update login button to Dashboard and register button to Keluar
                         if (navAuth) {
                             navAuth.textContent = 'Dashboard';
@@ -2296,16 +2273,6 @@
             }
 
             window.updateNavAuth = updateNavAuth;
-
-            (function startNavAuthWatcher() {
-                updateNavAuth();
-                let checks = 0;
-                const timer = setInterval(() => {
-                    checks++;
-                    updateNavAuth();
-                    if (checks >= 20) clearInterval(timer);
-                }, 150);
-            })();
 
             const INDEX_CACHE_KEY = 'hedtro_index_cache_v1';
 
@@ -3012,9 +2979,9 @@
             };
 
             // ========== INIT ==========
-            (async function init() {
+            (function init() {
                 try {
-                    // Instant auth state check for PC & HP
+                    // Instant 0ms auth state check for PC & HP
                     updateNavAuth();
 
                     // 0ms Instant Synchronous Render for 90+ Mobile PageSpeed Score
@@ -3025,18 +2992,15 @@
                     renderFaq();
                     renderFeatures();
 
-                    if (typeof window.showLoadingBar === 'function') window.showLoadingBar();
-                    console.log('🔵 Initializing /index...');
-                    await updateNavAuth();
-                    await applyBrandSettings();
-                    await updateNavAuth();
-                    await loadAllData();
-                    await updateNavAuth();
-                    console.log('✅ /Index initialized successfully!');
+                    console.log('⚡ Homepage rendered instantly!');
+
+                    // Async background fetch after first frame paint
+                    setTimeout(() => {
+                        applyBrandSettings().catch(() => {});
+                        loadAllData().then(() => updateNavAuth()).catch(() => {});
+                    }, 50);
                 } catch (error) {
                     console.error('❌ Init error:', error);
-                } finally {
-                    if (typeof window.hideLoadingBar === 'function') window.hideLoadingBar();
                 }
             })();
 
