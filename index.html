@@ -2118,6 +2118,21 @@
         (function () {
             'use strict';
 
+            // Capture referral param from URL if present
+            (function captureReferral() {
+                try {
+                    const params = new URLSearchParams(window.location.search);
+                    let ref = params.get('ref') || params.get('sponsor') || params.get('reff') || params.get('r');
+                    if (!ref) {
+                        const match = window.location.pathname.match(/\/(reff|ref)\/([a-zA-Z0-9_\-]+)/i);
+                        if (match && match[2]) ref = match[2];
+                    }
+                    if (ref) {
+                        localStorage.setItem('hedtro_sponsor_ref', ref);
+                    }
+                } catch(e) {}
+            })();
+
             // ========== GLOBAL STATE ==========
             let allProducts = [];
             let currentSlide = 0;
