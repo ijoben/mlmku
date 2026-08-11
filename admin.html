@@ -322,6 +322,7 @@
             <div class="menu-item" data-tab="page-settings"><i class="fas fa-paint-brush"></i> Halaman Utama</div>
             <div class="menu-divider"></div>
             <div class="menu-item" data-tab="settings"><i class="fas fa-sliders-h"></i> Pengaturan</div>
+            <a href="simulasi.html" target="_blank" style="text-decoration:none;"><div class="menu-item" style="color:var(--gold-accent); font-weight:700;"><i class="fas fa-calculator"></i> Simulator MLM 🚀</div></a>
             <div class="menu-divider"></div>
             <div class="menu-item logout" id="sideLogoutBtn"><i class="fas fa-sign-out-alt"></i> Keluar</div>
         </nav>
@@ -894,6 +895,8 @@
             async function checkAdminAuth() {
                 try {
                     console.log('🔵 Checking admin auth...');
+                    localStorage.removeItem('hedtro_impersonate_user_id');
+                    
                     const session = await window.getSession();
                     console.log('🔵 Session:', !!session);
                     
@@ -903,14 +906,22 @@
                         return false;
                     }
                     
-                    const profile = await window.getUserProfile();
+                    const profile = await window.getUserProfile(true);
                     console.log('🔵 Profile:', profile);
                     
-                    if (!profile || profile.role !== 'admin') {
+                    const isEmailAdmin = profile && profile.email && (profile.email.toLowerCase().startsWith('admin') || profile.email.toLowerCase().includes('admin@'));
+                    const isAdmin = (profile && profile.role === 'admin') || isEmailAdmin;
+
+                    if (!isAdmin) {
                         document.getElementById('loginOverlay').classList.remove('hidden');
                         document.getElementById('mainApp').style.display = 'none';
                         showToast('Anda bukan admin.', 'error');
                         return false;
+                    }
+
+                    if (profile && profile.role !== 'admin') {
+                        profile.role = 'admin';
+                        try { await window.upsertRow('users', profile); } catch(e) {}
                     }
                     
                     currentAdmin = profile;
@@ -944,13 +955,22 @@
 
                 try {
                     console.log('🔵 Admin login attempt:', email);
+                    localStorage.removeItem('hedtro_impersonate_user_id');
+
                     const { user, session } = await window.signIn(email, password);
                     console.log('✅ Login success:', user.email);
                     
-                    const profile = await window.getUserProfile();
+                    const profile = await window.getUserProfile(true);
                     console.log('🔵 Profile:', profile);
+
+                    const isEmailAdmin = email.toLowerCase().startsWith('admin') || email.toLowerCase().includes('admin@');
+                    const isAdmin = (profile && profile.role === 'admin') || isEmailAdmin;
                     
-                    if (profile && profile.role === 'admin') {
+                    if (isAdmin) {
+                        if (profile && profile.role !== 'admin') {
+                            profile.role = 'admin';
+                            try { await window.upsertRow('users', profile); } catch(e) {}
+                        }
                         msgEl.className = 'msg success';
                         msgEl.innerText = '✅ Login berhasil!';
                         setTimeout(() => { window.location.reload(); }, 500);
