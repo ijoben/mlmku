@@ -1972,6 +1972,7 @@
     <div class="menu-item" data-section="products"><i class="fas fa-store"></i> Toko Online</div>
     <div class="menu-item" data-section="ro-history"><i class="fas fa-box"></i> Riwayat RO</div>
     <div class="menu-item" data-section="network"><i class="fas fa-sitemap"></i> Jaringan Pro</div>
+    <a href="simulasi.html" target="_blank" style="text-decoration:none;"><div class="menu-item" style="color:var(--gold-accent); font-weight:700;"><i class="fas fa-calculator"></i> Simulator MLM 🚀</div></a>
     <div class="menu-item" data-section="downline"><i class="fas fa-users"></i> Downline</div>
     <div class="menu-item" data-section="deposit"><i class="fas fa-plus-circle"></i> Deposit</div>
     <div class="menu-item" data-section="withdraw"><i class="fas fa-minus-circle"></i> Withdraw</div>
@@ -2027,9 +2028,11 @@
             <span class="amount" id="walletAmount">Rp 0</span>
           </div>
           <div class="ref-box">
-            <i class="fas fa-link" style="color:var(--gold-accent); font-size:0.6rem;"></i>
-            <input type="text" id="refLink" readonly value="">
-            <button class="copy-btn" onclick="copyRefLink()">Salin</button>
+            <i class="fas fa-link" style="color:var(--gold-accent); font-size:0.7rem;"></i>
+            <input type="text" id="refLink" readonly value="" onclick="this.select()" title="Klik untuk memilih link">
+            <button class="copy-btn" onclick="copyRefLink()" title="Salin Link Referal"><i class="fas fa-copy"></i> Salin</button>
+            <a id="openRefBtn" href="#" target="_blank" class="copy-btn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); text-decoration:none;" title="Buka Link Referal"><i class="fas fa-external-link-alt"></i> Buka</a>
+            <button class="copy-btn" onclick="shareRefWA()" style="background: #25D366;" title="Bagikan via WhatsApp"><i class="fab fa-whatsapp"></i> WA</button>
           </div>
           <div class="wallet-actions">
             <button class="btn-sm btn-sm-gold" onclick="window.showSection('deposit')"><i
@@ -2721,12 +2724,43 @@
         window.location.href = '/';
       });
 
-      // ========== COPY REF ==========
+      // ========== COPY & SHARE REF ==========
       window.copyRefLink = function () {
         const copyText = document.getElementById('refLink');
+        if (!copyText || !copyText.value) {
+          if (typeof showToast === 'function') showToast('⚠️ Link referal tidak tersedia', 'warning');
+          return;
+        }
         copyText.select();
         copyText.setSelectionRange(0, 99999);
-        navigator.clipboard.writeText(copyText.value).then(() => showModalAlert('Berhasil', 'Tautan Referal disalin!'));
+
+        if (navigator.clipboard && window.isSecureContext) {
+          navigator.clipboard.writeText(copyText.value).then(() => {
+            if (typeof showModalAlert === 'function') showModalAlert('Berhasil', 'Tautan Referal berhasil disalin!');
+            else if (typeof showToast === 'function') showToast('✅ Tautan Referal disalin!', 'success');
+          }).catch(() => {
+            fallbackCopy();
+          });
+        } else {
+          fallbackCopy();
+        }
+
+        function fallbackCopy() {
+          try {
+            document.execCommand('copy');
+            if (typeof showModalAlert === 'function') showModalAlert('Berhasil', 'Tautan Referal berhasil disalin!');
+            else if (typeof showToast === 'function') showToast('✅ Tautan Referal disalin!', 'success');
+          } catch (err) {
+            if (typeof showToast === 'function') showToast('Gagal menyalin link.', 'error');
+          }
+        }
+      };
+
+      window.shareRefWA = function () {
+        const copyText = document.getElementById('refLink');
+        if (!copyText || !copyText.value) return;
+        const msg = encodeURIComponent(`Halo! Mari bergabung bersama HEDTRO menggunakan link referal saya:\n\n${copyText.value}`);
+        window.open(`https://wa.me/?text=${msg}`, '_blank');
       };
 
       // ========== AUTH GUARD ==========
@@ -2865,9 +2899,25 @@
         document.getElementById('rewardBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_reward) || 0).toLocaleString('id-ID');
         document.getElementById('roBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_ro) || 0).toLocaleString('id-ID');
 
-        // Referral link format domain/reff/username
-        const refUrl = `${window.location.origin}/reff/${currentUser.username}`;
-        document.getElementById('refLink').value = refUrl;
+        // Referral link generation (universal format accessible across all hosting environments)
+        const refUsername = (currentUser && (currentUser.username || currentUser.id)) ? (currentUser.username || currentUser.id) : '';
+        let refUrl = '';
+        if (refUsername) {
+          const origin = window.location.origin;
+          if (origin.startsWith('file:')) {
+            const pathParts = window.location.pathname.split('/');
+            pathParts.pop();
+            refUrl = `file://${pathParts.join('/')}/register.html?ref=${encodeURIComponent(refUsername)}`;
+          } else {
+            const isCleanUrl = !window.location.pathname.endsWith('.html');
+            const basePath = isCleanUrl ? '/register' : '/register.html';
+            refUrl = `${origin}${basePath}?ref=${encodeURIComponent(refUsername)}`;
+          }
+        }
+        const refInput = document.getElementById('refLink');
+        if (refInput) refInput.value = refUrl;
+        const openRefBtn = document.getElementById('openRefBtn');
+        if (openRefBtn) openRefBtn.href = refUrl || '#';
 
         const wdBal = document.getElementById('wdAvailableBal');
         if (wdBal) wdBal.value = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString('id-ID');
