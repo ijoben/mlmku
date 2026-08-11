@@ -2218,11 +2218,6 @@
                     const localToken = hasLocalAuthToken();
                     const isLoggedIn = !!(session || profile || impersonateId || localToken);
 
-                    const role = (profile && profile.role) || 'user';
-                    const isAdmin = role === 'admin';
-                    const dashLabel = isAdmin ? 'Admin Panel' : 'Dashboard';
-                    const dashHref = isAdmin ? '/admin' : '/dashboard';
-
                     const navAuth = document.getElementById('navAuthBtn');
                     const navReg = document.getElementById('navRegBtn');
                     const sideDash = document.getElementById('sideDashboardBtn');
@@ -2234,8 +2229,8 @@
 
                         // 1. PC Mode: Update login button to Dashboard and register button to Keluar
                         if (navAuth) {
-                            navAuth.textContent = dashLabel;
-                            navAuth.href = dashHref;
+                            navAuth.textContent = 'Dashboard';
+                            navAuth.href = '/dashboard';
                         }
                         if (navReg) {
                             navReg.textContent = 'Keluar';
@@ -2250,8 +2245,8 @@
 
                         // 2. Mobile HP Mode: Show Dashboard in Slide Menu ONLY
                         if (sideDash) {
-                            sideDash.innerHTML = `<i class="fas fa-chart-line"></i> ${dashLabel} Member`;
-                            sideDash.href = dashHref;
+                            sideDash.innerHTML = `<i class="fas fa-chart-line"></i> Dashboard Member`;
+                            sideDash.href = '/dashboard';
                             sideDash.style.setProperty('display', 'flex', 'important');
                         }
                         if (sideLogin) {
