@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Sistem Simulasi MLM & Kalkulator Bonus · HEDTRO JEANS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; }
+        :root {
+            --denim-dark: #0b1a2b;
+            --denim-navy: #15283c;
+            --denim-blue: #2a4b6e;
+            --denim-light: #f0f4f8;
+            --gold-accent: #d4af37;
+            --gold-light: #f3e5ab;
+            --gold-gradient: linear-gradient(135deg, #bf953f 0%, #fcf6ba 25%, #b38728 50%, #fbf5b7 75%, #aa771c 100%);
+            --cream: #faf8f5;
+            --white: #ffffff;
+            --shadow: 0 8px 24px rgba(11,26,43,0.08);
+            --shadow-lg: 0 16px 32px rgba(11,26,43,0.15);
+            --radius: 16px;
+            --radius-sm: 10px;
+            --transition: all 0.3s cubic-bezier(0.4,0,0.2,1);
+        }
+        body {
+            font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+            background: #f4f6f9;
+            color: var(--denim-dark);
+            padding-bottom: 60px;
+        }
+        
+        /* NAVBAR */
+        .navbar {
+            background: var(--denim-dark);
+            color: var(--white);
+            padding: 14px 24px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--gold-accent);
+            box-shadow: var(--shadow);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .navbar .brand {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 800;
+            font-size: 1.2rem;
+            color: var(--white);
+            text-decoration: none;
+        }
+        .navbar .brand i { color: var(--gold-accent); font-size: 1.4rem; }
+        .navbar .nav-links { display: flex; gap: 10px; flex-wrap: wrap; }
+        .nav-btn {
+            background: rgba(255,255,255,0.08);
+            color: var(--cream);
+            padding: 8px 16px;
+            border-radius: 40px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-decoration: none;
+            border: 1px solid rgba(255,255,255,0.1);
+            transition: var(--transition);
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            cursor: pointer;
+        }
+        .nav-btn:hover { background: rgba(255,255,255,0.18); color: #fff; }
+        .nav-btn-gold {
+            background: var(--gold-gradient);
+            color: #0b1a2b;
+            border: none;
+            font-weight: 800;
+        }
+        .nav-btn-gold:hover { opacity: 0.9; }
+
+        .container {
+            max-width: 1280px;
+            margin: 24px auto;
+            padding: 0 16px;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, var(--denim-dark) 0%, var(--denim-navy) 60%, var(--denim-blue) 100%);
+            border-radius: var(--radius);
+            padding: 28px 32px;
+            color: var(--white);
+            box-shadow: var(--shadow-lg);
+            border-left: 6px solid var(--gold-accent);
+            margin-bottom: 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 20px;
+        }
+        .hero-card h1 { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; display: flex; align-items: center; gap: 10px; }
+        .hero-card p { font-size: 0.9rem; opacity: 0.88; line-height: 1.5; max-width: 750px; }
+
+        /* GRID LAYOUT */
+        .grid-main {
+            display: grid;
+            grid-template-columns: 360px 1fr;
+            gap: 24px;
+        }
+        @media (max-width: 992px) {
+            .grid-main { grid-template-columns: 1fr; }
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 24px;
+            box-shadow: var(--shadow);
+            border: 1px solid rgba(11,26,43,0.06);
+            margin-bottom: 24px;
+        }
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 18px;
+            padding-bottom: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .card-title {
+            font-size: 1.05rem;
+            font-weight: 800;
+            color: var(--denim-dark);
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .card-title i { color: var(--gold-accent); }
+
+        /* STATS GRID */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+            margin-bottom: 24px;
+        }
+        .stat-box {
+            background: var(--white);
+            padding: 20px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            border: 1px solid #e2e8f0;
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+        .stat-box:hover { transform: translateY(-3px); box-shadow: var(--shadow-lg); }
+        .stat-box::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: var(--gold-gradient);
+        }
+        .stat-label { font-size: 0.78rem; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 6px; }
+        .stat-val { font-size: 1.35rem; font-weight: 800; color: var(--denim-dark); }
+        .stat-sub { font-size: 0.78rem; color: #a0aec0; margin-top: 4px; }
+
+        /* FORMS & INPUTS */
+        .form-group { margin-bottom: 14px; }
+        .form-group label { display: block; font-size: 0.82rem; font-weight: 700; color: #4a5568; margin-bottom: 6px; }
+        .form-control {
+            width: 100%;
+            padding: 10px 14px;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e0;
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--denim-dark);
+            outline: none;
+            transition: var(--transition);
+        }
+        .form-control:focus { border-color: var(--gold-accent); box-shadow: 0 0 0 3px rgba(212,175,55,0.2); }
+
+        .btn-action {
+            width: 100%;
+            padding: 12px 18px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 0.9rem;
+            border: none;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            transition: var(--transition);
+        }
+        .btn-primary { background: var(--denim-dark); color: #fff; }
+        .btn-primary:hover { background: var(--denim-navy); }
+        .btn-gold { background: var(--gold-gradient); color: #0b1a2b; box-shadow: 0 4px 14px rgba(212,175,55,0.3); }
+        .btn-gold:hover { transform: translateY(-2px); }
+        .btn-danger { background: #e53e3e; color: #fff; }
+        .btn-danger:hover { background: #c53030; }
+
+        /* TREE DISPLAY */
+        .tree-viewport {
+            background: #0b1a2b;
+            border-radius: var(--radius);
+            padding: 30px 20px;
+            overflow-x: auto;
+            text-align: center;
+            min-height: 480px;
+            box-shadow: inset 0 2px 10px rgba(0,0,0,0.5);
+            position: relative;
+        }
+
+        .tree-node-wrapper {
+            display: inline-flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 0 10px;
+            position: relative;
+        }
+
+        .tree-card-item {
+            background: linear-gradient(145deg, #15283c, #1e3a5f);
+            border: 2px solid var(--gold-accent);
+            border-radius: 14px;
+            padding: 10px 16px;
+            min-width: 140px;
+            color: #fff;
+            box-shadow: 0 6px 16px rgba(0,0,0,0.4);
+            cursor: pointer;
+            transition: var(--transition);
+            z-index: 2;
+            position: relative;
+        }
+        .tree-card-item:hover {
+            transform: scale(1.05);
+            box-shadow: 0 0 20px rgba(212,175,55,0.6);
+            border-color: #fff;
+        }
+        .tree-card-item.root-node {
+            background: linear-gradient(135deg, #bf953f 0%, #d4af37 50%, #aa771c 100%);
+            color: #0b1a2b;
+            border-color: #fff;
+        }
+        .tree-card-name { font-weight: 800; font-size: 0.88rem; }
+        .tree-card-user { font-size: 0.75rem; opacity: 0.85; font-family: monospace; }
+        .tree-card-bonus { font-size: 0.72rem; font-weight: 700; color: var(--gold-light); margin-top: 4px; }
+        .tree-card-item.root-node .tree-card-bonus { color: #0b1a2b; }
+
+        .tree-children {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            position: relative;
+            gap: 20px;
+        }
+
+        /* TABLE STYLING */
+        .table-responsive { overflow-x: auto; }
+        .sim-table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.88rem;
+        }
+        .sim-table th {
+            background: var(--denim-dark);
+            color: #fff;
+            padding: 12px 14px;
+            text-align: left;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .sim-table td {
+            padding: 12px 14px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .sim-table tr:nth-child(even) { background: #f8fafc; }
+        .sim-table tr:hover { background: #edf2f7; }
+
+        .badge-bonus {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 800;
+            display: inline-block;
+        }
+        .badge-sp { background: #ebf8ff; color: #2b6cb0; border: 1px solid #90cdf4; }
+        .badge-bin { background: #f0fff4; color: #276749; border: 1px solid #9ae6b4; }
+        .badge-rew { background: #fffaf0; color: #dd6b20; border: 1px solid #fbd38d; }
+    </style>
+</head>
+<body>
+
+    <!-- NAVBAR -->
+    <nav class="navbar">
+        <a href="/" class="brand">
+            <i class="fas fa-cubes"></i>
+            <span>HEDTRO MLM SIMULATOR</span>
+        </a>
+        <div class="nav-links">
+            <a href="/dashboard" class="nav-btn"><i class="fas fa-home"></i> Dashboard User</a>
+            <a href="/admin.html" class="nav-btn"><i class="fas fa-user-shield"></i> Admin Panel</a>
+            <button class="nav-btn nav-btn-gold" onclick="resetSimulation()"><i class="fas fa-redo"></i> Reset Simulasi</button>
+        </div>
+    </nav>
+
+    <div class="container">
+        <!-- HERO CARD -->
+        <div class="hero-card">
+            <div>
+                <h1><i class="fas fa-calculator" style="color:var(--gold-accent);"></i> Simulator Jaringan & Bonus MLM Binary</h1>
+                <p>Uji skenario pendaftaran member, perkembangan pohon binary 10 level, persentase profitabilitas perusahaan, dan keakuratan komisi secara real-time tanpa mengganggu data asli.</p>
+            </div>
+            <div style="display:flex; gap:10px;">
+                <button class="btn-action btn-gold" onclick="generateFullMatrix(3)"><i class="fas fa-magic"></i> Generate 3 Level Matrix</button>
+                <button class="btn-action btn-primary" onclick="generateFullMatrix(4)"><i class="fas fa-sitemap"></i> Generate 4 Level Matrix</button>
+            </div>
+        </div>
+
+        <!-- STATS OVERVIEW -->
+        <div class="stats-grid">
+            <div class="stat-box">
+                <div class="stat-label">Total Member Terdaftar</div>
+                <div class="stat-val" id="statTotalUsers">1 Member</div>
+                <div class="stat-sub" id="statMatrixDepth">Kedalaman: Level 0</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Total Omzet Masuk</div>
+                <div class="stat-val" style="color:#2b6cb0;" id="statGrossRevenue">Rp 0</div>
+                <div class="stat-sub">Dari Paket Pendaftaran</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Total Komisi Terbayar</div>
+                <div class="stat-val" style="color:#c53030;" id="statTotalPayout">Rp 0</div>
+                <div class="stat-sub" id="statPayoutPercent">0% dari Omzet</div>
+            </div>
+            <div class="stat-box">
+                <div class="stat-label">Net Profit Perusahaan</div>
+                <div class="stat-val" style="color:#2f855a;" id="statNetProfit">Rp 0</div>
+                <div class="stat-sub" id="statProfitMargin">Margin: 100% (Aman)</div>
+            </div>
+        </div>
+
+        <div class="grid-main">
+            <!-- SIDEBAR CONTROL -->
+            <div>
+                <!-- PENGATURAN PARAMETER -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-sliders-h"></i> Parameter Paket & Bonus</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Harga Paket Pendaftaran (Rp)</label>
+                        <input type="number" id="simMemberPrice" class="form-control" value="550000" onchange="runSimulationEngine()">
+                    </div>
+                    <div class="form-group">
+                        <label>Bonus Sponsor (%)</label>
+                        <input type="number" id="simSponsorPercent" class="form-control" value="10" onchange="runSimulationEngine()">
+                    </div>
+                    <div class="form-group">
+                        <label>Bonus Binary Level 1 (%)</label>
+                        <input type="number" id="simBinaryL1" class="form-control" value="10" onchange="runSimulationEngine()">
+                    </div>
+                    <div class="form-group">
+                        <label>Bonus Reward Level 1 (%)</label>
+                        <input type="number" id="simRewardL1" class="form-control" value="5" onchange="runSimulationEngine()">
+                    </div>
+                </div>
+
+                <!-- FORM TAMBAH DOWNLINE -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-user-plus"></i> Tambah Member Downline</div>
+                    </div>
+                    <div class="form-group">
+                        <label>Nama Member Baru</label>
+                        <input type="text" id="newMemberName" class="form-control" placeholder="misal: Budi Santoso">
+                    </div>
+                    <div class="form-group">
+                        <label>Pilih Sponsor (Perekrut)</label>
+                        <select id="newMemberSponsor" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Pilih Upline (Posisi Atas)</label>
+                        <select id="newMemberUpline" class="form-control"></select>
+                    </div>
+                    <div class="form-group">
+                        <label>Posisi kaki di bawah Upline</label>
+                        <select id="newMemberPos" class="form-control">
+                            <option value="left">◀ Kaki Kiri (Left)</option>
+                            <option value="right">Kaki Kanan (Right) ▶</option>
+                        </select>
+                    </div>
+                    <button class="btn-action btn-gold" onclick="addSingleMemberSim()"><i class="fas fa-plus-circle"></i> Tambah & Hitung Bonus</button>
+                </div>
+            </div>
+
+            <!-- MAIN CONTENT AREA -->
+            <div>
+                <!-- VISUAL BINARY TREE -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-sitemap"></i> Visualisasi Pohon Binary Simulasi</div>
+                        <span style="font-size:0.8rem; color:#718096;"><i class="fas fa-info-circle"></i> Klik kotak member untuk detail komisi</span>
+                    </div>
+                    <div class="tree-viewport" id="simTreeViewport">
+                        <!-- TREE NODES WILL BE RENDERED HERE -->
+                    </div>
+                </div>
+
+                <!-- LOG TRANSAKSI COMPREHENSIVE -->
+                <div class="card">
+                    <div class="card-header">
+                        <div class="card-title"><i class="fas fa-history"></i> Log Pencairan Komisi Simulasi</div>
+                    </div>
+                    <div class="table-responsive">
+                        <table class="sim-table">
+                            <thead>
+                                <tr>
+                                    <th>Penerima Bonus</th>
+                                    <th>Jenis Bonus</th>
+                                    <th>Level</th>
+                                    <th>Dari Downline</th>
+                                    <th>Jumlah (Rp)</th>
+                                </tr>
+                            </thead>
+                            <tbody id="simTxLogTable">
+                                <tr><td colspan="5" style="text-align:center; color:#a0aec0; padding:20px;">Belum ada transaksi simulasi.</td></tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // GLOBAL SIMULATION STATE
+        let simUsers = [];
+        let simTransactions = [];
+        let userCounter = 1;
+
+        // INITIALIZE ROOT USER
+        function initSimulation() {
+            simUsers = [{
+                id: 'usr_root',
+                username: 'MasterRoot',
+                fullname: 'Master Head (@MasterRoot)',
+                sponsor_id: null,
+                upline_id: null,
+                position: null,
+                wallet: 0,
+                bonus_sponsor: 0,
+                bonus_binary: 0,
+                bonus_reward: 0
+            }];
+            simTransactions = [];
+            userCounter = 1;
+            updateSelectOptions();
+            runSimulationEngine();
+        }
+
+        function updateSelectOptions() {
+            const spSel = document.getElementById('newMemberSponsor');
+            const upSel = document.getElementById('newMemberUpline');
+            
+            let opts = '';
+            simUsers.forEach(u => {
+                opts += `<option value="${u.id}">${u.fullname}</option>`;
+            });
+
+            spSel.innerHTML = opts;
+            upSel.innerHTML = opts;
+        }
+
+        function addSingleMemberSim() {
+            const nameInput = document.getElementById('newMemberName');
+            const name = nameInput.value.trim() || ('Member ' + (++userCounter));
+            const sponsorId = document.getElementById('newMemberSponsor').value;
+            const uplineId = document.getElementById('newMemberUpline').value;
+            const pos = document.getElementById('newMemberPos').value;
+
+            const newId = 'usr_' + Date.now() + '_' + Math.floor(Math.random()*100);
+            const username = name.toLowerCase().replace(/\s+/g, '_') + userCounter;
+
+            const newUser = {
+                id: newId,
+                username: username,
+                fullname: `${name} (@${username})`,
+                sponsor_id: sponsorId,
+                upline_id: uplineId,
+                position: pos,
+                wallet: 0,
+                bonus_sponsor: 0,
+                bonus_binary: 0,
+                bonus_reward: 0
+            };
+
+            simUsers.push(newUser);
+            nameInput.value = '';
+            updateSelectOptions();
+            runSimulationEngine();
+        }
+
+        function generateFullMatrix(depth = 3) {
+            initSimulation();
+            let parentQueue = [simUsers[0]];
+
+            for (let d = 1; d <= depth; d++) {
+                let nextQueue = [];
+                for (let parent of parentQueue) {
+                    // Create Left Child
+                    const leftId = 'usr_d' + d + '_L_' + (++userCounter);
+                    const leftUser = {
+                        id: leftId,
+                        username: 'downline_L' + userCounter,
+                        fullname: `Member L${d}-Kiri (@downline_L${userCounter})`,
+                        sponsor_id: parent.id,
+                        upline_id: parent.id,
+                        position: 'left',
+                        wallet: 0,
+                        bonus_sponsor: 0,
+                        bonus_binary: 0,
+                        bonus_reward: 0
+                    };
+                    simUsers.push(leftUser);
+                    nextQueue.push(leftUser);
+
+                    // Create Right Child
+                    const rightId = 'usr_d' + d + '_R_' + (++userCounter);
+                    const rightUser = {
+                        id: rightId,
+                        username: 'downline_R' + userCounter,
+                        fullname: `Member L${d}-Kanan (@downline_R${userCounter})`,
+                        sponsor_id: parent.id,
+                        upline_id: parent.id,
+                        position: 'right',
+                        wallet: 0,
+                        bonus_sponsor: 0,
+                        bonus_binary: 0,
+                        bonus_reward: 0
+                    };
+                    simUsers.push(rightUser);
+                    nextQueue.push(rightUser);
+                }
+                parentQueue = nextQueue;
+            }
+
+            updateSelectOptions();
+            runSimulationEngine();
+        }
+
+        function runSimulationEngine() {
+            // 1. Read Settings
+            const pkgPrice = parseFloat(document.getElementById('simMemberPrice').value) || 550000;
+            const spPercent = parseFloat(document.getElementById('simSponsorPercent').value) || 10;
+            const binL1Percent = parseFloat(document.getElementById('simBinaryL1').value) || 10;
+            const rewL1Percent = parseFloat(document.getElementById('simRewardL1').value) || 5;
+
+            const binaryLevels = [binL1Percent, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
+            const rewardLevels = [rewL1Percent, 4, 3, 2, 1];
+
+            // 2. Reset Wallets
+            simUsers.forEach(u => {
+                u.wallet = 0;
+                u.bonus_sponsor = 0;
+                u.bonus_binary = 0;
+                u.bonus_reward = 0;
+            });
+            simTransactions = [];
+
+            // 3. Process Bonuses for each member (except Root)
+            for (let i = 1; i < simUsers.length; i++) {
+                const buyer = simUsers[i];
+
+                // A. Bonus Sponsor to Sponsor (if sponsor exists and is NOT self)
+                if (buyer.sponsor_id && buyer.sponsor_id !== buyer.id) {
+                    const sponsor = simUsers.find(u => u.id === buyer.sponsor_id);
+                    if (sponsor && sponsor.id !== buyer.id) {
+                        const spAmt = (pkgPrice * spPercent) / 100;
+                        sponsor.bonus_sponsor += spAmt;
+                        sponsor.wallet += spAmt;
+
+                        simTransactions.push({
+                            to: sponsor.fullname,
+                            type: 'Bonus Sponsor',
+                            badgeClass: 'badge-sp',
+                            level: 1,
+                            from: buyer.fullname,
+                            amount: spAmt
+                        });
+                    }
+                }
+
+                // B. Bonus Binary to 10 Levels of Uplines
+                let currUplineId = buyer.upline_id || buyer.sponsor_id;
+                let lvl = 0;
+                let visited = new Set([buyer.id]);
+
+                while (currUplineId && lvl < 10) {
+                    if (visited.has(currUplineId)) break;
+                    const upline = simUsers.find(u => u.id === currUplineId);
+                    if (!upline || upline.id === buyer.id) break;
+
+                    visited.add(upline.id);
+                    const binPercent = binaryLevels[lvl] || 0;
+                    const binAmt = (pkgPrice * binPercent) / 100;
+
+                    if (binAmt > 0) {
+                        upline.bonus_binary += binAmt;
+                        upline.wallet += binAmt;
+
+                        simTransactions.push({
+                            to: upline.fullname,
+                            type: 'Bonus Binary',
+                            badgeClass: 'badge-bin',
+                            level: lvl + 1,
+                            from: buyer.fullname,
+                            amount: binAmt
+                        });
+                    }
+
+                    currUplineId = upline.upline_id || upline.sponsor_id;
+                    lvl++;
+                }
+
+                // C. Bonus Reward to 5 Levels of Uplines
+                currUplineId = buyer.upline_id || buyer.sponsor_id;
+                lvl = 0;
+                visited = new Set([buyer.id]);
+
+                while (currUplineId && lvl < 5) {
+                    if (visited.has(currUplineId)) break;
+                    const upline = simUsers.find(u => u.id === currUplineId);
+                    if (!upline || upline.id === buyer.id) break;
+
+                    visited.add(upline.id);
+                    const rewPercent = rewardLevels[lvl] || 0;
+                    const rewAmt = (pkgPrice * rewPercent) / 100;
+
+                    if (rewAmt > 0) {
+                        upline.bonus_reward += rewAmt;
+                        upline.wallet += rewAmt;
+
+                        simTransactions.push({
+                            to: upline.fullname,
+                            type: 'Bonus Reward',
+                            badgeClass: 'badge-rew',
+                            level: lvl + 1,
+                            from: buyer.fullname,
+                            amount: rewAmt
+                        });
+                    }
+
+                    currUplineId = upline.upline_id || upline.sponsor_id;
+                    lvl++;
+                }
+            }
+
+            // 4. Update Stats & UI
+            renderStats(pkgPrice);
+            renderTree();
+            renderTxLog();
+        }
+
+        function renderStats(pkgPrice) {
+            const totalUsers = simUsers.length;
+            const newUsersCount = totalUsers - 1; // excluding master root
+            const grossRevenue = newUsersCount * pkgPrice;
+
+            let totalPayout = 0;
+            simTransactions.forEach(t => totalPayout += t.amount);
+
+            const netProfit = grossRevenue - totalPayout;
+            const payoutMargin = grossRevenue > 0 ? ((totalPayout / grossRevenue) * 100).toFixed(1) : 0;
+            const profitMargin = grossRevenue > 0 ? ((netProfit / grossRevenue) * 100).toFixed(1) : 100;
+
+            document.getElementById('statTotalUsers').textContent = totalUsers + ' Member';
+            document.getElementById('statGrossRevenue').textContent = 'Rp ' + grossRevenue.toLocaleString('id-ID');
+            document.getElementById('statTotalPayout').textContent = 'Rp ' + totalPayout.toLocaleString('id-ID');
+            document.getElementById('statPayoutPercent').textContent = payoutMargin + '% dari total omzet';
+
+            document.getElementById('statNetProfit').textContent = 'Rp ' + netProfit.toLocaleString('id-ID');
+            document.getElementById('statProfitMargin').textContent = 'Profit Margin: ' + profitMargin + '% (' + (profitMargin > 40 ? 'Sangat Sehat ✅' : 'Perlu Pengawasan ⚠️') + ')';
+        }
+
+        function renderTree() {
+            const container = document.getElementById('simTreeViewport');
+            if (simUsers.length === 0) return;
+
+            const rootUser = simUsers[0];
+            container.innerHTML = renderNodeHtml(rootUser, true);
+        }
+
+        function renderNodeHtml(user, isRoot = false) {
+            const children = simUsers.filter(u => u.upline_id === user.id);
+            const totalEarned = user.wallet;
+
+            let childrenHtml = '';
+            if (children.length > 0) {
+                childrenHtml = '<div class="tree-children">' + children.map(c => renderNodeHtml(c, false)).join('') + '</div>';
+            }
+
+            return `
+                <div class="tree-node-wrapper">
+                    <div class="tree-card-item ${isRoot ? 'root-node' : ''}">
+                        <div class="tree-card-name">${user.fullname.split(' (@')[0]}</div>
+                        <div class="tree-card-user">@${user.username}</div>
+                        <div class="tree-card-bonus">Total Bonus: Rp ${totalEarned.toLocaleString('id-ID')}</div>
+                    </div>
+                    ${childrenHtml}
+                </div>
+            `;
+        }
+
+        function renderTxLog() {
+            const tbody = document.getElementById('simTxLogTable');
+            if (simTransactions.length === 0) {
+                tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; color:#a0aec0; padding:20px;">Belum ada transaksi pencairan bonus. Silakan tambah downline atau generate matrix.</td></tr>';
+                return;
+            }
+
+            let html = '';
+            simTransactions.slice().reverse().forEach(t => {
+                html += `
+                    <tr>
+                        <td><strong>${t.to}</strong></td>
+                        <td><span class="badge-bonus ${t.badgeClass}">${t.type}</span></td>
+                        <td>Level ${t.level}</td>
+                        <td>${t.from}</td>
+                        <td><strong style="color:#2f855a;">+ Rp ${t.amount.toLocaleString('id-ID')}</strong></td>
+                    </tr>
+                `;
+            });
+
+            tbody.innerHTML = html;
+        }
+
+        function resetSimulation() {
+            if (confirm('Apakah Anda yakin ingin mereset simulasi jaringan ke kondisi awal?')) {
+                initSimulation();
+            }
+        }
+
+        // AUTO START ON LOAD
+        window.onload = function() {
+            initSimulation();
+        };
+    </script>
+</body>
+</html>
