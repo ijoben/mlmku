@@ -828,13 +828,19 @@
         }
 
         .history-item {
-            display: flex;
-            justify-content: space-between;
+            display: grid;
+            grid-template-columns: 2fr 1.5fr 1.5fr;
             align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid #eee;
-            font-size: 0.82rem;
-            gap: 8px;
+            padding: 12px 14px;
+            border-bottom: 1px solid #edf2f7;
+            gap: 12px;
+            font-size: 0.85rem;
+            background: var(--white);
+            transition: var(--transition);
+        }
+
+        .history-item:hover {
+            background: #fafcff;
         }
 
         .history-item:last-child {
@@ -1470,6 +1476,13 @@
                 padding: 8px 6px !important;
                 font-size: 0.75rem !important;
                 box-sizing: border-box !important;
+            }
+
+            .history-item {
+                grid-template-columns: 1.4fr 1fr 1.2fr !important;
+                gap: 6px !important;
+                padding: 10px 6px !important;
+                font-size: 0.78rem !important;
             }
         }
 
@@ -2739,9 +2752,19 @@
                             if (t.proof_image) actionBtn += `<button class="btn-sm btn-sm-gold view-tx-proof" data-proof="${t.proof_image}" style="margin-left:4px; padding:4px 8px; font-size:0.7rem;">Bukti</button>`;
                         }
 
-                        html += `<div class="history-item" style="flex-wrap:wrap; gap:8px; padding:10px 12px; border-bottom:1px solid #edf2f7;">
-                            <span style="flex:1;"><strong>${userName}</strong> · ${typeLabel} <span class="badge-status ${t.status === 'pending' ? 'badge-pending' : 'badge-success'}">${statusText}</span><br><small class="text-muted" style="font-size:0.75rem;">${t.desc || t.description || date}</small></span>
-                            <span class="amount ${amountClass}" style="display:flex; align-items:center; font-weight:700;">${sign} Rp ${(parseFloat(t.amount) || 0).toLocaleString('id-ID')} ${actionBtn}</span>
+                        html += `<div class="history-item">
+                            <div class="history-col-1">
+                                <strong style="color:var(--denim-dark); display:block; line-height:1.2;">${userName}</strong>
+                                <span style="font-size:0.78rem; color:var(--denim-navy);">${typeLabel}</span>
+                            </div>
+                            <div class="history-col-2" style="text-align:center;">
+                                <span class="badge-status ${t.status === 'pending' ? 'badge-pending' : (t.status === 'success' || t.status === 'verified' || t.status === 'processing' ? 'badge-success' : 'badge-failed')}" style="font-size:0.72rem; padding:2px 8px; display:inline-block;">${statusText}</span>
+                                <small class="text-muted" style="display:block; font-size:0.72rem; margin-top:2px;">${t.desc || t.description || date}</small>
+                            </div>
+                            <div class="history-col-3" style="text-align:right;">
+                                <span class="amount ${amountClass}" style="font-size:0.88rem; font-weight:700; display:block;">${sign} Rp ${(parseFloat(t.amount) || 0).toLocaleString('id-ID')}</span>
+                                ${actionBtn ? `<div style="margin-top:4px; display:flex; justify-content:flex-end; gap:4px; flex-wrap:wrap;">${actionBtn}</div>` : ''}
+                            </div>
                         </div>`;
                     });
 
