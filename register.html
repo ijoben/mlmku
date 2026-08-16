@@ -527,20 +527,10 @@
                     }
                 }
 
-                // Cek Upline dari URL jika pendaftaran via klik slot pohon
-                const regParams = new URLSearchParams(window.location.search);
-                const uplineUsernameParam = regParams.get('upline');
-                let uplineData = null;
-                if (uplineUsernameParam) {
-                    try {
-                        uplineData = await window.getUserByUsername(uplineUsernameParam);
-                    } catch(e) {
-                        console.warn('Upline lookup warning:', e);
-                    }
-                }
-                if (!uplineData) {
-                    uplineData = sponsorData; // fallback ke sponsor jika upline spesifik tidak diisi
-                }
+                // CATATAN: upline (upline_id/upline_username/sponsor_username) TIDAK disimpan —
+                // kolomnya tidak ada di tabel users. Struktur pohon binary diturunkan otomatis
+                // dari sponsor_id + position. Param URL ?upline= dibiarkan untuk kompatibilitas
+                // tautan lama namun tidak dipakai.
 
                 // Loading state
                 regBtn.disabled = true;
@@ -564,9 +554,6 @@
                         bank_account: bankAccount,
                         bank_holder: bankHolder,
                         sponsor_id: sponsorData ? sponsorData.id : null,
-                        sponsor_username: sponsorUsername || null,
-                        upline_id: uplineData ? uplineData.id : null,
-                        upline_username: uplineData ? uplineData.username : (sponsorUsername || null),
                         position: position,
                         product_id: productId,
                         size: size,
@@ -609,9 +596,6 @@
                         bank_account: bankAccount,
                         bank_holder: bankHolder,
                         sponsor_id: sponsorData ? sponsorData.id : null,
-                        sponsor_username: sponsorUsername || null,
-                        upline_id: uplineData ? uplineData.id : null,
-                        upline_username: uplineData ? uplineData.username : (sponsorUsername || null),
                         position: position,
                         status: 'pending'
                     };
