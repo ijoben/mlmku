@@ -236,6 +236,9 @@ window.getUserProfile = async function(ignoreImpersonate = false) {
       console.log('🔑 Impersonating user ID:', impersonateId);
       var impUser = await window.getUserById(impersonateId);
       if (impUser) return await window.syncUserWalletWithTransactions(impUser);
+      // Member tidak ditemukan (id basi / sudah dihapus) — bersihkan state impersonasi
+      // agar tidak stuck menampilkan dashboard admin dengan banner impersonasi.
+      localStorage.removeItem('hedtro_impersonate_user_id');
     }
 
     var session = await window.getSession();

@@ -533,6 +533,11 @@
       margin-bottom: 16px;
     }
 
+    /* Wrapper kartu bonus: di desktop transparan (grid tetap), di HP jadi carousel horizontal */
+    .bonus-cards-strip {
+      display: contents;
+    }
+
     @media (max-width: 992px) {
       .dash-grid {
         grid-template-columns: 1fr 1fr;
@@ -787,6 +792,17 @@
       flex-direction: column;
       gap: 10px;
       height: 100%;
+    }
+
+    /* Banner impersonasi: geser navbar & sidebar ke bawah agar banner tidak menutupi menu (terutama HP) */
+    .has-impersonate-banner {
+      padding-top: 108px;
+    }
+    .has-impersonate-banner .navbar {
+      top: 44px;
+    }
+    .has-impersonate-banner .sidebar {
+      top: 44px;
     }
 
     /* ===== HISTORY TABLE ===== */
@@ -1851,6 +1867,29 @@
         font-size: 1.1rem;
       }
 
+      .dash-grid {
+        grid-template-columns: 1fr;
+      }
+
+      /* Kartu bonus jadi carousel horizontal (snap-scroll) di mode HP */
+      .bonus-cards-strip {
+        display: flex;
+        flex-direction: row;
+        overflow-x: auto;
+        gap: 10px;
+        scroll-snap-type: x mandatory;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 6px;
+        scrollbar-width: none;
+      }
+      .bonus-cards-strip::-webkit-scrollbar { display: none; }
+      .bonus-cards-strip .stat-stack { display: contents; }
+      .bonus-cards-strip .stat-mini {
+        flex: 0 0 78%;
+        height: auto;
+        scroll-snap-align: center;
+      }
+
       /* Table HP */
       .table-container {
         background: transparent !important;
@@ -2099,6 +2138,9 @@
           </div>
         </div>
 
+        <!-- Bonus cards (desktop: kolom grid; HP: carousel horizontal) -->
+        <div class="bonus-cards-strip">
+
         <!-- Kolom 2: Sponsor + Binary -->
         <div class="stat-stack">
           <div class="stat-mini">
@@ -2141,6 +2183,7 @@
               <span class="value" id="roBonus">0</span>
             </div>
           </div>
+        </div>
         </div>
       </div>
 
@@ -2862,8 +2905,20 @@
           <button id="btnExitImpersonate" style="background: #fff; color: #b91c1c; border: none; padding: 6px 14px; border-radius: 8px; font-weight: 800; cursor: pointer; font-size: 0.8rem; display: flex; align-items: center; gap: 6px;"><i class="fas fa-undo"></i> Kembali ke Admin Panel</button>
         `;
         document.body.prepend(banner);
+        document.body.classList.add('has-impersonate-banner');
+        // Geser navbar/sidebar sebesar tinggi banner AKTUAL (di HP teks bisa membungkus)
+        var bannerH = banner.offsetHeight || 44;
+        document.body.style.paddingTop = (64 + bannerH) + 'px';
+        var _nav = document.querySelector('.navbar');
+        if (_nav) _nav.style.top = bannerH + 'px';
+        var _side = document.querySelector('.sidebar');
+        if (_side) _side.style.top = bannerH + 'px';
         document.getElementById('btnExitImpersonate').onclick = function() {
           localStorage.removeItem('hedtro_impersonate_user_id');
+          document.body.classList.remove('has-impersonate-banner');
+          document.body.style.paddingTop = '';
+          if (_nav) _nav.style.top = '';
+          if (_side) _side.style.top = '';
           window.location.href = '/admin';
         };
       }
