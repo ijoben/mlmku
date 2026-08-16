@@ -344,6 +344,27 @@ Deno.serve(async (req) => {
       }
     }
 
+    // Sinkronkan status order di JSONB users (first_order / purchase_history /
+    // transactions) agar tampilan dashboard member selalu akurat — termasuk
+    // pesanan yang dilunasi otomatis lewat payment gateway.
+    const syncOrderId = String(order.id || orderId);
+    if (buyer.first_order && String(buyer.first_order.id) === syncOrderId) {
+      buyer.first_order.status = "processing";
+    }
+    if (Array.isArray(buyer.purchase_history)) {
+      buyer.purchase_history.forEach((p) => {
+        if (p && String(p.id) === syncOrderId) p.status = "processing";
+      });
+    }
+    if (Array.isArray(buyer.transactions)) {
+      buyer.transactions.forEach((t) => {
+        if (t && String(t.id) === syncOrderId) {
+          t.status = "success";
+          t.proof_uploaded = true;
+        }
+      });
+    }
+
     await upsertUser(db, buyer);
     try {
       await db.from("orders").update({ status: "processing" }).eq("id", String(orderId));

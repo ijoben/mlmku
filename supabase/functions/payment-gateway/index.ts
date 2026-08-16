@@ -367,9 +367,12 @@ async function finalizePayment(client, row, order) {
     return { success: true, alreadyPaid: true };
   }
 
-  // Bonus dibagikan oleh fungsi distribute-bonus (server-side, idempotent)
+  // Bonus dibagikan oleh fungsi distribute-bonus (server-side, idempotent).
+  // Tanpa PAYMENT_INTERNAL_KEY order TIDAK di-set processing otomatis —
+  // diserahkan ke admin agar bonus tidak pernah hilang (sinkronisasi
+  // first_order/purchase_history dilakukan distribute-bonus).
   let bonusResult = null;
-  let bonusOk = true;
+  let bonusOk = !!PAYMENT_INTERNAL_KEY;
   if (PAYMENT_INTERNAL_KEY) {
     try {
       const bonusUrl = `${SUPABASE_URL}/functions/v1/distribute-bonus`;
