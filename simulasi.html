@@ -350,6 +350,11 @@
                 <div class="stat-val" style="color:#2f855a;" id="statNetProfit">Rp 0</div>
                 <div class="stat-sub" id="statProfitMargin">Margin: 100% (Aman)</div>
             </div>
+            <div class="stat-box">
+                <div class="stat-label">Total Pasangan Binary</div>
+                <div class="stat-val" style="color:#16a085;" id="statTotalPairs">0 pasang</div>
+                <div class="stat-sub">min kaki kiri & kanan seluruh member</div>
+            </div>
         </div>
 
         <div class="grid-main">
@@ -761,6 +766,15 @@
 
             document.getElementById('statNetProfit').textContent = 'Rp ' + netProfit.toLocaleString('id-ID');
             document.getElementById('statProfitMargin').textContent = 'Profit Margin: ' + profitMargin + '% (' + (profitMargin > 40 ? 'Sangat Sehat ✅' : 'Perlu Pengawasan ⚠️') + ')';
+
+            let totalPairs = 0;
+            simUsers.forEach(u => {
+                const lc = parseFloat(u.left_count) || 0;
+                const rc = parseFloat(u.right_count) || 0;
+                const mn = Math.min(lc, rc);
+                totalPairs += mn > 0 ? mn : (parseFloat(u.paid_pairs) || 0);
+            });
+            document.getElementById('statTotalPairs').textContent = totalPairs.toLocaleString('id-ID') + ' pasang';
         }
 
         function renderTree() {
@@ -774,6 +788,10 @@
         function renderNodeHtml(user, isRoot = false) {
             const children = simUsers.filter(u => u.upline_id === user.id);
             const totalEarned = user.wallet;
+            const _lc = parseFloat(user.left_count) || 0;
+            const _rc = parseFloat(user.right_count) || 0;
+            const _mn = Math.min(_lc, _rc);
+            const _pairTotal = _mn > 0 ? _mn : (parseFloat(user.paid_pairs) || 0);
 
             let childrenHtml = '';
             if (children.length > 0) {
@@ -786,6 +804,7 @@
                         <div class="tree-card-name">${user.fullname.split(' (@')[0]}</div>
                         <div class="tree-card-user">@${user.username}</div>
                         <div class="tree-card-bonus">Total Bonus: Rp ${totalEarned.toLocaleString('id-ID')}</div>
+                        <div class="tree-card-bonus" style="color:#16a085;">Pasangan: ${_pairTotal} (Kiri ${_lc} / Kanan ${_rc})</div>
                     </div>
                     ${childrenHtml}
                 </div>

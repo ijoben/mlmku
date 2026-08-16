@@ -1670,7 +1670,7 @@
                     <div class="stat-card" style="border-left-color: #16a085;"><i class="fas fa-handshake icon-bg"></i>
                         <div class="label">Bonus Pasangan</div>
                         <div class="value" id="statPairingBonus">Rp 0</div>
-                        <div class="sub">Binary pairing</div>
+                        <div class="sub" id="statPairingCount">0 pasang</div>
                     </div>
                     <div class="stat-card" style="border-left-color: #e74c3c;"><i class="fas fa-trophy icon-bg"></i>
                         <div class="label">Bonus Reward</div>
@@ -1779,6 +1779,7 @@
                     <div class="stat-card" style="border-left-color: #16a085;">
                         <div class="label">Bonus Pasangan</div>
                         <div class="value" id="bonusPairingTotal">Rp 0</div>
+                        <div class="sub" id="bonusPairingCount">0 pasang</div>
                     </div>
                     <div class="stat-card" style="border-left-color: #e74c3c;">
                         <div class="label">Bonus Reward</div>
@@ -2675,6 +2676,7 @@
 
                     // Hitung statistik bonus dari seluruh member & transaksi
                     let totalSponsor = 0, totalBinary = 0, totalPairing = 0, totalReward = 0, totalRo = 0;
+                    let totalPairCount = 0;
 
                     (allUsers || []).forEach(u => {
                         totalSponsor += parseFloat(u.bonus_sponsor) || 0;
@@ -2682,6 +2684,10 @@
                         totalPairing += parseFloat(u.bonus_pasangan) || 0;
                         totalReward += parseFloat(u.bonus_reward) || 0;
                         totalRo += parseFloat(u.bonus_ro) || 0;
+                        const lc = parseFloat(u.left_count) || 0;
+                        const rc = parseFloat(u.right_count) || 0;
+                        const mn = Math.min(lc, rc);
+                        totalPairCount += (mn > 0 ? mn : (parseFloat(u.paid_pairs) || 0));
                     });
 
                     (allTransactions || []).forEach(t => {
@@ -2705,6 +2711,8 @@
                     document.getElementById('statSponsorBonus').textContent = 'Rp ' + totalSponsor.toLocaleString('id-ID');
                     document.getElementById('statBinaryBonus').textContent = 'Rp ' + totalBinary.toLocaleString('id-ID');
                     document.getElementById('statPairingBonus').textContent = 'Rp ' + totalPairing.toLocaleString('id-ID');
+                    const elStatPairCount = document.getElementById('statPairingCount');
+                    if (elStatPairCount) elStatPairCount.textContent = totalPairCount.toLocaleString('id-ID') + ' pasang';
                     document.getElementById('statRewardBonus').textContent = 'Rp ' + totalReward.toLocaleString('id-ID');
 
                     // Kumpulkan seluruh riwayat transaksi dari allTransactions, allUsers.transactions, dan allOrders
@@ -2961,6 +2969,7 @@
                     // Hitung total per jenis
                     let totalSponsor = 0, totalBinary = 0, totalPairing = 0, totalReward = 0;
                     let totalAll = 0;
+                    let totalPairCountBonus = 0;
 
                     bonusTransactions.forEach(t => {
                         const amount = parseFloat(t.amount) || 0;
@@ -2971,10 +2980,19 @@
                         else if (t.type === 'reward' || t.type === 'bonus_reward') totalReward += amount;
                     });
 
+                    (allUsers || []).forEach(u => {
+                        const lc = parseFloat(u.left_count) || 0;
+                        const rc = parseFloat(u.right_count) || 0;
+                        const mn = Math.min(lc, rc);
+                        totalPairCountBonus += (mn > 0 ? mn : (parseFloat(u.paid_pairs) || 0));
+                    });
+
                     document.getElementById('bonusTotalPaid').textContent = 'Rp ' + totalAll.toLocaleString('id-ID');
                     document.getElementById('bonusSponsorTotal').textContent = 'Rp ' + totalSponsor.toLocaleString('id-ID');
                     document.getElementById('bonusBinaryTotal').textContent = 'Rp ' + totalBinary.toLocaleString('id-ID');
                     document.getElementById('bonusPairingTotal').textContent = 'Rp ' + totalPairing.toLocaleString('id-ID');
+                    const elBonusPairCount = document.getElementById('bonusPairingCount');
+                    if (elBonusPairCount) elBonusPairCount.textContent = totalPairCountBonus.toLocaleString('id-ID') + ' pasang';
                     document.getElementById('bonusRewardTotal').textContent = 'Rp ' + totalReward.toLocaleString('id-ID');
 
                     // Filter
@@ -3425,6 +3443,10 @@
 
                 const memberIdFormatted = window.formatMemberId ? window.formatMemberId(user, allUsers) : ('HDT-' + String(user.id).padStart(3, '0'));
                 const downlines = (allUsers || []).filter(u => String(u.sponsor_id) === String(user.id) || String(u.sponsor_username) === String(user.username) || String(u.upline_id) === String(user.id));
+                const _mlc = parseFloat(user.left_count) || 0;
+                const _mrc = parseFloat(user.right_count) || 0;
+                const _mmn = Math.min(_mlc, _mrc);
+                const _mPairTotal = _mmn > 0 ? _mmn : (parseFloat(user.paid_pairs) || 0);
 
                 openModal(`
                     <div style="text-align:center; margin-bottom:16px;">
@@ -3472,6 +3494,10 @@
                         <div style="background:#f8fafc; padding:10px 12px; border-radius:8px; grid-column:span 2;">
                             <span style="color:#718096; display:block; font-size:0.75rem;">Total Downline Direct</span>
                             <strong>${downlines.length} Downline</strong>
+                        </div>
+                        <div style="background:#f8fafc; padding:10px 12px; border-radius:8px; grid-column:span 2;">
+                            <span style="color:#718096; display:block; font-size:0.75rem;">Total Pasangan Binary</span>
+                            <strong>${_mPairTotal} pasang (Kiri ${_mlc} / Kanan ${_mrc})</strong>
                         </div>
                     </div>
 
