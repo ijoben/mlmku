@@ -1,0 +1,919 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Backfill Bonus · HEDTRO JEANS</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+    <!-- SUPABASE -->
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script src="supabase.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --denim-dark: #0b1a2b;
+            --denim-navy: #1a2e44;
+            --denim-blue: #2a4b6e;
+            --denim-light: #e8edf2;
+            --gold-accent: #ff6b00;
+            --cream: #f7f4ef;
+            --white: #ffffff;
+            --shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            --radius: 14px;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--cream);
+            color: var(--denim-dark);
+            padding-bottom: 40px;
+        }
+
+        a {
+            text-decoration: none;
+            color: inherit;
+        }
+
+        button {
+            cursor: pointer;
+            font-family: inherit;
+            border: none;
+            background: none;
+        }
+
+        .navbar {
+            background: var(--denim-dark);
+            color: var(--cream);
+            padding: 12px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 3px solid var(--gold-accent);
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .navbar .brand {
+            font-weight: 800;
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .navbar .brand i {
+            color: var(--gold-accent);
+        }
+
+        .navbar .nav-links a {
+            color: var(--cream);
+            font-size: 0.85rem;
+            font-weight: 600;
+            background: rgba(255, 255, 255, 0.08);
+            padding: 6px 14px;
+            border-radius: 60px;
+            margin-left: 6px;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 20px 16px;
+        }
+
+        .hero-card {
+            background: linear-gradient(135deg, var(--denim-dark) 0%, var(--denim-navy) 60%, var(--denim-blue) 100%);
+            border-radius: var(--radius);
+            padding: 22px 24px;
+            color: var(--white);
+            border-left: 5px solid var(--gold-accent);
+            margin-bottom: 18px;
+        }
+
+        .hero-card h1 {
+            font-size: 1.3rem;
+            font-weight: 800;
+        }
+
+        .hero-card h1 i {
+            color: var(--gold-accent);
+        }
+
+        .hero-card p {
+            font-size: 0.82rem;
+            opacity: 0.9;
+            margin-top: 6px;
+            line-height: 1.5;
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+            margin-bottom: 18px;
+        }
+
+        .stat-box {
+            background: var(--white);
+            border-radius: var(--radius);
+            padding: 14px 16px;
+            box-shadow: var(--shadow);
+            border-left: 4px solid var(--denim-blue);
+        }
+
+        .stat-box .label {
+            font-size: 0.7rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            color: var(--denim-blue);
+            letter-spacing: 0.5px;
+        }
+
+        .stat-box .val {
+            font-size: 1.05rem;
+            font-weight: 800;
+            margin-top: 4px;
+        }
+
+        .stat-box.ok {
+            border-left-color: #2ecc71;
+        }
+
+        .stat-box.warn {
+            border-left-color: #f39c12;
+        }
+
+        .stat-box.err {
+            border-left-color: #e74c3c;
+        }
+
+        .actions {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 18px;
+        }
+
+        .btn {
+            padding: 11px 20px;
+            border-radius: 60px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            color: #fff;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .btn:hover {
+            transform: translateY(-1px);
+        }
+
+        .btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .btn-audit {
+            background: var(--denim-blue);
+        }
+
+        .btn-apply {
+            background: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
+        }
+
+        .btn-reset {
+            background: #b13e3e;
+        }
+
+        .card {
+            background: var(--white);
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            padding: 16px 18px;
+            margin-bottom: 16px;
+        }
+
+        .card h3 {
+            font-size: 0.95rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            margin-bottom: 12px;
+        }
+
+        .card h3 i {
+            color: var(--gold-accent);
+        }
+
+        .table-wrap {
+            overflow-x: auto;
+            border-radius: 10px;
+            border: 1px solid #e2e8f0;
+            margin-bottom: 10px;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+            min-width: 560px;
+        }
+
+        thead {
+            background: var(--denim-dark);
+            color: var(--cream);
+        }
+
+        th {
+            padding: 10px 12px;
+            text-align: left;
+            font-weight: 600;
+            white-space: nowrap;
+        }
+
+        td {
+            padding: 8px 12px;
+            border-bottom: 1px solid #eef2f7;
+        }
+
+        .plus {
+            color: #1f7a4b;
+            font-weight: 700;
+        }
+
+        .minus {
+            color: #b13e3e;
+            font-weight: 700;
+        }
+
+        .muted {
+            color: #6a7e9a;
+            font-size: 0.78rem;
+        }
+
+        .notice {
+            border-radius: 10px;
+            padding: 10px 14px;
+            font-size: 0.8rem;
+            margin-bottom: 10px;
+            border-left: 4px solid;
+        }
+
+        .notice.warn {
+            background: #fff8e7;
+            border-left-color: #f39c12;
+        }
+
+        .notice.err {
+            background: #fde8e8;
+            border-left-color: #e74c3c;
+        }
+
+        .notice.ok {
+            background: #e8f5ed;
+            border-left-color: #2ecc71;
+        }
+
+        .log-box {
+            background: #0d1e30;
+            color: #e8edf2;
+            border-radius: 10px;
+            padding: 12px 14px;
+            font-family: monospace;
+            font-size: 0.75rem;
+            max-height: 260px;
+            overflow-y: auto;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 10px;
+            margin-bottom: 14px;
+        }
+
+        .summary-item {
+            background: #fafcff;
+            border: 1px solid #e2e8f0;
+            border-radius: 10px;
+            padding: 10px 12px;
+        }
+
+        .summary-item .l {
+            font-size: 0.68rem;
+            color: var(--denim-blue);
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .summary-item .v {
+            font-size: 1rem;
+            font-weight: 800;
+            margin-top: 2px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <nav class="navbar">
+        <a href="/" class="brand"><i class="fas fa-tshirt"></i> HEDTRO JEANS · Backfill Bonus</a>
+        <div class="nav-links">
+            <a href="/admin"><i class="fas fa-user-shield"></i> Admin</a>
+            <a href="/"><i class="fas fa-home"></i> Beranda</a>
+        </div>
+    </nav>
+
+    <div class="container">
+
+        <div class="hero-card">
+            <h1><i class="fas fa-history"></i> Audit & Backfill Bonus Member Lama</h1>
+            <p>Hitung ulang dan terapkan <strong>Bonus Sponsor (Rp 50.000/pendaftaran)</strong> dan
+                <strong>Bonus Pasangan (Rp 25.000/pasang)</strong> untuk member yang sudah terdaftar sebelum perbaikan sistem.
+                Tool ini berjalan dua fase: <strong>Audit (read-only)</strong> untuk melihat hasil perhitungan, lalu
+                <strong>Terapkan Backfill</strong> untuk menulis bonus ke database. Backfill tidak menghitung ulang bonus binary 10 level
+                maupun reward — hanya sponsor & pasangan sesuai permintaan.
+            </p>
+        </div>
+
+        <!-- STATUS -->
+        <div class="stats-grid" id="statusGrid">
+            <div class="stat-box" id="stSchema"><div class="label">Cek Skema Tabel</div><div class="val">Belum dicek</div></div>
+            <div class="stat-box" id="stSettings"><div class="label">Setting Bonus</div><div class="val">Belum dicek</div></div>
+            <div class="stat-box" id="stMembers"><div class="label">Total Member</div><div class="val">-</div></div>
+            <div class="stat-box" id="stVerified"><div class="label">Member Verified</div><div class="val">-</div></div>
+            <div class="stat-box" id="stPending"><div class="label">Pending (lewat verifikasi biasa)</div><div class="val">-</div></div>
+            <div class="stat-box" id="stBackfill"><div class="label">Status Backfill</div><div class="val">Belum ada</div></div>
+        </div>
+
+        <!-- ACTIONS -->
+        <div class="actions">
+            <button class="btn btn-audit" id="btnAudit"><i class="fas fa-search"></i> 1️⃣ Audit & Hitung Ulang (read-only)</button>
+            <button class="btn btn-apply" id="btnApply" disabled><i class="fas fa-check-double"></i> 2️⃣ Terapkan Backfill</button>
+            <button class="btn btn-reset" id="btnReset"><i class="fas fa-undo"></i> Reset Status Backfill</button>
+        </div>
+
+        <!-- NOTICE -->
+        <div id="noticeArea"></div>
+
+        <!-- HASIL AUDIT -->
+        <div id="resultArea" style="display:none;">
+            <div class="summary-grid" id="summaryGrid"></div>
+
+            <div class="card">
+                <h3><i class="fas fa-hand-holding-usd"></i> Rincian Bonus Sponsor (per downline langsung)</h3>
+                <div class="table-wrap"><table><thead><tr><th>Sponsor</th><th>Downline (Verified)</th><th>Seharusnya (Rp 50.000)</th><th>Sudah Dibayar</th><th>Selisih Backfill</th></tr></thead><tbody id="sponsorTableBody"></tbody></table></div>
+                <div id="sponsorNote"></div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-handshake"></i> Rincian Bonus Pasangan (binary pairing)</h3>
+                <div class="table-wrap"><table><thead><tr><th>Upline</th><th>Kaki Kiri</th><th>Kaki Kanan</th><th>Pasangan (min)</th><th>Seharusnya Dibayar</th><th>Sudah Dibayar</th><th>Selisih Backfill</th></tr></thead><tbody id="pairTableBody"></tbody></table></div>
+                <div id="pairNote"></div>
+            </div>
+
+            <div class="card">
+                <h3><i class="fas fa-file-alt"></i> Log Perhitungan</h3>
+                <div class="log-box" id="logBox"></div>
+            </div>
+        </div>
+
+    </div>
+
+    <script>
+        (function () {
+            'use strict';
+
+            var $ = function (id) { return document.getElementById(id); };
+
+            var state = {
+                users: [],
+                txs: [],
+                settings: {},
+                audit: null,
+                running: false
+            };
+
+            function fmt(n) {
+                return 'Rp ' + (Math.round(parseFloat(n) || 0)).toLocaleString('id-ID');
+            }
+
+            function log(msg) {
+                var box = $('logBox');
+                if (box) {
+                    box.textContent += msg + '\n';
+                    box.scrollTop = box.scrollHeight;
+                }
+                console.log('[Backfill]', msg);
+            }
+
+            function userLabel(u) {
+                if (!u) return '-';
+                return (u.fullname || u.username || u.id) + ' (@' + (u.username || '-') + ')';
+            }
+
+            function isSelf(a, b) {
+                if (!a || !b) return false;
+                return String(a).toLowerCase() === String(b).toLowerCase();
+            }
+
+            async function loadAll() {
+                state.users = await window.getTable('users');
+                state.txs = await window.getTable('transactions');
+                state.settings = await window.getSettings();
+            }
+
+            // ===== CEK SKEMA =====
+            function schemaCheck() {
+                var u = (state.users || [])[0];
+                var fields = ['bonus_pasangan', 'left_count', 'right_count', 'paid_pairs'];
+                var missing = [];
+                if (u) {
+                    fields.forEach(function (f) {
+                        if (!Object.prototype.hasOwnProperty.call(u, f)) missing.push(f);
+                    });
+                } else {
+                    return { ok: false, missing: [], noUsers: true };
+                }
+                return { ok: missing.length === 0, missing: missing, noUsers: false };
+            }
+
+            function renderStatus() {
+                var schema = schemaCheck();
+                var stSchema = $('stSchema');
+                if (schema.noUsers) {
+                    stSchema.className = 'stat-box warn';
+                    stSchema.querySelector('.val').textContent = 'Tidak ada user';
+                } else if (schema.ok) {
+                    stSchema.className = 'stat-box ok';
+                    stSchema.querySelector('.val').textContent = 'Kolom OK';
+                } else {
+                    stSchema.className = 'stat-box err';
+                    stSchema.querySelector('.val').textContent = 'HILANG: ' + schema.missing.join(', ');
+                }
+
+                var sponsorAmt = window.getSponsorBonusAmount(state.settings);
+                var pairAmt = window.getPairingBonusAmount(state.settings);
+                $('stSettings').className = 'stat-box ok';
+                $('stSettings').querySelector('.val').textContent = 'Sponsor ' + fmt(sponsorAmt) + ' · Pasangan ' + fmt(pairAmt);
+
+                $('stMembers').querySelector('.val').textContent = (state.users || []).length;
+                var verified = (state.users || []).filter(function (u) { return u.status === 'verified' && u.role !== 'admin'; });
+                var pending = (state.users || []).filter(function (u) { return u.status !== 'verified'; });
+                $('stVerified').querySelector('.val').textContent = verified.length;
+                $('stPending').querySelector('.val').textContent = pending.length;
+
+                var run = state.settings.backfillBonusRun;
+                var stBackfill = $('stBackfill');
+                if (run) {
+                    stBackfill.className = 'stat-box ok';
+                    try {
+                        var r = JSON.parse(run);
+                        stBackfill.querySelector('.val').textContent = 'Selesai ' + (r.runAt ? new Date(r.runAt).toLocaleDateString('id-ID') : '');
+                    } catch (e) {
+                        stBackfill.querySelector('.val').textContent = 'Ada';
+                    }
+                } else {
+                    stBackfill.className = 'stat-box warn';
+                    stBackfill.querySelector('.val').textContent = 'Belum pernah';
+                }
+            }
+
+            // ===== PERHITUNGAN AUDIT (READ-ONLY) =====
+            function computeAudit() {
+                var users = state.users;
+                var txs = state.txs;
+                var sponsorAmt = window.getSponsorBonusAmount(state.settings);
+                var pairAmt = window.getPairingBonusAmount(state.settings);
+
+                var uMap = new Map();
+                users.forEach(function (u) { uMap.set(String(u.id), u); });
+
+                // Order aktivasi (first_order date, fallback created_at)
+                function orderDate(u) {
+                    var fo = u.first_order;
+                    return new Date((fo && (fo.created_at || fo.date)) || u.created_at || u.registered_at || 0).getTime();
+                }
+
+                var verified = users.filter(function (u) { return u.status === 'verified' && u.role !== 'admin'; });
+                var sorted = verified.slice().sort(function (a, b) { return orderDate(a) - orderDate(b); });
+
+                // Sudah dibayar dari transaksi
+                var paidSponsor = new Map(); // sponsorId|buyerId -> amount
+                var paidPair = new Map();    // userId -> amount
+                txs.forEach(function (t) {
+                    var amt = parseFloat(t.amount) || 0;
+                    // Tipe lama 'sponsor' juga dihitung agar tidak dibayar dua kali
+                    if ((t.type === 'bonus_sponsor' || t.type === 'sponsor') && t.user_id && t.from_user_id) {
+                        var k = String(t.user_id) + '|' + String(t.from_user_id);
+                        paidSponsor.set(k, (paidSponsor.get(k) || 0) + amt);
+                    } else if (t.type === 'bonus_pasangan') {
+                        paidPair.set(String(t.user_id), (paidPair.get(String(t.user_id)) || 0) + amt);
+                    }
+                });
+
+                // Reset counter kaki
+                users.forEach(function (u) { u._left = 0; u._right = 0; });
+
+                var missingPosBuyers = 0;
+                var missingPosAncestors = 0;
+                var noParent = 0;
+                var selfSponsor = 0;
+
+                // counter pasangan terhitung (paid + replay)
+                var pairCounter = new Map();
+                users.forEach(function (u) {
+                    pairCounter.set(String(u.id), Math.floor((paidPair.get(String(u.id)) || 0) / pairAmt));
+                });
+
+                var pairEvents = []; // { up, buyer, pairs, totalPairs }
+                var pairFinal = new Map(); // uid -> final pairs
+
+                sorted.forEach(function (buyer) {
+                    var cur = buyer.upline_id || buyer.sponsor_id;
+                    if (!cur) { noParent++; return; }
+
+                    var side = buyer.position;
+                    if (side !== 'left' && side !== 'right') { side = 'left'; missingPosBuyers++; }
+                    var hops = 0;
+                    var seen = new Set([String(buyer.id)]);
+
+                    while (cur && hops < 50) {
+                        var up = uMap.get(String(cur));
+                        if (!up || seen.has(String(cur))) break;
+                        seen.add(String(cur));
+
+                        if (side === 'right') up._right++;
+                        else up._left++;
+
+                        var pairs = Math.min(up._left, up._right);
+                        var accounted = pairCounter.get(String(up.id)) || 0;
+                        if (pairs > accounted) {
+                            pairCounter.set(String(up.id), pairs);
+                            pairEvents.push({ up: up, buyer: buyer, pairs: pairs - accounted, totalPairs: pairs });
+                        }
+
+                        side = up.position;
+                        if (side !== 'left' && side !== 'right') {
+                            side = 'left';
+                            // Hanya hitung sebagai peringatan jika masih ada upline di atasnya
+                            // (node tanpa upline = akar pohon, wajar tanpa posisi)
+                            if (up.upline_id || up.sponsor_id) missingPosAncestors++;
+                        }
+                        cur = up.upline_id || up.sponsor_id;
+                        hops++;
+                    }
+                });
+
+                users.forEach(function (u) {
+                    pairFinal.set(String(u.id), Math.min(u._left || 0, u._right || 0));
+                });
+
+                // Sponsor expected & delta
+                var sponsorRows = [];
+                var totalSponsorDelta = 0;
+                verified.forEach(function (buyer) {
+                    if (!buyer.sponsor_id || isSelf(buyer.id, buyer.sponsor_id)) { selfSponsor++; return; }
+                    var sponsor = uMap.get(String(buyer.sponsor_id));
+                    if (!sponsor) return;
+                    var key = String(sponsor.id) + '|' + String(buyer.id);
+                    var paid = paidSponsor.get(key) || 0;
+                    var delta = Math.max(0, sponsorAmt - paid);
+                    if (delta > 0) {
+                        totalSponsorDelta += delta;
+                        sponsorRows.push({ sponsor: sponsor, buyer: buyer, expected: sponsorAmt, paid: paid, delta: delta });
+                    }
+                });
+
+                // Pairing expected & delta per upline
+                var pairRows = [];
+                var totalPairDelta = 0;
+                var pairByUser = new Map();
+                pairEvents.forEach(function (ev) {
+                    var uid = String(ev.up.id);
+                    if (!pairByUser.has(uid)) pairByUser.set(uid, { up: ev.up, pairs: 0 });
+                    pairByUser.get(uid).pairs += ev.pairs;
+                });
+                pairByUser.forEach(function (row) {
+                    var finalPairs = pairFinal.get(String(row.up.id)) || 0;
+                    var expected = finalPairs * pairAmt;
+                    var paid = paidPair.get(String(row.up.id)) || 0;
+                    var delta = Math.max(0, expected - paid);
+                    if (delta > 0) {
+                        totalPairDelta += delta;
+                        pairRows.push({
+                            up: row.up,
+                            left: row.up._left || 0,
+                            right: row.up._right || 0,
+                            finalPairs: finalPairs,
+                            expected: expected,
+                            paid: paid,
+                            delta: delta
+                        });
+                    }
+                });
+
+                return {
+                    sponsorAmt: sponsorAmt,
+                    pairAmt: pairAmt,
+                    verifiedCount: verified.length,
+                    pendingCount: (state.users || []).filter(function (u) { return u.status !== 'verified'; }).length,
+                    missingPosBuyers: missingPosBuyers,
+                    missingPosAncestors: missingPosAncestors,
+                    noParent: noParent,
+                    selfSponsor: selfSponsor,
+                    sponsorRows: sponsorRows,
+                    pairRows: pairRows,
+                    pairEvents: pairEvents,
+                    pairFinal: pairFinal,
+                    totalSponsorDelta: totalSponsorDelta,
+                    totalPairDelta: totalPairDelta,
+                    schema: schemaCheck()
+                };
+            }
+
+            // ===== RENDER AUDIT =====
+            function renderAudit(a) {
+                $('resultArea').style.display = 'block';
+                $('logBox').textContent = '';
+
+                log('=== AUDIT & HITUNG ULANG BONUS ===');
+                log('Bonus Sponsor: ' + fmt(a.sponsorAmt) + ' per pendaftaran');
+                log('Bonus Pasangan: ' + fmt(a.pairAmt) + ' per pasang');
+                log('Member verified (non-admin): ' + a.verifiedCount);
+                log('Member pending: ' + a.pendingCount + ' (akan diproses saat diverifikasi via sistem baru)');
+                log('Member tanpa posisi (default KIRI): ' + a.missingPosBuyers + ' buyer, ' + a.missingPosAncestors + ' ancestor');
+                log('Member tanpa upline/sponsor (root): ' + a.noParent);
+                log('Sponsor-sendiri dilewati: ' + a.selfSponsor);
+                log('');
+                log('Selisih Bonus Sponsor yang akan dibayar: ' + fmt(a.totalSponsorDelta) + ' (' + a.sponsorRows.length + ' pasangan sponsor-downline)');
+                log('Selisih Bonus Pasangan yang akan dibayar: ' + fmt(a.totalPairDelta) + ' (' + a.pairRows.length + ' upline)');
+                log('Total backfill: ' + fmt(a.totalSponsorDelta + a.totalPairDelta));
+                log('');
+
+                // Summary cards
+                var sg = '';
+                sg += '<div class="summary-item"><div class="l">Sponsor Backfill</div><div class="v plus">' + fmt(a.totalSponsorDelta) + '</div></div>';
+                sg += '<div class="summary-item"><div class="l">Pasangan Backfill</div><div class="v plus">' + fmt(a.totalPairDelta) + '</div></div>';
+                sg += '<div class="summary-item"><div class="l">Total Backfill</div><div class="v plus">' + fmt(a.totalSponsorDelta + a.totalPairDelta) + '</div></div>';
+                sg += '<div class="summary-item"><div class="l">Pasangan Transaksi Baru</div><div class="v">' + a.pairEvents.length + '</div></div>';
+                $('summaryGrid').innerHTML = sg;
+
+                // Sponsor table
+                var sBody = $('sponsorTableBody');
+                if (a.sponsorRows.length === 0) {
+                    sBody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding:16px;" class="muted">Tidak ada selisih sponsor — semua sponsor bonus member verified sudah terbayar sesuai nominal.</td></tr>';
+                } else {
+                    sBody.innerHTML = a.sponsorRows.map(function (r) {
+                        return '<tr><td>' + userLabel(r.sponsor) + '</td><td>' + userLabel(r.buyer) + '</td><td>' + fmt(r.expected) + '</td><td>' + fmt(r.paid) + '</td><td class="plus">' + fmt(r.delta) + '</td></tr>';
+                    }).join('');
+                }
+                $('sponsorNote').innerHTML = a.sponsorRows.length > 0
+                    ? '<div class="notice warn">Member yang sponsor-nya sudah menerima bonus sponsor lama (persen) <strong>tidak dibayar ulang penuh</strong> — hanya selisih sampai Rp 50.000 yang dibayar.</div>'
+                    : '';
+
+                // Pair table
+                var pBody = $('pairTableBody');
+                if (a.pairRows.length === 0) {
+                    pBody.innerHTML = '<tr><td colspan="7" style="text-align:center; padding:16px;" class="muted">Tidak ada selisih pasangan — jaringan sudah seimbang/terbayar.</td></tr>';
+                } else {
+                    pBody.innerHTML = a.pairRows.map(function (r) {
+                        return '<tr><td>' + userLabel(r.up) + '</td><td>' + r.left + '</td><td>' + r.right + '</td><td><strong>' + r.finalPairs + '</strong></td><td>' + fmt(r.expected) + '</td><td>' + fmt(r.paid) + '</td><td class="plus">' + fmt(r.delta) + '</td></tr>';
+                    }).join('');
+                }
+                $('pairNote').innerHTML = '<div class="notice ' + (a.missingPosBuyers + a.missingPosAncestors > 0 ? 'warn' : 'ok') + '">' +
+                    'Counter kaki binary dihitung ulang dari pohon (urutan aktivasi). Member tanpa posisi dianggap <strong>KIRI</strong> — ' + (a.missingPosBuyers + a.missingPosAncestors) + ' kasus ditemukan. ' +
+                    'Bonus binary 10 level & reward TIDAK dihitung ulang (di luar cakupan).</div>';
+            }
+
+            // ===== AUDIT =====
+            $('btnAudit').addEventListener('click', async function () {
+                if (state.running) return;
+                state.running = true;
+                var btn = this;
+                btn.disabled = true;
+                btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Menghitung...';
+                try {
+                    await loadAll();
+                    renderStatus();
+                    var a = computeAudit();
+                    state.audit = a;
+                    renderAudit(a);
+                    var run = state.settings.backfillBonusRun;
+                    $('btnApply').disabled = !!run;
+                } catch (e) {
+                    console.error('Audit error:', e);
+                    $('noticeArea').innerHTML = '<div class="notice err"><i class="fas fa-exclamation-triangle"></i> Gagal memuat data: ' + e.message + ' — pastikan Anda login sebagai admin dan tabel users/transactions/settings bisa diakses.</div>';
+                } finally {
+                    state.running = false;
+                    btn.disabled = false;
+                    btn.innerHTML = '<i class="fas fa-search"></i> 1️⃣ Audit & Hitung Ulang (read-only)';
+                }
+            });
+
+            // ===== APPLY BACKFILL =====
+            async function applyBackfill() {
+                var a = state.audit;
+                if (!a) { alert('Jalankan Audit dulu.'); return; }
+                if (a.schema && a.schema.missing && a.schema.missing.length > 0) {
+                    alert('⚠️ Kolom tabel users belum lengkap: ' + a.schema.missing.join(', ') + '\nJalankan ALTER TABLE terlebih dahulu.');
+                    return;
+                }
+
+                var total = a.totalSponsorDelta + a.totalPairDelta;
+                if (total <= 0) { alert('Tidak ada selisih bonus yang perlu dibayar.'); return; }
+
+                var msg = '⚠️ KONFIRMASI BACKFILL\n\n' +
+                    'Bonus Sponsor: ' + fmt(a.totalSponsorDelta) + ' (' + a.sponsorRows.length + ' transaksi)\n' +
+                    'Bonus Pasangan: ' + fmt(a.totalPairDelta) + ' (' + a.pairEvents.length + ' event pasangan)\n' +
+                    'TOTAL DIBERIKAN KE MEMBER: ' + fmt(total) + '\n\n' +
+                    'Saldo (wallet) member akan bertambah dan transaksi akan dicatat. LANJUTKAN?';
+                if (!confirm(msg)) return;
+
+                state.running = true;
+                $('btnApply').disabled = true;
+                $('btnAudit').disabled = true;
+                log('=== MENERAPKAN BACKFILL ===');
+                log('Total bonus yang akan dicairkan: ' + fmt(total));
+
+                try {
+                    var users = state.users;
+                    var sponsorAmt = a.sponsorAmt;
+                    var pairAmt = a.pairAmt;
+
+                    var upd = new Map(); // uid -> user object (mutated copy)
+                    function getUpd(u) {
+                        if (!upd.has(String(u.id))) {
+                            upd.set(String(u.id), Object.assign({}, u));
+                        }
+                        return upd.get(String(u.id));
+                    }
+
+                    var txIds = [];
+                    function newTx(user, fromUser, type, amount, level, desc) {
+                        var id = (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('tx_' + Date.now() + '_' + Math.floor(Math.random() * 1000));
+                        var d = desc;
+                        var txObj = {
+                            id: id,
+                            user_id: user.id,
+                            from_user_id: fromUser ? fromUser.id : null,
+                            from_username: fromUser ? fromUser.username : null,
+                            from_name: fromUser ? (fromUser.fullname || fromUser.username) : null,
+                            type: type,
+                            amount: amount,
+                            level: level,
+                            desc: d,
+                            description: d,
+                            status: 'success',
+                            date: new Date().toISOString(),
+                            created_at: new Date().toISOString()
+                        };
+                        txIds.push(txObj);
+                        return txObj;
+                    }
+
+                    // 1) Sponsor bonus
+                    var sponsorTxCount = 0;
+                    a.sponsorRows.forEach(function (r) {
+                        var s = getUpd(r.sponsor);
+                        var t = newTx(s, r.buyer, 'bonus_sponsor', r.delta, 1,
+                            '🎁 Bonus Sponsor Rp ' + sponsorAmt.toLocaleString('id-ID') + ' (backfill) dari pendaftaran ' + (r.buyer.fullname || r.buyer.username) + ' (@' + r.buyer.username + ')');
+                        s.bonus_sponsor = (parseFloat(s.bonus_sponsor) || 0) + r.delta;
+                        s.wallet = (parseFloat(s.wallet) || 0) + r.delta;
+                        sponsorTxCount++;
+                    });
+
+                    // 2) Pairing bonus (replay atribusi)
+                    var pairTxCount = 0;
+                    var usersById = new Map();
+                    users.forEach(function (u) { usersById.set(String(u.id), u); });
+
+                    // counter pasangan (paid + backfill) untuk menghindari double-pay dalam replay
+                    var pairCounter = new Map();
+                    users.forEach(function (u) {
+                        var paid = 0;
+                        state.txs.forEach(function (t) {
+                            if (t.type === 'bonus_pasangan' && String(t.user_id) === String(u.id)) paid += (parseFloat(t.amount) || 0);
+                        });
+                        pairCounter.set(String(u.id), Math.floor(paid / pairAmt));
+                    });
+
+                    var paidByUser = new Map(); // uid -> total pair bonus written in this backfill
+                    a.pairEvents.forEach(function (ev) {
+                        var up = ev.up;
+                        var u = getUpd(up);
+                        var accounted = pairCounter.get(String(u.id)) || 0;
+                        if (ev.totalPairs <= accounted) return;
+                        var np = ev.totalPairs - accounted;
+                        pairCounter.set(String(u.id), ev.totalPairs);
+                        var amt = np * pairAmt;
+                        var t = newTx(u, ev.buyer, 'bonus_pasangan', amt, ev.totalPairs,
+                            '👥 Bonus Pasangan ' + np + ' pasang (Rp ' + pairAmt.toLocaleString('id-ID') + '/pasang, backfill) dari aktivasi ' + (ev.buyer.fullname || ev.buyer.username) + ' (@' + ev.buyer.username + ')');
+                        u.bonus_pasangan = (parseFloat(u.bonus_pasangan) || 0) + amt;
+                        u.wallet = (parseFloat(u.wallet) || 0) + amt;
+                        paidByUser.set(String(u.id), (paidByUser.get(String(u.id)) || 0) + amt);
+                        pairTxCount++;
+                    });
+
+                    // 3) Set counter kaki final untuk SEMUA user (agar engine inkremental lanjut konsisten)
+                    users.forEach(function (u) {
+                        var updU = getUpd(u);
+                        updU.left_count = u._left || 0;
+                        updU.right_count = u._right || 0;
+                        updU.paid_pairs = Math.min(u._left || 0, u._right || 0);
+                    });
+
+                    log('Menyimpan ' + upd.size + ' user dan ' + txIds.length + ' transaksi...');
+
+                    // Simpan user
+                    for (var entry of upd.values()) {
+                        await window.upsertRow('users', entry);
+                    }
+
+                    // Simpan transaksi
+                    for (var i = 0; i < txIds.length; i++) {
+                        try { await window.upsertRow('transactions', txIds[i]); } catch (tErr) { console.warn('Tx upsert warning:', tErr); }
+                    }
+
+                    // Tandai status backfill
+                    var runRec = {
+                        runAt: new Date().toISOString(),
+                        sponsorAmount: sponsorAmt,
+                        pairingAmount: pairAmt,
+                        sponsorTx: sponsorTxCount,
+                        pairingTx: pairTxCount,
+                        totalPaid: total
+                    };
+                    await window.upsertRow('settings', { key: 'backfillBonusRun', value: JSON.stringify(runRec) });
+
+                    log('✅ SUKSES! Backfill selesai.');
+                    log('   Bonus Sponsor: ' + fmt(a.totalSponsorDelta) + ' (' + sponsorTxCount + ' tx)');
+                    log('   Bonus Pasangan: ' + fmt(a.totalPairDelta) + ' (' + pairTxCount + ' tx)');
+                    log('   Total dicairkan: ' + fmt(total));
+                    log('   Status backfill disimpan. Jalankan Audit lagi untuk melihat kondisi akhir.');
+
+                    $('noticeArea').innerHTML = '<div class="notice ok"><i class="fas fa-check-circle"></i> <strong>Backfill berhasil!</strong> Total ' + fmt(total) + ' dicairkan (' + sponsorTxCount + ' transaksi sponsor, ' + pairTxCount + ' transaksi pasangan). Saldo member diperbarui. Jalankan Audit untuk verifikasi akhir.</div>';
+
+                    // Refresh & tampilkan status baru
+                    await loadAll();
+                    renderStatus();
+                    state.audit = computeAudit();
+                    renderAudit(state.audit);
+                    $('btnApply').disabled = true;
+                } catch (e) {
+                    console.error('Backfill error:', e);
+                    log('❌ GAGAL: ' + e.message);
+                    $('noticeArea').innerHTML = '<div class="notice err"><i class="fas fa-exclamation-triangle"></i> Backfill gagal: ' + e.message + ' — periksa log di atas. Sebagian data mungkin sudah tersimpan; jalankan Audit ulang untuk melihat status.</div>';
+                } finally {
+                    state.running = false;
+                    $('btnApply').disabled = false;
+                    $('btnAudit').disabled = false;
+                }
+            }
+
+            $('btnApply').addEventListener('click', applyBackfill);
+
+            // ===== RESET STATUS =====
+            $('btnReset').addEventListener('click', async function () {
+                if (!confirm('Reset status backfill? Ini hanya menghapus penanda "sudah backfill", TIDAK menghapus bonus yang sudah dibayar. Gunakan jika ingin menjalankan backfill ulang setelah memperbaiki data.')) return;
+                try {
+                    var { data, error } = await supabase.from('settings').delete().eq('key', 'backfillBonusRun');
+                    if (error) throw error;
+                    await loadAll();
+                    renderStatus();
+                    state.audit = computeAudit();
+                    renderAudit(state.audit);
+                    $('btnApply').disabled = false;
+                    alert('Status backfill direset. Anda dapat menjalankan Audit lalu Terapkan kembali.');
+                } catch (e) {
+                    alert('Gagal reset: ' + e.message);
+                }
+            });
+
+            // Inisialisasi ringan
+            (async function () {
+                try {
+                    await loadAll();
+                    renderStatus();
+                } catch (e) {
+                    console.warn('Init warning:', e);
+                }
+            })();
+        })();
+    </script>
+</body>
+
+</html>
