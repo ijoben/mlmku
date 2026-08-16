@@ -716,7 +716,7 @@ window.calculateBinaryBonus = async function(userId, amount, settings) {
     var buyerName = buyer.fullname || buyer.username;
     
     // PENTING: Bonus Binary diberikan ke UPLINE DI ATAS buyer, BUKAN ke buyer itu sendiri!
-    var currentUserId = buyer.upline_id || buyer.sponsor_id;
+    var currentUserId = buyer.sponsor_id;
     var level = 0;
     var visitedUserIds = new Set([String(buyer.id).toLowerCase(), String(buyer.username).toLowerCase()]);
     
@@ -764,7 +764,7 @@ window.calculateBinaryBonus = async function(userId, amount, settings) {
         }
       }
       
-      currentUserId = upline.upline_id || upline.sponsor_id;
+      currentUserId = upline.sponsor_id;
       level++;
     }
   } catch (e) {
@@ -785,7 +785,7 @@ window.calculatePairingBonus = async function(userId, settings) {
     var buyerName = buyer.fullname || buyer.username;
 
     // Naik ke upline terdekat, sisi kaki ditentukan dari posisi buyer di pohon binary
-    var currentUserId = buyer.upline_id || buyer.sponsor_id;
+    var currentUserId = buyer.sponsor_id;
     var side = buyer.position; // 'left' | 'right'
     var level = 0;
     var visitedUserIds = new Set([String(buyer.id).toLowerCase(), String(buyer.username).toLowerCase()]);
@@ -851,7 +851,7 @@ window.calculatePairingBonus = async function(userId, settings) {
 
       // Naik satu level: sisi upline ini menentukan kaki bagi upline di atasnya
       side = upline.position;
-      currentUserId = upline.upline_id || upline.sponsor_id;
+      currentUserId = upline.sponsor_id;
       level++;
     }
   } catch (e) {
@@ -868,7 +868,7 @@ window.calculateRewardBonus = async function(userId, amount, settings) {
     var buyerName = buyer.fullname || buyer.username;
     
     // PENTING: Bonus Reward diberikan ke UPLINE DI ATAS buyer, BUKAN ke buyer itu sendiri!
-    var currentUserId = buyer.upline_id || buyer.sponsor_id;
+    var currentUserId = buyer.sponsor_id;
     var level = 0;
     var visitedUserIds = new Set([String(buyer.id).toLowerCase(), String(buyer.username).toLowerCase()]);
     
@@ -916,7 +916,7 @@ window.calculateRewardBonus = async function(userId, amount, settings) {
         }
       }
       
-      currentUserId = upline.upline_id || upline.sponsor_id;
+      currentUserId = upline.sponsor_id;
       level++;
     }
   } catch (e) {

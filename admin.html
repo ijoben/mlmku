@@ -3245,7 +3245,7 @@
                             const phone = (u.phone || u.whatsapp || '').toLowerCase();
                             const nik = (u.nik || '').toLowerCase();
                             const idStr = String(u.id || '').toLowerCase();
-                            const sponsor = String(u.sponsor_username || u.sponsor_id || '').toLowerCase();
+                            const sponsor = String(u.sponsor_id || '').toLowerCase();
                             return name.includes(searchQuery) ||
                                 username.includes(searchQuery) ||
                                 email.includes(searchQuery) ||
@@ -3316,11 +3316,10 @@
                             contactHtml += `<a href="https://wa.me/${waClean}" target="_blank" style="font-size:0.75rem; color:#25D366; text-decoration:none; font-weight:600;"><i class="fab fa-whatsapp"></i> ${phoneNum}</a>`;
                         }
 
-                        // Sponsor / Upline HTML
-                        const sp = u.sponsor_username || u.sponsor_id || '-';
-                        const up = u.upline_username || u.upline_id || '-';
+                        // Sponsor / Posisi HTML (upline tidak disimpan — kolomnya tidak ada di tabel users)
+                        const sp = u.sponsor_id || '-';
                         const posText = u.position || u.pos ? (u.position === 'left' || u.pos === 'left' ? ' ◀ Kiri' : ' Kanan ▶') : '';
-                        const spUpHtml = `<div style="font-size:0.78rem;"><strong>Sp:</strong> @${sp}</div><div style="font-size:0.75rem; color:#6a7e9a;">Up: @${up}${posText}</div>`;
+                        const spUpHtml = `<div style="font-size:0.78rem;"><strong>Sp:</strong> @${sp}</div><div style="font-size:0.75rem; color:#6a7e9a;">Posisi: ${posText || '-'}</div>`;
 
                         html += `<tr>
                             <td data-label="Foto">${fotoHtml}</td>
@@ -3372,13 +3371,12 @@
                                 const username = targetUser?.username;
                                 const email = targetUser?.email;
 
-                                // 1. Remove references in downlines (nullify sponsor/upline pointers to prevent FK error)
-                                if (username) {
-                                    try { await supabase.from('users').update({ sponsor_username: null, sponsor_id: null }).eq('sponsor_username', username); } catch (e) { }
-                                    try { await supabase.from('users').update({ upline_username: null, upline_id: null }).eq('upline_username', username); } catch (e) { }
-                                }
+                                // 1. Bersihkan referensi downline (sponsor_id) agar tidak menggantung setelah member dihapus
                                 try { await supabase.from('users').update({ sponsor_id: null }).eq('sponsor_id', userUuid); } catch (e) { }
-                                try { await supabase.from('users').update({ upline_id: null }).eq('upline_id', userUuid); } catch (e) { }
+                                if (username) {
+                                    // Beberapa data lama menyimpan username di sponsor_id — bersihkan juga
+                                    try { await supabase.from('users').update({ sponsor_id: null }).eq('sponsor_id', username); } catch (e) { }
+                                }
 
                                 // 2. Clean up associated tables
                                 try { await supabase.from('orders').delete().eq('user_id', userUuid); } catch (e) { }
@@ -3442,7 +3440,7 @@
                 if (!user) return showToast('Member tidak ditemukan.', 'error');
 
                 const memberIdFormatted = window.formatMemberId ? window.formatMemberId(user, allUsers) : ('HDT-' + String(user.id).padStart(3, '0'));
-                const downlines = (allUsers || []).filter(u => String(u.sponsor_id) === String(user.id) || String(u.sponsor_username) === String(user.username) || String(u.upline_id) === String(user.id));
+                const downlines = (allUsers || []).filter(u => String(u.sponsor_id) === String(user.id));
                 const _mlc = parseFloat(user.left_count) || 0;
                 const _mrc = parseFloat(user.right_count) || 0;
                 const _mmn = Math.min(_mlc, _mrc);
@@ -3477,11 +3475,11 @@
                         </div>
                         <div style="background:#f8fafc; padding:10px 12px; border-radius:8px;">
                             <span style="color:#718096; display:block; font-size:0.75rem;">Sponsor</span>
-                            <strong>@${user.sponsor_username || user.sponsor_id || '-'}</strong>
+                            <strong>@${user.sponsor_id || '-'}</strong>
                         </div>
                         <div style="background:#f8fafc; padding:10px 12px; border-radius:8px;">
-                            <span style="color:#718096; display:block; font-size:0.75rem;">Upline (Posisi)</span>
-                            <strong>@${user.upline_username || user.upline_id || '-'} (${user.position || user.pos || '-'})</strong>
+                            <span style="color:#718096; display:block; font-size:0.75rem;">Posisi Binary</span>
+                            <strong>${user.position || user.pos || '-'}</strong>
                         </div>
                         <div style="background:#f8fafc; padding:10px 12px; border-radius:8px; grid-column:span 2;">
                             <span style="color:#718096; display:block; font-size:0.75rem;">Rekening Bank</span>
@@ -3557,11 +3555,7 @@
                             </div>
                             <div class="form-group">
                                 <label>ID / Username Sponsor</label>
-                                <input type="text" id="mSponsor" value="${isEdit ? (user?.sponsor_username || user?.sponsor_id || '') : ''}">
-                            </div>
-                            <div class="form-group">
-                                <label>ID / Username Upline</label>
-                                <input type="text" id="mUpline" value="${isEdit ? (user?.upline_username || user?.upline_id || '') : ''}">
+                                <input type="text" id="mSponsor" value="${isEdit ? (user?.sponsor_id || '') : ''}">
                             </div>
                             <div class="form-group" style="grid-column: span 2;">
                                 <label>Posisi Binary</label>
@@ -3626,7 +3620,6 @@
                     const password = document.getElementById('mPass') ? document.getElementById('mPass').value.trim() : '';
 
                     const sponsorVal = document.getElementById('mSponsor').value.trim();
-                    const uplineVal = document.getElementById('mUpline').value.trim();
                     const position = document.getElementById('mPosition').value;
 
                     const bankName = document.getElementById('mBankName').value.trim();
@@ -3648,11 +3641,6 @@
                             sponsorUser = (allUsers || []).find(u => String(u.username).toLowerCase() === sponsorVal.toLowerCase() || String(u.id) === sponsorVal);
                         }
 
-                        let uplineUser = null;
-                        if (uplineVal) {
-                            uplineUser = (allUsers || []).find(u => String(u.username).toLowerCase() === uplineVal.toLowerCase() || String(u.id) === uplineVal);
-                        }
-
                         const userDataPayload = {
                             fullname: name,
                             username: username,
@@ -3661,9 +3649,6 @@
                             whatsapp: phone,
                             nik: nik,
                             sponsor_id: sponsorUser ? sponsorUser.id : (sponsorVal || null),
-                            sponsor_username: sponsorUser ? sponsorUser.username : (sponsorVal || null),
-                            upline_id: uplineUser ? uplineUser.id : (uplineVal || null),
-                            upline_username: uplineUser ? uplineUser.username : (uplineVal || null),
                             position: position,
                             bank_name: bankName,
                             bank_account: bankAccount,

@@ -3979,15 +3979,12 @@
       }
 
       // Relasi anak-ke-induk HANYA dianggap valid jika dikonfirmasi dari record si anak sendiri
-      // (sponsor/upline menunjuk ke induk). Kolom left_id/right_id di record induk kadang berisi
-      // nilai lama yang rusak (referensi diri/sponsor) sehingga TIDAK boleh dipercaya mentah-mentah.
+      // (sponsor_id — kolom yang benar-benar ada; upline tidak disimpan). Kolom left_id/right_id
+      // di record induk kadang berisi nilai lama yang rusak (referensi diri/sponsor) sehingga
+      // TIDAK boleh dipercaya mentah-mentah.
       function isConfirmedChild(parentUser, child) {
         return isSameUser(child.sponsor_id, parentUser.id) ||
-               isSameUser(child.sponsor_id, parentUser.username) ||
-               isSameUser(child.upline_id, parentUser.id) ||
-               isSameUser(child.upline_id, parentUser.username) ||
-               isSameUser(child.upline_username, parentUser.username) ||
-               isSameUser(child.upline_username, parentUser.id);
+               isSameUser(child.sponsor_id, parentUser.username);
       }
 
       function findChildId(parentUser, position, _seen) {
@@ -4343,7 +4340,7 @@
 
         // 2. FALLBACK DINAMIS: Jika belum ada record transaksi spesifik tapi totalBonus > 0, hubungkan dengan downline dari allUsers
         if (bonusTxs.length === 0 && totalBonus > 0) {
-          const downlines = (allUsers || []).filter(u => String(u.sponsor_id) === String(currentUser.id) || String(u.upline_id) === String(currentUser.id));
+          const downlines = (allUsers || []).filter(u => String(u.sponsor_id) === String(currentUser.id));
           const directDownlines = (allUsers || []).filter(u => String(u.sponsor_id) === String(currentUser.id));
 
           if (bSponsor > 0 && directDownlines.length > 0) {
@@ -4500,13 +4497,7 @@
 
         const downlines = (allUsers || []).filter(u => 
           isSameUser(u.sponsor_id, currentUser.id) || 
-          isSameUser(u.sponsor_id, currentUser.username) || 
-          isSameUser(u.sponsor_username, currentUser.username) || 
-          isSameUser(u.sponsor_username, currentUser.id) || 
-          isSameUser(u.upline_id, currentUser.id) || 
-          isSameUser(u.upline_id, currentUser.username) || 
-          isSameUser(u.upline_username, currentUser.username) || 
-          isSameUser(u.upline_username, currentUser.id)
+          isSameUser(u.sponsor_id, currentUser.username)
         );
 
         document.getElementById('totalDownlineCount').textContent = downlines.length;
@@ -4537,13 +4528,7 @@
       document.getElementById('nextDownlineBtn').addEventListener('click', () => {
         const downlines = (allUsers || []).filter(u => 
           isSameUser(u.sponsor_id, currentUser.id) || 
-          isSameUser(u.sponsor_id, currentUser.username) || 
-          isSameUser(u.sponsor_username, currentUser.username) || 
-          isSameUser(u.sponsor_username, currentUser.id) || 
-          isSameUser(u.upline_id, currentUser.id) || 
-          isSameUser(u.upline_id, currentUser.username) || 
-          isSameUser(u.upline_username, currentUser.username) || 
-          isSameUser(u.upline_username, currentUser.id)
+          isSameUser(u.sponsor_id, currentUser.username)
         );
         const max = Math.ceil(downlines.length / 10) || 1;
         if (downlineCurrentPage < max) { downlineCurrentPage++; renderDownlineTable(); }
