@@ -2115,6 +2115,13 @@
               <span class="value" id="binaryBonus">0</span>
             </div>
           </div>
+          <div class="stat-mini">
+            <div class="icon-box"><i class="fas fa-handshake"></i></div>
+            <div class="stat-info">
+              <span class="label">Pasangan Bonus</span>
+              <span class="value" id="pairingBonus">0</span>
+            </div>
+          </div>
         </div>
 
         <!-- Kolom 3: Reward + RO -->
@@ -2195,7 +2202,7 @@
           <div style="display: flex; align-items: center; justify-content: space-between;">
             <span class="bonus-label"
               style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus Sponsor
-              (10%)</span>
+              (Rp 50rb)</span>
             <div class="bonus-icon"
               style="width: 32px; height: 32px; border-radius: 50%; background: #e8f5e9; color: #2e7d32; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
               <i class="fas fa-handshake"></i>
@@ -2203,7 +2210,7 @@
           </div>
           <div id="sumBonusSponsor" class="bonus-val"
             style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
-          <div class="bonus-desc" style="font-size: 0.7rem; color: #a0aec0;">Bonus pendaftaran langsung downline</div>
+          <div class="bonus-desc" style="font-size: 0.7rem; color: #a0aec0;">Nominal tetap per pendaftaran downline langsung</div>
         </div>
 
         <!-- BONUS BINARY -->
@@ -2220,7 +2227,24 @@
           </div>
           <div id="sumBonusBinary" class="bonus-val"
             style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
-          <div class="bonus-desc" style="font-size: 0.7rem; color: #a0aec0;">Komisi pasangan 10 level upline</div>
+          <div class="bonus-desc" style="font-size: 0.7rem; color: #a0aec0;">Komisi 10 level upline</div>
+        </div>
+
+        <!-- BONUS PASANGAN -->
+        <div class="bonus-metric-card"
+          style="background: var(--white); border-radius: 14px; padding: 18px; box-shadow: 0 4px 14px rgba(11,26,43,0.05); border: 1.5px solid #e2e8f0; border-top: 4px solid #16a085; display: flex; flex-direction: column; gap: 6px;">
+          <div style="display: flex; align-items: center; justify-content: space-between;">
+            <span class="bonus-label"
+              style="font-size: 0.75rem; font-weight: 800; color: #718096; text-transform: uppercase;">Bonus Pasangan
+              (Rp 25rb/pasang)</span>
+            <div class="bonus-icon"
+              style="width: 32px; height: 32px; border-radius: 50%; background: #e6fffa; color: #16a085; display: flex; align-items: center; justify-content: center; font-size: 0.9rem;">
+              <i class="fas fa-people-arrows"></i>
+            </div>
+          </div>
+          <div id="sumBonusPairing" class="bonus-val"
+            style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
+          <div class="bonus-desc" style="font-size: 0.7rem; color: #a0aec0;">Pasangan kaki kiri & kanan jaringan binary</div>
         </div>
 
         <!-- BONUS REWARD -->
@@ -2961,6 +2985,7 @@
         document.getElementById('walletAmount').textContent = 'Rp ' + (parseFloat(currentUser.wallet) || 0).toLocaleString('id-ID');
         document.getElementById('sponsorBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_sponsor) || 0).toLocaleString('id-ID');
         document.getElementById('binaryBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_binary) || 0).toLocaleString('id-ID');
+        document.getElementById('pairingBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_pasangan) || 0).toLocaleString('id-ID');
         document.getElementById('rewardBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_reward) || 0).toLocaleString('id-ID');
         document.getElementById('roBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_ro) || 0).toLocaleString('id-ID');
 
@@ -4253,12 +4278,14 @@
         if (!currentUser) return;
         const bSponsor = parseFloat(currentUser.bonus_sponsor) || 0;
         const bBinary = parseFloat(currentUser.bonus_binary) || 0;
+        const bPairing = parseFloat(currentUser.bonus_pasangan) || 0;
         const bReward = parseFloat(currentUser.bonus_reward) || 0;
         const bRo = parseFloat(currentUser.bonus_ro) || 0;
-        const totalBonus = bSponsor + bBinary + bReward + bRo;
+        const totalBonus = bSponsor + bBinary + bPairing + bReward + bRo;
 
         const elSponsor = document.getElementById('sumBonusSponsor');
         const elBinary = document.getElementById('sumBonusBinary');
+        const elPairing = document.getElementById('sumBonusPairing');
         const elReward = document.getElementById('sumBonusReward');
         const elRo = document.getElementById('sumBonusRo');
         const elTotal = document.getElementById('sumTotalBonus');
@@ -4266,6 +4293,7 @@
 
         if (elSponsor) elSponsor.textContent = 'Rp ' + bSponsor.toLocaleString('id-ID');
         if (elBinary) elBinary.textContent = 'Rp ' + bBinary.toLocaleString('id-ID');
+        if (elPairing) elPairing.textContent = 'Rp ' + bPairing.toLocaleString('id-ID');
         if (elReward) elReward.textContent = 'Rp ' + bReward.toLocaleString('id-ID');
         if (elRo) elRo.textContent = 'Rp ' + bRo.toLocaleString('id-ID');
         if (elTotal) elTotal.textContent = 'Rp ' + totalBonus.toLocaleString('id-ID');
@@ -4297,6 +4325,7 @@
           t.type === 'ro_bonus' ||
           t.type === 'bonus_sponsor' ||
           t.type === 'bonus_binary' ||
+          t.type === 'bonus_pasangan' ||
           t.type === 'bonus_reward') &&
           !(t.from_user_id && window.isSameUser && window.isSameUser(currentUser.id, t.from_user_id))
         );
@@ -4317,7 +4346,7 @@
                 type: 'bonus_sponsor',
                 level: 1,
                 amount: eachAmt,
-                desc: `🎁 Bonus Sponsor (10%) dari pendaftaran ${d.fullname || d.username} (@${d.username})`,
+                desc: `🎁 Bonus Sponsor Rp 50.000 dari pendaftaran ${d.fullname || d.username} (@${d.username})`,
                 date: d.registered_at || d.created_at || new Date().toISOString()
               });
             });
@@ -4338,6 +4367,20 @@
                 desc: `🌳 Bonus Binary Level ${lvl} dari pasangan jaringan ${d.fullname || d.username} (@${d.username})`,
                 date: d.registered_at || d.created_at || new Date().toISOString()
               });
+            });
+          }
+
+          if (bPairing > 0) {
+            bonusTxs.push({
+              id: 'syn_pair_' + currentUser.id,
+              user_id: currentUser.id,
+              from_name: 'Jaringan Binary',
+              from_username: 'binary',
+              type: 'bonus_pasangan',
+              level: 1,
+              amount: bPairing,
+              desc: `👥 Bonus Pasangan (Rp 25.000/pasang) dari keseimbangan kaki kiri & kanan jaringan`,
+              date: new Date().toISOString()
             });
           }
 
@@ -4392,6 +4435,7 @@
             'bonus_sponsor': '🎁 Bonus Sponsor',
             'binary': '🌳 Bonus Binary',
             'bonus_binary': '🌳 Bonus Binary',
+            'bonus_pasangan': '👥 Bonus Pasangan',
             'reward': '🏆 Bonus Reward',
             'bonus_reward': '🏆 Bonus Reward',
             'ro_bonus': '🔄 Bonus RO',

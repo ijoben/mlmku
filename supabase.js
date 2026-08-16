@@ -123,7 +123,7 @@ window.syncUserWalletWithTransactions = async function(profile) {
       .eq('user_id', profile.id);
 
     if (txs && txs.length > 0) {
-      var bSponsor = 0, bBinary = 0, bReward = 0, bRo = 0, totalWithdrawal = 0;
+      var bSponsor = 0, bBinary = 0, bPairing = 0, bReward = 0, bRo = 0, totalWithdrawal = 0;
       var validTxs = [];
 
       for (var i = 0; i < txs.length; i++) {
@@ -139,17 +139,19 @@ window.syncUserWalletWithTransactions = async function(profile) {
         var amt = parseFloat(t.amount) || 0;
         if (t.type === 'bonus_sponsor') bSponsor += amt;
         else if (t.type === 'bonus_binary') bBinary += amt;
+        else if (t.type === 'bonus_pasangan') bPairing += amt;
         else if (t.type === 'bonus_reward') bReward += amt;
         else if (t.type === 'ro_bonus') bRo += amt;
         else if (t.type === 'withdrawal' && t.status !== 'rejected' && t.status !== 'failed') totalWithdrawal += amt;
       }
 
-      var totalIncome = bSponsor + bBinary + bReward + bRo;
+      var totalIncome = bSponsor + bBinary + bPairing + bReward + bRo;
       var newWallet = Math.max(0, totalIncome - totalWithdrawal);
 
       var changed = false;
       if (parseFloat(profile.bonus_sponsor || 0) !== bSponsor) { profile.bonus_sponsor = bSponsor; changed = true; }
       if (parseFloat(profile.bonus_binary || 0) !== bBinary) { profile.bonus_binary = bBinary; changed = true; }
+      if (parseFloat(profile.bonus_pasangan || 0) !== bPairing) { profile.bonus_pasangan = bPairing; changed = true; }
       if (parseFloat(profile.bonus_reward || 0) !== bReward) { profile.bonus_reward = bReward; changed = true; }
       if (parseFloat(profile.bonus_ro || 0) !== bRo) { profile.bonus_ro = bRo; changed = true; }
       if (parseFloat(profile.wallet || 0) !== newWallet && !profile.wallet_override) { profile.wallet = newWallet; changed = true; }
@@ -578,10 +580,22 @@ window.isBonusAlreadyGiven = async function(userId, fromUserId, type, level) {
   return false;
 };
 
-// 1. Hitung Bonus Sponsor
+// Nominal Bonus Sponsor (default Rp 50.000 per pendaftaran)
+window.getSponsorBonusAmount = function(settings) {
+  var v = parseFloat(settings && settings.sponsorBonusAmount);
+  return (isNaN(v) || v <= 0) ? 50000 : v;
+};
+
+// Nominal Bonus Pasangan / Pairing (default Rp 25.000 per pasang)
+window.getPairingBonusAmount = function(settings) {
+  var v = parseFloat(settings && settings.pairingBonus);
+  return (isNaN(v) || v <= 0) ? 25000 : v;
+};
+
+// 1. Hitung Bonus Sponsor (Nominal Tetap, bukan persen)
 window.calculateSponsorBonus = async function(userId, sponsorId, amount, settings) {
-  var sponsorBonusPercent = parseFloat(settings.sponsorBonus) || 10;
-  var bonusAmount = (amount * sponsorBonusPercent) / 100;
+  var sponsorBonusAmount = window.getSponsorBonusAmount(settings);
+  var bonusAmount = sponsorBonusAmount;
   
   if (bonusAmount <= 0 || !sponsorId || window.isSameUser(userId, sponsorId)) {
     console.log('ℹ️ Sponsor bonus skipped (Invalid amount, missing sponsor, or self-sponsor).');
@@ -605,7 +619,7 @@ window.calculateSponsorBonus = async function(userId, sponsorId, amount, setting
     sponsor.wallet = (parseFloat(sponsor.wallet) || 0) + bonusAmount;
 
     var buyerName = buyer.fullname || buyer.username;
-    var desc = '🎁 Bonus Sponsor (' + sponsorBonusPercent + '%) dari pendaftaran ' + buyerName + ' (@' + buyer.username + ')';
+    var desc = '🎁 Bonus Sponsor Rp ' + sponsorBonusAmount.toLocaleString('id-ID') + ' dari pendaftaran ' + buyerName + ' (@' + buyer.username + ')';
 
     var txObj = {
       id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('tx_' + Date.now() + '_' + Math.floor(Math.random()*1000)),
@@ -696,6 +710,93 @@ window.calculateBinaryBonus = async function(userId, amount, settings) {
     }
   } catch (e) {
     console.error('Error calculating binary bonus:', e);
+  }
+};
+
+// 2b. Hitung Bonus Pasangan (Binary Pairing) - Rp 25.000 per pasang kaki kiri & kanan
+// Dipanggil saat member terverifikasi (first order disetujui).
+// Setiap member baru menambah 1 hitungan pada kaki (left/right) dari SEMUA upline di atasnya,
+// lalu pasangan baru = min(left_count, right_count) - paid_pairs.
+window.calculatePairingBonus = async function(userId, settings) {
+  var pairingBonusAmount = window.getPairingBonusAmount(settings);
+  var MAX_LEVELS = 50;
+  try {
+    var buyer = await window.getUserById(userId);
+    if (!buyer) return;
+    var buyerName = buyer.fullname || buyer.username;
+
+    // Naik ke upline terdekat, sisi kaki ditentukan dari posisi buyer di pohon binary
+    var currentUserId = buyer.upline_id || buyer.sponsor_id;
+    var side = buyer.position; // 'left' | 'right'
+    var level = 0;
+    var visitedUserIds = new Set([String(buyer.id).toLowerCase(), String(buyer.username).toLowerCase()]);
+
+    while (currentUserId && level < MAX_LEVELS) {
+      if (visitedUserIds.has(String(currentUserId).toLowerCase())) break;
+
+      var upline = await window.getUserById(currentUserId);
+      if (!upline || window.isSameUser(upline, buyer)) break;
+
+      visitedUserIds.add(String(upline.id).toLowerCase());
+      if (upline.username) visitedUserIds.add(String(upline.username).toLowerCase());
+
+      // Tambah hitungan kaki sesuai sisi letak member baru
+      if (side === 'left') upline.left_count = (parseFloat(upline.left_count) || 0) + 1;
+      else if (side === 'right') upline.right_count = (parseFloat(upline.right_count) || 0) + 1;
+
+      var leftCount = parseFloat(upline.left_count) || 0;
+      var rightCount = parseFloat(upline.right_count) || 0;
+      var totalPairs = Math.min(leftCount, rightCount);
+      var paidPairs = parseFloat(upline.paid_pairs) || 0;
+      var newPairs = totalPairs - paidPairs;
+
+      if (newPairs > 0) {
+        var bonusAmount = newPairs * pairingBonusAmount;
+        var isDuplicate = await window.isBonusAlreadyGiven(upline.id, buyer.id, 'bonus_pasangan', 1);
+        if (!isDuplicate) {
+          upline.bonus_pasangan = (parseFloat(upline.bonus_pasangan) || 0) + bonusAmount;
+          upline.wallet = (parseFloat(upline.wallet) || 0) + bonusAmount;
+          upline.paid_pairs = totalPairs;
+
+          var desc = '👥 Bonus Pasangan ' + newPairs + ' pasang (Rp ' + pairingBonusAmount.toLocaleString('id-ID') + '/pasang) dari aktivasi ' + buyerName + ' (@' + buyer.username + ')';
+          var txObj = {
+            id: (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : ('tx_' + Date.now() + '_' + Math.floor(Math.random()*1000)),
+            user_id: upline.id,
+            from_user_id: buyer.id,
+            from_username: buyer.username,
+            from_name: buyerName,
+            type: 'bonus_pasangan',
+            amount: bonusAmount,
+            level: totalPairs,
+            desc: desc,
+            description: desc,
+            status: 'success',
+            date: new Date().toISOString(),
+            created_at: new Date().toISOString()
+          };
+
+          upline.transactions = upline.transactions || [];
+          upline.transactions.push(txObj);
+
+          await window.upsertRow('users', upline);
+          try { await window.upsertRow('transactions', txObj); } catch (tErr) {}
+          console.log('✅ Bonus Pasangan Rp' + bonusAmount + ' (' + newPairs + ' pasang) -> Upline: ' + upline.username);
+        }
+      } else {
+        // Sinkronkan paid_pairs agar tetap akurat tanpa double-count
+        if (parseFloat(upline.paid_pairs || 0) !== totalPairs) {
+          upline.paid_pairs = totalPairs;
+          await window.upsertRow('users', upline);
+        }
+      }
+
+      // Naik satu level: sisi upline ini menentukan kaki bagi upline di atasnya
+      side = upline.position;
+      currentUserId = upline.upline_id || upline.sponsor_id;
+      level++;
+    }
+  } catch (e) {
+    console.error('Error calculating pairing bonus:', e);
   }
 };
 
@@ -822,6 +923,9 @@ window.calculateAllBonuses = async function(userId, sponsorId, amount, settings)
   
   // 2. Binary Bonus (10 level)
   await window.calculateBinaryBonus(userId, amount, settings);
+  
+  // 2b. Bonus Pasangan (binary pairing)
+  await window.calculatePairingBonus(userId, settings);
   
   // 3. Reward Bonus (5 level)
   await window.calculateRewardBonus(userId, amount, settings);
@@ -1121,6 +1225,7 @@ window.approveOrderAndDistributeBonuses = async function(orderId) {
         await window.calculateSponsorBonus(buyer.id, buyer.sponsor_id, orderAmount, settings);
       }
       await window.calculateBinaryBonus(buyer.id, orderAmount, settings);
+      await window.calculatePairingBonus(buyer.id, settings);
       await window.calculateRewardBonus(buyer.id, orderAmount, settings);
     } else if (order.type === 'ro') {
       if (buyer.sponsor_id) {

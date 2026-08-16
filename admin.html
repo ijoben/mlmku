@@ -1667,6 +1667,11 @@
                         <div class="value" id="statBinaryBonus">Rp 0</div>
                         <div class="sub">10 level</div>
                     </div>
+                    <div class="stat-card" style="border-left-color: #16a085;"><i class="fas fa-handshake icon-bg"></i>
+                        <div class="label">Bonus Pasangan</div>
+                        <div class="value" id="statPairingBonus">Rp 0</div>
+                        <div class="sub">Binary pairing</div>
+                    </div>
                     <div class="stat-card" style="border-left-color: #e74c3c;"><i class="fas fa-trophy icon-bg"></i>
                         <div class="label">Bonus Reward</div>
                         <div class="value" id="statRewardBonus">Rp 0</div>
@@ -1771,6 +1776,10 @@
                         <div class="label">Bonus Binary</div>
                         <div class="value" id="bonusBinaryTotal">Rp 0</div>
                     </div>
+                    <div class="stat-card" style="border-left-color: #16a085;">
+                        <div class="label">Bonus Pasangan</div>
+                        <div class="value" id="bonusPairingTotal">Rp 0</div>
+                    </div>
                     <div class="stat-card" style="border-left-color: #e74c3c;">
                         <div class="label">Bonus Reward</div>
                         <div class="value" id="bonusRewardTotal">Rp 0</div>
@@ -1784,6 +1793,7 @@
                         <option value="all">Semua Bonus</option>
                         <option value="sponsor">Sponsor</option>
                         <option value="binary">Binary</option>
+                        <option value="pasangan">Pasangan</option>
                         <option value="reward">Reward</option>
                         <option value="ro">RO</option>
                     </select>
@@ -2024,7 +2034,7 @@
                     <button class="sub-tab-btn" data-subtab="subBank">Rekening Bank</button>
                     <button class="sub-tab-btn" data-subtab="subShop">Toko & Member</button>
                     <button class="sub-tab-btn" data-subtab="subSponsor">Sponsor & RO</button>
-                    <button class="sub-tab-btn" data-subtab="subBinary">Binary (10 Level)</button>
+                    <button class="sub-tab-btn" data-subtab="subBinary">Binary & Pasangan</button>
                     <button class="sub-tab-btn" data-subtab="subReward">Reward (5 Level)</button>
                     <button class="sub-tab-btn" data-subtab="subAdminAcc">Kredensial Admin</button>
                 </div>
@@ -2091,8 +2101,8 @@
 
                 <div class="sub-tab-content" id="subSponsor">
                     <div class="settings-card">
-                        <h4><i class="fas fa-percent"></i> Komisi Sponsor & Repeat Order (RO)</h4>
-                        <div class="form-group"><label>Bonus Sponsor (%)</label><input type="number"
+                        <h4><i class="fas fa-hand-holding-usd"></i> Komisi Sponsor & Repeat Order (RO)</h4>
+                        <div class="form-group"><label>Bonus Sponsor (Rp, nominal per pendaftaran)</label><input type="number"
                                 id="setSponsorBonus" /></div>
                         <div class="form-group"><label>Bonus Repeat Order / RO (%)</label><input type="number"
                                 id="setRoBonus" /></div>
@@ -2102,7 +2112,9 @@
 
                 <div class="sub-tab-content" id="subBinary">
                     <div class="settings-card">
-                        <h4><i class="fas fa-sitemap"></i> Komisi Binary (10 Level - %)</h4>
+                        <h4><i class="fas fa-sitemap"></i> Komisi Binary (10 Level - %) & Bonus Pasangan</h4>
+                        <div class="form-group"><label>Bonus Pasangan / Pairing (Rp per pasang kaki kiri-kanan)</label><input
+                                type="number" id="setPairingBonus" /></div>
                         <div class="level-grid">
                             <div class="form-group"><label>Binary Level 1 (%)</label><input type="number"
                                     id="setBinaryL1" step="0.1" /></div>
@@ -2662,11 +2674,12 @@
                     document.getElementById('statTotalTransactions').textContent = 'Rp ' + totalVolume.toLocaleString('id-ID');
 
                     // Hitung statistik bonus dari seluruh member & transaksi
-                    let totalSponsor = 0, totalBinary = 0, totalReward = 0, totalRo = 0;
+                    let totalSponsor = 0, totalBinary = 0, totalPairing = 0, totalReward = 0, totalRo = 0;
 
                     (allUsers || []).forEach(u => {
                         totalSponsor += parseFloat(u.bonus_sponsor) || 0;
                         totalBinary += parseFloat(u.bonus_binary) || 0;
+                        totalPairing += parseFloat(u.bonus_pasangan) || 0;
                         totalReward += parseFloat(u.bonus_reward) || 0;
                         totalRo += parseFloat(u.bonus_ro) || 0;
                     });
@@ -2677,6 +2690,8 @@
                             if (totalSponsor === 0) totalSponsor += amt;
                         } else if (t.type === 'bonus_binary' || t.type === 'binary') {
                             if (totalBinary === 0) totalBinary += amt;
+                        } else if (t.type === 'bonus_pasangan' || t.type === 'pasangan') {
+                            if (totalPairing === 0) totalPairing += amt;
                         } else if (t.type === 'bonus_reward' || t.type === 'reward') {
                             if (totalReward === 0) totalReward += amt;
                         } else if (t.type === 'ro_bonus' || t.type === 'ro') {
@@ -2684,11 +2699,12 @@
                         }
                     });
 
-                    const totalBonus = totalSponsor + totalBinary + totalReward + totalRo;
+                    const totalBonus = totalSponsor + totalBinary + totalPairing + totalReward + totalRo;
 
                     document.getElementById('statTotalBonus').textContent = 'Rp ' + totalBonus.toLocaleString('id-ID');
                     document.getElementById('statSponsorBonus').textContent = 'Rp ' + totalSponsor.toLocaleString('id-ID');
                     document.getElementById('statBinaryBonus').textContent = 'Rp ' + totalBinary.toLocaleString('id-ID');
+                    document.getElementById('statPairingBonus').textContent = 'Rp ' + totalPairing.toLocaleString('id-ID');
                     document.getElementById('statRewardBonus').textContent = 'Rp ' + totalReward.toLocaleString('id-ID');
 
                     // Kumpulkan seluruh riwayat transaksi dari allTransactions, allUsers.transactions, dan allOrders
@@ -2738,9 +2754,9 @@
                         const typeLabel = t.type === 'deposit' ? '💳 Deposit' :
                             (t.type === 'withdraw' ? '💸 Withdraw' :
                                 (t.type === 'order' || t.type === 'ro_purchase' ? '🛒 Order Produk' :
-                                    (t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' || t.type === 'bonus_sponsor' || t.type === 'bonus_binary' || t.type === 'bonus_reward' ? '🎁 Bonus MLM' : '🔄 RO')));
-                        const amountClass = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase' || t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' || t.type === 'bonus_sponsor' || t.type === 'bonus_binary' || t.type === 'bonus_reward') ? 'plus' : 'minus';
-                        const sign = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase' || t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' || t.type === 'bonus_sponsor' || t.type === 'bonus_binary' || t.type === 'bonus_reward') ? '+' : '-';
+                                    (t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' || t.type === 'bonus_sponsor' || t.type === 'bonus_binary' || t.type === 'bonus_pasangan' || t.type === 'bonus_reward' ? '🎁 Bonus MLM' : '🔄 RO')));
+                        const amountClass = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase' || t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' || t.type === 'bonus_sponsor' || t.type === 'bonus_binary' || t.type === 'bonus_pasangan' || t.type === 'bonus_reward') ? 'plus' : 'minus';
+                        const sign = (t.type === 'deposit' || t.type === 'order' || t.type === 'ro_purchase' || t.type === 'bonus' || t.type === 'sponsor' || t.type === 'binary' || t.type === 'reward' || t.type === 'bonus_sponsor' || t.type === 'bonus_binary' || t.type === 'bonus_pasangan' || t.type === 'bonus_reward') ? '+' : '-';
                         const statusText = t.status === 'pending' ? '⏳ Pending' : (t.status === 'success' || t.status === 'processing' || t.status === 'verified' ? '✅ Selesai' : '❌ Gagal');
                         const date = new Date(t.date || t.created_at || Date.now()).toLocaleDateString('id-ID', {
                             day: 'numeric', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit'
@@ -2861,6 +2877,7 @@
                             t.type === 'ro_bonus' ||
                             t.type === 'bonus_sponsor' ||
                             t.type === 'bonus_binary' ||
+                            t.type === 'bonus_pasangan' ||
                             t.type === 'bonus_reward'
                         )) {
                             mapBonusTxs.set(String(t.id), t);
@@ -2878,6 +2895,7 @@
                                 t.type === 'ro_bonus' ||
                                 t.type === 'bonus_sponsor' ||
                                 t.type === 'bonus_binary' ||
+                                t.type === 'bonus_pasangan' ||
                                 t.type === 'bonus_reward'
                             )) {
                                 if (!t.user_id) t.user_id = u.id;
@@ -2885,9 +2903,10 @@
                             }
                         });
 
-                        // 3. Fallback jika user punya bonus_sponsor/binary/reward > 0 tapi belum ada transaksi
+                        // 3. Fallback jika user punya bonus_sponsor/binary/pasangan/reward > 0 tapi belum ada transaksi
                         const bSp = parseFloat(u.bonus_sponsor) || 0;
                         const bBin = parseFloat(u.bonus_binary) || 0;
+                        const bPair = parseFloat(u.bonus_pasangan) || 0;
                         const bRew = parseFloat(u.bonus_reward) || 0;
                         const bRo = parseFloat(u.bonus_ro) || 0;
 
@@ -2913,6 +2932,17 @@
                                 date: u.registered_at || u.created_at || new Date().toISOString()
                             });
                         }
+                        if (bPair > 0 && !Array.from(mapBonusTxs.values()).some(t => String(t.user_id) === String(u.id) && (t.type === 'pasangan' || t.type === 'bonus_pasangan'))) {
+                            mapBonusTxs.set(`syn_pair_${u.id}`, {
+                                id: `syn_pair_${u.id}`,
+                                user_id: u.id,
+                                type: 'bonus_pasangan',
+                                amount: bPair,
+                                status: 'success',
+                                desc: `👥 Bonus Pasangan untuk @${u.username}`,
+                                date: u.registered_at || u.created_at || new Date().toISOString()
+                            });
+                        }
                         if (bRew > 0 && !Array.from(mapBonusTxs.values()).some(t => String(t.user_id) === String(u.id) && (t.type === 'reward' || t.type === 'bonus_reward'))) {
                             mapBonusTxs.set(`syn_rew_${u.id}`, {
                                 id: `syn_rew_${u.id}`,
@@ -2929,7 +2959,7 @@
                     const bonusTransactions = Array.from(mapBonusTxs.values());
 
                     // Hitung total per jenis
-                    let totalSponsor = 0, totalBinary = 0, totalReward = 0;
+                    let totalSponsor = 0, totalBinary = 0, totalPairing = 0, totalReward = 0;
                     let totalAll = 0;
 
                     bonusTransactions.forEach(t => {
@@ -2937,12 +2967,14 @@
                         totalAll += amount;
                         if (t.type === 'sponsor' || t.type === 'bonus_sponsor') totalSponsor += amount;
                         else if (t.type === 'binary' || t.type === 'bonus_binary') totalBinary += amount;
+                        else if (t.type === 'pasangan' || t.type === 'bonus_pasangan') totalPairing += amount;
                         else if (t.type === 'reward' || t.type === 'bonus_reward') totalReward += amount;
                     });
 
                     document.getElementById('bonusTotalPaid').textContent = 'Rp ' + totalAll.toLocaleString('id-ID');
                     document.getElementById('bonusSponsorTotal').textContent = 'Rp ' + totalSponsor.toLocaleString('id-ID');
                     document.getElementById('bonusBinaryTotal').textContent = 'Rp ' + totalBinary.toLocaleString('id-ID');
+                    document.getElementById('bonusPairingTotal').textContent = 'Rp ' + totalPairing.toLocaleString('id-ID');
                     document.getElementById('bonusRewardTotal').textContent = 'Rp ' + totalReward.toLocaleString('id-ID');
 
                     // Filter
@@ -2978,6 +3010,8 @@
                             'bonus_sponsor': '👤 Sponsor',
                             'binary': '🌳 Binary',
                             'bonus_binary': '🌳 Binary',
+                            'pasangan': '👥 Pasangan',
+                            'bonus_pasangan': '👥 Pasangan',
                             'reward': '🏆 Reward',
                             'bonus_reward': '🏆 Reward',
                             'ro_bonus': '🔄 RO Bonus',
@@ -3912,6 +3946,7 @@
                                             await window.calculateSponsorBonus(user.id, user.sponsor_id, pkgPrice, settings);
                                         }
                                         await window.calculateBinaryBonus(user.id, pkgPrice, settings);
+                                        await window.calculatePairingBonus(user.id, settings);
                                         await window.calculateRewardBonus(user.id, pkgPrice, settings);
                                     }
                                 }
@@ -4876,8 +4911,9 @@
                     const users = allUsers;
                     const adminUser = users.find(u => u.role === 'admin');
 
-                    document.getElementById('setSponsorBonus').value = settings.sponsorBonus || 10;
+                    document.getElementById('setSponsorBonus').value = settings.sponsorBonusAmount || 50000;
                     document.getElementById('setRoBonus').value = settings.roBonus || 3;
+                    document.getElementById('setPairingBonus').value = settings.pairingBonus || 25000;
                     const bLevels = settings.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
                     for (let i = 1; i <= 10; i++) {
                         const el = document.getElementById(`setBinaryL${i}`);
@@ -5000,9 +5036,9 @@
             // ========== SETTINGS SAVE HANDLERS ==========
             document.getElementById('saveBonusSettings').addEventListener('click', async function () {
                 try {
-                    const sponsorBonus = parseFloat(document.getElementById('setSponsorBonus').value) || 0;
+                    const sponsorBonusAmount = parseFloat(document.getElementById('setSponsorBonus').value) || 50000;
                     const roBonus = parseFloat(document.getElementById('setRoBonus').value) || 0;
-                    await supabase.from('settings').upsert({ key: 'sponsorBonus', value: sponsorBonus });
+                    await supabase.from('settings').upsert({ key: 'sponsorBonusAmount', value: sponsorBonusAmount });
                     await supabase.from('settings').upsert({ key: 'roBonus', value: roBonus });
                     await refreshAdminData();
                     showToast('Bonus tersimpan.', 'success');
@@ -5019,7 +5055,9 @@
                         const el = document.getElementById(`setBinaryL${i}`);
                         levels.push(parseFloat(el.value) || 0);
                     }
+                    const pairingBonus = parseFloat(document.getElementById('setPairingBonus').value) || 25000;
                     await supabase.from('settings').upsert({ key: 'binaryBonusLevels', value: levels });
+                    await supabase.from('settings').upsert({ key: 'pairingBonus', value: pairingBonus });
                     await refreshAdminData();
                     showToast('Binary tersimpan.', 'success');
                 } catch (e) {

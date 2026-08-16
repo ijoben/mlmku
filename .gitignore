@@ -1,0 +1,7 @@
+# Backup codebases lama (memiliki repo git terpisah di dalamnya)
+Backup/
+
+# File internal Freebuff & log preview
+.freebuff/
+*.log
+*.log.err

@@ -302,6 +302,7 @@
                 try {
                     const elSponsor = document.getElementById('bonusSponsorPreview');
                     const elBinary = document.getElementById('bonusBinaryPreview');
+                    const elPairing = document.getElementById('bonusPairingPreview');
                     const elReward = document.getElementById('bonusRewardPreview');
                     const elSummary = document.getElementById('bonusSummary');
                     if (!elSummary) return;
@@ -312,10 +313,10 @@
                     const settings = await window.getSettings();
                     if (!product) return;
 
-                    const sponsorBonusPercent = parseFloat(settings.sponsorBonus) || 10;
+                    const sponsorBonus = window.getSponsorBonusAmount ? window.getSponsorBonusAmount(settings) : 50000;
+                    const pairingBonus = window.getPairingBonusAmount ? window.getPairingBonusAmount(settings) : 25000;
                     const binaryLevels = settings.binaryBonusLevels || [10, 8, 6, 5, 4, 3, 2, 1.5, 1, 0.5];
                     const rewardLevels = settings.rewardBonusLevels || [5, 4, 3, 2, 1];
-                    const sponsorBonus = (product.price * sponsorBonusPercent) / 100;
                     let binaryBonus = 0;
                     let rewardBonus = 0;
                     binaryLevels.forEach(level => { binaryBonus += (product.price * level) / 100; });
@@ -323,6 +324,7 @@
 
                     if (elSponsor) elSponsor.textContent = 'Rp ' + sponsorBonus.toLocaleString();
                     if (elBinary) elBinary.textContent = 'Rp ' + binaryBonus.toLocaleString();
+                    if (elPairing) elPairing.textContent = 'Rp ' + pairingBonus.toLocaleString();
                     if (elReward) elReward.textContent = 'Rp ' + rewardBonus.toLocaleString();
                     if (elSummary) elSummary.classList.add('show');
                 } catch (e) {

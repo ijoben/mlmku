@@ -282,7 +282,7 @@
         <div class="hero-card">
             <div>
                 <h1><i class="fas fa-vial"></i> Pengujian Sistem Binary & Bonus MLM</h1>
-                <p>Input nama member baru, pilih sponsor dan posisi (Kiri / Kanan). Akun langsung berstatus <strong>VERIFIED</strong> dan seluruh kalkulasi bonus (Sponsor 10%, Binary 10 Level, Reward 5 Level) otomatis dicairkan & dihitung secara real-time!</p>
+                <p>Input nama member baru, pilih sponsor dan posisi (Kiri / Kanan). Akun langsung berstatus <strong>VERIFIED</strong> dan seluruh kalkulasi bonus (Sponsor Rp 50.000, Binary 10 Level, Pasangan Rp 25.000, Reward 5 Level) otomatis dicairkan & dihitung secara real-time!</p>
             </div>
             <div>
                 <button class="btn btn-gold" id="btnSimulate5" style="width: auto; padding: 10px 20px;"><i class="fas fa-bolt"></i> Simulasi 5 Member Berantai</button>
@@ -737,19 +737,22 @@
 
                     logMessage(`💰 Memulai perhitungan bonus untuk order Rp ${packagePrice.toLocaleString('id-ID')}...`, 'gold');
 
-                    // A. Bonus Sponsor
+                    // A. Bonus Sponsor (Nominal)
                     if (sponsorId) {
                         const sponsor = allUsers.find(u => String(u.id) === String(sponsorId));
-                        const sponsorBonusPercent = parseFloat(settings.sponsorBonus) || 10;
-                        const sponsorBonusAmount = (packagePrice * sponsorBonusPercent) / 100;
+                        const sponsorBonusAmount = window.getSponsorBonusAmount ? window.getSponsorBonusAmount(settings) : 50000;
                         
                         await window.calculateSponsorBonus(newUserId, sponsorId, packagePrice, settings);
-                        logMessage(`🎁 <strong>Bonus Sponsor (${sponsorBonusPercent}% = Rp ${sponsorBonusAmount.toLocaleString('id-ID')})</strong> -> Dicairkan ke @${sponsor ? sponsor.username : sponsorId}`, 'success');
+                        logMessage(`🎁 <strong>Bonus Sponsor (Rp ${sponsorBonusAmount.toLocaleString('id-ID')} per pendaftaran)</strong> -> Dicairkan ke @${sponsor ? sponsor.username : sponsorId}`, 'success');
                     }
 
                     // B. Bonus Binary (10 Level)
                     await window.calculateBinaryBonus(newUserId, packagePrice, settings);
                     logMessage(`🌳 <strong>Bonus Binary (10 Level)</strong> -> Berhasil didistribusikan ke jaringan upline di atasnya!`, 'success');
+
+                    // B2. Bonus Pasangan (Binary Pairing)
+                    await window.calculatePairingBonus(newUserId, settings);
+                    logMessage(`👥 <strong>Bonus Pasangan (Rp 25.000/pasang)</strong> -> Berhasil didistribusikan ke upline dengan kaki kiri & kanan seimbang!`, 'success');
 
                     // C. Bonus Reward (5 Level)
                     await window.calculateRewardBonus(newUserId, packagePrice, settings);

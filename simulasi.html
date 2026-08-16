@@ -296,6 +296,7 @@
         }
         .badge-sp { background: #ebf8ff; color: #2b6cb0; border: 1px solid #90cdf4; }
         .badge-bin { background: #f0fff4; color: #276749; border: 1px solid #9ae6b4; }
+        .badge-pair { background: #e6fffa; color: #2c7a7b; border: 1px solid #81e6d9; }
         .badge-rew { background: #fffaf0; color: #dd6b20; border: 1px solid #fbd38d; }
     </style>
 </head>
@@ -364,8 +365,12 @@
                         <input type="number" id="simMemberPrice" class="form-control" value="550000" onchange="runSimulationEngine()">
                     </div>
                     <div class="form-group">
-                        <label>Bonus Sponsor (%)</label>
-                        <input type="number" id="simSponsorPercent" class="form-control" value="10" onchange="runSimulationEngine()">
+                        <label>Bonus Sponsor (Rp, per pendaftaran)</label>
+                        <input type="number" id="simSponsorPercent" class="form-control" value="50000" onchange="runSimulationEngine()">
+                    </div>
+                    <div class="form-group">
+                        <label>Bonus Pasangan (Rp, per pasang kiri-kanan)</label>
+                        <input type="number" id="simPairingBonus" class="form-control" value="25000" onchange="runSimulationEngine()">
                     </div>
                     <div class="form-group">
                         <label>Bonus Binary Level 1 (%)</label>
@@ -462,7 +467,11 @@
                 wallet: 0,
                 bonus_sponsor: 0,
                 bonus_binary: 0,
-                bonus_reward: 0
+                bonus_pasangan: 0,
+                bonus_reward: 0,
+                left_count: 0,
+                right_count: 0,
+                paid_pairs: 0
             }];
             simTransactions = [];
             userCounter = 1;
@@ -503,7 +512,11 @@
                 wallet: 0,
                 bonus_sponsor: 0,
                 bonus_binary: 0,
-                bonus_reward: 0
+                bonus_pasangan: 0,
+                bonus_reward: 0,
+                left_count: 0,
+                right_count: 0,
+                paid_pairs: 0
             };
 
             simUsers.push(newUser);
@@ -531,7 +544,11 @@
                         wallet: 0,
                         bonus_sponsor: 0,
                         bonus_binary: 0,
-                        bonus_reward: 0
+                        bonus_pasangan: 0,
+                        bonus_reward: 0,
+                        left_count: 0,
+                        right_count: 0,
+                        paid_pairs: 0
                     };
                     simUsers.push(leftUser);
                     nextQueue.push(leftUser);
@@ -548,7 +565,11 @@
                         wallet: 0,
                         bonus_sponsor: 0,
                         bonus_binary: 0,
-                        bonus_reward: 0
+                        bonus_pasangan: 0,
+                        bonus_reward: 0,
+                        left_count: 0,
+                        right_count: 0,
+                        paid_pairs: 0
                     };
                     simUsers.push(rightUser);
                     nextQueue.push(rightUser);
@@ -563,7 +584,8 @@
         function runSimulationEngine() {
             // 1. Read Settings
             const pkgPrice = parseFloat(document.getElementById('simMemberPrice').value) || 550000;
-            const spPercent = parseFloat(document.getElementById('simSponsorPercent').value) || 10;
+            const spNominal = parseFloat(document.getElementById('simSponsorPercent').value) || 50000;
+            const pairingAmount = parseFloat(document.getElementById('simPairingBonus').value) || 25000;
             const binL1Percent = parseFloat(document.getElementById('simBinaryL1').value) || 10;
             const rewL1Percent = parseFloat(document.getElementById('simRewardL1').value) || 5;
 
@@ -575,7 +597,11 @@
                 u.wallet = 0;
                 u.bonus_sponsor = 0;
                 u.bonus_binary = 0;
+                u.bonus_pasangan = 0;
                 u.bonus_reward = 0;
+                u.left_count = 0;
+                u.right_count = 0;
+                u.paid_pairs = 0;
             });
             simTransactions = [];
 
@@ -587,7 +613,7 @@
                 if (buyer.sponsor_id && buyer.sponsor_id !== buyer.id) {
                     const sponsor = simUsers.find(u => u.id === buyer.sponsor_id);
                     if (sponsor && sponsor.id !== buyer.id) {
-                        const spAmt = (pkgPrice * spPercent) / 100;
+                        const spAmt = spNominal;
                         sponsor.bonus_sponsor += spAmt;
                         sponsor.wallet += spAmt;
 
@@ -631,6 +657,49 @@
                     }
 
                     currUplineId = upline.upline_id || upline.sponsor_id;
+                    lvl++;
+                }
+
+                // B2. Bonus Pasangan (Binary Pairing) ke SEMUA upline
+                // Setiap member baru menambah 1 hitungan pada kaki (left/right) upline,
+                // pasangan baru = min(left_count, right_count) - paid_pairs
+                let pairUplineId = buyer.upline_id || buyer.sponsor_id;
+                let side = buyer.position;
+                lvl = 0;
+                visited = new Set([buyer.id]);
+
+                while (pairUplineId && lvl < 50) {
+                    if (visited.has(pairUplineId)) break;
+                    const upline = simUsers.find(u => u.id === pairUplineId);
+                    if (!upline || upline.id === buyer.id) break;
+
+                    visited.add(upline.id);
+                    if (side === 'left') upline.left_count = (upline.left_count || 0) + 1;
+                    else if (side === 'right') upline.right_count = (upline.right_count || 0) + 1;
+
+                    const totalPairs = Math.min(upline.left_count || 0, upline.right_count || 0);
+                    const newPairs = totalPairs - (upline.paid_pairs || 0);
+
+                    if (newPairs > 0) {
+                        upline.paid_pairs = totalPairs;
+                        const pairAmt = newPairs * pairingAmount;
+                        upline.bonus_pasangan += pairAmt;
+                        upline.wallet += pairAmt;
+
+                        simTransactions.push({
+                            to: upline.fullname,
+                            type: 'Bonus Pasangan',
+                            badgeClass: 'badge-pair',
+                            level: totalPairs,
+                            from: buyer.fullname,
+                            amount: pairAmt
+                        });
+                    } else {
+                        upline.paid_pairs = totalPairs;
+                    }
+
+                    side = upline.position;
+                    pairUplineId = upline.upline_id || upline.sponsor_id;
                     lvl++;
                 }
 

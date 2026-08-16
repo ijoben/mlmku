@@ -465,8 +465,9 @@
                 const memberPrice = parseFloat(settings.memberPrice) || 550000;
 
                 addLog('📊 Bonus Settings:', 'info');
-                addLog('  Sponsor: ' + settings.sponsorBonus + '%', 'info');
+                addLog('  Sponsor: Rp ' + (window.getSponsorBonusAmount ? window.getSponsorBonusAmount(settings) : 50000).toLocaleString('id-ID') + ' per pendaftaran', 'info');
                 addLog('  Binary: ' + (settings.binaryBonusLevels || [10,8,6,5,4,3,2,1.5,1,0.5]).join(', '), 'info');
+                addLog('  Pasangan: Rp ' + (window.getPairingBonusAmount ? window.getPairingBonusAmount(settings) : 25000).toLocaleString('id-ID') + ' per pasang', 'info');
                 addLog('  Reward: ' + (settings.rewardBonusLevels || [5,4,3,2,1]).join(', '), 'info');
                 addLog('  RO: ' + settings.roBonus + '%', 'info');
 
@@ -479,6 +480,7 @@
                 addLog('💼 Wallet baru: Rp ' + (parseFloat(updatedUser.wallet) || 0).toLocaleString(), 'ok');
                 addLog('  Sponsor Bonus: Rp ' + (parseFloat(updatedUser.bonus_sponsor) || 0).toLocaleString(), 'ok');
                 addLog('  Binary Bonus: Rp ' + (parseFloat(updatedUser.bonus_binary) || 0).toLocaleString(), 'ok');
+                addLog('  Pasangan Bonus: Rp ' + (parseFloat(updatedUser.bonus_pasangan) || 0).toLocaleString(), 'ok');
                 addLog('  Reward Bonus: Rp ' + (parseFloat(updatedUser.bonus_reward) || 0).toLocaleString(), 'ok');
                 addLog('  RO Bonus: Rp ' + (parseFloat(updatedUser.bonus_ro) || 0).toLocaleString(), 'ok');
 
