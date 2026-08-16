@@ -50,11 +50,17 @@ kembali `{"success": true}` jika berhasil.
 ---
 
 ## Langkah 3 — Proteksi saldo (opsional tapi sangat disarankan)
-Hanya setelah Langkah 2 selesai (kedua fungsi berhasil deploy & approve order
-sudah lewat fungsi server), jalankan di SQL Editor:
-`supabase/wallet-guard.sql`
-Trigger ini mengunci kolom saldo/bonus supaya **hanya** bisa diubah dari server
-(Edge Function). Setelah ini, member tidak bisa lagi mengubah saldonya sendiri.
+Jalankan di SQL Editor: `supabase/wallet-guard.sql`
+
+Trigger ini mengunci kolom saldo/bonus supaya **member biasa tidak bisa**
+mengubahnya (misal lewat console browser), tetapi tetap mengizinkan:
+- **admin** (agar panel admin tetap bisa proses deposit/withdraw/verifikasi), dan
+- **service_role** (Edge Function `distribute-bonus` / `backfill-bonus`).
+
+> ⚠️ Jika Anda sudah pernah menjalankan **versi lama** file ini (yang memblokir
+> SEMUA non-service_role), panel admin akan gagal mengubah saldo saat proses
+> deposit/withdraw/verifikasi. Solusinya: jalankan **ulang** file `wallet-guard.sql`
+> versi terbaru — aman (idempotent) dan langsung memperbaiki panel admin.
 
 ---
 

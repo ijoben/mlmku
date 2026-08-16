@@ -1,15 +1,17 @@
 -- ============================================================
--- LANGKAH 2 — Guard Kolom Saldo & Bonus (wajib SETELAH Edge Function)
+-- LANGKAH 3 — Guard Kolom Saldo & Bonus
 -- ============================================================
--- JANGAN jalankan file ini sebelum:
---   1. Edge Function `distribute-bonus` & `backfill-bonus` ter-deploy,
---   2. `window.HEDTRO_BONUS_FUNCTION_URL` diisi di supabase.js, dan
---   3. Semua alur admin (approve order, verifikasi, backfill) sudah
---      memakai fungsi server-side.
+-- Versi ini mengizinkan:
+--   - service_role (Edge Function) — jalur utama pembayaran bonus
+--   - admin (role='admin') — proses deposit/withdraw/verifikasi di panel admin
+-- dan MEMBLOKIR member biasa: member tidak bisa mengubah saldo/bonus
+-- miliknya sendiri (mis. lewat console browser) ataupun milik orang lain.
 --
--- Setelah trigger aktif, kolom saldo/bonus HANYA bisa diubah oleh
--- service_role (dari Edge Function). Update profil lain tetap bisa
--- dilakukan user/admin di kolom non-sensitive.
+-- CATATAN: file ini aman dijalankan ulang (idempotent: DROP TRIGGER IF
+-- EXISTS + CREATE OR REPLACE FUNCTION). Jika Anda sudah menjalankan versi
+-- lama yang "kaku" (blokir semua non-service_role), jalankan ulang versi
+-- ini agar panel admin kembali berfungsi untuk deposit/withdraw/verifikasi.
+--
 -- File ini TIDAK menghapus data member mana pun.
 -- ============================================================
 
@@ -20,18 +22,21 @@ SECURITY DEFINER
 SET search_path = public
 AS $$
 BEGIN
-  IF auth.role() <> 'service_role' AND (
-    NEW.wallet IS DISTINCT FROM OLD.wallet OR
-    NEW.bonus_sponsor IS DISTINCT FROM OLD.bonus_sponsor OR
-    NEW.bonus_binary IS DISTINCT FROM OLD.bonus_binary OR
-    NEW.bonus_pasangan IS DISTINCT FROM OLD.bonus_pasangan OR
-    NEW.bonus_reward IS DISTINCT FROM OLD.bonus_reward OR
-    NEW.bonus_ro IS DISTINCT FROM OLD.bonus_ro OR
-    NEW.left_count IS DISTINCT FROM OLD.left_count OR
-    NEW.right_count IS DISTINCT FROM OLD.right_count OR
-    NEW.paid_pairs IS DISTINCT FROM OLD.paid_pairs
-  ) THEN
-    RAISE EXCEPTION 'Kolom saldo/bonus hanya dapat diubah server-side (service_role).';
+  IF auth.role() <> 'service_role'
+     AND NOT public.is_admin()
+     AND (
+       NEW.wallet IS DISTINCT FROM OLD.wallet OR
+       NEW.bonus_sponsor IS DISTINCT FROM OLD.bonus_sponsor OR
+       NEW.bonus_binary IS DISTINCT FROM OLD.bonus_binary OR
+       NEW.bonus_pasangan IS DISTINCT FROM OLD.bonus_pasangan OR
+       NEW.bonus_reward IS DISTINCT FROM OLD.bonus_reward OR
+       NEW.bonus_ro IS DISTINCT FROM OLD.bonus_ro OR
+       NEW.left_count IS DISTINCT FROM OLD.left_count OR
+       NEW.right_count IS DISTINCT FROM OLD.right_count OR
+       NEW.paid_pairs IS DISTINCT FROM OLD.paid_pairs
+     )
+  THEN
+    RAISE EXCEPTION 'Kolom saldo/bonus hanya dapat diubah oleh admin atau server (service_role).';
   END IF;
   RETURN NEW;
 END;
