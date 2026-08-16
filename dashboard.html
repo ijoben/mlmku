@@ -1383,6 +1383,14 @@
       .tn-badge { font-size: 0.46rem; padding: 1px 5px; }
       .tn-pos-badge { font-size: 0.42rem; padding: 1px 5px; top: -8px; }
       .tree-level-spacer { height: 36px; }
+
+      /* ---- HP: diagram ukuran natural + scroll horizontal — kartu terbaca & rapi ---- */
+      .tree-controls-group { display: none; }
+      .tree-wrapper { overflow-y: auto; }
+      .tree-level-row { align-items: stretch; }
+      .tn-wrap { display: flex; flex-direction: column; align-items: center; min-width: 92px; }
+      .tn-card  { width: 84px; flex: 1 1 auto; box-sizing: border-box; }
+      .tree-level-spacer { height: 36px; }
     }
 
     /* ===== ENHANCED PRODUCT GRID & CARD ===== */
@@ -3913,6 +3921,7 @@
 
       // ========== TREE ==========
       let _networkRealtimeChannel = null;  // track active subscription
+      let _treeRealtimeTimer = null;       // debounce render realtime
 
       // Hitung zoom agar SELURUH lebar pohon muat di area tampil (auto-fit).
       // Lebar natural pohon = lebar baris terlebar (level paling bawah, 2^kedalaman slot).
@@ -3960,11 +3969,28 @@
         computeFitZoom();
         applyTreeZoom();
       });
-      // Redraw & re-center on window resize; bila pohon tiba-tiba lebih lebar dari layar, auto-fit lagi
+      // Redraw & re-center on window resize; bila pohon tiba-tiba lebih lebar dari layar, auto-fit lagi.
+      let _treeLastWrapW = 0;
       window.addEventListener('resize', () => {
+        const container = document.getElementById('treeContainer');
+        if (!container || !container.innerHTML) return;
+        const sec = document.getElementById('sec-network');
+        if (sec && !sec.classList.contains('active')) return;
         const canvas = document.getElementById('treeCanvas');
         if (!canvas) return;
         const wrapper = canvas.closest('.tree-wrapper') || canvas.parentElement;
+        if (window.innerWidth <= 600) {
+          // HP: tetap ukuran natural; pusatkan root lagi hanya jika lebar berubah drastis (rotasi)
+          currentZoom = 1;
+          const wrapW = (wrapper && wrapper.clientWidth) || window.innerWidth;
+          if (_treeLastWrapW > 0 && Math.abs(wrapW - _treeLastWrapW) > 40) {
+            wrapper.scrollLeft = Math.max(0, (canvas.offsetWidth - wrapW) / 2);
+          }
+          _treeLastWrapW = wrapW;
+          requestAnimationFrame(drawTreeConnectors);
+          return;
+        }
+        _treeLastWrapW = (wrapper && wrapper.clientWidth) || window.innerWidth;
         const wrapW = (wrapper && wrapper.clientWidth) || window.innerWidth;
         if ((canvas.offsetWidth || 1) * currentZoom > wrapW) {
           computeFitZoom();
@@ -3985,34 +4011,71 @@
         _origShowSection(sectionId);
       };
 
-      // --- Core render (can be called fresh OR from realtime event) ---
-      async function _fetchAndRenderTree(container, silent = false) {
-        if (!silent) {
-          container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--gold-light); font-weight:700;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Memuat Pohon Jaringan Binary...</div>';
-        }
+      // --- DATA POHON: pakai cache global (allUsers) — TIDAK fetch ulang setiap render. ---
+      // Fetch hanya bila cache kosong; segarkan diam-diam di latar belakang supaya
+      // pohon tidak sering menampilkan "loading".
+      async function _ensureTreeUsers() {
+        if (allUsers && allUsers.length > 0) return allUsers;
         try {
-          // ALWAYS fetch fresh from Supabase — no cache
-          const { data: usersData, error: usersErr } = await window.supabase
-            .from('users')
-            .select('*');
+          const { data: usersData, error: usersErr } = await window.supabase.from('users').select('*');
           if (usersErr) throw usersErr;
           allUsers = usersData || [];
         } catch (e) {
           console.warn('⚠️ Tree fetch error:', e);
-          if (!allUsers || allUsers.length === 0) {
-            container.innerHTML = '<p style="color:#f87171;text-align:center;padding:20px;">Gagal memuat data jaringan. Cek koneksi internet.</p>';
-            return;
-          }
         }
+        return allUsers || [];
+      }
+
+      // Render pohon dari cache — sinkron, tanpa spinner, tanpa fetch.
+      // HP (<=600px): ukuran natural (kartu terbaca) + scroll horizontal, root
+      // dipusatkan saat pertama tampil. Desktop/tablet: auto-fit + tombol zoom.
+      function _renderTreeNow(container, silent) {
+        const isMobile = window.innerWidth <= 600;
         const treeData = buildBinaryTree(currentUser.id, 0, 3);
         const innerHTML = renderBinaryTreeHTML(treeData);
-        container.innerHTML = `<div class="tree-canvas" id="treeCanvas">${innerHTML}</div>`;
-        // Render awal: zoom otomatis agar seluruh pohon pas di layar (HP/tablet/desktop).
-        // Render realtime (silent): pertahankan zoom yang sedang dipakai user.
-        if (!silent) computeFitZoom();
-        applyTreeZoom();
-        // Wait for layout then draw connectors
+        const full = `<div class="tree-canvas" id="treeCanvas">${innerHTML}</div>`;
+        // Tidak ada perubahan struktur — lewati render ulang (hindari flicker/bergetar)
+        if (container.innerHTML === full) return;
+        container.innerHTML = full;
+        if (isMobile) {
+          // Tanpa penyusutan: kartu tetap terbaca, geser horizontal untuk melihat cabang
+          currentZoom = 1;
+          if (!silent) {
+            requestAnimationFrame(() => {
+              const canvasEl = document.getElementById('treeCanvas');
+              const wrapperEl = container.closest('.tree-wrapper');
+              if (canvasEl && wrapperEl) {
+                wrapperEl.scrollLeft = Math.max(0, (canvasEl.offsetWidth - wrapperEl.clientWidth) / 2);
+              }
+            });
+          }
+        } else {
+          // Render awal: zoom otomatis agar seluruh pohon pas di layar (desktop/tablet).
+          // Render realtime (silent): pertahankan zoom yang sedang dipakai user.
+          if (!silent) computeFitZoom();
+          applyTreeZoom();
+        }
         requestAnimationFrame(() => requestAnimationFrame(drawTreeConnectors));
+      }
+
+      async function _fetchAndRenderTree(container, silent = false) {
+        // Update realtime: render langsung dari cache — tanpa spinner & tanpa fetch
+        if (silent) { _renderTreeNow(container, true); return; }
+
+        const hadCache = !!(allUsers && allUsers.length > 0);
+        if (!hadCache) {
+          container.innerHTML = '<div style="text-align:center; padding:30px; color:var(--gold-light); font-weight:700;"><i class="fas fa-spinner fa-spin fa-2x"></i><br><br>Memuat Pohon Jaringan Binary...</div>';
+        }
+        const users = await _ensureTreeUsers();
+        if (!users || users.length === 0) {
+          if (!allUsers || allUsers.length === 0) {
+            container.innerHTML = '<p style="color:#f87171;text-align:center;padding:20px;">Gagal memuat data jaringan. Cek koneksi internet.</p>';
+          }
+          return;
+        }
+        // Tampilkan segera dari cache — tanpa loading, tanpa fetch tambahan.
+        // Kesegaran data dijaga oleh auto-refresh global (30 detik) + realtime.
+        _renderTreeNow(container, false);
       }
 
       async function renderNetwork() {
@@ -4034,13 +4097,23 @@
             .channel('tree-users-realtime-' + Date.now())
             .on('postgres_changes',
               { event: '*', schema: 'public', table: 'users' },
-              async (payload) => {
+              (payload) => {
                 console.log('🔄 Realtime tree update:', payload.eventType, payload.new?.username || payload.old?.id);
+                // Patch cache lokal dari payload (TANPA fetch ulang) agar pohon
+                // tidak sering reload. Render ulang diam-diam, di-debounce.
+                if (payload.new && payload.new.id) {
+                  const idx = (allUsers || []).findIndex(u => String(u.id) === String(payload.new.id));
+                  if (idx >= 0) allUsers[idx] = { ...(allUsers[idx] || {}), ...payload.new };
+                  else allUsers = [...(allUsers || []), payload.new];
+                } else if (payload.eventType === 'DELETE' && payload.old && payload.old.id) {
+                  allUsers = (allUsers || []).filter(u => String(u.id) !== String(payload.old.id));
+                }
                 const cont = document.getElementById('treeContainer');
                 if (!cont) return;
-                // Show live pulse then re-render silently
+                // Show live pulse then re-render silently (debounced)
                 _showLivePulse();
-                await _fetchAndRenderTree(cont, true);
+                if (_treeRealtimeTimer) clearTimeout(_treeRealtimeTimer);
+                _treeRealtimeTimer = setTimeout(() => _renderTreeNow(cont, true), 400);
               }
             )
             .subscribe((status) => {
