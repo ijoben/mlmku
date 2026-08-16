@@ -64,6 +64,16 @@ mengubahnya (misal lewat console browser), tetapi tetap mengizinkan:
 
 ---
 
+## Langkah 4 — Kunci role & saldo awal (SANGAT disarankan)
+Jalankan di SQL Editor: `supabase/guard-role-and-wallet.sql`
+
+Menutup celah RLS: member tidak bisa lagi mengubah `role` miliknya sendiri
+menjadi `admin` (yang bisa membuka semua gerbang admin), dan akun baru tidak
+bisa didaftarkan dengan saldo/bonus awal bukan nol. Aman dijalankan ulang
+(idempotent), tidak menghapus data.
+
+---
+
 ## Perbaiki data binary tree (opsional, jika pohon jaringan tampak aneh)
 Jalankan di SQL Editor: `supabase/fix-binary-tree.sql`
 
