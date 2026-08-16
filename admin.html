@@ -368,6 +368,49 @@
             display: block;
         }
 
+        /* Toggle switch Payment Gateway */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 26px;
+            flex-shrink: 0;
+        }
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+        .switch .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: #cbd5e1;
+            transition: 0.25s;
+            border-radius: 26px;
+        }
+        .switch .slider::before {
+            content: '';
+            position: absolute;
+            height: 20px;
+            width: 20px;
+            left: 3px;
+            bottom: 3px;
+            background: #fff;
+            transition: 0.25s;
+            border-radius: 50%;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        .switch input:checked + .slider {
+            background: #2e7d32;
+        }
+        .switch input:checked + .slider::before {
+            transform: translateX(20px);
+        }
+
         .btn-sm {
             padding: 8px 18px;
             border-radius: 60px;
@@ -2100,6 +2143,19 @@
                             menghasilkan pembayaran simulasi (bisa dicoba member). Mode <strong>live</strong> memakai API
                             Tripay asli (isi API key di Supabase → Edge Functions → Secrets).</p>
 
+                        <!-- Toggle ON/OFF -->
+                        <div style="display:flex; align-items:center; gap:12px; padding:12px 14px; border-radius:10px; border:1px solid #e2e8f0; background:#f8fafc; margin-bottom:14px;">
+                            <label class="switch">
+                                <input type="checkbox" id="pgEnabledToggle" />
+                                <span class="slider"></span>
+                            </label>
+                            <div style="flex:1;">
+                                <div style="font-weight:800; font-size:0.85rem; color:var(--denim-dark);">Payment Gateway</div>
+                                <div style="font-size:0.72rem; color:#718096;">Saat <strong>nonaktif</strong>, tombol "Bayar Online" disembunyikan dari member & pembayaran baru ditolak.</div>
+                            </div>
+                            <span id="pgEnabledBadge" style="font-weight:800; font-size:0.68rem; padding:3px 10px; border-radius:20px; white-space:nowrap;">-</span>
+                        </div>
+
                         <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 14px; align-items: end;">
                             <div class="form-group">
                                 <label><i class="fas fa-toggle-on"></i> Mode Gateway</label>
@@ -2110,7 +2166,7 @@
                             </div>
                             <div>
                                 <button class="btn-sm btn-sm-primary" id="savePgModeBtn"><i class="fas fa-save"></i>
-                                    Simpan Mode</button>
+                                    Simpan</button>
                             </div>
                         </div>
 
@@ -2464,16 +2520,32 @@
                 }
             }
 
+            function renderPgEnabledUI(enabled) {
+                const toggle = document.getElementById('pgEnabledToggle');
+                const badge = document.getElementById('pgEnabledBadge');
+                if (toggle) toggle.checked = !!enabled;
+                if (badge) {
+                    badge.textContent = enabled ? 'AKTIF' : 'NONAKTIF';
+                    badge.style.background = enabled ? '#e8f5e9' : '#fed7d7';
+                    badge.style.color = enabled ? '#2e7d32' : '#c53030';
+                }
+            }
+
             async function refreshPaymentsTab() {
                 try {
                     const cfg = await window.pgConfig();
                     const modeSel = document.getElementById('pgModeSelect');
                     if (modeSel) modeSel.value = cfg.mode === 'live' ? 'live' : 'sandbox';
+                    renderPgEnabledUI(cfg.enabled);
                     const statusEl = document.getElementById('pgConfigStatus');
                     if (statusEl) {
-                        statusEl.innerHTML = cfg.tripayConfigured
-                            ? '<i class="fas fa-check-circle" style="color:#2e7d32;"></i> <strong style="color:#2e7d32;">Kunci Tripay terkonfigurasi</strong> — siap dipakai mode Live. <small>(Pastikan kanal aktif di dashboard Tripay.)</small>'
-                            : '<i class="fas fa-exclamation-triangle" style="color:#d97706;"></i> <strong style="color:#d97706;">Kunci Tripay belum diisi</strong> — gateway berjalan di mode sandbox. Isi env <code>TRIPAY_API_KEY</code>, <code>TRIPAY_PRIVATE_KEY</code>, <code>TRIPAY_MERCHANT_CODE</code> di Supabase → Edge Functions → Secrets, lalu deploy ulang fungsi <code>payment-gateway</code>.';
+                        statusEl.innerHTML =
+                            (cfg.enabled
+                                ? '<i class="fas fa-check-circle" style="color:#2e7d32;"></i> <strong style="color:#2e7d32;">Gateway AKTIF</strong> — member bisa Bayar Online. '
+                                : '<i class="fas fa-ban" style="color:#c53030;"></i> <strong style="color:#c53030;">Gateway NONAKTIF</strong> — tombol Bayar Online disembunyikan & pembayaran baru ditolak. ') +
+                            (cfg.tripayConfigured
+                                ? '<small><i class="fas fa-check-circle" style="color:#2e7d32;"></i> Kunci Tripay terkonfigurasi — siap mode Live.</small>'
+                                : '<small><i class="fas fa-exclamation-triangle" style="color:#d97706;"></i> Kunci Tripay belum diisi — berjalan di mode sandbox.</small>');
                     }
                 } catch (e) {
                     console.warn('pgConfig warning:', e);
@@ -2490,13 +2562,21 @@
 
             document.getElementById('savePgModeBtn')?.addEventListener('click', async function () {
                 const mode = document.getElementById('pgModeSelect').value;
+                const enabled = document.getElementById('pgEnabledToggle').checked;
                 try {
-                    await window.saveSettings({ payment_gateway_mode: mode });
-                    showToast('Mode gateway disimpan: ' + mode.toUpperCase(), 'success');
+                    await window.saveSettings({
+                        payment_gateway_mode: mode,
+                        payment_gateway_enabled: enabled ? '1' : '0'
+                    });
+                    showToast('Payment gateway disimpan: ' + (enabled ? 'AKTIF' : 'NONAKTIF') + ' · Mode ' + mode.toUpperCase(), 'success');
                     await refreshPaymentsTab();
                 } catch (e) {
-                    showToast('Gagal menyimpan mode: ' + e.message, 'error');
+                    showToast('Gagal menyimpan: ' + e.message, 'error');
                 }
+            });
+
+            document.getElementById('pgEnabledToggle')?.addEventListener('change', function () {
+                renderPgEnabledUI(this.checked);
             });
 
             document.getElementById('pgRefreshBtn')?.addEventListener('click', loadPaymentList);

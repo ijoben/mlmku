@@ -2753,6 +2753,9 @@
       let allBankInfo = [];
       let currentZoom = 1;
 
+      // Payment gateway aktif/nonaktif (di-set dari pgConfig saat load)
+      window.__pgEnabled = true;
+
       // Pagination state
       let dashPage = 1;
       let historyCurrentPage = 1;
@@ -3002,8 +3005,12 @@
             window.getProducts().catch(() => []),
             window.getBankInfo().catch(() => []),
             window.getTransactions(currentUser.id).catch(() => []),
-            window.getOrders().catch(() => [])
-          ]).then(([usersData, prodsData, banksData, myTxs, myOrders]) => {
+            window.getOrders().catch(() => []),
+            window.pgConfig().catch(() => null)
+          ]).then(([usersData, prodsData, banksData, myTxs, myOrders, pgCfg]) => {
+            // Payment gateway aktif/nonaktif (dari admin). Default aktif bila tidak
+            // bisa diambil (fungsi belum ter-deploy dll) agar tidak merusak tampilan.
+            window.__pgEnabled = pgCfg ? !!pgCfg.enabled : true;
             allUsers = usersData || [];
             allProducts = prodsData || [];
             allBankInfo = banksData || [];
@@ -3134,7 +3141,7 @@
         if (bannerPayBtn) {
           const fo = currentUser.first_order;
           const paid = fo && ['processing', 'completed', 'shipped', 'paid', 'success', 'verified'].indexOf(String(fo.status || '').toLowerCase()) !== -1;
-          bannerPayBtn.style.display = (currentUser.status !== 'verified' && fo && !paid) ? 'inline-flex' : 'none';
+          bannerPayBtn.style.display = (window.__pgEnabled !== false && currentUser.status !== 'verified' && fo && !paid) ? 'inline-flex' : 'none';
           bannerPayBtn.onclick = function () { window.location.href = 'payment.html?order=' + fo.id; };
         }
 
@@ -3359,7 +3366,7 @@
               </div>
             </div>
 
-            <!-- PAYMENT CHOICE (3 OPSI) -->
+            <!-- PAYMENT CHOICE (3 OPSI; Bayar Online hanya bila gateway aktif) -->
             <div id="roPaymentSelection" style="display:none; margin-top:6px; border-top:2px dashed #cbd5e0; padding-top:8px;">
               <p style="font-weight:800; margin-bottom:8px; font-size:0.78rem; color:var(--denim-dark);"><i class="fas fa-credit-card" style="color:var(--gold-accent);"></i> Pilih Metode Pembayaran:</p>
               <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px;">
@@ -3367,11 +3374,12 @@
                   <span style="font-weight:700;"><i class="fas fa-wallet"></i> Saldo Dompet</span>
                   <span id="roWalletBal" style="font-weight:700; font-size:0.65rem; opacity:0.95; margin-top:2px;">(Rp ${(currentUser.wallet || 0).toLocaleString('id-ID')})</span>
                 </button>
+                ${window.__pgEnabled !== false ? `
                 <button class="btn-sm" id="btnPayGateway" style="background:var(--gold-gradient); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; border-radius:8px; font-size:0.72rem; text-align:center; border:2px solid transparent; width:100%; text-shadow:0 1px 2px rgba(0,0,0,0.25);">
                   <span style="font-weight:800;"><i class="fas fa-qrcode"></i> Bayar Online</span>
                   <span style="font-weight:700; font-size:0.62rem; opacity:0.95; margin-top:2px;">VA · QRIS · E-Wallet</span>
                   <span id="roGatewayTotalVal" style="font-weight:800; font-size:0.65rem; margin-top:2px;">Rp ${price.toLocaleString('id-ID')}</span>
-                </button>
+                </button>` : ''}
                 <button class="btn-sm" id="btnPayBank" style="background:var(--denim-blue); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; border-radius:8px; font-size:0.72rem; text-align:center; border:2px solid transparent; width:100%;">
                   <span style="font-weight:700;"><i class="fas fa-university"></i> Transfer Bank</span>
                   <span id="roBankTotalVal" style="font-weight:800; color:var(--gold-light); font-size:0.65rem; margin-top:2px;">Rp ${(price + uniqueCode).toLocaleString('id-ID')}</span>
@@ -3417,7 +3425,7 @@
           document.getElementById('roPaymentSelection').style.display = 'block';
         };
 
-        const payBtnIds = ['btnPayWallet', 'btnPayGateway', 'btnPayBank'];
+        const payBtnIds = ['btnPayWallet', 'btnPayGateway', 'btnPayBank'].filter(id => !!document.getElementById(id));
         function selectPayBtn(activeId) {
           payBtnIds.forEach(id => {
             const el = document.getElementById(id);
@@ -3436,14 +3444,17 @@
           confirmBtn.style.display = 'inline-flex';
         };
 
-        document.getElementById('btnPayGateway').onclick = function () {
-          selectedMethod = 'gateway';
-          selectPayBtn('btnPayGateway');
-          const confirmBtn = document.getElementById('roModalConfirmBankBtn');
-          confirmBtn.innerHTML = '<i class="fas fa-qrcode"></i> Lanjut Bayar Online';
-          confirmBtn.className = 'btn-sm btn-sm-gold';
-          confirmBtn.style.display = 'inline-flex';
-        };
+        const gatewayBtn = document.getElementById('btnPayGateway');
+        if (gatewayBtn) {
+          gatewayBtn.onclick = function () {
+            selectedMethod = 'gateway';
+            selectPayBtn('btnPayGateway');
+            const confirmBtn = document.getElementById('roModalConfirmBankBtn');
+            confirmBtn.innerHTML = '<i class="fas fa-qrcode"></i> Lanjut Bayar Online';
+            confirmBtn.className = 'btn-sm btn-sm-gold';
+            confirmBtn.style.display = 'inline-flex';
+          };
+        }
 
         document.getElementById('btnPayBank').onclick = function () {
           selectedMethod = 'bank';
@@ -3924,7 +3935,9 @@
           } else if (t.status === 'shipped') {
             actionHtml = `<span style="font-size:0.75rem; color:#b38728; font-weight:800;"><i class="fas fa-shipping-fast"></i> Dikirim</span>`;
           } else if (t.status === 'pending') {
-            actionHtml = `<button class="btn-sm btn-sm-gold" onclick="window.location.href='payment.html?order=${t.id}'" style="padding:4px 10px; font-size:0.68rem;"><i class="fas fa-qrcode"></i> Bayar Sekarang</button>`;
+            actionHtml = (window.__pgEnabled !== false)
+              ? `<button class="btn-sm btn-sm-gold" onclick="window.location.href='payment.html?order=${t.id}'" style="padding:4px 10px; font-size:0.68rem;"><i class="fas fa-qrcode"></i> Bayar Sekarang</button>`
+              : '';
             if (!t.proof_uploaded) {
               actionHtml += `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload('${t.id}', 'ro')" style="padding:4px 10px; font-size:0.68rem;"><i class="fas fa-upload"></i> Upload Bukti</button>`;
             } else {
@@ -5237,6 +5250,11 @@
           allOrders = await window.getOrders();
           allTransactions = await window.getTransactions();
           allBankInfo = await window.getBankInfo();
+          // Refresh status payment gateway (bisa diubah admin kapan saja)
+          window.pgConfig().then(function (pgCfg) {
+            if (pgCfg) window.__pgEnabled = !!pgCfg.enabled;
+          }).catch(function () { window.__pgEnabled = true; });
+
           // Refresh current active section
           const activeSection = document.querySelector('.sidebar .menu-item.active')?.dataset.section || 'dashboard';
           if (activeSection === 'dashboard') renderDashboard();

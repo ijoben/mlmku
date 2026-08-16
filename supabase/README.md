@@ -132,9 +132,13 @@ gateway lewat header `x-internal-key`. Cukup:
 2. Tanpa ini, pembayaran tetap tercatat lunas, tetapi bonus hanya bisa dicairkan
    lewat admin (fungsi lama) — jadi isi agar bonus otomatis cair saat bayar.
 
-## Langkah D — Aktifkan mode Live (opsional)
-- Dashboard admin → **Pengaturan → Payment Gateway** → pilih **Live (Tripay)** →
-  Simpan Mode. (Mode default: sandbox.)
+## Langkah D — Aktifkan / nonaktifkan gateway & mode Live (opsional)
+- Dashboard admin → **Pengaturan → Payment Gateway**:
+  - **Toggle ON/OFF** — matikan kapan saja untuk menyembunyikan tombol
+    "Bayar Online" dari member & menolak pembayaran baru (pembayaran lama tetap
+    bisa dicek/diselesaikan). Setting tersimpan di tabel `settings`
+    (`payment_gateway_enabled`).
+  - **Mode** → pilih **Live (Tripay)** lalu Simpan. (Mode default: sandbox.)
 - Pastikan kanal yang dipakai **aktif** di dashboard merchant Tripay.
 - Webhook/URL callback Tripay diarahkan ke:
   `https://dbfwcsuptitytlposubo.supabase.co/functions/v1/payment-gateway`

@@ -59,8 +59,12 @@ CREATE POLICY "payment_tx_delete_admin" ON public.payment_transactions
   FOR DELETE USING (public.is_admin());
 
 -- ============================================================
--- Setting default mode gateway (sandbox | live)
+-- Setting default gateway: mode (sandbox | live) & aktif/nonaktif
 -- ============================================================
 INSERT INTO public.settings (key, value)
 SELECT 'payment_gateway_mode', 'sandbox'
 WHERE NOT EXISTS (SELECT 1 FROM public.settings WHERE key = 'payment_gateway_mode');
+
+INSERT INTO public.settings (key, value)
+SELECT 'payment_gateway_enabled', '1'
+WHERE NOT EXISTS (SELECT 1 FROM public.settings WHERE key = 'payment_gateway_enabled');

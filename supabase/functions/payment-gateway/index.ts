@@ -221,6 +221,17 @@ async function getMode(client) {
   return "sandbox";
 }
 
+async function getEnabled(client) {
+  try {
+    const { data } = await client.from("settings").select("key,value").eq("key", "payment_gateway_enabled");
+    if (data && data.length > 0) {
+      const v = String(data[0].value);
+      return v !== "0" && v.toLowerCase() !== "false" && v.toLowerCase() !== "off";
+    }
+  } catch (e) { /* default aktif */ }
+  return true;
+}
+
 async function loadOrder(client, orderId) {
   const { data: rows } = await client.from("orders").select("*").eq("id", String(orderId));
   if (rows && rows.length > 0) return rows[0];
@@ -457,14 +468,16 @@ Deno.serve(async (req) => {
     const isAdmin = !!(caller && caller.role === "admin");
 
     const mode = await getMode(client);
+    const enabled = await getEnabled(client);
 
     // ---------- config ----------
     if (requestedAction === "config") {
-      return json({ mode, tripayConfigured, sandbox: mode === "sandbox" });
+      return json({ mode, enabled, tripayConfigured, sandbox: mode === "sandbox" });
     }
 
     // ---------- channels ----------
     if (requestedAction === "channels") {
+      if (!enabled) return json({ mode, enabled: false, channels: [] });
       if (mode === "live" && TRIPAY_API_KEY) {
         const { ok, data } = await tripay("/merchant/payment-channel");
         if (ok && Array.isArray(data.data)) {
@@ -477,6 +490,7 @@ Deno.serve(async (req) => {
 
     // ---------- create ----------
     if (requestedAction === "create") {
+      if (!enabled) return json({ error: "Payment gateway sedang dinonaktifkan oleh admin" }, 403);
       const orderId = body.orderId;
       const channelCode = body.channel;
       if (!orderId || !channelCode) return json({ error: "orderId & channel wajib" }, 400);

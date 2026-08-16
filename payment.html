@@ -747,6 +747,13 @@
           document.getElementById('sandboxRibbon').classList.toggle('hidden', gatewayConfig.mode !== 'sandbox');
           document.getElementById('btnSimulate').classList.toggle('hidden', gatewayConfig.mode !== 'sandbox');
 
+          // Gateway dinonaktifkan oleh admin?
+          if (gatewayConfig.enabled === false) {
+            document.getElementById('errorMsg').innerHTML = 'Pembayaran online (VA / QRIS / E-Wallet) sedang <strong>dinonaktifkan</strong> oleh admin.<br>Silakan gunakan transfer bank manual + upload bukti di dashboard.';
+            show('view-error');
+            return;
+          }
+
           // Order sudah dibayar?
           var paidStatuses = ['processing', 'completed', 'shipped', 'paid', 'success', 'verified'];
           if (paidStatuses.indexOf(String(order.status || '').toLowerCase()) !== -1) {
