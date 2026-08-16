@@ -635,25 +635,11 @@
                     const product = products.find(p => p.id === parseInt(productId));
                     const productPrice = product ? product.price : memberPrice;
                     
-                    // ===== 1. UPDATE BINARY TREE (LEFT_ID / RIGHT_ID) =====
-                    if (sponsorData) {
-                        try {
-                            // Refresh data sponsor terbaru
-                            const freshSponsor = await window.getUserById(sponsorData.id);
-                            if (freshSponsor) {
-                                const updateData = {};
-                                if (position === 'left') {
-                                    updateData.left_id = profile.id;
-                                } else {
-                                    updateData.right_id = profile.id;
-                                }
-                                await window.upsertRow('users', { ...freshSponsor, ...updateData });
-                                console.log(`✅ ${position} position updated for sponsor ${sponsorData.username}`);
-                            }
-                        } catch (treeError) {
-                            console.error('❌ Binary tree update failed:', treeError);
-                        }
-                    }
+                    // ===== CATATAN: penempatan pohon binary TIDAK ditulis manual ke
+                    // left_id/right_id sponsor. RLS hanya mengizinkan member mengubah
+                    // barisnya sendiri, jadi update baris sponsor selalu diblokir.
+                    // Pohon jaringan & mesin bonus menurunkan struktur dari
+                    // sponsor_id + position (sumber kebenaran) secara otomatis.
 
                     // ============================================================
                     // ===== BUAT FIRST ORDER AUTOMATIS (STATUS PENDING) =====
