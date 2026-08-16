@@ -2948,8 +2948,22 @@
           const impersonateId = localStorage.getItem('hedtro_impersonate_user_id');
           const profile = await window.getUserProfile();
           if (!profile) {
-            if (impersonateId) localStorage.removeItem('hedtro_impersonate_user_id');
-            window.location.href = '/login';
+            if (impersonateId) {
+              // Member yang di-impersonasi tidak ditemukan — kembali ke admin
+              localStorage.removeItem('hedtro_impersonate_user_id');
+              window.location.href = '/admin';
+            } else {
+              window.location.href = '/login';
+            }
+            return;
+          }
+          // INVARIANT IMPERSONASI: profil harus milik member yang di-impersonasi.
+          // Kalau tidak cocok (mis. gagal memuat member lalu jatuh ke profil admin),
+          // JANGAN tampilkan data admin dengan banner member — kembali ke admin.
+          if (impersonateId && String(profile.id) !== String(impersonateId)) {
+            console.warn('⚠️ Profil tidak cocok dengan member impersonasi — kembali ke admin.');
+            localStorage.removeItem('hedtro_impersonate_user_id');
+            window.location.href = '/admin';
             return;
           }
           if (profile.role === 'admin' && !impersonateId) {

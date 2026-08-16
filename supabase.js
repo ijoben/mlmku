@@ -242,9 +242,11 @@ window.getUserProfile = async function(ignoreImpersonate = false) {
       console.log('🔑 Impersonating user ID:', impersonateId);
       var impUser = await window.getUserById(impersonateId);
       if (impUser) return await window.syncUserWalletWithTransactions(impUser);
-      // Member tidak ditemukan (id basi / sudah dihapus) — bersihkan state impersonasi
-      // agar tidak stuck menampilkan dashboard admin dengan banner impersonasi.
+      // Member tidak ditemukan (id basi / sudah dihapus / sesi bermasalah).
+      // PENTING: JANGAN lanjut ke jalur sesi (yang mengembalikan profil ADMIN) —
+      // itu penyebab munculnya banner "@admin" saat login as user.
       localStorage.removeItem('hedtro_impersonate_user_id');
+      return null;
     }
 
     var session = await window.getSession();
