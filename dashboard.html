@@ -2120,6 +2120,7 @@
             <div class="stat-info">
               <span class="label">Pasangan Bonus</span>
               <span class="value" id="pairingBonus">0</span>
+              <span class="value-sub" id="pairingCount" style="font-size: 0.65rem; color: #718096; font-weight: 700; margin-top: 2px;">0 pasang</span>
             </div>
           </div>
         </div>
@@ -2244,7 +2245,7 @@
           </div>
           <div id="sumBonusPairing" class="bonus-val"
             style="font-size: 1.35rem; font-weight: 800; color: var(--denim-dark);">Rp 0</div>
-          <div class="bonus-desc" style="font-size: 0.7rem; color: #a0aec0;">Pasangan kaki kiri & kanan jaringan binary</div>
+          <div class="bonus-desc" id="sumPairingCount" style="font-size: 0.7rem; color: #a0aec0;">Pasangan kaki kiri & kanan jaringan binary</div>
         </div>
 
         <!-- BONUS REWARD -->
@@ -2986,6 +2987,12 @@
         document.getElementById('sponsorBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_sponsor) || 0).toLocaleString('id-ID');
         document.getElementById('binaryBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_binary) || 0).toLocaleString('id-ID');
         document.getElementById('pairingBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_pasangan) || 0).toLocaleString('id-ID');
+        const _pLeftC = parseFloat(currentUser.left_count) || 0;
+        const _pRightC = parseFloat(currentUser.right_count) || 0;
+        const _pMin = Math.min(_pLeftC, _pRightC);
+        const _pTotal = _pMin > 0 ? _pMin : (parseFloat(currentUser.paid_pairs) || 0);
+        const _elPairCount = document.getElementById('pairingCount');
+        if (_elPairCount) _elPairCount.textContent = _pTotal + ' pasang · Kiri ' + _pLeftC + ' / Kanan ' + _pRightC;
         document.getElementById('rewardBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_reward) || 0).toLocaleString('id-ID');
         document.getElementById('roBonus').textContent = 'Rp ' + (parseFloat(currentUser.bonus_ro) || 0).toLocaleString('id-ID');
 
@@ -4292,6 +4299,12 @@
         if (elSponsor) elSponsor.textContent = 'Rp ' + bSponsor.toLocaleString('id-ID');
         if (elBinary) elBinary.textContent = 'Rp ' + bBinary.toLocaleString('id-ID');
         if (elPairing) elPairing.textContent = 'Rp ' + bPairing.toLocaleString('id-ID');
+        const _sl = parseFloat(currentUser.left_count) || 0;
+        const _sr = parseFloat(currentUser.right_count) || 0;
+        const _sm = Math.min(_sl, _sr);
+        const _st = _sm > 0 ? _sm : (parseFloat(currentUser.paid_pairs) || 0);
+        const elPairCount = document.getElementById('sumPairingCount');
+        if (elPairCount) elPairCount.textContent = 'Total ' + _st + ' pasang · Kiri ' + _sl + ' / Kanan ' + _sr;
         if (elReward) elReward.textContent = 'Rp ' + bReward.toLocaleString('id-ID');
         if (elRo) elRo.textContent = 'Rp ' + bRo.toLocaleString('id-ID');
         if (elTotal) elTotal.textContent = 'Rp ' + totalBonus.toLocaleString('id-ID');
