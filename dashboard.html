@@ -2926,8 +2926,22 @@
       async function checkAuth() {
         try {
           if (typeof window.showLoadingBar === 'function') window.showLoadingBar();
-          const session = await window.getSession();
+          // Pastikan token sesi masih segar sebelum membaca data — kalau hampir/sudah
+          // kedaluwarsa, refresh otomatis. Kalau refresh gagal, arahkan ke halaman login
+          // dengan pesan jelas (bukan dashboard kosong karena semua permintaan ditolak).
+          let session = null;
+          try {
+            session = window.ensureFreshSession ? await window.ensureFreshSession() : await window.getSession();
+          } catch (e) {
+            console.warn('⚠️ Sesi tidak dapat di-refresh:', e && e.message);
+            const staleImp = localStorage.getItem('hedtro_impersonate_user_id');
+            if (staleImp) localStorage.removeItem('hedtro_impersonate_user_id');
+            window.location.href = '/login';
+            return;
+          }
           if (!session) {
+            const staleImp = localStorage.getItem('hedtro_impersonate_user_id');
+            if (staleImp) localStorage.removeItem('hedtro_impersonate_user_id');
             window.location.href = '/login';
             return;
           }

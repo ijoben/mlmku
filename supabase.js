@@ -176,50 +176,56 @@ window.getCurrentUser = async function() {
 window.syncUserWalletWithTransactions = async function(profile) {
   if (!profile || !profile.id) return profile;
   try {
+    // Riwayat member tersimpan di DUA tempat:
+    //  - kolom JSONB `transactions` di tabel users (deposit, RO, bonus lama)
+    //  - tabel `transactions` (bonus dari sistem server-side / Edge Function / backfill)
+    // Fungsi ini hanya: (1) membersihkan self-bonus rusak, (2) menggabungkan kedua sumber
+    // untuk tampilan. BONUS/WALLET TIDAK boleh dihitung ulang dari baris tabel parsial lalu
+    // ditulis balik ke users — itu MENIMPA data asli member (gejala: "login as user data
+    // kosong"). Nilai tersimpan (bonus_*, wallet) adalah sumber kebenaran yang diperbarui
+    // oleh sistem server-side (Edge Function/backfill/admin).
     var { data: txs } = await supabaseClient
       .from('transactions')
       .select('*')
       .eq('user_id', profile.id);
 
-    if (txs && txs.length > 0) {
-      var bSponsor = 0, bBinary = 0, bPairing = 0, bReward = 0, bRo = 0, totalWithdrawal = 0;
-      var validTxs = [];
+    var validTxs = [];
 
+    if (txs && txs.length > 0) {
       for (var i = 0; i < txs.length; i++) {
         var t = txs[i];
+        // Bersihkan self-bonus (user_id === from_user_id) — data rusak dari sistem lama
         if (t.type && (t.type.startsWith('bonus_') || t.type === 'ro_bonus')) {
           if (t.from_user_id && window.isSameUser(t.user_id, t.from_user_id)) {
             try { await supabaseClient.from('transactions').delete().eq('id', t.id); } catch(e) {}
             continue;
           }
         }
-
         validTxs.push(t);
-        var amt = parseFloat(t.amount) || 0;
-        if (t.type === 'bonus_sponsor') bSponsor += amt;
-        else if (t.type === 'bonus_binary') bBinary += amt;
-        else if (t.type === 'bonus_pasangan') bPairing += amt;
-        else if (t.type === 'bonus_reward') bReward += amt;
-        else if (t.type === 'ro_bonus') bRo += amt;
-        else if (t.type === 'withdrawal' && t.status !== 'rejected' && t.status !== 'failed') totalWithdrawal += amt;
       }
+    }
 
-      var totalIncome = bSponsor + bBinary + bPairing + bReward + bRo;
-      var newWallet = Math.max(0, totalIncome - totalWithdrawal);
-
-      var changed = false;
-      if (parseFloat(profile.bonus_sponsor || 0) !== bSponsor) { profile.bonus_sponsor = bSponsor; changed = true; }
-      if (parseFloat(profile.bonus_binary || 0) !== bBinary) { profile.bonus_binary = bBinary; changed = true; }
-      if (parseFloat(profile.bonus_pasangan || 0) !== bPairing) { profile.bonus_pasangan = bPairing; changed = true; }
-      if (parseFloat(profile.bonus_reward || 0) !== bReward) { profile.bonus_reward = bReward; changed = true; }
-      if (parseFloat(profile.bonus_ro || 0) !== bRo) { profile.bonus_ro = bRo; changed = true; }
-      if (parseFloat(profile.wallet || 0) !== newWallet && !profile.wallet_override) { profile.wallet = newWallet; changed = true; }
-
-      profile.transactions = validTxs;
-
-      if (changed) {
-        try { await window.upsertRow('users', profile); } catch(e) {}
-      }
+    // Gabungkan riwayat JSONB (sumber utama) dengan baris tabel, dedupe by id.
+    // Untuk id yang sama, field status/resi diambil dari baris tabel (lebih baru).
+    if (validTxs.length > 0) {
+      var merged = (profile.transactions || []).slice();
+      var seen = new Set(merged.map(function(x) { return String(x && x.id); }));
+      validTxs.forEach(function(t) {
+        var key = String(t.id);
+        if (seen.has(key)) {
+          for (var j = 0; j < merged.length; j++) {
+            if (String(merged[j] && merged[j].id) === key) {
+              if (t.status) merged[j].status = t.status;
+              if (t.resi) merged[j].resi = t.resi;
+              break;
+            }
+          }
+        } else {
+          seen.add(key);
+          merged.push(t);
+        }
+      });
+      profile.transactions = merged;
     }
   } catch (e) {
     console.warn('syncUserWalletWithTransactions warning:', e);
