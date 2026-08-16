@@ -13,10 +13,11 @@ import { createClient } from "npm:@supabase/supabase-js@2";
 
 const SUPABASE_URL = Deno.env.get("SUPABASE_URL") || "";
 const SERVICE_ROLE = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY") || "";
+const PAYMENT_INTERNAL_KEY = Deno.env.get("PAYMENT_INTERNAL_KEY") || "";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type, x-internal-key",
   "Access-Control-Allow-Methods": "POST, OPTIONS",
 };
 
@@ -261,14 +262,22 @@ Deno.serve(async (req) => {
   try {
     if (!SUPABASE_URL || !SERVICE_ROLE) return json({ error: "Server belum dikonfigurasi (env)" }, 500);
 
+    // Jalur internal: dipanggil oleh fungsi payment-gateway setelah pembayaran
+    // lunas (memakai header x-internal-key yang cocok dengan env).
+    const internalKey = req.headers.get("x-internal-key") || "";
+    const internalAuthorized = !!(internalKey && PAYMENT_INTERNAL_KEY && internalKey === PAYMENT_INTERNAL_KEY);
+
     // Cek caller via JWT
     const authHeader = req.headers.get("Authorization") || "";
     const token = authHeader.replace(/^Bearer\s+/i, "");
-    if (!token) return json({ error: "Unauthorized" }, 401);
-
-    const anonClient = createClient(SUPABASE_URL, SUPABASE_URL && SERVICE_ROLE ? token : "");
-    const { data: { user } } = await anonClient.auth.getUser(token);
-    if (!user) return json({ error: "Unauthorized" }, 401);
+    let user = null;
+    if (!internalAuthorized) {
+      if (!token) return json({ error: "Unauthorized" }, 401);
+      const anonClient = createClient(SUPABASE_URL, SUPABASE_URL && SERVICE_ROLE ? token : "");
+      const { data: { user: u } } = await anonClient.auth.getUser(token);
+      if (!u) return json({ error: "Unauthorized" }, 401);
+      user = u;
+    }
 
     const db = createClient(SUPABASE_URL, SERVICE_ROLE, {
       auth: { autoRefreshToken: false, persistSession: false },
@@ -295,10 +304,11 @@ Deno.serve(async (req) => {
     }
     if (!order) return json({ error: "Pesanan tidak ditemukan" }, 404);
 
-    // Otorisasi: admin boleh approve apa pun; user hanya untuk order miliknya (RO lunas)
-    const caller = await getUserById(db, user.id);
+    // Otorisasi: admin boleh approve apa pun; user hanya untuk order miliknya (RO lunas);
+    // panggilan internal (payment gateway) dianggap terpercaya.
+    const caller = internalAuthorized ? null : await getUserById(db, user.id);
     const isAdmin = !!(caller && caller.role === "admin");
-    if (!isAdmin && !isSameUser(user.id, order.user_id)) {
+    if (!internalAuthorized && !isAdmin && !isSameUser(user.id, order.user_id)) {
       return json({ error: "Forbidden" }, 403);
     }
 

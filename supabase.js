@@ -38,6 +38,68 @@ window.distributeBonusesServer = async function(orderId) {
   return data;
 };
 
+// ============================================================
+// PAYMENT GATEWAY (gaya Tripay)
+// Edge Function: payment-gateway
+// https://<project-ref>.supabase.co/functions/v1/payment-gateway
+// ============================================================
+window.HEDTRO_PAYMENT_FUNCTION_URL = 'https://dbfwcsuptitytlposubo.supabase.co/functions/v1/payment-gateway';
+
+// Helper internal: panggil Edge Function payment-gateway dengan token sesi
+window.pgCall = async function(payload) {
+  var url = window.HEDTRO_PAYMENT_FUNCTION_URL;
+  if (!url) throw new Error('HEDTRO_PAYMENT_FUNCTION_URL belum diisi');
+  var session = await window.ensureFreshSession ? await window.ensureFreshSession() : await window.getSession();
+  if (!session) throw new Error('Tidak ada sesi login');
+  var res = await fetch(url + '?action=' + encodeURIComponent(payload.action || ''), {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + session.access_token,
+      'apikey': SUPABASE_ANON_KEY
+    },
+    body: JSON.stringify(payload)
+  });
+  var data = await res.json().catch(function() { return {}; });
+  if (!res.ok || data.error) throw new Error(data.error || ('HTTP ' + res.status));
+  return data;
+};
+
+// Konfigurasi gateway (mode sandbox/live, status kunci Tripay)
+window.pgConfig = function() {
+  return window.pgCall({ action: 'config' });
+};
+
+// Daftar kanal pembayaran yang tersedia
+window.pgChannels = function() {
+  return window.pgCall({ action: 'channels' });
+};
+
+// Buat pembayaran untuk sebuah order
+window.pgCreatePayment = function(orderId, channel) {
+  return window.pgCall({ action: 'create', orderId: String(orderId), channel: channel });
+};
+
+// Cek status pembayaran (otomatis menandai lunas + mencairkan bonus bila sudah bayar)
+window.pgStatus = function(reference) {
+  return window.pgCall({ action: 'status', reference: String(reference) });
+};
+
+// Cari pembayaran aktif milik sebuah order (tanpa membuat yang baru)
+window.pgFind = function(orderId) {
+  return window.pgCall({ action: 'find', orderId: String(orderId) });
+};
+
+// Simulasikan pembayaran (hanya mode sandbox — untuk demo/testing)
+window.pgSimulate = function(reference) {
+  return window.pgCall({ action: 'simulate', reference: String(reference) });
+};
+
+// Daftar semua pembayaran (khusus admin)
+window.pgList = function() {
+  return window.pgCall({ action: 'list' });
+};
+
 // Cek apakah user yang sedang login ber-role admin
 window.requireAdmin = async function() {
   try {

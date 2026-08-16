@@ -1,0 +1,781 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pembayaran · HEDTRO JEANS</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+  <style>
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    :root {
+      --denim-dark: #0b1a2b;
+      --denim-navy: #15283c;
+      --denim-blue: #2a4b6e;
+      --denim-light: #f0f4f8;
+      --gold-accent: #ff6b00;
+      --gold-light: #fff0e6;
+      --gold-gradient: linear-gradient(135deg, #ff6b00 0%, #ff9100 100%);
+      --cream: #faf8f5;
+      --white: #ffffff;
+      --shadow: 0 8px 24px rgba(11, 26, 43, 0.08);
+      --shadow-lg: 0 16px 32px rgba(11, 26, 43, 0.15);
+      --radius: 16px;
+      --radius-sm: 10px;
+      --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    }
+    body {
+      font-family: 'Plus Jakarta Sans', -apple-system, sans-serif;
+      background: #f4f6f9;
+      color: var(--denim-dark);
+      min-height: 100vh;
+    }
+    a { text-decoration: none; color: inherit; }
+    button { cursor: pointer; font-family: inherit; border: none; background: none; }
+
+    /* NAVBAR */
+    .navbar {
+      background: var(--denim-dark);
+      color: var(--white);
+      padding: 14px 24px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 3px solid var(--gold-accent);
+      box-shadow: var(--shadow);
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+    .navbar .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; font-size: 1.05rem; }
+    .navbar .brand i { color: var(--gold-accent); font-size: 1.3rem; }
+    .nav-btn {
+      background: rgba(255, 255, 255, 0.08);
+      color: var(--cream);
+      padding: 8px 16px;
+      border-radius: 40px;
+      font-size: 0.82rem;
+      font-weight: 600;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    .nav-btn:hover { background: rgba(255, 255, 255, 0.18); color: #fff; }
+
+    .wrap { max-width: 640px; margin: 24px auto; padding: 0 16px; }
+
+    .card {
+      background: var(--white);
+      border-radius: var(--radius);
+      padding: 24px;
+      box-shadow: var(--shadow);
+      border: 1px solid rgba(11, 26, 43, 0.06);
+      margin-bottom: 20px;
+    }
+    .card-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid #e2e8f0;
+    }
+    .card-title { font-size: 1.02rem; font-weight: 800; display: flex; align-items: center; gap: 8px; }
+    .card-title i { color: var(--gold-accent); }
+
+    /* ORDER SUMMARY */
+    .order-summary {
+      background: linear-gradient(135deg, #0f2237 0%, #1a324b 100%);
+      border-radius: var(--radius);
+      padding: 20px 24px;
+      color: #fff;
+      border: 1px solid rgba(255, 107, 0, 0.3);
+      margin-bottom: 20px;
+      position: relative;
+      overflow: hidden;
+    }
+    .order-summary::before {
+      content: '';
+      position: absolute;
+      top: -40%;
+      right: -5%;
+      width: 160px; height: 160px;
+      background: radial-gradient(circle, rgba(255, 107, 0, 0.18) 0%, rgba(255, 255, 255, 0) 70%);
+    }
+    .order-summary .os-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(255,255,255,0.5); font-weight: 700; }
+    .order-summary .os-num { font-size: 1.15rem; font-weight: 800; margin-bottom: 8px; letter-spacing: 0.4px; }
+    .order-summary .os-row { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 6px; position: relative; z-index: 1; }
+    .order-summary .os-name { font-size: 0.85rem; opacity: 0.9; }
+    .order-summary .os-amount { font-size: 1.7rem; font-weight: 800; color: #ffb45e; }
+
+    /* CHANNEL GRID */
+    .channel-group-label {
+      font-size: 0.72rem;
+      font-weight: 800;
+      text-transform: uppercase;
+      letter-spacing: 0.6px;
+      color: #718096;
+      margin: 18px 4px 8px;
+    }
+    .channel-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+    @media (max-width: 480px) { .channel-grid { grid-template-columns: 1fr; } }
+    .channel-item {
+      border: 1.5px solid #e2e8f0;
+      border-radius: 12px;
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: var(--transition);
+      background: #fff;
+      text-align: left;
+    }
+    .channel-item:hover { border-color: var(--gold-accent); transform: translateY(-2px); box-shadow: var(--shadow); }
+    .channel-item .ch-icon {
+      width: 42px; height: 42px;
+      border-radius: 10px;
+      background: var(--denim-light);
+      color: var(--denim-blue);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .channel-item .ch-name { font-weight: 800; font-size: 0.85rem; color: var(--denim-dark); }
+    .channel-item .ch-desc { font-size: 0.68rem; color: #718096; margin-top: 2px; }
+    .channel-item .ch-badge {
+      margin-left: auto;
+      font-size: 0.6rem;
+      font-weight: 800;
+      color: #2e7d32;
+      background: #e8f5e9;
+      padding: 2px 8px;
+      border-radius: 20px;
+      white-space: nowrap;
+    }
+
+    /* PAYMENT INSTRUCTION */
+    .pay-amount-box {
+      background: var(--denim-dark);
+      border-radius: 14px;
+      padding: 18px;
+      color: #fff;
+      text-align: center;
+      margin-bottom: 16px;
+      border: 1px solid rgba(255, 107, 0, 0.4);
+    }
+    .pay-amount-box .pa-label { font-size: 0.68rem; text-transform: uppercase; letter-spacing: 0.8px; color: rgba(255,255,255,0.5); font-weight: 700; }
+    .pay-amount-box .pa-val { font-size: 1.9rem; font-weight: 800; color: #ffb45e; letter-spacing: -0.5px; }
+    .pay-amount-box .pa-copy {
+      margin-top: 10px;
+      background: var(--gold-gradient);
+      color: #fff !important;
+      border: none;
+      padding: 8px 18px;
+      border-radius: 40px;
+      font-weight: 800;
+      font-size: 0.8rem;
+      text-shadow: 0 1px 2px rgba(0, 0, 0, 0.25);
+    }
+
+    .code-box {
+      background: #f8fafc;
+      border: 1.5px dashed #cbd5e0;
+      border-radius: 12px;
+      padding: 14px;
+      text-align: center;
+      margin-bottom: 14px;
+    }
+    .code-box .cb-label { font-size: 0.7rem; color: #718096; font-weight: 700; margin-bottom: 6px; }
+    .code-box .cb-val {
+      font-size: 1.5rem;
+      font-weight: 800;
+      color: var(--denim-dark);
+      font-family: 'Courier New', monospace;
+      letter-spacing: 1.5px;
+      word-break: break-all;
+    }
+    .code-box .cb-copy {
+      margin-top: 10px;
+      background: var(--denim-blue);
+      color: #fff;
+      padding: 7px 16px;
+      border-radius: 40px;
+      font-size: 0.75rem;
+      font-weight: 700;
+    }
+
+    .qris-box { text-align: center; margin-bottom: 14px; }
+    .qris-box .qr-frame {
+      display: inline-block;
+      background: #fff;
+      border: 1.5px solid #e2e8f0;
+      border-radius: 14px;
+      padding: 14px;
+      box-shadow: var(--shadow);
+    }
+    .qris-box .qr-note { font-size: 0.72rem; color: #718096; margin-top: 8px; }
+
+    .steps-box { margin: 16px 0; }
+    .steps-box .step {
+      display: flex; gap: 12px; align-items: flex-start;
+      margin-bottom: 12px;
+      font-size: 0.85rem;
+      line-height: 1.5;
+    }
+    .steps-box .step-num {
+      width: 26px; height: 26px;
+      border-radius: 50%;
+      background: var(--gold-accent);
+      color: #fff;
+      font-weight: 800;
+      font-size: 0.8rem;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+      margin-top: 1px;
+    }
+    .steps-box .step b { color: var(--denim-navy); }
+
+    .countdown-box {
+      background: #fff8e7;
+      border: 1px solid #ffe8a1;
+      border-radius: 10px;
+      padding: 10px 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 0.8rem;
+      font-weight: 700;
+      color: #744210;
+      margin-bottom: 14px;
+    }
+    .countdown-box i { color: #d97706; }
+    .countdown-box #countdownText { font-family: 'Courier New', monospace; font-weight: 800; color: #d97706; }
+
+    .pay-actions { display: flex; gap: 10px; flex-wrap: wrap; }
+    .btn {
+      padding: 12px 20px;
+      border-radius: 40px;
+      font-weight: 800;
+      font-size: 0.88rem;
+      transition: var(--transition);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      flex: 1;
+    }
+    .btn:disabled { opacity: 0.6; cursor: not-allowed; }
+    .btn-gold { background: var(--gold-gradient); color: #fff !important; text-shadow: 0 1px 2px rgba(0,0,0,0.25); box-shadow: 0 4px 14px rgba(255, 107, 0, 0.35); }
+    .btn-gold:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(255, 107, 0, 0.5); }
+    .btn-green { background: #2e7d32; color: #fff; }
+    .btn-green:hover { background: #1b5e20; }
+    .btn-blue { background: var(--denim-blue); color: #fff; }
+    .btn-blue:hover { background: var(--denim-dark); }
+    .btn-ghost { background: #f1f5f9; color: var(--denim-navy); }
+
+    /* SUCCESS */
+    .success-box { text-align: center; padding: 30px 10px; }
+    .success-box .succ-icon {
+      width: 84px; height: 84px;
+      border-radius: 50%;
+      background: #e8f5e9;
+      color: #2e7d32;
+      font-size: 2.4rem;
+      display: flex; align-items: center; justify-content: center;
+      margin: 0 auto 18px;
+      border: 3px solid #a5d6a7;
+    }
+    .success-box h2 { font-size: 1.3rem; font-weight: 800; margin-bottom: 8px; }
+    .success-box p { color: #718096; font-size: 0.88rem; line-height: 1.6; max-width: 420px; margin: 0 auto 20px; }
+
+    .loading-box { text-align: center; padding: 60px 20px; color: #718096; }
+    .loading-box .spin { font-size: 2rem; color: var(--gold-accent); margin-bottom: 12px; }
+
+    .error-box { text-align: center; padding: 40px 20px; }
+    .error-box .err-icon { font-size: 2.6rem; color: #e53e3e; margin-bottom: 12px; }
+    .error-box h3 { font-weight: 800; margin-bottom: 8px; }
+    .error-box p { color: #718096; font-size: 0.85rem; margin-bottom: 18px; }
+
+    .sandbox-ribbon {
+      background: linear-gradient(135deg, #7c3aed, #6d28d9);
+      color: #fff;
+      text-align: center;
+      font-size: 0.68rem;
+      font-weight: 800;
+      letter-spacing: 0.5px;
+      padding: 5px;
+      text-transform: uppercase;
+    }
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%) translateY(80px);
+      background: var(--denim-dark);
+      color: #fff;
+      padding: 12px 22px;
+      border-radius: 40px;
+      font-size: 0.82rem;
+      font-weight: 700;
+      box-shadow: var(--shadow-lg);
+      transition: transform 0.3s ease;
+      z-index: 3000;
+      border-left: 4px solid var(--gold-accent);
+    }
+    .toast.show { transform: translateX(-50%) translateY(0); }
+
+    .hidden { display: none !important; }
+  </style>
+</head>
+
+<body>
+  <div id="sandboxRibbon" class="sandbox-ribbon hidden">⚙️ Mode Demo (Sandbox) — Pembayaran disimulasikan, bukan transaksi asli</div>
+
+  <nav class="navbar">
+    <a class="brand" href="/"><i class="fas fa-tshirt"></i> HEDTRO <span style="color:var(--gold-light); font-weight:400;">JEANS</span></a>
+    <a class="nav-btn" href="/dashboard"><i class="fas fa-arrow-left"></i> Kembali ke Dashboard</a>
+  </nav>
+
+  <div class="wrap">
+    <!-- LOADING -->
+    <div id="view-loading" class="card loading-box">
+      <div class="spin"><i class="fas fa-spinner fa-spin"></i></div>
+      <div>Memuat pembayaran...</div>
+    </div>
+
+    <!-- ERROR -->
+    <div id="view-error" class="card error-box hidden">
+      <div class="err-icon"><i class="fas fa-exclamation-circle"></i></div>
+      <h3>Gagal Memuat Pembayaran</h3>
+      <p id="errorMsg">Terjadi kesalahan.</p>
+      <a href="/dashboard" class="btn btn-gold" style="max-width:220px; margin:0 auto;"><i class="fas fa-arrow-left"></i> Kembali ke Dashboard</a>
+    </div>
+
+    <!-- STEP 1: PILIH KANAL -->
+    <div id="view-channels" class="hidden">
+      <div class="order-summary">
+        <div class="os-label">Pesanan</div>
+        <div class="os-num" id="osOrderNum">-</div>
+        <div class="os-name" id="osProductName">-</div>
+        <div class="os-row">
+          <span class="os-label">Total Tagihan</span>
+          <span class="os-amount" id="osAmount">Rp 0</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-credit-card"></i> Pilih Metode Pembayaran</div>
+        </div>
+        <div id="channelList"></div>
+      </div>
+    </div>
+
+    <!-- STEP 2: INSTRUKSI PEMBAYARAN -->
+    <div id="view-payment" class="hidden">
+      <div class="order-summary">
+        <div class="os-label">Pesanan</div>
+        <div class="os-num" id="osOrderNum2">-</div>
+        <div class="os-row">
+          <span class="os-name" id="osChannelName">-</span>
+          <span class="os-amount" id="osAmount2">Rp 0</span>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title"><i class="fas fa-receipt"></i> <span id="payTitle">Instruksi Pembayaran</span></div>
+          <span id="payStatusBadge" class="os-label" style="color:#d97706; font-weight:800;">MENUNGGU PEMBAYARAN</span>
+        </div>
+
+        <div class="countdown-box hidden" id="countdownBox">
+          <i class="fas fa-hourglass-half"></i>
+          <span>Batas waktu pembayaran:</span>
+          <span id="countdownText">-</span>
+        </div>
+
+        <div id="payContent"></div>
+
+        <div class="pay-actions" style="margin-top:18px;">
+          <button class="btn btn-green" id="btnIvePaid"><i class="fas fa-check-circle"></i> Saya Sudah Bayar</button>
+          <button class="btn btn-gold hidden" id="btnSimulate"><i class="fas fa-flask"></i> Simulasikan Pembayaran</button>
+        </div>
+        <p style="font-size:0.7rem; color:#718096; text-align:center; margin-top:10px;">
+          <i class="fas fa-sync-alt"></i> Status dicek otomatis setiap 5 detik.
+        </p>
+      </div>
+    </div>
+
+    <!-- SUCCESS -->
+    <div id="view-success" class="card hidden">
+      <div class="success-box">
+        <div class="succ-icon"><i class="fas fa-check"></i></div>
+        <h2>Pembayaran Berhasil! 🎉</h2>
+        <p id="successMsg">
+          Pesanan <strong id="succOrderNum">-</strong> telah lunas.
+          Bonus upline akan dicairkan otomatis dan pesanan sedang diproses Admin.
+        </p>
+        <a href="/dashboard" class="btn btn-gold" style="max-width:260px; margin:0 auto;"><i class="fas fa-home"></i> Ke Dashboard</a>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    (function () {
+      'use strict';
+
+      var orderId = new URLSearchParams(window.location.search).get('order');
+      var currentOrder = null;
+      var currentPayment = null;
+      var gatewayConfig = { mode: 'sandbox', tripayConfigured: false, sandbox: true };
+      var pollTimer = null;
+      var countdownTimer = null;
+
+      function show(id) {
+        ['view-loading', 'view-error', 'view-channels', 'view-payment', 'view-success'].forEach(function (v) {
+          document.getElementById(v).classList.toggle('hidden', v !== id);
+        });
+      }
+
+      function toast(msg) {
+        var el = document.getElementById('toastEl');
+        if (!el) {
+          el = document.createElement('div');
+          el.id = 'toastEl';
+          el.className = 'toast';
+          document.body.appendChild(el);
+        }
+        el.textContent = msg;
+        el.classList.add('show');
+        setTimeout(function () { el.classList.remove('show'); }, 2600);
+      }
+
+      function fmt(n) { return 'Rp ' + Number(n || 0).toLocaleString('id-ID'); }
+
+      function copyText(text, msg) {
+        if (navigator.clipboard && navigator.clipboard.writeText) {
+          navigator.clipboard.writeText(text).then(function () { toast(msg || 'Tersalin!'); }).catch(function () { fallbackCopy(text, msg); });
+        } else {
+          fallbackCopy(text, msg);
+        }
+      }
+      // Dipakai oleh tombol salin di instruksi pembayaran (onclick inline)
+      window.copyText = copyText;
+      function fallbackCopy(text, msg) {
+        var ta = document.createElement('textarea');
+        ta.value = text;
+        document.body.appendChild(ta);
+        ta.select();
+        try { document.execCommand('copy'); toast(msg || 'Tersalin!'); } catch (e) { toast('Gagal menyalin.'); }
+        document.body.removeChild(ta);
+      }
+
+      // ---- Load order ----
+      async function loadOrder() {
+        if (!orderId) throw new Error('Parameter order tidak ditemukan. Gunakan link pembayaran dari dashboard.');
+
+        var session = await window.ensureFreshSession ? await window.ensureFreshSession() : await window.getSession();
+        if (!session || !session.user) { window.location.href = '/login'; return null; }
+
+        // Cari di tabel orders
+        var order = null;
+        try {
+          var { data: rows } = await window.supabase.from('orders').select('*').eq('id', String(orderId));
+          if (rows && rows.length > 0) order = rows[0];
+        } catch (e) { console.warn('orders lookup warning:', e); }
+
+        // Fallback: first_order / purchase_history
+        if (!order) {
+          var profile = await window.getUserProfile(true);
+          if (profile && profile.first_order && String(profile.first_order.id) === String(orderId)) {
+            order = { ...profile.first_order, user_id: profile.id };
+          } else if (profile && profile.purchase_history && profile.purchase_history.length) {
+            var found = profile.purchase_history.find(function (p) { return String(p.id) === String(orderId); });
+            if (found) order = { ...found, user_id: profile.id, total: found.price || found.amount || 0 };
+          }
+        }
+        if (!order) throw new Error('Pesanan tidak ditemukan.');
+
+        if (String(order.user_id) !== String(session.user.id)) throw new Error('Anda tidak berhak membayar pesanan ini.');
+
+        currentOrder = order;
+        return order;
+      }
+
+      // ---- Normalisasi data pembayaran ----
+      function normalizePayment(p) {
+        var inst = p.instructions || {};
+        return {
+          reference: p.reference,
+          amount: Number(p.amount) || 0,
+          payCode: p.pay_code || p.payCode || inst.vaNumber || inst.payCode || '',
+          qrString: p.qr_string || p.qrString || null,
+          channel: p.channel,
+          channelName: p.channel_name || p.channel || '',
+          uniqueCode: p.unique_code || p.uniqueCode || inst.uniqueCode || '',
+          expiredAt: p.expired_at || p.expiredAt || null,
+          payUrl: p.pay_url || p.payUrl || null,
+          title: inst.title || '',
+          steps: inst.steps || [],
+          note: inst.note || '',
+          type: inst.type || '',
+          bank: inst.bank || '',
+          store: inst.store || '',
+          app: inst.app || ''
+        };
+      }
+
+      // ---- Render pilihan kanal ----
+      function renderChannels(channels) {
+        var container = document.getElementById('channelList');
+        var groups = [
+          { key: 'va', label: 'Virtual Account (Transfer Bank)', icon: 'fa-university' },
+          { key: 'qris', label: 'QRIS', icon: 'fa-qrcode' },
+          { key: 'ewallet', label: 'E-Wallet', icon: 'fa-wallet' },
+          { key: 'retail', label: 'Retail / Offline', icon: 'fa-store' }
+        ];
+        var html = '';
+        groups.forEach(function (g) {
+          var items = channels.filter(function (c) { return c.group === g.key; });
+          if (items.length === 0) return;
+          html += '<div class="channel-group-label"><i class="fas ' + g.icon + '"></i> ' + g.label + '</div>';
+          html += '<div class="channel-grid">';
+          items.forEach(function (c) {
+            html +=
+              '<button class="channel-item" onclick="window.__pickChannel(\'' + c.code + '\')">' +
+              '<div class="ch-icon"><i class="fas ' + (c.icon || 'fa-credit-card') + '"></i></div>' +
+              '<div style="flex:1; min-width:0;"><div class="ch-name">' + c.name + '</div>' +
+              '<div class="ch-desc">' + (c.desc || '') + '</div></div>' +
+              '<span class="ch-badge"><i class="fas fa-chevron-right"></i></span>' +
+              '</button>';
+          });
+          html += '</div>';
+        });
+        container.innerHTML = html || '<p style="color:#718096; font-size:0.85rem;">Belum ada kanal pembayaran tersedia.</p>';
+      }
+
+      // ---- Buat pembayaran ----
+      window.__pickChannel = async function (channel) {
+        try {
+          document.getElementById('channelList').innerHTML = '<div style="text-align:center; padding:30px; color:#718096;"><i class="fas fa-spinner fa-spin" style="color:var(--gold-accent); font-size:1.6rem; display:block; margin-bottom:10px;"></i>Membuat pembayaran...</div>';
+          var res = await window.pgCreatePayment(orderId, channel);
+          var payment = res.payment ? normalizePayment(res.payment) : null;
+          if (payment && payment.payUrl && !payment.qrString && gatewayConfig.mode === 'live') {
+            window.location.href = payment.payUrl;
+            return;
+          }
+          if (!payment) throw new Error('Pembayaran tidak dibuat.');
+          currentPayment = payment;
+          showPaymentView(payment);
+        } catch (e) {
+          alert('Gagal membuat pembayaran: ' + e.message);
+          renderChannelsView();
+        }
+      };
+
+      // ---- Render instruksi pembayaran ----
+      function renderPayContent(p) {
+        var box = document.getElementById('payContent');
+        var html = '';
+
+        // Nominal
+        html += '<div class="pay-amount-box">' +
+          '<div class="pa-label">Total yang Harus Dibayar</div>' +
+          '<div class="pa-val">' + fmt(p.amount) + '</div>' +
+          '<button class="pa-copy" onclick="copyText(' + JSON.stringify(String(p.amount)) + ', \'Nominal disalin!\')"><i class="fas fa-copy"></i> Salin Nominal</button>' +
+          '</div>';
+
+        // QRIS
+        if (p.qrString) {
+          html += '<div class="qris-box"><div class="qr-frame"><div id="qrCanvas"></div></div>' +
+            '<div class="qr-note">Scan dengan GoPay, OVO, DANA, ShopeePay, m-Banking, atau aplikasi lain yang mendukung QRIS.</div>' +
+            '<button class="btn btn-ghost" style="margin-top:10px; width:auto; padding:8px 16px; font-size:0.75rem;" onclick="copyText(' + JSON.stringify(p.qrString) + ', \'Payload QRIS disalin!\')"><i class="fas fa-copy"></i> Salin Payload QRIS</button></div>';
+        }
+
+        // Kode pembayaran (VA / e-wallet / retail)
+        if (!p.qrString && p.payCode) {
+          var codeLabel = p.type === 'va' ? 'Nomor Virtual Account' : (p.type === 'retail' ? 'Kode Bayar (Barcode)' : 'Kode Pembayaran');
+          html += '<div class="code-box">' +
+            '<div class="cb-label">' + codeLabel + ' · ' + p.channelName + '</div>' +
+            '<div class="cb-val">' + p.payCode + '</div>' +
+            '<button class="cb-copy" onclick="copyText(' + JSON.stringify(p.payCode) + ', \'' + codeLabel + ' disalin!\')"><i class="fas fa-copy"></i> Salin</button>' +
+            '</div>';
+        }
+
+        // Instruksi langkah
+        if (p.steps && p.steps.length) {
+          html += '<div class="steps-box">';
+          p.steps.forEach(function (s, i) {
+            html += '<div class="step"><div class="step-num">' + (i + 1) + '</div><div>' + s + '</div></div>';
+          });
+          html += '</div>';
+        }
+        if (p.note) html += '<p style="font-size:0.72rem; color:#718096; background:#f8fafc; padding:10px 12px; border-radius:8px; border:1px solid #edf2f7;"><i class="fas fa-info-circle" style="color:var(--denim-blue);"></i> ' + p.note + '</p>';
+
+        box.innerHTML = html;
+
+        // Render QR
+        if (p.qrString && typeof QRCode !== 'undefined') {
+          var qrEl = document.getElementById('qrCanvas');
+          if (qrEl) {
+            qrEl.innerHTML = '';
+            new QRCode(qrEl, { text: p.qrString, width: 220, height: 220, correctLevel: QRCode.CorrectLevel.M });
+          }
+        }
+
+        // Countdown
+        var cdBox = document.getElementById('countdownBox');
+        if (p.expiredAt) {
+          cdBox.classList.remove('hidden');
+          startCountdown(p.expiredAt);
+        } else {
+          cdBox.classList.add('hidden');
+        }
+      }
+
+      function startCountdown(expiredAt) {
+        if (countdownTimer) clearInterval(countdownTimer);
+        function tick() {
+          var diff = new Date(expiredAt).getTime() - Date.now();
+          var el = document.getElementById('countdownText');
+          if (diff <= 0) { el.textContent = 'Kadaluarsa'; clearInterval(countdownTimer); return; }
+          var h = Math.floor(diff / 3600000);
+          var m = Math.floor((diff % 3600000) / 60000);
+          var s = Math.floor((diff % 60000) / 1000);
+          el.textContent = String(h).padStart(2, '0') + ':' + String(m).padStart(2, '0') + ':' + String(s).padStart(2, '0');
+        }
+        tick();
+        countdownTimer = setInterval(tick, 1000);
+      }
+
+      function showPaymentView(p) {
+        document.getElementById('osOrderNum2').textContent = currentOrder.order_number || ('ORD-' + String(currentOrder.id).slice(-6));
+        document.getElementById('osChannelName').textContent = 'via ' + p.channelName;
+        document.getElementById('osAmount2').textContent = fmt(p.amount);
+        document.getElementById('payTitle').textContent = p.title || 'Instruksi Pembayaran';
+        renderPayContent(p);
+        show('view-payment');
+        startPolling();
+      }
+
+      // ---- Polling status ----
+      function startPolling() {
+        if (pollTimer) clearInterval(pollTimer);
+        pollTimer = setInterval(checkStatus, 5000);
+        checkStatus();
+      }
+
+      async function checkStatus() {
+        if (!currentPayment) return;
+        try {
+          var res = await window.pgStatus(currentPayment.reference);
+          if (res.status === 'paid') {
+            if (pollTimer) clearInterval(pollTimer);
+            if (countdownTimer) clearInterval(countdownTimer);
+            showSuccess();
+          } else if (res.status === 'expired') {
+            if (pollTimer) clearInterval(pollTimer);
+            document.getElementById('payStatusBadge').textContent = 'KADALUARSA';
+            document.getElementById('payStatusBadge').style.color = '#e53e3e';
+            toast('Pembayaran kadaluarsa. Silakan buat pembayaran baru.');
+          }
+        } catch (e) {
+          console.warn('poll warning:', e);
+        }
+      }
+
+      function showSuccess() {
+        document.getElementById('succOrderNum').textContent = currentOrder.order_number || ('ORD-' + String(currentOrder.id).slice(-6));
+        show('view-success');
+      }
+
+      // ---- Actions ----
+      document.getElementById('btnIvePaid').addEventListener('click', function () {
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Mengecek...';
+        this.disabled = true;
+        checkStatus().finally(function () {
+          document.getElementById('btnIvePaid').innerHTML = '<i class="fas fa-check-circle"></i> Saya Sudah Bayar';
+          document.getElementById('btnIvePaid').disabled = false;
+        });
+      });
+
+      document.getElementById('btnSimulate').addEventListener('click', async function () {
+        if (!currentPayment) return;
+        this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Memproses...';
+        this.disabled = true;
+        try {
+          var res = await window.pgSimulate(currentPayment.reference);
+          if (res.status === 'paid') {
+            if (pollTimer) clearInterval(pollTimer);
+            if (countdownTimer) clearInterval(countdownTimer);
+            showSuccess();
+          }
+        } catch (e) {
+          toast('Simulasi gagal: ' + e.message);
+        } finally {
+          this.innerHTML = '<i class="fas fa-flask"></i> Simulasikan Pembayaran';
+          this.disabled = false;
+        }
+      });
+
+      // ---- Init ----
+      async function renderChannelsView() {
+        document.getElementById('osOrderNum').textContent = currentOrder.order_number || ('ORD-' + String(currentOrder.id).slice(-6));
+        document.getElementById('osProductName').textContent =
+          (currentOrder.items && currentOrder.items[0] && currentOrder.items[0].name) ||
+          currentOrder.productName ||
+          (currentOrder.type === 'first_order' ? '🎯 Paket First Order' : 'Produk');
+        document.getElementById('osAmount').textContent = fmt(currentOrder.total);
+        var res = await window.pgChannels();
+        renderChannels(res.channels || []);
+        show('view-channels');
+      }
+
+      async function init() {
+        try {
+          show('view-loading');
+          var order = await loadOrder();
+          if (!order) return;
+
+          gatewayConfig = await window.pgConfig();
+          document.getElementById('sandboxRibbon').classList.toggle('hidden', gatewayConfig.mode !== 'sandbox');
+          document.getElementById('btnSimulate').classList.toggle('hidden', gatewayConfig.mode !== 'sandbox');
+
+          // Order sudah dibayar?
+          var paidStatuses = ['processing', 'completed', 'shipped', 'paid', 'success', 'verified'];
+          if (paidStatuses.indexOf(String(order.status || '').toLowerCase()) !== -1) {
+            show('view-success');
+            return;
+          }
+
+          // Lanjutkan pembayaran yang sudah ada (kalau ada)
+          try {
+            var existing = await window.pgFind(orderId);
+            if (existing && existing.payment) {
+              currentPayment = normalizePayment(existing.payment);
+              if (existing.payment.status === 'paid') { showSuccess(); return; }
+              showPaymentView(currentPayment);
+              return;
+            }
+          } catch (e) { console.warn('pgFind warning:', e); }
+
+          renderChannelsView();
+        } catch (e) {
+          console.error('init error:', e);
+          document.getElementById('errorMsg').textContent = e.message || 'Terjadi kesalahan.';
+          show('view-error');
+        }
+      }
+
+      init();
+    })();
+  </script>
+</body>
+
+</html>

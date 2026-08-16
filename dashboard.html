@@ -2108,8 +2108,11 @@
             </div>
           </div>
         </div>
-        <button class="btn-sm btn-sm-gold" onclick="window.showSection('ro-history')" style="flex-shrink:0;"><i
-            class="fas fa-upload"></i> Upload Bukti</button>
+        <div style="display:flex; gap:8px; flex-shrink:0; flex-wrap:wrap;">
+          <button class="btn-sm btn-sm-gold" id="bannerPayNowBtn" style="display:none;"><i class="fas fa-qrcode"></i> Bayar Sekarang</button>
+          <button class="btn-sm btn-sm-primary" onclick="window.showSection('ro-history')" style="flex-shrink:0;"><i
+              class="fas fa-upload"></i> Upload Bukti</button>
+        </div>
       </div>
 
       <!-- 3 KOLOM -->
@@ -3125,6 +3128,16 @@
       async function renderDashboard() {
         currentUser = await window.getUserProfile();
         updateProfileUI();
+
+        // Tombol "Bayar Sekarang" (gateway) di banner First Order
+        const bannerPayBtn = document.getElementById('bannerPayNowBtn');
+        if (bannerPayBtn) {
+          const fo = currentUser.first_order;
+          const paid = fo && ['processing', 'completed', 'shipped', 'paid', 'success', 'verified'].indexOf(String(fo.status || '').toLowerCase()) !== -1;
+          bannerPayBtn.style.display = (currentUser.status !== 'verified' && fo && !paid) ? 'inline-flex' : 'none';
+          bannerPayBtn.onclick = function () { window.location.href = 'payment.html?order=' + fo.id; };
+        }
+
         await renderDashboardHistory();
       }
 
@@ -3346,21 +3359,26 @@
               </div>
             </div>
 
-            <!-- PAYMENT CHOICE (1 BARIS 2 KOLOM) -->
+            <!-- PAYMENT CHOICE (3 OPSI) -->
             <div id="roPaymentSelection" style="display:none; margin-top:6px; border-top:2px dashed #cbd5e0; padding-top:8px;">
               <p style="font-weight:800; margin-bottom:8px; font-size:0.78rem; color:var(--denim-dark);"><i class="fas fa-credit-card" style="color:var(--gold-accent);"></i> Pilih Metode Pembayaran:</p>
-              <div style="display:grid; grid-template-columns: 1fr 1fr; gap:8px;">
-                <button class="btn-sm" id="btnPayWallet" style="background:#2e7d32; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; border-radius:8px; font-size:0.75rem; text-align:center; border:2px solid transparent; width:100%;">
+              <div style="display:grid; grid-template-columns:repeat(auto-fit, minmax(120px, 1fr)); gap:8px;">
+                <button class="btn-sm" id="btnPayWallet" style="background:#2e7d32; color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; border-radius:8px; font-size:0.72rem; text-align:center; border:2px solid transparent; width:100%;">
                   <span style="font-weight:700;"><i class="fas fa-wallet"></i> Saldo Dompet</span>
-                  <span id="roWalletBal" style="font-weight:700; font-size:0.68rem; opacity:0.95; margin-top:2px;">(Rp ${(currentUser.wallet || 0).toLocaleString('id-ID')})</span>
+                  <span id="roWalletBal" style="font-weight:700; font-size:0.65rem; opacity:0.95; margin-top:2px;">(Rp ${(currentUser.wallet || 0).toLocaleString('id-ID')})</span>
                 </button>
-                <button class="btn-sm" id="btnPayBank" style="background:var(--denim-blue); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; border-radius:8px; font-size:0.75rem; text-align:center; border:2px solid transparent; width:100%;">
+                <button class="btn-sm" id="btnPayGateway" style="background:var(--gold-gradient); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; border-radius:8px; font-size:0.72rem; text-align:center; border:2px solid transparent; width:100%; text-shadow:0 1px 2px rgba(0,0,0,0.25);">
+                  <span style="font-weight:800;"><i class="fas fa-qrcode"></i> Bayar Online</span>
+                  <span style="font-weight:700; font-size:0.62rem; opacity:0.95; margin-top:2px;">VA · QRIS · E-Wallet</span>
+                  <span id="roGatewayTotalVal" style="font-weight:800; font-size:0.65rem; margin-top:2px;">Rp ${price.toLocaleString('id-ID')}</span>
+                </button>
+                <button class="btn-sm" id="btnPayBank" style="background:var(--denim-blue); color:#fff; display:flex; flex-direction:column; align-items:center; justify-content:center; padding:10px 6px; border-radius:8px; font-size:0.72rem; text-align:center; border:2px solid transparent; width:100%;">
                   <span style="font-weight:700;"><i class="fas fa-university"></i> Transfer Bank</span>
-                  <span id="roBankTotalVal" style="font-weight:800; color:var(--gold-light); font-size:0.68rem; margin-top:2px;">Rp ${(price + uniqueCode).toLocaleString('id-ID')}</span>
+                  <span id="roBankTotalVal" style="font-weight:800; color:var(--gold-light); font-size:0.65rem; margin-top:2px;">Rp ${(price + uniqueCode).toLocaleString('id-ID')}</span>
                 </button>
               </div>
               <div style="font-size:0.65rem; color:#d97706; font-weight:700; text-align:center; margin-top:6px;">
-                *Transfer Bank disertai Kode Unik 3 Angka (${uniqueCode}) untuk verifikasi otomatis/admin.
+                *Transfer Bank manual disertai Kode Unik 3 Angka (${uniqueCode}). Bayar Online = verifikasi otomatis.
               </div>
             </div>
           </div>
@@ -3399,29 +3417,37 @@
           document.getElementById('roPaymentSelection').style.display = 'block';
         };
 
+        const payBtnIds = ['btnPayWallet', 'btnPayGateway', 'btnPayBank'];
+        function selectPayBtn(activeId) {
+          payBtnIds.forEach(id => {
+            const el = document.getElementById(id);
+            if (el) { el.style.outline = id === activeId ? '2px solid var(--gold-accent)' : 'none'; el.style.opacity = id === activeId ? '1' : '0.6'; }
+          });
+        }
+
         document.getElementById('btnPayWallet').onclick = function () {
           selectedMethod = 'wallet';
-          this.style.outline = '2px solid var(--gold-accent)';
-          this.style.opacity = '1';
-          document.getElementById('btnPayBank').style.outline = 'none';
-          document.getElementById('btnPayBank').style.opacity = '0.6';
-
+          selectPayBtn('btnPayWallet');
           const baseSub = roPrice * currentQty;
           if ((currentUser.wallet || 0) < baseSub) { showModalAlert('Saldo Tidak Cukup', 'Saldo dompet Anda tidak mencukupi untuk transaksi ini.'); return; }
-
           const confirmBtn = document.getElementById('roModalConfirmBankBtn');
           confirmBtn.innerHTML = '<i class="fas fa-wallet"></i> Konfirmasi Bayar Saldo';
           confirmBtn.className = 'btn-sm btn-sm-success';
           confirmBtn.style.display = 'inline-flex';
         };
 
+        document.getElementById('btnPayGateway').onclick = function () {
+          selectedMethod = 'gateway';
+          selectPayBtn('btnPayGateway');
+          const confirmBtn = document.getElementById('roModalConfirmBankBtn');
+          confirmBtn.innerHTML = '<i class="fas fa-qrcode"></i> Lanjut Bayar Online';
+          confirmBtn.className = 'btn-sm btn-sm-gold';
+          confirmBtn.style.display = 'inline-flex';
+        };
+
         document.getElementById('btnPayBank').onclick = function () {
           selectedMethod = 'bank';
-          this.style.outline = '2px solid var(--gold-accent)';
-          this.style.opacity = '1';
-          document.getElementById('btnPayWallet').style.outline = 'none';
-          document.getElementById('btnPayWallet').style.opacity = '0.6';
-
+          selectPayBtn('btnPayBank');
           const confirmBtn = document.getElementById('roModalConfirmBankBtn');
           confirmBtn.innerHTML = '<i class="fas fa-check"></i> Konfirmasi Pembayaran Bank';
           confirmBtn.className = 'btn-sm btn-sm-primary';
@@ -3450,7 +3476,7 @@
 
           const baseTotal = roPrice * qty;
           const bankTotal = baseTotal + uniqueCode;
-          const finalAmount = method === 'wallet' ? baseTotal : bankTotal;
+          const finalAmount = (method === 'bank') ? bankTotal : baseTotal;
 
           prod.stock = Math.max(0, (prod.stock || qty) - qty);
           await window.upsertRow('products', prod);
@@ -3523,6 +3549,15 @@
           allProducts = await window.getProducts();
           allTransactions = await window.getTransactions();
           allOrders = await window.getOrders();
+
+          if (method === 'gateway') {
+            // Pembayaran otomatis (VA/QRIS/E-Wallet) -> buka halaman pembayaran
+            showToast('✅ Pesanan Berhasil Dibuat! Silakan selesaikan pembayaran.', 'success', 2500);
+            setTimeout(() => {
+              window.location.href = 'payment.html?order=' + orderObj.id;
+            }, 800);
+            return;
+          }
 
           if (method === 'wallet') {
             showModalAlert('Pembelian Berhasil (LUNAS)', 'RO lunas dari saldo dompet. Pesanan sedang diproses Admin.', () => {
@@ -3889,10 +3924,11 @@
           } else if (t.status === 'shipped') {
             actionHtml = `<span style="font-size:0.75rem; color:#b38728; font-weight:800;"><i class="fas fa-shipping-fast"></i> Dikirim</span>`;
           } else if (t.status === 'pending') {
+            actionHtml = `<button class="btn-sm btn-sm-gold" onclick="window.location.href='payment.html?order=${t.id}'" style="padding:4px 10px; font-size:0.68rem;"><i class="fas fa-qrcode"></i> Bayar Sekarang</button>`;
             if (!t.proof_uploaded) {
-              actionHtml = `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload('${t.id}', 'ro')" style="padding:4px 10px; font-size:0.7rem;"><i class="fas fa-upload"></i> Upload Bukti</button>`;
+              actionHtml += `<button class="btn-sm btn-sm-info" onclick="bukaModalUpload('${t.id}', 'ro')" style="padding:4px 10px; font-size:0.68rem;"><i class="fas fa-upload"></i> Upload Bukti</button>`;
             } else {
-              actionHtml = `<span style="font-size:0.7rem; color:#dd6b20; font-weight:700;"><i class="fas fa-clock"></i> Cek Admin</span>`;
+              actionHtml += `<span style="font-size:0.65rem; color:#dd6b20; font-weight:700;"><i class="fas fa-clock"></i> Cek Admin</span>`;
             }
           } else {
             actionHtml = `<span style="font-size:0.7rem; color:#2e7d32; font-weight:700;"><i class="fas fa-check-circle"></i> Terverifikasi</span>`;

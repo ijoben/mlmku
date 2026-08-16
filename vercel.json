@@ -19,6 +19,7 @@
     { "source": "/register", "destination": "/register.html" },
     { "source": "/confirm-email", "destination": "/confirm-email.html" },
     { "source": "/reset-password", "destination": "/reset-password.html" },
+    { "source": "/payment", "destination": "/payment.html" },
     { "source": "/reff/:username", "destination": "/register.html?ref=:username" },
     { "source": "/ref/:username", "destination": "/register.html?ref=:username" },
     { "source": "/reff", "destination": "/register.html" },

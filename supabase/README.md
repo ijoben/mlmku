@@ -92,3 +92,61 @@ Hasilnya sama dengan fungsi `backfill-bonus` di atas.
   reset `left_count`/`right_count`/`paid_pairs` (jalankan ulang audit untuk
   angka pastinya).
 - Cara paling aman: pulihkan dari backup (bagian "Sebelum mulai").
+
+---
+
+# Payment Gateway (gaya Tripay)
+
+Member bisa bayar **First Order / RO / Deposit** lewat **Virtual Account, QRIS,
+E-Wallet, atau Retail** dengan verifikasi otomatis — tanpa upload bukti & tanpa
+menunggu admin. Ada dua mode:
+
+- **Sandbox (default)** — kanal & pembayaran dibuat/disimulasikan sendiri.
+  Member melihat halaman pembayaran lengkap (nomor VA, QRIS, instruksi) dan bisa
+  klik "Simulasikan Pembayaran" untuk menguji alur. Cocok untuk demo.
+- **Live (Tripay)** — transaksi asli lewat API Tripay begitu API key diisi.
+
+## Langkah A — Buat tabel
+Buka Supabase Dashboard → **SQL Editor** → tempel **`supabase/payment-gateway.sql`**
+→ **Run**. (Membuat tabel `payment_transactions` + RLS + setting mode default.)
+
+## Langkah B — Deploy fungsi payment-gateway (TANPA command line)
+1. Dashboard → **Edge Functions** → **Deploy a new function** → **Via Editor**.
+2. Nama fungsi: **`payment-gateway`**.
+3. Hapus kode template, tempel isi **`supabase/functions/payment-gateway/index.ts`**
+   → **Deploy function**.
+4. Dashboard → fungsi `payment-gateway` → tab **Secrets**, tambahkan env:
+   - `TRIPAY_API_KEY` — kunci API merchant Tripay (isi jika mau live)
+   - `TRIPAY_PRIVATE_KEY` — kunci privat (isi jika mau live)
+   - `TRIPAY_MERCHANT_CODE` — kode merchant (isi jika mau live)
+   - `TRIPAY_API_BASE` — `https://tripay.co.id/api` (produksi) atau
+     `https://tripay.co.id/api-sandbox` (uji coba)
+   - `PAYMENT_INTERNAL_KEY` — string rahasia acak (WAJIB, lihat Langkah C)
+
+## Langkah C — Hubungkan bonus (distribute-bonus)
+Fungsi `distribute-bonus` sudah mendukung panggilan internal dari payment
+gateway lewat header `x-internal-key`. Cukup:
+1. Di fungsi **`distribute-bonus`** (yang sudah ter-deploy), tambahkan secret
+   **`PAYMENT_INTERNAL_KEY`** dengan **nilai yang SAMA PERSIS** seperti di
+   fungsi `payment-gateway`, lalu **redeploy** fungsi `distribute-bonus`.
+2. Tanpa ini, pembayaran tetap tercatat lunas, tetapi bonus hanya bisa dicairkan
+   lewat admin (fungsi lama) — jadi isi agar bonus otomatis cair saat bayar.
+
+## Langkah D — Aktifkan mode Live (opsional)
+- Dashboard admin → **Pengaturan → Payment Gateway** → pilih **Live (Tripay)** →
+  Simpan Mode. (Mode default: sandbox.)
+- Pastikan kanal yang dipakai **aktif** di dashboard merchant Tripay.
+- Webhook/URL callback Tripay diarahkan ke:
+  `https://dbfwcsuptitytlposubo.supabase.co/functions/v1/payment-gateway`
+  (callback dikirim ke URL fungsi ini otomatis saat membuat transaksi).
+
+## Cara kerja singkat
+1. Member pilih **Bayar Online** di dashboard (RO / First Order) → buka halaman
+   `payment.html?order=<id>`.
+2. Pilih kanal → Edge Function `payment-gateway` membuat pembayaran (sandbox:
+   dibuat sendiri; live: API Tripay `transaction/create`).
+3. Halaman menampilkan instruksi + QRIS/VA + hitung mundur, dan mengecek status
+   tiap 5 detik (`action=status`).
+4. Saat lunas (webhook Tripay / simulasi / pengecekan), pembayaran ditandai
+   `paid`, order di-set `processing`, dan `distribute-bonus` dipanggil internal
+   sehingga bonus upline langsung cair (idempotent — tidak dobel).

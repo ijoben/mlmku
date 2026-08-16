@@ -2033,6 +2033,7 @@
                 <div class="sub-tab-nav">
                     <button class="sub-tab-btn active" data-subtab="subBrand">Brand & Tampilan</button>
                     <button class="sub-tab-btn" data-subtab="subBank">Rekening Bank</button>
+                    <button class="sub-tab-btn" data-subtab="subPayments">Payment Gateway</button>
                     <button class="sub-tab-btn" data-subtab="subShop">Toko & Member</button>
                     <button class="sub-tab-btn" data-subtab="subSponsor">Sponsor & RO</button>
                     <button class="sub-tab-btn" data-subtab="subBinary">Binary & Pasangan</button>
@@ -2086,6 +2087,57 @@
                                     </tr>
                                 </thead>
                                 <tbody id="bankTableBody"></tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="sub-tab-content" id="subPayments">
+                    <div class="settings-card">
+                        <h4><i class="fas fa-credit-card"></i> Payment Gateway (gaya Tripay)</h4>
+                        <p class="text-muted" style="margin-bottom:12px;">Bayar online otomatis via Virtual Account,
+                            QRIS, E-Wallet & Retail — terverifikasi tanpa upload bukti. Mode <strong>sandbox</strong>
+                            menghasilkan pembayaran simulasi (bisa dicoba member). Mode <strong>live</strong> memakai API
+                            Tripay asli (isi API key di Supabase → Edge Functions → Secrets).</p>
+
+                        <div class="form-row" style="grid-template-columns: 1fr 1fr; gap: 14px; align-items: end;">
+                            <div class="form-group">
+                                <label><i class="fas fa-toggle-on"></i> Mode Gateway</label>
+                                <select id="pgModeSelect">
+                                    <option value="sandbox">Sandbox (Demo — pembayaran simulasi)</option>
+                                    <option value="live">Live (Tripay — transaksi asli)</option>
+                                </select>
+                            </div>
+                            <div>
+                                <button class="btn-sm btn-sm-primary" id="savePgModeBtn"><i class="fas fa-save"></i>
+                                    Simpan Mode</button>
+                            </div>
+                        </div>
+
+                        <div id="pgConfigStatus" style="margin:12px 0; padding:10px 14px; border-radius:8px; background:#f8fafc; border:1px solid #e2e8f0; font-size:0.78rem;">
+                            Memuat status konfigurasi...
+                        </div>
+
+                        <div style="display:flex; justify-content:space-between; align-items:center; margin:16px 0 8px;">
+                            <h4 style="font-size:0.85rem;"><i class="fas fa-list"></i> Transaksi Pembayaran</h4>
+                            <button class="btn-sm btn-sm-info" id="pgRefreshBtn"><i class="fas fa-sync-alt"></i>
+                                Muat Ulang</button>
+                        </div>
+                        <div class="table-wrap">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Waktu</th>
+                                        <th>Referensi</th>
+                                        <th>Kanal</th>
+                                        <th>Nominal</th>
+                                        <th>Status</th>
+                                        <th>Order</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="pgTxBody">
+                                    <tr><td colspan="6" style="text-align:center; padding:14px;">Belum dimuat.</td></tr>
+                                </tbody>
                             </table>
                         </div>
                     </div>
@@ -2380,6 +2432,74 @@
                     sessionStorage.setItem('adminActiveSubTab', this.dataset.subtab);
                 });
             });
+
+            // ========== PAYMENT GATEWAY (sub-tab Pengaturan) ==========
+            async function loadPaymentList() {
+                const tbody = document.getElementById('pgTxBody');
+                if (!tbody) return;
+                tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:14px;"><i class="fas fa-spinner fa-spin"></i> Memuat...</td></tr>';
+                try {
+                    const res = await window.pgList();
+                    const rows = res.payments || [];
+                    if (rows.length === 0) {
+                        tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:14px;">Belum ada pembayaran.</td></tr>';
+                        return;
+                    }
+                    tbody.innerHTML = rows.map(p => {
+                        const date = new Date(p.created_at || Date.now()).toLocaleString('id-ID');
+                        const st = String(p.status || 'pending').toUpperCase();
+                        const stColor = p.status === 'paid' ? '#2e7d32' : (p.status === 'expired' || p.status === 'failed' ? '#e53e3e' : '#d97706');
+                        return `<tr>
+                            <td>${date}</td>
+                            <td style="font-family:monospace; font-size:0.75rem;">${p.reference}</td>
+                            <td>${p.channel_name || p.channel}</td>
+                            <td style="font-weight:700;">Rp ${(parseFloat(p.amount) || 0).toLocaleString('id-ID')}</td>
+                            <td><span style="color:${stColor}; font-weight:800;">${st}</span> <small style="opacity:0.6;">(${p.provider})</small></td>
+                            <td style="font-family:monospace; font-size:0.75rem;">${p.order_id}</td>
+                        </tr>`;
+                    }).join('');
+                } catch (e) {
+                    console.error('pgList error:', e);
+                    tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding:14px; color:#e53e3e;">Gagal memuat: ' + (e.message || 'kesalahan') + '</td></tr>';
+                }
+            }
+
+            async function refreshPaymentsTab() {
+                try {
+                    const cfg = await window.pgConfig();
+                    const modeSel = document.getElementById('pgModeSelect');
+                    if (modeSel) modeSel.value = cfg.mode === 'live' ? 'live' : 'sandbox';
+                    const statusEl = document.getElementById('pgConfigStatus');
+                    if (statusEl) {
+                        statusEl.innerHTML = cfg.tripayConfigured
+                            ? '<i class="fas fa-check-circle" style="color:#2e7d32;"></i> <strong style="color:#2e7d32;">Kunci Tripay terkonfigurasi</strong> — siap dipakai mode Live. <small>(Pastikan kanal aktif di dashboard Tripay.)</small>'
+                            : '<i class="fas fa-exclamation-triangle" style="color:#d97706;"></i> <strong style="color:#d97706;">Kunci Tripay belum diisi</strong> — gateway berjalan di mode sandbox. Isi env <code>TRIPAY_API_KEY</code>, <code>TRIPAY_PRIVATE_KEY</code>, <code>TRIPAY_MERCHANT_CODE</code> di Supabase → Edge Functions → Secrets, lalu deploy ulang fungsi <code>payment-gateway</code>.';
+                    }
+                } catch (e) {
+                    console.warn('pgConfig warning:', e);
+                }
+                await loadPaymentList();
+            }
+
+            const paymentsTabBtn = document.querySelector('.sub-tab-btn[data-subtab="subPayments"]');
+            if (paymentsTabBtn) {
+                paymentsTabBtn.addEventListener('click', function () {
+                    refreshPaymentsTab().catch(function (e) { console.warn(e); });
+                });
+            }
+
+            document.getElementById('savePgModeBtn')?.addEventListener('click', async function () {
+                const mode = document.getElementById('pgModeSelect').value;
+                try {
+                    await window.saveSettings({ payment_gateway_mode: mode });
+                    showToast('Mode gateway disimpan: ' + mode.toUpperCase(), 'success');
+                    await refreshPaymentsTab();
+                } catch (e) {
+                    showToast('Gagal menyimpan mode: ' + e.message, 'error');
+                }
+            });
+
+            document.getElementById('pgRefreshBtn')?.addEventListener('click', loadPaymentList);
 
             // ========== SUPABASE CLIENT ==========
             const supabase = window.supabase;
