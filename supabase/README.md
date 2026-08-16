@@ -9,65 +9,63 @@ membayar bonus lewat fungsi server-side.
    jadwalkan backup harian.
 2. Ekspor manual tabel `users`, `transactions`, `orders` (CSV) sebagai cadangan.
 
-## Langkah 1 — Aktifkan RLS
-Jalankan di **SQL Editor**:
-```
-supabase/rls-policies.sql
-```
-Efek: user hanya bisa menulis barisnya sendiri; admin bisa menulis baris semua
-orang; settings/konten hanya admin yang bisa tulis; semua orang boleh baca
-(dibutuhkan pohon binary & katalog). Tidak menghapus data apa pun.
+---
 
-> Catatan: setelah RLS aktif, halaman admin tetap berfungsi karena admin
-> (role `admin`) lolos policy. Non-admin tidak bisa lagi mengubah saldo/bonus
-> member lain dari console browser.
+## Langkah 1 — Aktifkan RLS (izin database)
+Buka dashboard Supabase Anda (project: `dbfwcsuptitytlposubo`) →
+**SQL Editor** → tempel isi file **`supabase/rls-policies.sql`** → **Run**.
+Efek: member hanya bisa mengubah datanya sendiri; admin bisa mengubah semua;
+yang lain hanya bisa membaca. Tidak menghapus data apa pun.
 
-## Langkah 2 — Deploy Edge Function bonus
-```bash
-supabase login
-supabase link --project-ref <project-ref>
-supabase functions deploy distribute-bonus
-supabase functions deploy backfill-bonus
-```
-Env `SUPABASE_URL` dan `SUPABASE_SERVICE_ROLE_KEY` otomatis tersedia di Edge
-Function (tidak perlu set manual).
+---
 
-Kemudian isi di `supabase.js`:
-```js
-window.HEDTRO_BONUS_FUNCTION_URL = 'https://<project-ref>.supabase.co/functions/v1/distribute-bonus';
-```
-Saat URL terisi, alur **approve order / verifikasi admin** dan **RO lunas member**
-otomatis memakai fungsi server-side (service_role) — client tidak lagi mencetak
-bonus sendiri. Jika URL kosong, aplikasi kembali ke logika client (mode lama).
+## Langkah 2 — Deploy Edge Function bonus (TANPA command line)
+
+> **Apa gunanya?** Saat ini logika "siapa dapat bonus berapa" dijalankan di browser
+> member — artinya member yang jago IT bisa memalsukan bonus. Langkah ini
+> memindahkan mesin bonus itu ke server Supabase sehingga tidak bisa dipalsukan.
+
+Lakukan 2× (dua fungsi), semuanya lewat klik-klik di dashboard:
+
+1. Buka dashboard Supabase → pilih project → menu kiri **Edge Functions**.
+2. Klik **"Deploy a new function"** → pilih **"Via Editor"**.
+3. Isi **Nama** (wajib persis):
+   - fungsi pertama: **`distribute-bonus`**
+   - fungsi kedua (ulangi langkah 1–4): **`backfill-bonus`**
+4. **Hapus** kode template, lalu **tempel** isi file:
+   - `supabase/functions/distribute-bonus/index.ts` → untuk fungsi `distribute-bonus`
+   - `supabase/functions/backfill-bonus/index.ts` → untuk fungsi `backfill-bonus`
+5. Klik **"Deploy function"** (tunggu 10–30 detik sampai muncul sukses).
+
+> **Sudah diisi otomatis:** URL di `supabase.js` sudah di-set ke
+> `https://dbfwcsuptitytlposubo.supabase.co/functions/v1/distribute-bonus`.
+> Begitu fungsi pertama ter-deploy, aplikasi langsung memakainya. Kalau fungsi
+> belum ter-deploy, aplikasi tetap jalan dengan mode lama (aman, hanya log
+> peringatan).
+
+Setelah deploy, tes cepat (opsional): buka halaman fungsi di dashboard → tombol
+**Test** → method **POST** → body `{"orderId": "<ID_ORDER>"}` → Send. Akan
+kembali `{"success": true}` jika berhasil.
+
+---
 
 ## Langkah 3 — Proteksi saldo (opsional tapi sangat disarankan)
-Hanya setelah Langkah 2 selesai & semua alur admin sudah lewat Edge Function,
-jalankan di SQL Editor:
-```
-supabase/wallet-guard.sql
-```
-Trigger ini menolak perubahan `wallet`/`bonus_*`/`left_count`/`right_count`/
-`paid_pairs` dari role selain `service_role`. Setelah ini, saldo HANYA bisa
-berubah lewat Edge Function.
+Hanya setelah Langkah 2 selesai (kedua fungsi berhasil deploy & approve order
+sudah lewat fungsi server), jalankan di SQL Editor:
+`supabase/wallet-guard.sql`
+Trigger ini mengunci kolom saldo/bonus supaya **hanya** bisa diubah dari server
+(Edge Function). Setelah ini, member tidak bisa lagi mengubah saldonya sendiri.
 
-## Backfill member lama (server-side)
-```bash
-# Preview (read-only, tidak menulis):
-curl -X POST https://<ref>.supabase.co/functions/v1/backfill-bonus \
-  -H "Authorization: Bearer <ADMIN_JWT>" -H "Content-Type: application/json" \
-  -d '{"dryRun": true}'
+---
 
-# Terapkan:
-curl -X POST https://<ref>.supabase.co/functions/v1/backfill-bonus \
-  -H "Authorization: Bearer <ADMIN_JWT>" -H "Content-Type: application/json" \
-  -d '{"dryRun": false}'
-```
-Halaman `backfill-bonus.html` (versi browser) tetap bisa dipakai sebagai
-alternatif untuk member yang sudah login admin; hasilnya sama dengan fungsi ini.
+## Backfill member lama
+Halaman `backfill-bonus.html` (di situs Anda) sudah bisa dipakai: jalankan
+**Audit** (read-only) lalu **Terapkan** — hanya bisa oleh admin yang login.
+Hasilnya sama dengan fungsi `backfill-bonus` di atas.
 
 ## Rollback
-- Backfill bersifat aditif: untuk membatalkan, hapus transaksi
-  `bonus_pasangan`/`bonus_sponsor` bertanda "(backfill)" dan kurangi saldo sesuai
-  jumlahnya, lalu reset `left_count`/`right_count`/`paid_pairs` (jalankan ulang
-  audit di `backfill-bonus.html` untuk angka pastinya).
-- Sebelum semua itu: pulihkan dari backup (Langkah 0).
+- Backfill bersifat aditif: untuk membatalkan, hapus transaksi `bonus_pasangan`/
+  `bonus_sponsor` bertanda "(backfill)" lalu kurangi saldo sesuai jumlahnya, dan
+  reset `left_count`/`right_count`/`paid_pairs` (jalankan ulang audit untuk
+  angka pastinya).
+- Cara paling aman: pulihkan dari backup (bagian "Sebelum mulai").

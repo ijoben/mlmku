@@ -16,7 +16,7 @@ console.log('🔵 Supabase client created:', !!supabaseClient);
 // Saat terisi, approve order / verifikasi / RO lunas otomatis memakai
 // fungsi server-side (service_role) sehingga bonus tidak bisa dicetak dari client.
 // Kosongkan untuk kembali ke logika client (mode lama).
-window.HEDTRO_BONUS_FUNCTION_URL = '';
+window.HEDTRO_BONUS_FUNCTION_URL = 'https://dbfwcsuptitytlposubo.supabase.co/functions/v1/distribute-bonus';
 
 window.distributeBonusesServer = async function(orderId) {
   var url = window.HEDTRO_BONUS_FUNCTION_URL;
