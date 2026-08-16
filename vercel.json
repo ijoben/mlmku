@@ -26,8 +26,6 @@
     { "source": "/dashboard", "destination": "/dashboard.html" },
     { "source": "/admin", "destination": "/admin.html" },
     { "source": "/register", "destination": "/register.html" },
-    { "source": "/debug", "destination": "/debug.html" },
-    { "source": "/debug", "destination": "/simulasi.html" },
     { "source": "/confirm-email", "destination": "/confirm-email.html" },
     { "source": "/reset-password", "destination": "/reset-password.html" },
     { "source": "/reff/:username", "destination": "/register.html?ref=:username" },

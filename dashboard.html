@@ -3406,10 +3406,15 @@
 
           if (method === 'wallet') {
             try {
-              const settings = await window.getSettings();
-              await window.calculateBinaryBonus(currentUser.id, baseTotal, settings);
-              await window.calculateRewardBonus(currentUser.id, baseTotal, settings);
-              await window.calculateRoBonus(currentUser.id, baseTotal, settings);
+              if (window.HEDTRO_BONUS_FUNCTION_URL) {
+                // Bonus dibagikan server-side (Edge Function) bila sudah dikonfigurasi
+                await window.distributeBonusesServer(orderObj.id);
+              } else {
+                const settings = await window.getSettings();
+                await window.calculateBinaryBonus(currentUser.id, baseTotal, settings);
+                await window.calculateRewardBonus(currentUser.id, baseTotal, settings);
+                await window.calculateRoBonus(currentUser.id, baseTotal, settings);
+              }
             } catch (bonusError) {
               console.error('❌ Error calculating RO bonuses:', bonusError);
             }

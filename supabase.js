@@ -9,6 +9,46 @@ var supabaseClient = window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KE
 console.log('🔵 Supabase client created:', !!supabaseClient);
 
 // ============================================================
+// KONFIGURASI BONUS SERVER-SIDE (Edge Function)
+// ============================================================
+// Isi URL Edge Function setelah deploy `distribute-bonus`:
+//   https://<project-ref>.supabase.co/functions/v1/distribute-bonus
+// Saat terisi, approve order / verifikasi / RO lunas otomatis memakai
+// fungsi server-side (service_role) sehingga bonus tidak bisa dicetak dari client.
+// Kosongkan untuk kembali ke logika client (mode lama).
+window.HEDTRO_BONUS_FUNCTION_URL = '';
+
+window.distributeBonusesServer = async function(orderId) {
+  var url = window.HEDTRO_BONUS_FUNCTION_URL;
+  if (!url) throw new Error('HEDTRO_BONUS_FUNCTION_URL belum diisi');
+  var session = await window.getSession();
+  var token = session && session.access_token ? session.access_token : '';
+  if (!token) throw new Error('Tidak ada sesi login');
+  var res = await fetch(url, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      'Authorization': 'Bearer ' + token,
+      'apikey': SUPABASE_ANON_KEY
+    },
+    body: JSON.stringify({ orderId: String(orderId) })
+  });
+  var data = await res.json().catch(function() { return {}; });
+  if (!res.ok || data.error) throw new Error(data.error || ('HTTP ' + res.status));
+  return data;
+};
+
+// Cek apakah user yang sedang login ber-role admin
+window.requireAdmin = async function() {
+  try {
+    var profile = await window.getUserProfile();
+    return !!(profile && profile.role === 'admin');
+  } catch (e) {
+    return false;
+  }
+};
+
+// ============================================================
 // EXPOSE SUPABASE CLIENT KE WINDOW
 // ============================================================
 window.supabase = supabaseClient;
@@ -1184,6 +1224,19 @@ window.approveOrderAndDistributeBonuses = async function(orderId) {
 
   if (order.status === 'processing' || order.status === 'completed' || order.status === 'shipped') {
     return { alreadyProcessed: true };
+  }
+
+  // 3b. Jika Edge Function bonus dikonfigurasi, distribusikan bonus di server
+  //     (service_role) supaya client tidak bisa mencetak bonus sendiri.
+  if (window.HEDTRO_BONUS_FUNCTION_URL) {
+    try {
+      var serverResult = await window.distributeBonusesServer(orderId);
+      if (serverResult && serverResult.alreadyProcessed) return { alreadyProcessed: true };
+      console.log('✅ Bonus didistribusikan server-side untuk order:', orderId);
+      return { success: true, server: true };
+    } catch (srvErr) {
+      console.warn('⚠️ Server bonus gagal, fallback ke client-side:', srvErr.message);
+    }
   }
 
   // 3. Update status order menjadi processing di tabel orders (jika ada)

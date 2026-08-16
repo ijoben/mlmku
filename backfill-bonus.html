@@ -404,7 +404,8 @@
                 txs: [],
                 settings: {},
                 audit: null,
-                running: false
+                running: false,
+                isAdmin: false
             };
 
             function fmt(n) {
@@ -726,6 +727,10 @@
 
             // ===== APPLY BACKFILL =====
             async function applyBackfill() {
+                if (!state.isAdmin) {
+                    alert('⛔ Hanya admin yang boleh menerapkan backfill. Login dengan akun admin terlebih dahulu.');
+                    return;
+                }
                 var a = state.audit;
                 if (!a) { alert('Jalankan Audit dulu.'); return; }
                 if (a.schema && a.schema.missing && a.schema.missing.length > 0) {
@@ -903,13 +908,24 @@
                 }
             });
 
-            // Inisialisasi ringan
+            // Inisialisasi ringan + gate admin
             (async function () {
                 try {
                     await loadAll();
                     renderStatus();
+                    if (window.requireAdmin) state.isAdmin = await window.requireAdmin();
+                    else {
+                        var p = await window.getUserProfile();
+                        state.isAdmin = !!(p && p.role === 'admin');
+                    }
+                    if (!state.isAdmin) {
+                        $('btnApply').disabled = true;
+                        $('noticeArea').innerHTML = '<div class="notice err"><i class="fas fa-user-shield"></i> <strong>Mode read-only:</strong> Anda belum login sebagai <strong>admin</strong>. Audit tetap bisa dijalankan, tetapi tombol Terapkan Backfill terkunci sampai login dengan akun admin.</div>';
+                    }
                 } catch (e) {
                     console.warn('Init warning:', e);
+                    $('btnApply').disabled = true;
+                    $('noticeArea').innerHTML = '<div class="notice warn">Gagal memeriksa sesi: ' + e.message + ' — tombol Terapkan dikunci.</div>';
                 }
             })();
         })();
