@@ -2310,7 +2310,7 @@
                     if (cache.footer) renderFooter(cache.footer);
                     renderFavoriteCarousel();
                     renderProductGrid(currentPage);
-                    updateCartUI();
+                    if (typeof updateCartUI === 'function') updateCartUI();
                     return true;
                 } catch (e) {
                     console.warn('Cache render warning:', e);
@@ -2377,7 +2377,7 @@
                     renderFooter(footer);
                     renderFavoriteCarousel();
                     renderProductGrid(currentPage);
-                    updateCartUI();
+                    if (typeof updateCartUI === 'function') updateCartUI();
                     await updateNavAuth();
 
                     console.log('✅ loadAllData selesai & cache diperbarui!');
@@ -2394,26 +2394,32 @@
                     { id: 3, badge: 'PROMO SPESIAL MEMBER', title: 'GABUNG MEMBER & DAPATKAN BONUS', subtitle: 'Nikmati keuntungan bonus sponsor, bonus pasangan, dan reward eksklusif!', btnText: 'Daftar Sekarang', btnLink: '/register', bg: 'linear-gradient(135deg, #1e1b18 0%, #3d311c 100%)' }
                 ];
                 track.innerHTML = '';
-                displaySlides.forEach(s => {
+                displaySlides.forEach((s, idx) => {
                     const div = document.createElement('div');
                     div.className = 'carousel-slide';
                     div.style.background = s.bg || 'linear-gradient(135deg, #0b1a2b 0%, #1e3a5f 100%)';
-                    let imgHtml = s.image ? `<img src="${s.image}" alt="${s.title || 'Banner'}" width="1280" height="500" decoding="async" fetchpriority="high" style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" />` : '';
+                    // Kolom asli tabel slides pakai snake_case (btn_text/btn_link);
+                    // fallback ke camelCase untuk default & cache versi lama.
+                    const btnText = s.btn_text || s.btnText || 'Beli Sekarang';
+                    const btnLink = s.btn_link || s.btnLink || '#sectionTrending';
+                    let imgHtml = '';
+                    if (s.image && /^(https?:|data:image\/|\/)/.test(String(s.image))) {
+                        imgHtml = `<img src="${s.image}" alt="${s.title || 'Banner'}" width="1280" height="500" decoding="async" ${idx === 0 ? 'fetchpriority="high"' : 'loading="lazy"'} style="position:absolute;inset:0;width:100%;height:100%;object-fit:cover;z-index:0;" />`;
+                    }
                     const badgeHtml = s.badge ? `<div class="slide-badge"><i class="fas fa-star"></i> ${s.badge}</div>` : '';
-                    div.innerHTML = `${imgHtml}<div class="overlay-dark"></div><div class="slide-content">${badgeHtml}<h2>${s.title}</h2><p>${s.subtitle}</p><a href="${s.btnLink || '#sectionTrending'}" class="btn-slide"><i class="fas fa-shopping-bag"></i> ${s.btnText || 'Beli Sekarang'}</a></div>`;
+                    div.innerHTML = `${imgHtml}<div class="overlay-dark"></div><div class="slide-content">${badgeHtml}<h2>${s.title}</h2><p>${s.subtitle}</p><a href="${btnLink}" class="btn-slide"><i class="fas fa-shopping-bag"></i> ${btnText}</a></div>`;
                     track.appendChild(div);
                 });
                 dots.innerHTML = '';
                 displaySlides.forEach((_, i) => {
                     const dot = document.createElement('span');
                     dot.className = 'dot' + (i === 0 ? ' active' : '');
-                    dot.onclick = () => goToSlide(i);
+                    dot.onclick = () => { goToSlide(i); restartCarouselTimer(); };
                     dots.appendChild(dot);
                 });
                 currentSlide = 0;
                 track.style.transform = 'translateX(0%)';
-                if (slideInterval) clearInterval(slideInterval);
-                slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
+                restartCarouselTimer();
             }
 
             function goToSlide(i) {
@@ -2423,6 +2429,13 @@
                 currentSlide = ((i % totalSlides) + totalSlides) % totalSlides;
                 track.style.transform = `translateX(-${currentSlide * 100}%)`;
                 dots.querySelectorAll('.dot').forEach((d, idx) => d.classList.toggle('active', idx === currentSlide));
+            }
+
+            // Restart timer auto-advance (dipanggil setelah interaksi manual agar
+            // slide tidak langsung loncat lagi setelah pengguna klik/swipe).
+            function restartCarouselTimer() {
+                if (slideInterval) clearInterval(slideInterval);
+                slideInterval = setInterval(() => goToSlide(currentSlide + 1), 5000);
             }
 
             // ========== CAROUSEL TOUCH SWIPE ==========
@@ -2456,15 +2469,18 @@
                     } else {
                         goToSlide(currentSlide - 1);
                     }
+                    restartCarouselTimer();
                 }
             }, { passive: true });
 
             // ========== CAROUSEL BUTTONS ==========
             document.getElementById('carouselPrev').addEventListener('click', function () {
                 goToSlide(currentSlide - 1);
+                restartCarouselTimer();
             });
             document.getElementById('carouselNext').addEventListener('click', function () {
                 goToSlide(currentSlide + 1);
+                restartCarouselTimer();
             });
 
             // ========== ZOOM POPUP ==========
