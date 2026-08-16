@@ -3971,6 +3971,18 @@
         return String(val1).trim().toLowerCase() === String(val2).trim().toLowerCase();
       }
 
+      // Relasi anak-ke-induk HANYA dianggap valid jika dikonfirmasi dari record si anak sendiri
+      // (sponsor/upline menunjuk ke induk). Kolom left_id/right_id di record induk kadang berisi
+      // nilai lama yang rusak (referensi diri/sponsor) sehingga TIDAK boleh dipercaya mentah-mentah.
+      function isConfirmedChild(parentUser, child) {
+        return isSameUser(child.sponsor_id, parentUser.id) ||
+               isSameUser(child.sponsor_id, parentUser.username) ||
+               isSameUser(child.upline_id, parentUser.id) ||
+               isSameUser(child.upline_id, parentUser.username) ||
+               isSameUser(child.upline_username, parentUser.username) ||
+               isSameUser(child.upline_username, parentUser.id);
+      }
+
       function findChildId(parentUser, position, _seen) {
         if (!parentUser) return null;
 
@@ -3981,14 +3993,15 @@
           return (kId && _seen.has(kId)) || (kUn && _seen.has(kUn));
         };
 
-        // 1. Explicit child IDs stored directly on parent record
+        // 1. Explicit child IDs stored directly on parent record — hanya dipakai bila
+        //    record si anak mengonfirmasi bahwa induknya benar-benar parent ini.
         if (position === 'left' && parentUser.left_id) {
           const explicitChild = (allUsers || []).find(u => (isSameUser(u.id, parentUser.left_id) || isSameUser(u.username, parentUser.left_id)) && !isUserSeen(u));
-          if (explicitChild) return explicitChild.id;
+          if (explicitChild && isConfirmedChild(parentUser, explicitChild)) return explicitChild.id;
         }
         if (position === 'right' && parentUser.right_id) {
           const explicitChild = (allUsers || []).find(u => (isSameUser(u.id, parentUser.right_id) || isSameUser(u.username, parentUser.right_id)) && !isUserSeen(u));
-          if (explicitChild) return explicitChild.id;
+          if (explicitChild && isConfirmedChild(parentUser, explicitChild)) return explicitChild.id;
         }
 
         const isLeftTarget = (position === 'left');
@@ -3998,17 +4011,7 @@
           if (isSameUser(u.id, parentUser.id) || isSameUser(u.username, parentUser.username)) return false;
           if (isUserSeen(u)) return false;
 
-          const matchUpline = isSameUser(u.upline_id, parentUser.id) ||
-                              isSameUser(u.upline_id, parentUser.username) ||
-                              isSameUser(u.upline_username, parentUser.username) ||
-                              isSameUser(u.upline_username, parentUser.id);
-
-          const matchSponsor = isSameUser(u.sponsor_id, parentUser.id) ||
-                               isSameUser(u.sponsor_id, parentUser.username) ||
-                               isSameUser(u.sponsor_username, parentUser.username) ||
-                               isSameUser(u.sponsor_username, parentUser.id);
-
-          if (!matchUpline && !matchSponsor) return false;
+          if (!isConfirmedChild(parentUser, u)) return false;
 
           const pos = String(u.position || u.pos || '').trim().toLowerCase();
           if (isLeftTarget) {
@@ -4025,17 +4028,7 @@
           if (isSameUser(u.id, parentUser.id) || isSameUser(u.username, parentUser.username)) return false;
           if (isUserSeen(u)) return false;
 
-          const matchUpline = isSameUser(u.upline_id, parentUser.id) ||
-                              isSameUser(u.upline_id, parentUser.username) ||
-                              isSameUser(u.upline_username, parentUser.username) ||
-                              isSameUser(u.upline_username, parentUser.id);
-
-          const matchSponsor = isSameUser(u.sponsor_id, parentUser.id) ||
-                               isSameUser(u.sponsor_id, parentUser.username) ||
-                               isSameUser(u.sponsor_username, parentUser.username) ||
-                               isSameUser(u.sponsor_username, parentUser.id);
-
-          if (!matchUpline && !matchSponsor) return false;
+          if (!isConfirmedChild(parentUser, u)) return false;
 
           const pos = String(u.position || u.pos || '').trim();
           return pos === '';

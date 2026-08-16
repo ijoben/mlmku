@@ -64,6 +64,13 @@ mengubahnya (misal lewat console browser), tetapi tetap mengizinkan:
 
 ---
 
+## Perbaiki data binary tree (opsional, jika pohon jaringan tampak aneh)
+Jalankan di SQL Editor: `supabase/fix-binary-tree.sql`
+
+Menulis ulang `left_id`/`right_id` dari relasi `sponsor_id` + `position`
+(sumber kebenaran). File ini berisi: **PREVIEW** (read-only, lihat dulu),
+**TERAPKAN** (hanya UPDATE 2 kolom), dan **VERIFIKASI**. Tidak ada DELETE.
+
 ## Backfill member lama
 Halaman `backfill-bonus.html` (di situs Anda) sudah bisa dipakai: jalankan
 **Audit** (read-only) lalu **Terapkan** — hanya bisa oleh admin yang login.
