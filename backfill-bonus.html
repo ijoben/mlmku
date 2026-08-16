@@ -432,6 +432,8 @@
             }
 
             async function loadAll() {
+                // Pastikan token sesi masih valid sebelum membaca data
+                if (window.ensureFreshSession) await window.ensureFreshSession();
                 state.users = await window.getTable('users');
                 state.txs = await window.getTable('transactions');
                 state.settings = await window.getSettings();
@@ -717,7 +719,10 @@
                     $('btnApply').disabled = !!run;
                 } catch (e) {
                     console.error('Audit error:', e);
-                    $('noticeArea').innerHTML = '<div class="notice err"><i class="fas fa-exclamation-triangle"></i> Gagal memuat data: ' + e.message + ' — pastikan Anda login sebagai admin dan tabel users/transactions/settings bisa diakses.</div>';
+                    var msg = (e && e.message) || 'error tidak diketahui';
+                    var isExpired = /expired|kedaluwarsa|Invalid JWT|refresh/i.test(msg);
+                    $('noticeArea').innerHTML = '<div class="notice err"><i class="fas fa-exclamation-triangle"></i> Gagal memuat data: ' + msg +
+                        (isExpired ? ' — <strong>Sesi login kedaluwarsa.</strong> Silakan <a href="/login" style="color:var(--gold-accent); font-weight:700;">login ulang</a> (di situs Anda), lalu buka halaman ini lagi.' : ' — pastikan Anda login sebagai admin dan tabel users/transactions/settings bisa diakses.') + '</div>';
                 } finally {
                     state.running = false;
                     btn.disabled = false;
@@ -925,7 +930,9 @@
                 } catch (e) {
                     console.warn('Init warning:', e);
                     $('btnApply').disabled = true;
-                    $('noticeArea').innerHTML = '<div class="notice warn">Gagal memeriksa sesi: ' + e.message + ' — tombol Terapkan dikunci.</div>';
+                    var m = (e && e.message) || 'error tidak diketahui';
+                    var isExpired = /expired|kedaluwarsa|Invalid JWT|refresh/i.test(m);
+                    $('noticeArea').innerHTML = '<div class="notice warn">' + (isExpired ? 'Sesi login kedaluwarsa. <a href="/login" style="color:var(--gold-accent); font-weight:700;">Login ulang</a> lalu buka halaman ini lagi.' : 'Gagal memeriksa sesi: ' + m) + ' — tombol Terapkan dikunci.</div>';
                 }
             })();
         })();

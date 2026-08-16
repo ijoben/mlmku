@@ -48,6 +48,25 @@ window.requireAdmin = async function() {
   }
 };
 
+// Pastikan token sesi masih berlaku; refresh otomatis bila hampir/ sudah kedaluwarsa.
+// Lempar error jelas jika refresh gagal (mis. refresh token tidak valid).
+window.ensureFreshSession = async function() {
+  var { data: sd } = await supabaseClient.auth.getSession();
+  var session = sd && sd.session;
+  if (!session) return null;
+  var exp = session.expires_at ? session.expires_at * 1000 : 0;
+  if (Date.now() >= exp - 30000) {
+    var { data: refreshed, error: rErr } = await supabaseClient.auth.refreshSession();
+    if (rErr) {
+      console.warn('⚠️ Refresh sesi gagal:', rErr.message);
+      try { await supabaseClient.auth.signOut(); } catch (e) {}
+      throw new Error('Sesi login kedaluwarsa. Silakan login ulang.');
+    }
+    return (refreshed && refreshed.session) ? refreshed.session : session;
+  }
+  return session;
+};
+
 // ============================================================
 // EXPOSE SUPABASE CLIENT KE WINDOW
 // ============================================================
